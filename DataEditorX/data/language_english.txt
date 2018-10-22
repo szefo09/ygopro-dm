@@ -1,0 +1,164 @@
+#
+CodeEditForm.mainMenu.menuitem_file	File(&F)
+CodeEditForm.mainMenu.menuitem_open	Open
+CodeEditForm.mainMenu.menuitem_save	Save
+CodeEditForm.mainMenu.menuitem_saveas	Save As
+CodeEditForm.mainMenu.menuitem_quit	Quit
+CodeEditForm.mainMenu.menuitem_setting	Tools(&S)
+CodeEditForm.mainMenu.menuitem_showmap	Display/Hide Document Maps
+CodeEditForm.mainMenu.menuitem_showinput	Display/Hide Text Box
+CodeEditForm.mainMenu.menuitem_find	Find String
+CodeEditForm.mainMenu.menuitem_replace	Replace
+CodeEditForm.mainMenu.menuitem_setcard	Set Database
+CodeEditForm.mainMenu.menuitem_help	Help(&H)
+CodeEditForm.mainMenu.menuitem_about	About
+DataEditForm.mainMenu.menuitem_autoreturn	(*)Text Auto Return
+#
+DataEditForm.btn_img	Import Image
+DataEditForm.lb_types	Card Type
+DataEditForm.lb_tiptexts	Script Text
+DataEditForm.lb_categorys	Ability Category
+DataEditForm.lb_cardcode	Passcode
+DataEditForm.lb_cardalias	Alias
+DataEditForm.lb_atkdef	Power/Power
+DataEditForm.lb_pleft_right	N/A
+DataEditForm.btn_reset	Clear Search
+DataEditForm.btn_lua	Open Script
+DataEditForm.btn_serach	Search
+DataEditForm.btn_del	Delete
+DataEditForm.btn_undo	Undo
+DataEditForm.btn_mod	Modify
+DataEditForm.btn_add	Add
+#DataEditForm.btn_PageDown	Page Down
+#DataEditForm.btn_PageUp	Page Up
+DataEditForm.lv_cardlist.0	Passcode
+DataEditForm.lv_cardlist.1	Card Name
+DataEditForm.mainMenu.menuitem_file	File(&F)
+DataEditForm.mainMenu.menuitem_open	Open(&O)
+DataEditForm.mainMenu.menuitem_new	New(&N)
+DataEditForm.mainMenu.menuitem_copyselectto	Copy Selected...
+DataEditForm.mainMenu.menuitem_copyto	Copy All Search...
+DataEditForm.mainMenu.menuitem_openLastDataBase	Open Most Recent Database
+DataEditForm.mainMenu.menuitem_quit	Quit
+DataEditForm.mainMenu.menu_image	MSE(&M)
+DataEditForm.mainMenu.menu_data	Data(&D)
+DataEditForm.mainMenu.menuitem_operacardsfile	Operate with Card's Files
+DataEditForm.mainMenu.menuitem_openfileinthis	Open Script with CodeEditor
+DataEditForm.mainMenu.menuitem_readydk	Read from .ydk File(&Y)
+DataEditForm.mainMenu.menuitem_readimages	Read from Images Path(&I)
+DataEditForm.mainMenu.menuitem_compdb	Compress Database
+DataEditForm.mainMenu.menuitem_exportdata	Export Data As .zip
+DataEditForm.mainMenu.menuitem_mseconfig	Set MSE Language
+DataEditForm.mainMenu.menuitem_testpendulumtext	Test Pendulum Texts
+DataEditForm.mainMenu.menuitem_readmse	Read .mse-set
+DataEditForm.mainMenu.menuitem_saveasmse_select	Save Selected As .mse-set
+DataEditForm.mainMenu.menuitem_saveasmse	Save All As .mse-set
+DataEditForm.mainMenu.menuitem_cutimages	Cut Images
+DataEditForm.mainMenu.menuitem_convertimage	Convert Images
+DataEditForm.mainMenu.menuitem_importmseimg	Set MSE Image
+DataEditForm.mainMenu.menuitem_export_all_sql	Export All to .sql
+DataEditForm.mainMenu.menuitem_export_select_sql	Export Selected to .sql
+DataEditForm.mainMenu.menuitem_cancelTask	Cancel Task
+DataEditForm.mainMenu.menuitem_exportMSEimage	Export .mse-set to Images (Click to Stop)
+DataEditForm.mainMenu.menuitem_help	Help(&H)
+DataEditForm.mainMenu.menuitem_about	About
+DataEditForm.mainMenu.menuitem_language	Language
+DataEditForm.mainMenu.menuitem_checkupdate	Check for Update
+DataEditForm.mainMenu.menuitem_autocheckupdate	Auto-Check for Update
+DataEditForm.mainMenu.menuitem_github	Source Code on GitHub
+#
+MainForm.mainMenu.menuitem_file	File(&F)
+MainForm.mainMenu.menuitem_open	Open
+MainForm.mainMenu.menuitem_new	New
+MainForm.mainMenu.menuitem_save	Save
+MainForm.mainMenu.menuitem_copyselect	Copy Selected
+MainForm.mainMenu.menuitem_copyall	Copy All Search
+MainForm.mainMenu.menuitem_pastecards	Paste Cards
+MainForm.mainMenu.menuitem_comp1Set Compare Database 1
+MainForm.mainMenu.menuitem_comp2Set Compare Database 2
+MainForm.mainMenu.menuitem_history	Database History
+MainForm.mainMenu.menuitem_shistory	Script History
+MainForm.mainMenu.menuitem_quit	Quit
+MainForm.mainMenu.menuitem_windows	Window(&W)
+MainForm.mainMenu.menuitem_dataeditor	DataEditor
+MainForm.mainMenu.menuitem_codeeditor	CodeEditor
+MainForm.mainMenu.menuitem_close	Close
+MainForm.mainMenu.menuitem_closeother	Close Others
+MainForm.mainMenu.menuitem_closeall	Close All
+#
+0x0	Info
+0x1	Error
+0x2	Warning
+0x3	Question
+0x4	Create success!
+0x5	Create failed!
+0x6	Add success!
+0x7	Add failed!
+0x8	The passcode cannot be 0!
+0x9	A card with that passcode already exists!
+0xa	No changes were made.
+0xb	Are you sure you want to delete the selected card(s)?
+0xc	Create a script file?
+0xd	Open database?
+0xe	The card(s) already exist(s). Do you want to replace it/them?
+0xf	DataEditorX is up to date.\nDo you want to download it again?
+0x10	An error occurred while checking for an update. Please check your Internet connection.
+0x11	New version available.\nDo you want to download it?
+0x12	File does not exist!
+0x13	No database selected!
+0x14	Select database file
+0x15	Select .ydk file
+0x16	Select image folder
+0x17	Download success!
+0x18	Download failed!
+0x19	No script text selected!
+0x1a	Delete success!
+0x1b	Delete failed!
+0x1c	Modify success!
+0x1d	Modify failed!
+0x1e	About: 
+0x1f	Version: 
+0x20	Author: 
+0x21	cdb file(*.cdb)|*.cdb|all files(*.*)|*.*
+0x22	ydk file(*.ydk)|*.ydk|all files(*.*)|*.*
+0x23	SetCode input error!
+0x24	Select an image to import
+0x25	jpg(*.jpg)|*.jpg|bmp(*.bmp)|*.bmp|png(*.png)|*.png|all files(*.*)|*.*
+0x26	The task is running.
+0x27	Checking for updates...
+0x28	Copying database...
+0x29	Copy database success!
+0x2a	Save .mse-set file
+0x2b	MSE set(*.mse-set)|*.mse-set|all files(*.*)|*.*
+0x2c	Exporting .mse-set...
+0x2d	Export .mse-set success!
+0x2e	Cutting images...
+0x2f	Cut images success!
+0x30	No cards selected!
+0x31	The image(s) already exist(s). Do you want to replace it/them?
+0x32	Converting images...
+0x33	Convert images success!
+0x34	Compress database success!
+0x35	Only update the text of the set?
+0x36	The task was canceled!
+0x37	The task was paused!
+0x38	The task was resumed!
+0x39	The task has encountered an error!
+0x3a	Cancel task?
+0x3b	Copied!
+0x3c	Pasted!
+0x3d	Clear History
+0x3e	Exporting data...
+0x3f	Export data success!
+0x40	Compare cards with text?
+0x41	Cards have been compared!
+0x42	Open File
+0x43	Script(*.lua)|*.lua|all files(*.*)|*.*
+0x44	New File
+0x45	Save success!
+0x46	Save the script?
+0x47	Read .mse-set
+0x48	Read .mse-set success!
+0x49	Please restart DataEditorX to apply changes.
+0x4a	Export .mse-set to images success!
+0x4b	Export .mse-set to images failed!
