@@ -7,7 +7,7 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--speed attacker
-	dm.EnableSpeedAttacker(c)
+	dm.EnableEffectCustom(c,DM_EFFECT_SPEED_ATTACKER)
 	--to grave (mana)
 	dm.AddSingleAttackTriggerEffect(c,0,true,scard.tgtg1,tgop1)
 	--to grave (shield)

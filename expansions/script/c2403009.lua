@@ -7,7 +7,7 @@ function scard.initial_effect(c)
 	--wins all battles (liquid people)
 	dm.EnableWinsAllBattles(c,0,nil,aux.FilterBoolFunction(Card.IsDMRace,DM_RACE_LIQUID_PEOPLE))
 	--speed attacker
-	dm.EnableSpeedAttacker(c)
+	dm.EnableEffectCustom(c,DM_EFFECT_SPEED_ATTACKER)
 	--return
 	dm.EnableTurnEndSelfReturn(c,1)
 end

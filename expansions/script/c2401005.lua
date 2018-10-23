@@ -7,12 +7,12 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--speed attacker
-	dm.EnableSpeedAttacker(c)
+	dm.EnableEffectCustom(c,DM_EFFECT_SPEED_ATTACKER)
 	--to mana
 	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.tmop,nil,scard.tmcon)
 	--cannot be blocked
 	dm.EnableCannotBeBlocked(c,nil,scard.actcon)
-	--slayer
+	--get ability (slayer)
 	dm.EnableSlayer(c,scard.descon)
 	--untap
 	dm.EnableTurnEndSelfUntap(c,1,scard.poscon)
@@ -30,7 +30,7 @@ scard.tmop=dm.DecktopSendtoManaOperation(PLAYER_PLAYER,1)
 function scard.actcon(e)
 	return Duel.IsExistingMatchingCard(scard.cfilter,e:GetHandlerPlayer(),0,DM_LOCATION_BATTLE,1,nil,DM_CIVILIZATION_WATER)
 end
---slayer
+--get ability (slayer)
 function scard.descon(e)
 	return Duel.IsExistingMatchingCard(scard.cfilter,e:GetHandlerPlayer(),0,DM_LOCATION_BATTLE,1,nil,DM_CIVILIZATION_DARKNESS)
 end

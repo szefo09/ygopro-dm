@@ -1357,12 +1357,6 @@ function Auxiliary.GainEffectBreaker(c,tc,desc_id,code,reset_flag,reset_count)
 	Auxiliary.GainEffectCustom(c,tc,desc_id,DM_EFFECT_BREAKER,reset_flag,reset_count)
 	Auxiliary.GainEffectCustom(c,tc,desc_id,code,reset_flag,reset_count)
 end
---"Speed attacker (This creature doesn't get summoning sickness.)"
---e.g. "Bombat, General of Speed" (DM-05 38/55)
-function Auxiliary.EnableSpeedAttacker(c,con_func)
-	local con_func=con_func or aux.TRUE
-	Auxiliary.EnableEffectCustom(c,DM_EFFECT_SPEED_ATTACKER,con_func)
-end
 --"Instead of having this creature attack, you may tap it to use its Tap ability."
 --e.g. "Tank Mutant" (DM-06 6/110)
 function Auxiliary.EnableTapAbility(c,desc_id,targ_func,op_func,prop,cate)
