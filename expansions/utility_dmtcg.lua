@@ -472,8 +472,21 @@ function Duel.SendtoMana(targets,pos,reason)
 		if pos==POS_FACEUP_UNTAPPED then
 			ct=ct+Duel.SendtoGrave(tc,reason)
 		elseif pos==POS_FACEUP_TAPPED then
+			Duel.DisableShuffleCheck()
 			ct=ct+Duel.Remove(tc,POS_FACEDOWN,reason)
 		end
+	end
+	return ct
+end
+--put a card from the top of a player's deck into the mana zone
+function Duel.SendDecktoptoMana(player,count,pos,reason)
+	local ct=0
+	if pos==POS_FACEUP_UNTAPPED then
+		ct=ct+Duel.DiscardDeck(player,count,reason)
+	elseif pos==POS_FACEUP_TAPPED then
+		local g=Duel.GetDecktopGroup(player,count)
+		Duel.DisableShuffleCheck()
+		ct=ct+Duel.Remove(g,POS_FACEDOWN,reason)
 	end
 	return ct
 end
@@ -484,7 +497,7 @@ function Duel.SendDecktoptoManaUpTo(player,count,pos,reason)
 	local ct=0
 	if pos==POS_FACEUP_UNTAPPED then
 		repeat
-			ct=ct+Duel.SendDecktoptoMana(player,1,reason)
+			ct=ct+Duel.DiscardDeck(player,1,reason)
 			count=count-1
 		until count==0 or not Duel.IsPlayerCanSendDecktoptoMana(player,1) or not Duel.SelectYesNo(player,DN_QHINTMSG_TOMANAEXTRA)
 	elseif pos==POS_FACEUP_TAPPED then
@@ -563,8 +576,6 @@ end
 function Duel.IsPlayerCanBlock(player)
 	return not Duel.IsPlayerAffectedByEffect(player,DM_EFFECT_CANNOT_BLOCK)
 end
---put a card from the top of a player's deck into the mana zone
-Duel.SendDecktoptoMana=Duel.DiscardDeck
 --put a card on top of another card
 Duel.PutOnTop=Duel.Overlay
 --check if a player can put the top card of their deck into the mana zone
@@ -1837,8 +1848,8 @@ end
 --pos: POS_FACEUP_TAPPED for "tap this creature" or POS_FACEUP_UNTAPPED for "untap this creature"
 function Auxiliary.SelfTapUntapTarget(pos)
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
-				local b=c:IsFaceupUntapped()
 				local c=e:GetHandler()
+				local b=c:IsFaceupUntapped()
 				if pos==POS_FACEUP_UNTAPPED then b=c:IsFaceupTapped() end
 				if chk==0 then return b end
 			end
@@ -2496,7 +2507,7 @@ function Auxiliary.DecktopSendtoManaOperation(p,ct)
 				if p==PLAYER_PLAYER or p==tp then player=tp
 				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
-				Duel.SendDecktoptoMana(player,ct,REASON_EFFECT)
+				Duel.SendDecktoptoMana(player,ct,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 			end
 end
 --========== SendtoShield ==========
