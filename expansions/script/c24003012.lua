@@ -7,7 +7,7 @@ function scard.initial_effect(c)
 	dm.EnableBlocker(c)
 	--cannot attack
 	dm.EnableCannotAttack(c)
-	--get ability (power up)
+	--power up
 	dm.EnableUpdatePower(c,3000,dm.ManaExclusiveCondition(Card.IsCivilization,DM_CIVILIZATION_WATER))
 	dm.AddEffectDescription(c,0,dm.ManaExclusiveCondition(Card.IsCivilization,DM_CIVILIZATION_WATER))
 end

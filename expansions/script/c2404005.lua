@@ -31,15 +31,15 @@ function scard.initial_effect(c)
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER,dm.SelfTappedCondition,DM_LOCATION_BATTLE,0,scard.abtg)
 	--get ability
 	dm.AddTurnEndEffect(c,1,nil,nil,scard.powop,nil,dm.SelfTappedCondition,1)
-	--get ability (double breaker)
+	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER,scard.dbcon)
 	dm.AddEffectDescription(c,2,scard.dbcon)
-	--get ability (triple breaker)
+	--triple breaker
 	dm.EnableBreaker(c,DM_EFFECT_TRIPLE_BREAKER,scard.tbcon)
 	dm.AddEffectDescription(c,3,scard.tbcon)
 end
 scard.duel_masters_card=true
---get ability (power attacker & double breaker)
+--get ability (power attacker) & double breaker
 function scard.abtg(e,c)
 	return c~=e:GetHandler()
 end
@@ -59,12 +59,12 @@ function scard.powval(e,c)
 		return val
 	end
 end
---get ability (double breaker)
+--double breaker
 function scard.dbcon(e)
 	local c=e:GetHandler()
 	return c:IsPowerAbove(6000) and c:GetPower()<9000
 end
---get ability (triple breaker)
+--triple breaker
 function scard.tbcon(e)
 	return e:GetHandler():IsPowerAbove(9000)
 end

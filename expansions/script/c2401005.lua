@@ -12,7 +12,7 @@ function scard.initial_effect(c)
 	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.tmop,nil,scard.tmcon)
 	--cannot be blocked
 	dm.EnableCannotBeBlocked(c,nil,scard.actcon)
-	--get ability (slayer)
+	--slayer
 	dm.EnableSlayer(c,scard.descon)
 	--untap
 	dm.EnableTurnEndSelfUntap(c,1,scard.poscon)
@@ -30,7 +30,7 @@ scard.tmop=dm.DecktopSendtoManaOperation(PLAYER_PLAYER,1)
 function scard.actcon(e)
 	return Duel.IsExistingMatchingCard(scard.cfilter,e:GetHandlerPlayer(),0,DM_LOCATION_BATTLE,1,nil,DM_CIVILIZATION_WATER)
 end
---get ability (slayer)
+--slayer
 function scard.descon(e)
 	return Duel.IsExistingMatchingCard(scard.cfilter,e:GetHandlerPlayer(),0,DM_LOCATION_BATTLE,1,nil,DM_CIVILIZATION_DARKNESS)
 end

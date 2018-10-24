@@ -9,10 +9,10 @@ function scard.initial_effect(c)
 	dm.EnableEffectCustom(c,DM_EFFECT_SPEED_ATTACKER)
 	--power attacker
 	dm.EnablePowerAttacker(c,scard.powval)
-	--get ability (double breaker)
+	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER,scard.dbcon)
 	dm.AddEffectDescription(c,0,scard.dbcon)
-	--get ability (triple breaker)
+	--triple breaker
 	dm.EnableBreaker(c,DM_EFFECT_TRIPLE_BREAKER,scard.tbcon)
 	dm.AddEffectDescription(c,1,scard.tbcon)
 end
@@ -22,12 +22,12 @@ function scard.powval(c,e)
 	local t={5000,6000,7000,8000,9000,10000,11000,12000,13000,14000}
 	return math.randomchoice(t)
 end
---get ability (double breaker)
+--double breaker
 function scard.dbcon(e)
 	local c=e:GetHandler()
 	return c:IsPowerAbove(6000) and c:GetPower()<12000
 end
---get ability (triple breaker)
+--triple breaker
 function scard.tbcon(e)
 	return e:GetHandler():IsPowerAbove(12000)
 end
