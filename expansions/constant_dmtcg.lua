@@ -267,7 +267,7 @@ DM_HINTMSG_TOSHIELD					=619	--"Select a card to add to your shields face-down."
 DM_HINTMSG_TOBATTLE					=620	--"Select a creature to put into the battle zone."
 --Question Hint Message
 DM_QHINTMSG_DRAW					=700	--"Draw a card(s)?"
-DM_QHINTMSG_DRAWNUMBER				=701	--"Draw how many cards?"
+DM_QHINTMSG_NUMBERDRAW				=701	--"Draw how many cards?"
 DM_QHINTMSG_SELECT					=702	--"Select a card(s)?"
 DM_QHINTMSG_SELECTEXTRA				=703	--"Select another card?"
 --Timing

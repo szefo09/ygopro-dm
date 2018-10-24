@@ -348,7 +348,7 @@ function Duel.SpecialSummon(targets,sumtype,sumplayer,target_player,nocheck,noli
 	for tc in aux.Next(targets) do
 		if Duel.GetLocationCount(target_player,DM_LOCATION_BATTLE)<=0 then
 			Duel.Hint(HINT_MESSAGE,sumplayer,DM_HINTMSG_NOBZONES)
-			Duel.Remove(tc,POS_FACEUP,REASON_RULE) --put into the graveyard if all monster zones are occupied
+			Duel.SendtoDMGrave(tc,REASON_RULE) --put into the graveyard if all monster zones are occupied
 		end
 		if Duel.SpecialSummonStep(tc,sumtype,sumplayer,target_player,nocheck,nolimit,pos,zone) then
 			ct=ct+1
@@ -477,6 +477,26 @@ function Duel.SendtoMana(targets,pos,reason)
 	end
 	return ct
 end
+--put up to a number of cards from the top of a player's deck into the mana zone
+--reserved
+--[[
+function Duel.SendDecktoptoManaUpTo(player,count,pos,reason)
+	local ct=0
+	if pos==POS_FACEUP_UNTAPPED then
+		repeat
+			ct=ct+Duel.SendDecktoptoMana(player,1,reason)
+			count=count-1
+		until count==0 or not Duel.IsPlayerCanSendDecktoptoMana(player,1) or not Duel.SelectYesNo(player,DN_QHINTMSG_TOMANAEXTRA)
+	elseif pos==POS_FACEUP_TAPPED then
+		local tc=Duel.GetDecktopGroup(player,1):GetFirst()
+		repeat
+			ct=ct+Duel.Remove(tc,POS_FACEDOWN,reason)
+			count=count-1
+		until count==0 or not Duel.IsPlayerCanSendDecktoptoMana(player,1) or not Duel.SelectYesNo(player,DN_QHINTMSG_TOMANAEXTRA)
+	end
+	return ct
+end
+]]
 --put a card into the graveyard
 function Duel.SendtoDMGrave(targets,reason)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
@@ -522,7 +542,7 @@ function Duel.DrawUpTo(player,count,reason)
 	if ct>count then ct=count end
 	local t={}
 	for i=1,ct do t[i]=i end
-	Duel.Hint(HINT_SELECTMSG,player,DM_QHINTMSG_DRAWNUMBER)
+	Duel.Hint(HINT_SELECTMSG,player,DM_QHINTMSG_NUMBERDRAW)
 	local an=Duel.AnnounceNumber(player,table.unpack(t))
 	return Duel.Draw(player,an,reason)
 end
@@ -603,15 +623,15 @@ function Auxiliary.RuleProtect(c)
 	local e2=Effect.CreateEffect(c)
 	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_SINGLE_RANGE)
 	e2:SetType(EFFECT_TYPE_SINGLE)
-	e2:SetCode(EFFECT_INDESTRUCTABLE)
+	e2:SetCode(EFFECT_INDESTRUCTIBLE)
 	e2:SetRange(DM_LOCATION_RULES)
 	e2:SetValue(1)
 	c:RegisterEffect(e2)
 	local e2b=e2:Clone()
-	e2b:SetCode(EFFECT_INDESTRUCTABLE_BATTLE)
+	e2b:SetCode(EFFECT_INDESTRUCTIBLE_BATTLE)
 	c:RegisterEffect(e2b)
 	local e2c=e2:Clone()
-	e2c:SetCode(EFFECT_INDESTRUCTABLE_EFFECT)
+	e2c:SetCode(EFFECT_INDESTRUCTIBLE_EFFECT)
 	c:RegisterEffect(e2c)
 	--cannot release
 	local e3=Effect.CreateEffect(c)
@@ -1809,18 +1829,26 @@ function Auxiliary.EnableTurnEndSelfUntap(c,desc_id,con_func,forced)
 		e1:SetCondition(Auxiliary.TurnPlayerCondition(PLAYER_PLAYER))
 	end
 	if typ==EFFECT_TYPE_TRIGGER_O then
-		e1:SetTarget(Auxiliary.SelfUntapTarget)
+		e1:SetTarget(Auxiliary.SelfTapUntapTarget(POS_FACEUP_UNTAPPED))
 	end
-	e1:SetOperation(Auxiliary.SelfUntapOperation)
+	e1:SetOperation(Auxiliary.SelfTapUntapOperation(POS_FACEUP_UNTAPPED))
 	c:RegisterEffect(e1)
 end
-function Auxiliary.SelfUntapTarget(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsFaceupTapped() end
+--pos: POS_FACEUP_TAPPED for "tap this creature" or POS_FACEUP_UNTAPPED for "untap this creature"
+function Auxiliary.SelfTapUntapTarget(pos)
+	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
+				local b=c:IsFaceupUntapped()
+				local c=e:GetHandler()
+				if pos==POS_FACEUP_UNTAPPED then b=c:IsFaceupTapped() end
+				if chk==0 then return b end
+			end
 end
-function Auxiliary.SelfUntapOperation(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
-	Duel.ChangePosition(c,POS_FACEUP_UNTAPPED)
+function Auxiliary.SelfTapUntapOperation(pos)
+	return	function(e,tp,eg,ep,ev,re,r,rp)
+				local c=e:GetHandler()
+				if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
+				Duel.ChangePosition(c,pos)
+			end
 end
 --"This creature can't be blocked."
 --e.g. "Candy Drop" (DM-01 28/110)
@@ -2064,8 +2092,9 @@ function Auxiliary.ConfirmOperation(p,f,s,o,min,max,ex,...)
 				if p==PLAYER_PLAYER or p==tp then player=tp
 				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
 				local max=max or min
-				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
+				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
+				if g:GetCount()==0 then return end
 				if min and max then
 					Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_CONFIRM)
 					local sg=g:Select(player,min,max,ex,table.unpack(funs))
@@ -2089,8 +2118,8 @@ function Auxiliary.DestroyOperation(p,f,s,o,min,max,ram,ex,...)
 				local max=max or min
 				local c=e:GetHandler()
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
-				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
+				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
 				local sg=nil
 				if min and max then
 					if ram then
@@ -2126,8 +2155,8 @@ function Auxiliary.DiscardOperation(p,f,s,o,min,max,ram,ex,...)
 				local max=max or min
 				local c=e:GetHandler()
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
-				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
+				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
 				if min and max then
 					if ram then
 						Duel.RandomDiscardHand(player,min,REASON_EFFECT,ex)
@@ -2203,10 +2232,10 @@ function Auxiliary.PutIntoBattleOperation(p,f,s,o,min,max,pos,ex,...)
 				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
 				local max=max or min
 				local pos=pos or POS_FACEUP_UNTAPPED
-				local ft=Duel.GetLocationCount(target_player,DM_LOCATION_BATTLE)
+				local ft=Duel.GetLocationCount(player,DM_LOCATION_BATTLE)
 				if max>=0 and ft>max then ft=max end
-				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
+				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
 				if s==LOCATION_DECK or o==LOCATION_DECK then
 					local dg=Duel.GetFieldGroup(player,s,o)
 					Duel.ConfirmCards(player,dg)
@@ -2311,8 +2340,8 @@ function Auxiliary.SendtoGraveOperation(p,f,s,o,min,max,ex,...)
 				local max=max or min
 				local c=e:GetHandler()
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
-				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
+				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
 				if s==LOCATION_DECK or o==LOCATION_DECK then
 					local dg=Duel.GetFieldGroup(player,s,o)
 					Duel.ConfirmCards(player,dg)
@@ -2356,8 +2385,8 @@ function Auxiliary.SendtoHandOperation(p,f,s,o,min,max,conf,ex,...)
 				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
 				local max=max or min
 				local desc=DM_HINTMSG_RTOHAND
-				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
+				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
 				if s==LOCATION_DECK or o==LOCATION_DECK then
 					local dg=Duel.GetFieldGroup(player,s,o)
 					Duel.ConfirmCards(player,dg)
@@ -2417,8 +2446,8 @@ function Auxiliary.SendtoManaOperation(p,f,s,o,min,max,ex,...)
 				local max=max or min
 				local c=e:GetHandler()
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
-				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
+				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
 				if s==LOCATION_DECK or o==LOCATION_DECK then
 					local dg=Duel.GetFieldGroup(player,s,o)
 					Duel.ConfirmCards(player,dg)
@@ -2484,8 +2513,8 @@ function Auxiliary.SendtoShieldOperation(p,f,s,o,min,max,ex,...)
 				if max>=0 and ft>max then ft=max end
 				local c=e:GetHandler()
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
-				local g=Duel.GetMatchingGroup(f,player,s,o,ex,table.unpack(funs))
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
+				local g=Duel.GetMatchingGroup(f,player,s,o,ex,table.unpack(funs))
 				if s==LOCATION_DECK or o==LOCATION_DECK then
 					local dg=Duel.GetFieldGroup(player,s,o)
 					Duel.ConfirmCards(player,dg)
@@ -2568,8 +2597,8 @@ function Auxiliary.TapUntapOperation(p,f,s,o,min,max,pos,ram,ex,...)
 				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
 				local desc=DM_HINTMSG_TAP
 				if pos==POS_FACEUP_UNTAPPED then desc=DM_HINTMSG_UNTAP end
-				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
+				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
 				local sg=nil
 				if min and max then
 					if ram then
@@ -2638,7 +2667,7 @@ Auxiliary.plocon=Auxiliary.PreviousLocationCondition
 --condition for "While this creature is tapped"
 --e.g. "Barkwhip, the Smasher" (DM-02 45/55)
 function Auxiliary.SelfTappedCondition(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():IsFaceupTapped()
+	return e:GetHandler():IsTapped()
 end
 Auxiliary.stapcon=Auxiliary.SelfTappedCondition
 --condition for "While all the cards in your mana zone are CIVILIZATION cards"
