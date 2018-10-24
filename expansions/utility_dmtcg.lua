@@ -520,8 +520,8 @@ function Duel.SendtoDMGrave(targets,reason)
 			ct=ct+Duel.Remove(tc2,POS_FACEUP,reason)
 		end
 		if tc1:IsLocation(LOCATION_REMOVED) and tc1:IsFacedown() then
-			Duel.SendtoHand(tc1,PLAYER_OWNER,REASON_RULE) --workaround to banish a banished card
-			Duel.ConfirmCards(1-tc1:GetControler(),tc1)
+			--workaround to banish a banished card
+			if Duel.SendtoHand(tc1,PLAYER_OWNER,REASON_RULE)~=0 then Duel.ConfirmCards(1-tc1:GetControler(),tc1) end
 		end
 		ct=ct+Duel.Remove(tc1,POS_FACEUP,reason)
 	end
@@ -821,10 +821,10 @@ function Auxiliary.RuleCannotReplay(c)
 	e1:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
 		local a=Duel.GetAttacker()
 		local d=Duel.GetAttackTarget()
-		if not d or not d:IsOnField() then
+		--[[if not d or not d:IsOnField() then
 			Duel.ChangePosition(a,POS_FACEUP_TAPPED)
 			return
-		end
+		end]]
 		Duel.ChangeAttackTarget(d)
 	end)
 	c:RegisterEffect(e1)

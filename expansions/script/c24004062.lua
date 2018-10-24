@@ -14,10 +14,11 @@ function scard.thop(e,tp,eg,ep,ev,re,r,rp)
 	local sg=g:Filter(Card.IsCivilization,nil,DM_CIVILIZATIONS_LD)
 	Duel.DisableShuffleCheck()
 	if sg:GetCount()>0 then
-		Duel.SendtoHand(sg,PLAYER_OWNER,REASON_EFFECT)
-		Duel.ConfirmCards(1-tp,sg)
-		Duel.ShuffleHand(tp)
-		g:Sub(sg)
+		if Duel.SendtoHand(sg,PLAYER_OWNER,REASON_EFFECT)~=0 then
+			Duel.ConfirmCards(1-tp,sg)
+			Duel.ShuffleHand(tp)
+			g:Sub(sg)
+		end
 	end
 	Duel.SendtoDMGrave(g,REASON_EFFECT)
 end
