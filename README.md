@@ -81,16 +81,16 @@ Your attack position monsters can only attack an opponent's monster in defense p
 
 You can search for the following specific card information in YGOPro:
 
-- Card Ability: Search by `Tuner` or `No Ability` for creatures that have [no abilities](http://duelmasters.wikia.com/wiki/Vanilla)
-- Card Type: Search by `Card Type` or `Type` or type `Type: Card Type`
-- Civilization: Search by `Attribute` or `Civilization` or `Civ`
-- Evolution Creature: Search by `Special Summon`, `Evolution` or type `Type: Evolution Creature`
-- Mana Cost: Search by `Level` or `Mana`
-- Multicolored: Type `put into your mana zone tapped.)`
-- Power: Search by `ATK` or `Power`
-- Race: Type `Race: Race`
-- Region-exclusive cards: Under `Limitation`: For OCG only cards, search by `OCG`; for TCG only cards, search by `TCG`
-- You can also search for cards whose abilities have been modified for YGOPro, by typing `This effect is different in YGOPro`.
+- Card Ability: Use the `No Ability` tab for creatures that have [no abilities](http://duelmasters.wikia.com/wiki/Vanilla)
+- Card Type: Use the `Card Type` tab or type `Type:` in the search bar
+- Civilization: Use the `Civilization` (`Civ`) tab
+- Evolution Creature: Use the `Evolution` tab or type `Type: Evolution Creature` in the search bar
+- Mana Cost: Use the `Mana` tab
+- Multicolored: Type `put into your mana zone tapped.)` in the search bar
+- Power: Use the `Power` tab
+- Race: Type `Race:` in the search bar
+- Region-exclusive cards: Use the `Limitation` tab
+- You can also search for cards whose abilities have been modified for YGOPro by typing `YGOPro`.
 </details>
 <details>
 <summary>Glossary</summary>
