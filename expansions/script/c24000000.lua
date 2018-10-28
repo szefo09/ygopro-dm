@@ -21,8 +21,8 @@ function scard.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e2:SetCode(EVENT_PREDRAW)
 	e2:SetRange(DM_LOCATION_RULES)
-	e2:SetCondition(scard.untcon)
-	e2:SetOperation(scard.untop)
+	e2:SetCondition(scard.poscon1)
+	e2:SetOperation(scard.posop1)
 	c:RegisterEffect(e2)
 	--charge
 	local e3=Effect.CreateEffect(c)
@@ -58,8 +58,8 @@ function scard.initial_effect(c)
 	e6:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e6:SetCode(EVENT_DAMAGE_STEP_END)
 	e6:SetRange(DM_LOCATION_RULES)
-	e6:SetCondition(scard.tapcon)
-	e6:SetOperation(scard.tapop)
+	e6:SetCondition(scard.poscon2)
+	e6:SetOperation(scard.posop2)
 	c:RegisterEffect(e6)
 	--attack player
 	local e7=Effect.CreateEffect(c)
@@ -101,7 +101,7 @@ function scard.initial_effect(c)
 	e11:SetCondition(scard.regcon2)
 	e11:SetOperation(scard.regop2)
 	c:RegisterEffect(e11)
-	--win
+	--win game
 	local e12=Effect.CreateEffect(c)
 	e12:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	e12:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -300,15 +300,15 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Draw(1-tp,5,REASON_RULE)
 end
 --untap
-function scard.untfilter(c)
+function scard.posfilter(c)
 	return c:IsTapped()
 end
-function scard.untcon(e)
+function scard.poscon1(e)
 	local tp=e:GetHandlerPlayer()
-	return Duel.IsExistingMatchingCard(scard.untfilter,tp,DM_LOCATION_BATTLE+DM_LOCATION_MANA,0,1,nil)
+	return Duel.IsExistingMatchingCard(scard.posfilter,tp,DM_LOCATION_BATTLE+DM_LOCATION_MANA,0,1,nil)
 		and Duel.GetTurnPlayer()==tp
 end
-function scard.untop(e,tp,eg,ep,ev,re,r,rp)
+function scard.posop1(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(Card.IsTapped,tp,DM_LOCATION_BATTLE+DM_LOCATION_MANA,0,nil)
 	Duel.ChangePosition(g,POS_FACEUP_UNTAPPED)
 end
@@ -368,11 +368,11 @@ function scard.chlimit(e,rp,tp)
 	return not e:IsHasCategory(DM_CATEGORY_BLOCKER)
 end
 --attack cost workaround
-function scard.tapcon(e)
+function scard.poscon2(e)
 	local tp=e:GetHandlerPlayer()
 	return Duel.GetAttacker():IsRelateToBattle() and Duel.GetAttacker():IsControler(tp)
 end
-function scard.tapop(e,tp,eg,ep,ev,re,r,rp)
+function scard.posop2(e,tp,eg,ep,ev,re,r,rp)
 	Duel.ChangePosition(Duel.GetAttacker(),POS_FACEUP_TAPPED)
 end
 --destroy 0 power
@@ -413,7 +413,7 @@ function scard.regop2(e,tp,eg,ep,ev,re,r,rp)
 		Duel.RegisterFlagEffect(re:GetHandler():GetControler(),DM_EFFECT_BREAK_SHIELD,RESET_PHASE+PHASE_END,0,1)
 	end
 end
---win
+--win game
 function scard.wincon(e)
 	return Duel.GetFieldGroupCount(e:GetHandlerPlayer(),LOCATION_DECK,0)==0
 end

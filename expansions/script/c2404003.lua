@@ -7,11 +7,11 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--choose one
-	dm.AddSingleAttackTriggerEffect(c,0,true,scard.abtg,scard.abop)
-	dm.AddSingleDestroyedEffect(c,0,true,scard.abtg,scard.abop)
+	dm.AddSingleAttackTriggerEffect(c,0,true,scard.opttg,scard.optop)
+	dm.AddSingleDestroyedEffect(c,0,true,scard.opttg,scard.optop)
 end
 scard.duel_masters_card=true
-function scard.abtg(e,tp,eg,ep,ev,re,r,rp,chk)
+function scard.opttg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local b1=Duel.IsExistingMatchingCard(dm.ShieldZoneFilter(Card.IsAbleToDMGrave),tp,0,DM_LOCATION_SHIELD,1,nil)
 	local b2=Duel.IsExistingMatchingCard(nil,tp,0,LOCATION_HAND,1,nil)
 	local b3=Duel.IsExistingMatchingCard(nil,tp,0,DM_LOCATION_BATTLE,1,nil)
@@ -38,7 +38,7 @@ function scard.abtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local sel=opval[opt]
 	e:SetLabel(sel)
 end
-function scard.abop(e,tp,eg,ep,ev,re,r,rp)
+function scard.optop(e,tp,eg,ep,ev,re,r,rp)
 	local sel=e:GetLabel()
 	if sel==1 then
 		Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOGRAVE)

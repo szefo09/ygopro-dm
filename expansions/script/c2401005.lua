@@ -13,7 +13,7 @@ function scard.initial_effect(c)
 	--cannot be blocked
 	dm.EnableCannotBeBlocked(c,nil,scard.actcon)
 	--slayer
-	dm.EnableSlayer(c,scard.descon)
+	dm.EnableSlayer(c,scard.slcon)
 	--untap
 	dm.EnableTurnEndSelfUntap(c,1,scard.poscon)
 end
@@ -31,7 +31,7 @@ function scard.actcon(e)
 	return Duel.IsExistingMatchingCard(scard.cfilter,e:GetHandlerPlayer(),0,DM_LOCATION_BATTLE,1,nil,DM_CIVILIZATION_WATER)
 end
 --slayer
-function scard.descon(e)
+function scard.slcon(e)
 	return Duel.IsExistingMatchingCard(scard.cfilter,e:GetHandlerPlayer(),0,DM_LOCATION_BATTLE,1,nil,DM_CIVILIZATION_DARKNESS)
 end
 --untap

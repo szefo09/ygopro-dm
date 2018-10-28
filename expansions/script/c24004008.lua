@@ -10,11 +10,11 @@ function scard.initial_effect(c)
 	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
 	e1:SetRange(DM_LOCATION_BATTLE)
 	e1:SetTargetRange(1,1)
-	e1:SetValue(scard.aclimit)
+	e1:SetValue(scard.actval)
 	c:RegisterEffect(e1)
 end
 scard.duel_masters_card=true
-function scard.aclimit(e,re,tp)
+function scard.actval(e,re,tp)
 	local rc=re:GetHandler()
 	return rc:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER) and rc:IsBrokenShield() and rc:IsCivilization(DM_CIVILIZATION_DARKNESS)
 end

@@ -4,10 +4,10 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--cannot attack
-	dm.EnableCannotAttack(c,scard.abcon)
+	dm.EnableCannotAttack(c,scard.atcon)
 end
 scard.duel_masters_card=true
-function scard.abcon(e)
+function scard.atcon(e)
 	local tp=e:GetHandlerPlayer()
 	return Duel.GetFieldGroupCount(tp,0,DM_LOCATION_BATTLE)>Duel.GetFieldGroupCount(tp,DM_LOCATION_BATTLE,0)
 end
