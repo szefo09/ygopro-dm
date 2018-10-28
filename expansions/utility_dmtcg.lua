@@ -348,7 +348,7 @@ function Duel.SpecialSummon(targets,sumtype,sumplayer,target_player,nocheck,noli
 	for tc in aux.Next(targets) do
 		if Duel.GetLocationCount(target_player,DM_LOCATION_BATTLE)<=0 then
 			Duel.Hint(HINT_MESSAGE,sumplayer,DM_HINTMSG_NOBZONES)
-			Duel.SendtoDMGrave(tc,REASON_RULE) --put into the graveyard if all monster zones are occupied
+			Duel.SendtoDMGrave(tc,REASON_RULE) --put into the graveyard if all zones are occupied
 		end
 		if Duel.SpecialSummonStep(tc,sumtype,sumplayer,target_player,nocheck,nolimit,pos,zone) then
 			ct=ct+1
@@ -536,13 +536,13 @@ function Duel.SendtoShield(targets,player)
 		for tc2 in aux.Next(g) do
 			if Duel.GetLocationCount(player,DM_LOCATION_SHIELD)<=0 then
 				Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOSZONES)
-				Duel.Remove(tc2,POS_FACEUP,REASON_RULE) --put into the graveyard if all spell & trap zones are occupied
+				Duel.SendtoDMGrave(tc2,REASON_RULE) --put into the graveyard if all zones are occupied
 			end
 			b=Duel.MoveToField(tc2,player,player,DM_LOCATION_SHIELD,POS_FACEDOWN,true)
 		end
 		if Duel.GetLocationCount(player,DM_LOCATION_SHIELD)<=0 then
 			Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOSZONES)
-			Duel.Remove(tc1,POS_FACEUP,REASON_RULE) --put into the graveyard if all spell & trap zones are occupied
+			Duel.SendtoDMGrave(tc1,REASON_RULE) --put into the graveyard if all zones are occupied
 		end
 		b=Duel.MoveToField(tc1,player,player,DM_LOCATION_SHIELD,POS_FACEDOWN,true)
 	end
@@ -1088,22 +1088,22 @@ end
 --prop: include DM_EFFECT_FLAG_CARD_CHOOSE for a targeting ("choose") ability
 --a creature applies a specified ability while in the battle zone
 --e.g. "Dia Nork, Moonlight Guardian" (DM-01 2/110), "Brawler Zyler" (DM-01 70/110), "Holy Awe" (DM-01 6/110)
-function Auxiliary.EnableEffectCustom(c,code,con_func,s_range,o_range,targ_func)
+function Auxiliary.EnableEffectCustom(c,code,con_func,range,s_range,o_range,targ_func)
 	--code: DM_EFFECT_BLOCKER, DM_EFFECT_POWER_ATTACKER, DM_EFFECT_SHIELD_TRIGGER, etc.
 	local e1=Effect.CreateEffect(c)
 	if s_range or o_range then
 		e1:SetType(EFFECT_TYPE_FIELD)
-		e1:SetRange(DM_LOCATION_BATTLE)
 		e1:SetTargetRange(s_range,o_range)
 		if targ_func then e1:SetTarget(targ_func) end
 	else
 		e1:SetType(EFFECT_TYPE_SINGLE)
 	end
 	e1:SetCode(code)
+	if range then e1:SetRange(range) end
 	if con_func then e1:SetCondition(con_func) end
 	c:RegisterEffect(e1)
 end
---give a creature a specified ability
+--a creature gets a specified ability
 --e.g. "Chaos Strike" (DM-01 72/110), "Diamond Cutter" (DM-02 1/55), "Rumble Gate" (DM-02 44/55)
 function Auxiliary.GainEffectCustom(c,tc,desc_id,code,reset_flag,reset_count)
 	--code: DM_EFFECT_UNTAPPED_BE_ATTACKED, DM_EFFECT_IGNORE_SUMMONING_SICKNESS, DM_EFFECT_ATTACK_UNTAPPED, etc.
@@ -1179,7 +1179,7 @@ function Auxiliary.CivilizationBlockerCondition(civ)
 			end
 end
 Auxiliary.civblcon=Auxiliary.CivilizationBlockerCondition
---give a creature "Blocker"
+--a creature gets "Blocker"
 --e.g. "Full Defensor" (DM-04 9/55)
 function Auxiliary.GainEffectBlocker(c,tc,desc_id,reset_flag,reset_count)
 	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
@@ -1300,7 +1300,7 @@ function Auxiliary.EnablePowerAttacker(c,val,con_func)
 	Auxiliary.EnableUpdatePower(c,val,aux.AND(Auxiliary.SelfAttackerCondition,con_func))
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_POWER_ATTACKER,con_func)
 end
---give a creature "Power attacker +N000"
+--a creature gets "Power attacker +N000"
 --e.g. "Burning Power" (DM-01 71/110)
 function Auxiliary.GainEffectPowerAttacker(c,tc,desc_id,val,reset_flag,reset_count)
 	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
@@ -1351,7 +1351,7 @@ function Auxiliary.CivilizationSlayerTarget(civ)
 			end
 end
 Auxiliary.civsltg=Auxiliary.CivilizationSlayerTarget
---give a creature "Slayer"
+--a creature gets "Slayer"
 --e.g. "Creeping Plague" (DM-01 49/110)
 function Auxiliary.GainEffectSlayer(c,tc,desc_id,reset_flag,reset_count)
 	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
@@ -1374,13 +1374,13 @@ end
 --"Breaker (This creature breaks N shields.)"
 --"Each creature in the battle zone has "Breaker""
 --e.g. "Gigaberos" (DM-01 55/110), "Chaotic Skyterror" (DM-04 41/55)
-function Auxiliary.EnableBreaker(c,code,con_func,s_range,o_range,targ_func)
+function Auxiliary.EnableBreaker(c,code,con_func,range,s_range,o_range,targ_func)
 	--code: DM_EFFECT_DOUBLE_BREAKER, DM_EFFECT_TRIPLE_BREAKER, DM_EFFECT_QUATTRO_BREAKER, etc.
 	local con_func=con_func or aux.TRUE
-	Auxiliary.EnableEffectCustom(c,DM_EFFECT_BREAKER,con_func,s_range,o_range,targ_func)
-	Auxiliary.EnableEffectCustom(c,code,con_func,s_range,o_range,targ_func)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_BREAKER,con_func,range,s_range,o_range,targ_func)
+	Auxiliary.EnableEffectCustom(c,code,con_func,range,s_range,o_range,targ_func)
 end
---give a creature "Breaker"
+--a creature gets "Breaker"
 --e.g. "Magma Gazer" (DM-01 81/110)
 function Auxiliary.GainEffectBreaker(c,tc,desc_id,code,reset_flag,reset_count)
 	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
@@ -1804,7 +1804,7 @@ function Auxiliary.EnableUpdatePower(c,val,con_func,s_range,o_range,targ_func)
 	e1:SetValue(val)
 	c:RegisterEffect(e1)
 end
---give a creature "+/-N000 power"
+--a creature gets "+/-N000 power"
 --e.g. "Rumble Gate" (DM-02 44/55)
 function Auxiliary.GainEffectUpdatePower(c,tc,desc_id,val,reset_flag,reset_count,con_func)
 	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
@@ -1903,7 +1903,7 @@ function Auxiliary.CannotBeBlockedCivValue(civ)
 				return re:GetHandler():IsCivilization(civ)
 			end
 end
---give a creature "This creature can't be blocked."
+--a creature gets "This creature can't be blocked."
 --e.g. "Laser Wing" (DM-01 11/110)
 function Auxiliary.GainEffectCannotBeBlocked(c,tc,desc_id,con_func,reset_flag,reset_count)
 	local con_func=con_func or aux.TRUE
@@ -2610,6 +2610,8 @@ function Auxiliary.TapUntapOperation(p,f,s,o,min,max,pos,ram,ex,...)
 				if pos==POS_FACEUP_UNTAPPED then desc=DM_HINTMSG_UNTAP end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
+				--the attacker is excluded because it's supposed to be tapped according to the attack rule
+				g:RemoveCard(Duel.GetAttacker())
 				local sg=nil
 				if min and max then
 					if ram then
@@ -2728,6 +2730,7 @@ function Auxiliary.CheckCardFunction(f,s,o,ex,...)
 				if chk==0 then return Duel.IsExistingMatchingCard(f,tp,s,o,1,ex,table.unpack(funs)) end
 			end
 end
+Auxiliary.chktg=Auxiliary.CheckCardFunction
 --target function for abilities that choose cards
 function Auxiliary.ChooseCardFunction(p,f,s,o,min,max,desc,ex,...)
 	local funs={...}
@@ -2778,6 +2781,7 @@ function Auxiliary.ChooseCardFunction(p,f,s,o,min,max,desc,ex,...)
 				end
 			end
 end
+Auxiliary.targtg=Auxiliary.ChooseCardFunction
 --target function to check if a player has cards in their deck
 function Auxiliary.CheckDeckFunction(p)
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -2788,6 +2792,7 @@ function Auxiliary.CheckDeckFunction(p)
 				Duel.Hint(HINT_OPSELECTED,1-player,e:GetDescription())
 			end
 end
+Auxiliary.chkdtg=Auxiliary.CheckDeckFunction
 --target function for Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
 function Auxiliary.HintTarget(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if e:IsHasProperty(DM_EFFECT_FLAG_CARD_CHOOSE) then
@@ -2796,6 +2801,7 @@ function Auxiliary.HintTarget(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return true end
 	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
 end
+Auxiliary.hinttg=Auxiliary.HintTarget
 
 --==========[+Filters]==========
 --filter to get a card in the mana zone
@@ -2806,6 +2812,7 @@ function Auxiliary.ManaZoneFilter(f)
 					and (not f or f(target,...))
 			end
 end
+Auxiliary.mzfilter=Auxiliary.ManaZoneFilter
 --filter to get a card in the graveyard
 function Auxiliary.DMGraveFilter(f)
 	--DM_LOCATION_GRAVE + f: function
@@ -2813,6 +2820,7 @@ function Auxiliary.DMGraveFilter(f)
 				return target:IsFaceup() and (not f or f(target,...))
 			end
 end
+Auxiliary.gyfilter=Auxiliary.DMGraveFilter
 --filter to get a card in the shield zone
 function Auxiliary.ShieldZoneFilter(f)
 	--DM_LOCATION_SHIELD + f: function
@@ -2820,4 +2828,5 @@ function Auxiliary.ShieldZoneFilter(f)
 				return target:IsShield() and (not f or f(target,...))
 			end
 end
+Auxiliary.szfilter=Auxiliary.ShieldZoneFilter
 return Auxiliary
