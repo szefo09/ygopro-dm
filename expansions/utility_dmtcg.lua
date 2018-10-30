@@ -116,7 +116,6 @@ function Card.IsUntapped(c)
 		return c:IsAttackPos()
 	else return false end
 end
-Card.IsFaceupUntapped=aux.AND(Card.IsFaceup,Card.IsUntapped)
 --check if a card is tapped
 function Card.IsTapped(c)
 	if c:IsLocation(LOCATION_REMOVED) then
@@ -125,7 +124,6 @@ function Card.IsTapped(c)
 		return c:IsDefensePos()
 	else return false end
 end
-Card.IsFaceupTapped=aux.AND(Card.IsFaceup,Card.IsTapped)
 --check if a card can be untapped
 function Card.IsAbleToUntap(c)
 	if c:IsHasEffect(DM_EFFECT_CANNOT_CHANGE_POS_ABILITY) or not c:IsTapped() then return false end
@@ -166,7 +164,7 @@ end
 function Card.IsBrokenShield(c)
 	return c:GetFlagEffect(DM_EFFECT_BROKEN_SHIELD)>0
 end
---check if a card can be summoned or cast for no cost
+--check if a spell can be cast for no cost
 function Card.IsCanCastFree(c)
 	return c:GetLevel()<=0 or (c:IsBrokenShield() and c:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER))
 end
@@ -203,13 +201,19 @@ function Card.IsCanAttackUntapped(c)
 end
 --check if a creature can trigger its "blocker" ability
 function Card.IsCanBlock(c)
-	return c:IsFaceupUntapped() --and not c:IsHasEffect(DM_EFFECT_CANNOT_BLOCK) --reserved
+	return c:IsFaceup() and c:IsUntapped() --and not c:IsHasEffect(DM_EFFECT_CANNOT_BLOCK) --reserved
+end
+--check if a creature can break a shield
+function Card.IsCanBreakShield(c)
+	return not c:IsBlocked()
 end
 --check if a creature has no abilities
 --reserved
+--[[
 function Card.IsHasNoAbility(c)
 	return c:IsType(DM_TYPE_NO_ABILITY)
 end
+]]
 --get the number of shields a creature broke during the current turn
 function Card.GetBrokenShieldCount(c)
 	return c:GetFlagEffect(DM_EFFECT_BREAK_SHIELD)
@@ -436,7 +440,7 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason)
 	local ct1=g:GetCount()
 	if ct1==0 then return end
 	if rc then
-		if rc:IsBlocked() then return end
+		if rc:IsCanBreakShield() then return end
 		local db=rc:IsHasEffect(DM_EFFECT_DOUBLE_BREAKER)
 		local tb=rc:IsHasEffect(DM_EFFECT_TRIPLE_BREAKER)
 		if rc:GetEffectCount(DM_EFFECT_BREAKER)==1 then
@@ -850,7 +854,6 @@ end
 function Auxiliary.NonEvolutionSummonCondition(e,c)
 	if c==nil then return true end
 	if c:IsEvolutionCreature() then return false end
-	if c:IsCanCastFree() then return true end
 	local tp=c:GetControler()
 	local g=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MANA,0,nil)
 	if Duel.GetLocationCount(tp,DM_LOCATION_BATTLE)<=0 or g:GetCount()<c:GetManaCost() then return false end
@@ -902,7 +905,7 @@ end
 --cannot be battle target
 function Auxiliary.CannotBeBattleTargetCondition(e)
 	local c=e:GetHandler()
-	return c:IsFaceupUntapped() and not c:IsCanBeUntappedAttacked()
+	return c:IsFaceup() and c:IsUntapped() and not c:IsCanBeUntappedAttacked()
 end
 function Auxiliary.CannotBeBattleTargetValue(e,c)
 	local ab1=c:IsHasEffect(DM_EFFECT_ATTACK_UNTAPPED_LIGHT)
@@ -975,7 +978,7 @@ function Auxiliary.EvolutionFilter(c,f)
 end
 function Auxiliary.SummonEvolutionCondition(f)
 	return	function(e,c)
-				if c==nil or c:IsCanCastFree() then return true end
+				if c==nil then return true end
 				local tp=c:GetControler()
 				local g=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MANA,0,nil)
 				if Duel.GetLocationCount(tp,DM_LOCATION_BATTLE)<-1 or g:GetCount()<c:GetManaCost() then return false end
@@ -1099,6 +1102,7 @@ function Auxiliary.EnableEffectCustom(c,code,con_func,range,s_range,o_range,targ
 		e1:SetType(EFFECT_TYPE_SINGLE)
 	end
 	e1:SetCode(code)
+	e1:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
 	if range then e1:SetRange(range) end
 	if con_func then e1:SetCondition(con_func) end
 	c:RegisterEffect(e1)
@@ -1158,7 +1162,7 @@ function Auxiliary.BlockerTarget(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function Auxiliary.BlockerOperation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) or not c:IsFaceupUntapped() then return end
+	if not c:IsRelateToEffect(e) or not c:IsUntapped() or c:IsFacedown() then return end
 	local a=Duel.GetAttacker()
 	if not a --[[or not a:IsAttackable()]] or a:IsImmuneToEffect(e) --[[or a:IsStatus(STATUS_ATTACK_CANCELED)]] then return end
 	Duel.ChangePosition(c,POS_FACEUP_TAPPED)
@@ -1849,8 +1853,8 @@ end
 function Auxiliary.SelfTapUntapTarget(pos)
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
 				local c=e:GetHandler()
-				local b=c:IsFaceupUntapped()
-				if pos==POS_FACEUP_UNTAPPED then b=c:IsFaceupTapped() end
+				local b=c:IsFaceup() and c:IsUntapped()
+				if pos==POS_FACEUP_UNTAPPED then b=c:IsFaceup() and c:IsTapped() end
 				if chk==0 then return b end
 			end
 end
@@ -2639,7 +2643,7 @@ function Auxiliary.ChooseTapUntapOperation(pos)
 end
 
 --==========[+Conditions]==========
---condition for a player's turn
+--condition to check who the turn player is
 function Auxiliary.TurnPlayerCondition(p)
 	return	function(e)
 				local tp=e:GetHandlerPlayer()
@@ -2714,7 +2718,7 @@ Auxiliary.nszcon=Auxiliary.NoShieldsCondition
 --e.g. "Millstone Man" (Game Original)
 function Auxiliary.SelfTapCost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return c:IsFaceupUntapped() end
+	if chk==0 then return c:IsFaceup() and c:IsUntapped() end
 	Duel.ChangePosition(c,POS_FACEUP_TAPPED)
 end
 Auxiliary.stapcost=Auxiliary.SelfTapCost

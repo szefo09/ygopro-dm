@@ -8,6 +8,6 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.posfilter(c)
-	return c:IsFaceupUntapped() and not c:IsCivilization(DM_CIVILIZATION_LIGHT)
+	return c:IsFaceup() and c:IsUntapped() and not c:IsCivilization(DM_CIVILIZATION_LIGHT)
 end
 scard.posop=dm.TapUntapOperation(nil,scard.posfilter,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,nil,POS_FACEUP_TAPPED)
