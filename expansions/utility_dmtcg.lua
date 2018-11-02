@@ -445,7 +445,7 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason)
 	local ct1=g:GetCount()
 	if ct1==0 then return end
 	if rc then
-		if rc:IsCanBreakShield() then return end
+		if not rc:IsCanBreakShield() then return end
 		local db=rc:IsHasEffect(DM_EFFECT_DOUBLE_BREAKER)
 		local tb=rc:IsHasEffect(DM_EFFECT_TRIPLE_BREAKER)
 		if rc:GetEffectCount(DM_EFFECT_BREAKER)==1 then
@@ -468,7 +468,7 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason)
 	Duel.Hint(HINT_SELECTMSG,sel_player,DM_HINTMSG_BREAK)
 	local sg=g:Select(sel_player,min,max,nil)
 	Duel.HintSelection(sg)
-	local ct2=ct2+Duel.SendtoHand(sg,PLAYER_OWNER,reason+DM_REASON_BREAK)
+	local ct2=Duel.SendtoHand(sg,PLAYER_OWNER,reason+DM_REASON_BREAK)
 	--raise event for "Whenever this creature breaks a shield" + re:GetHandler()==e:GetHandler()
 	Duel.RaiseEvent(sg,EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD,e,0,0,0,0)
 	return ct2
@@ -1204,6 +1204,7 @@ function Auxiliary.BlockerOperation(e,tp,eg,ep,ev,re,r,rp)
 	if not a --[[or not a:IsAttackable()]] or a:IsImmuneToEffect(e) --[[or a:IsStatus(STATUS_ATTACK_CANCELED)]] then return end
 	Duel.ChangePosition(c,POS_FACEUP_TAPPED)
 	if not Duel.ChangeAttackTarget(c) then return end
+	Duel.DoBattle(c,a)
 	--register flag effect for Card.IsBlocked
 	a:RegisterFlagEffect(DM_EFFECT_BLOCKED,RESET_EVENT+RESETS_STANDARD+RESET_CHAIN,0,1)
 	Duel.Hint(HINT_OPSELECTED,1-tp,DM_DESC_BLOCKED)
