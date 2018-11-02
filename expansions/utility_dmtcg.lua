@@ -160,6 +160,11 @@ function Card.IsAbleToTapAsCost(c)
 		return c:IsAttackPos()
 	else return false end
 end
+--check if a card can be added to a player's shields face down
+--reserved
+function Card.IsAbleToShield(c)
+	return true--not c:IsHasEffect(DM_EFFECT_CANNOT_TO_SHIELD)
+end
 --check if a card is a broken shield
 function Card.IsBrokenShield(c)
 	return c:GetFlagEffect(DM_EFFECT_BROKEN_SHIELD)>0
@@ -531,6 +536,20 @@ function Duel.SendtoDMGrave(targets,reason)
 	end
 	return ct
 end
+--put a card from the top of a player's deck into the graveyard
+function Duel.SendDecktoptoDMGrave(player,ct,reason)
+	local g=Duel.GetDecktopGroup(player,ct)
+	Duel.DisableShuffleCheck()
+	return Duel.SendtoDMGrave(g,reason)
+end
+--check if a player can put a card from the top of their deck into the graveyard
+--reserved
+--[[
+function Duel.IsPlayerCanSendDecktoptoDMGrave(player,ct)
+	local g=Duel.GetDecktopGroup(player,ct)
+	return g:FilterCount(Card.IsAbleToDMGrave,nil)>0
+end
+]]
 --add a card to a player's shields face down
 function Duel.SendtoShield(targets,player)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
@@ -548,10 +567,28 @@ function Duel.SendtoShield(targets,player)
 			Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOSZONES)
 			Duel.SendtoDMGrave(tc1,REASON_RULE) --put into the graveyard if all zones are occupied
 		end
-		b=Duel.MoveToField(tc1,player,player,DM_LOCATION_SHIELD,POS_FACEDOWN,true)
+		if tc1:IsAbleToShield() then
+			b=Duel.MoveToField(tc1,player,player,DM_LOCATION_SHIELD,POS_FACEDOWN,true)
+		end
 	end
 	return b
 end
+--add a card from the top of a player's deck to their shields face down
+function Duel.SendDecktoptoShield(player,ct)
+	local b=nil
+	local g=Duel.GetDecktopGroup(player,ct)
+	Duel.DisableShuffleCheck()
+	b=Duel.SendtoShield(g,player)
+	return b
+end
+--check if a player can add a card from the top of their deck to their shields face down
+--reserved
+--[[
+function Duel.IsPlayerCanSendDecktoptoShield(player,ct)
+	local g=Duel.GetDecktopGroup(player,ct)
+	return g:FilterCount(Card.IsAbleToShield,nil)>0
+end
+]]
 --draw up to a number of cards
 function Duel.DrawUpTo(player,count,reason)
 	local ct=Duel.GetFieldGroupCount(player,LOCATION_DECK,0)
@@ -571,20 +608,20 @@ function Duel.RandomDiscardHand(player,count,reason,ex)
 	elseif type(ex)=="Group" then g:Sub(ex) end
 	return Duel.Remove(g,POS_FACEUP,reason+REASON_DISCARD)
 end
---get the number of shields a player's creatures broke during the current turn
-function Duel.GetBrokenShieldCount(player)
-	return Duel.GetFlagEffect(player,DM_EFFECT_BREAK_SHIELD)
-end
 --check if a player can trigger a creature's "blocker" ability
 --reserved
 function Duel.IsPlayerCanBlock(player)
 	return not Duel.IsPlayerAffectedByEffect(player,DM_EFFECT_CANNOT_BLOCK)
 end
+--get the number of shields a player's creatures broke during the current turn
+function Duel.GetBrokenShieldCount(player)
+	return Duel.GetFlagEffect(player,DM_EFFECT_BREAK_SHIELD)
+end
 --put a card on top of another card
 Duel.PutOnTop=Duel.Overlay
---check if a player can put the top card of their deck into the mana zone
+--check if a player can put a card from the top of their deck into the mana zone
 Duel.IsPlayerCanSendDecktoptoMana=Duel.IsPlayerCanDiscardDeck
---check if a player can put the top card of their deck into the mana zone as a cost
+--check if a player can put a card from the top of their deck into the mana zone as a cost
 Duel.IsPlayerCanSendDecktoptoManaAsCost=Duel.IsPlayerCanDiscardDeckAsCost
 --========== Auxiliary ==========
 --add and remove a description from a card
@@ -2590,13 +2627,10 @@ function Auxiliary.DecktopSendtoShieldOperation(p,ct)
 					player2=1-tp
 				end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
-				local g1=Duel.GetDecktopGroup(player1,ct)
-				Duel.DisableShuffleCheck()
-				Duel.SendtoShield(g1,player1)
-				if p~=PLAYER_ALL then return end
-				local g2=Duel.GetDecktopGroup(player2,ct)
-				Duel.DisableShuffleCheck()
-				Duel.SendtoShield(g2,player2)
+				Duel.SendDecktoptoShield(player1,ct)
+				if p==PLAYER_ALL then
+					Duel.SendDecktoptoShield(player2,ct)
+				end
 			end
 end
 --========== TapUntap ==========

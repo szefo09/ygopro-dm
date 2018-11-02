@@ -279,21 +279,9 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	--set opponent's life
 	Duel.SetLP(1-tp,1)
 	--set your shields
-	local dg1=Duel.GetDecktopGroup(tp,5)
-	if dg1:GetCount()>0 then
-		for tc1 in aux.Next(dg1) do
-			Duel.DisableShuffleCheck()
-			Duel.SendtoShield(tc1,tp)
-		end
-	end
+	Duel.SendDecktoptoShield(tp,5)
 	--set opponent's shields
-	local dg2=Duel.GetDecktopGroup(1-tp,5)
-	if dg2:GetCount()>0 then
-		for tc2 in aux.Next(dg2) do
-			Duel.DisableShuffleCheck()
-			Duel.SendtoShield(tc2,1-tp)
-		end
-	end
+	Duel.SendDecktoptoShield(1-tp,5)
 	--draw your starting hand
 	Duel.Draw(tp,5,REASON_RULE)
 	--draw opponent's starting hand
