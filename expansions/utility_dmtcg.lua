@@ -193,8 +193,7 @@ function Card.IsCanAttackCreature(c)
 end
 --check if a creature can attack during the same turn it is summoned
 function Card.IsCanAttackTurn(c)
-	return c:IsEvolution() or c:IsHasEffect(DM_EFFECT_SPEED_ATTACKER)
-		or c:IsHasEffect(DM_EFFECT_IGNORE_SUMMONING_SICKNESS)
+	return c:IsEvolution() or c:IsHasEffect(DM_EFFECT_SPEED_ATTACKER) or c:IsHasEffect(DM_EFFECT_IGNORE_SUMMONING_SICKNESS)
 end
 --check if a creature can be attacked while untapped
 function Card.IsCanBeUntappedAttacked(c)
@@ -1780,11 +1779,11 @@ function Auxiliary.AddEnterGraveEffect(c,desc_id,p,optional,targ_func,op_func,pr
 	e1:SetType(EFFECT_TYPE_FIELD+typ)
 	e1:SetCode(DM_EVENT_TO_GRAVE)
 	if typ==EFFECT_TYPE_TRIGGER_O and prop then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY+prop)
+		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY+prop)
 	elseif typ==EFFECT_TYPE_TRIGGER_O then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
+		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY)
 	elseif prop then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+prop)
+		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
 	end
 	e1:SetRange(range)
 	if lmct then e1:SetCountLimit(lmct,lmcd) end
@@ -2987,7 +2986,7 @@ function Auxiliary.TargetShieldFunction(p,f,s,o,min,max,desc,ex,...)
 				Duel.SelectShieldTarget(sel_player,f,target_player,min,max,ex,e,table.unpack(funs))
 			end
 end
-Auxiliary.shdtg=Auxiliary.TargetShieldFunction
+Auxiliary.targtg2=Auxiliary.TargetShieldFunction
 --target function to check if a player has cards in their deck
 function Auxiliary.CheckDeckFunction(p)
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -2995,7 +2994,6 @@ function Auxiliary.CheckDeckFunction(p)
 				if p==PLAYER_PLAYER or p==tp then player=tp
 				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
 				if chk==0 then return Duel.GetFieldGroupCount(player,LOCATION_DECK,0)>0 end
-				Duel.Hint(HINT_OPSELECTED,1-player,e:GetDescription())
 			end
 end
 Auxiliary.chkdtg=Auxiliary.CheckDeckFunction
