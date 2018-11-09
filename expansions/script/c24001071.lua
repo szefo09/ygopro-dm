@@ -9,9 +9,9 @@ end
 scard.duel_masters_card=true
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_CREATURE)
-	local tc=Duel.SelectMatchingCard(tp,Card.IsFaceup,tp,DM_LOCATION_BATTLE,0,1,1,nil):GetFirst()
-	if not tc then return end
-	Duel.HintSelection(Group.FromCards(tc))
+	local g=Duel.SelectMatchingCard(tp,Card.IsFaceup,tp,DM_LOCATION_BATTLE,0,1,1,nil)
+	if g:GetCount()==0 then return end
+	Duel.HintSelection(g)
 	--power attacker
-	dm.GainEffectPowerAttacker(e:GetHandler(),tc,1,2000)
+	dm.GainEffectPowerAttacker(e:GetHandler(),g:GetFirst(),1,2000)
 end

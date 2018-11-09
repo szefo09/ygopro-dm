@@ -13,44 +13,39 @@ end
 scard.duel_masters_card=true
 function scard.opttg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local b1=Duel.IsExistingMatchingCard(dm.ShieldZoneFilter(Card.IsAbleToDMGrave),tp,0,DM_LOCATION_SHIELD,1,nil)
-	local b2=Duel.IsExistingMatchingCard(nil,tp,0,LOCATION_HAND,1,nil)
-	local b3=Duel.IsExistingMatchingCard(nil,tp,0,DM_LOCATION_BATTLE,1,nil)
+	local b2=Duel.GetFieldGroupCount(tp,0,LOCATION_HAND)>0
+	local b3=Duel.IsExistingMatchingCard(Card.IsFaceup,tp,0,DM_LOCATION_BATTLE,1,nil)
 	if chk==0 then return b1 or b2 or b3 end
 	local ops={}
-	local opval={}
-	local off=1
+	local t={}
 	if b1 then
-		ops[off]=aux.Stringid(sid,1)
-		opval[off-1]=1
-		off=off+1
+		table.insert(ops,aux.Stringid(sid,1))
+		table.insert(t,1)
 	end
 	if b2 then
-		ops[off]=aux.Stringid(sid,2)
-		opval[off-1]=2
-		off=off+1
+		table.insert(ops,aux.Stringid(sid,2))
+		table.insert(t,2)
 	end
 	if b3 then
-		ops[off]=aux.Stringid(sid,3)
-		opval[off-1]=3
-		off=off+1
+		table.insert(ops,aux.Stringid(sid,3))
+		table.insert(t,3)
 	end
-	local opt=Duel.SelectOption(tp,table.unpack(ops))
-	local sel=opval[opt]
-	e:SetLabel(sel)
+	local opt=t[Duel.SelectOption(tp,table.unpack(ops))+1]
+	e:SetLabel(opt)
 end
 function scard.optop(e,tp,eg,ep,ev,re,r,rp)
-	local sel=e:GetLabel()
-	if sel==1 then
+	local opt=e:GetLabel()
+	if opt==1 then
 		Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOGRAVE)
-		local g=Duel.SelectMatchingCard(tp,dm.ShieldZoneFilter(),tp,0,DM_LOCATION_SHIELD,1,1,nil)
+		local g=Duel.SelectMatchingCard(tp,dm.ShieldZoneFilter(Card.IsAbleToDMGrave),tp,0,DM_LOCATION_SHIELD,1,1,nil)
 		if g:GetCount()==0 then return end
 		Duel.HintSelection(g)
 		Duel.SendtoDMGrave(g,REASON_EFFECT)
-	elseif sel==2 then
-		Duel.DiscardHand(1-tp,nil,1,1,REASON_EFFECT)
-	else
+	elseif opt==2 then
+		Duel.DiscardHand(1-tp,aux.TRUE,1,1,REASON_EFFECT)
+	elseif opt==3 then
 		Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_DESTROY)
-		local g=Duel.SelectMatchingCard(tp,nil,tp,0,DM_LOCATION_BATTLE,1,1,nil)
+		local g=Duel.SelectMatchingCard(tp,Card.IsFaceup,tp,0,DM_LOCATION_BATTLE,1,1,nil)
 		if g:GetCount()==0 then return end
 		Duel.HintSelection(g)
 		Duel.Destroy(g,REASON_EFFECT)

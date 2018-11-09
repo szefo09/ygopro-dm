@@ -23,7 +23,6 @@ end
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	Duel.Hint(HINT_CARD,0,sid)
-	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
 	Duel.HintSelection(Group.FromCards(c))
 	--slayer
 	dm.GainEffectSlayer(c,c,2)

@@ -53,7 +53,7 @@ function scard.chop1(e,tp,eg,ep,ev,re,r,rp)
 end
 function scard.chop2(e,tp,eg,ep,ev,re,r,rp)
 	local rc=re:GetHandler()
-	if rp==tp or not rc:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER) or not rc:IsBrokenShield() then return end
+	if rp==tp or not rc:IsBrokenShield() or not rc:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER) then return end
 	e:GetLabelObject():SetLabel(1)
 end
 function scard.poscon(e,tp,eg,ep,ev,re,r,rp)

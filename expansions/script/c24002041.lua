@@ -12,5 +12,5 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.abcon(e)
-	return not Duel.IsExistingMatchingCard(nil,e:GetHandlerPlayer(),DM_LOCATION_BATTLE,0,1,e:GetHandler())
+	return not Duel.IsExistingMatchingCard(Card.IsFaceup,e:GetHandlerPlayer(),DM_LOCATION_BATTLE,0,1,e:GetHandler())
 end

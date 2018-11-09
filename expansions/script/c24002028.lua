@@ -17,5 +17,5 @@ end
 function scard.repop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.SendtoHand(e:GetHandler(),PLAYER_OWNER,REASON_EFFECT+REASON_REPLACE)==0 then return end
 	Duel.ShuffleHand(tp)
-	Duel.DiscardHand(tp,nil,1,1,REASON_EFFECT)
+	Duel.DiscardHand(tp,aux.TRUE,1,1,REASON_EFFECT)
 end

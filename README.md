@@ -69,7 +69,7 @@ Your attack position monsters can only attack an opponent's monster in defense p
 <details>
 <summary>Phase</summary>
 
-1. Untap Step = `EVENT_PREDRAW` = Untap all your tapped cards.<br>
+1. Start of Turn Step (Untap Step) = `EVENT_PREDRAW` = Untap all your tapped cards.<br>
 2. Draw Step = `PHASE_DRAW` = Draw a card from your deck.<br>
 3. Charge Step = `PHASE_STANDBY` = You may put a card from your hand into your mana zone.<br>
 4. Main Step = `PHASE_MAIN1` = You may use cards, such as summoning creatures, casting spells, generating and crossing cross gear or fortifying castles by paying the appropriate costs.<br>
@@ -182,7 +182,7 @@ You can search for the following specific card information in YGOPro:
 - `0x20000000	Synchro` = ～Reserved～
 - `0x40000000	Xyz` = Evolution creature; lists "evolution" in the card's text
 - `0x80000000	Negate Effect` = ～Reserved～
-- Uncategorized: `Attacks each turn if able`, `Play for Free`, `Increase/Decrease Mana Cost`
+- Uncategorized: `Play for Free`, `Increase/Decrease Mana Cost`
 </details>
 
 #

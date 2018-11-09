@@ -7,16 +7,9 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--get ability
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(sid,0))
-	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
-	e1:SetCode(EVENT_PHASE+PHASE_DRAW)
-	e1:SetRange(DM_LOCATION_BATTLE)
-	e1:SetCountLimit(1)
-	e1:SetOperation(scard.abop)
-	c:RegisterEffect(e1)
+	dm.AddTurnStartEffect(c,0,nil,true,nil,scard.abop,nil,nil,1)
 	--to shield
-	dm.AddSingleLeavePlayEffect(c,1,nil,nil,dm.DecktopSendtoShieldOperation(PLAYER_PLAYER,PLAYER_PLAYER,1))
+	dm.AddSingleLeaveBattleEffect(c,1,nil,nil,dm.DecktopSendtoShieldOperation(PLAYER_PLAYER,1))
 	--tap
 	dm.AddSingleComeIntoPlayEffect(c,2,true,scard.postg,scard.posop)
 end
@@ -33,5 +26,8 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 --tap
-scard.postg=dm.CheckCardFunction(Card.IsUntapped,0,DM_LOCATION_BATTLE)
-scard.posop=dm.TapUntapOperation(nil,Card.IsUntapped,0,DM_LOCATION_BATTLE,nil,nil,POS_FACEUP_TAPPED)
+function scard.posfilter(c)
+	return c:IsFaceup() and c:IsUntapped()
+end
+scard.postg=dm.CheckCardFunction(scard.posfilter,0,DM_LOCATION_BATTLE)
+scard.posop=dm.TapUntapOperation(nil,scard.posfilter,0,DM_LOCATION_BATTLE,nil,nil,POS_FACEUP_TAPPED)

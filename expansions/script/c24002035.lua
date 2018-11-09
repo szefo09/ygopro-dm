@@ -4,8 +4,8 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--to grave
-	dm.AddSingleAttackTriggerEffect(c,0,nil,scard.tgtg,scard.tgop,DM_EFFECT_FLAG_CARD_CHOOSE)
+	dm.AddSingleAttackTriggerEffect(c,0,nil,scard.tgtg,scard.tgop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
-scard.tgtg=dm.ChooseCardFunction(PLAYER_PLAYER,dm.ManaZoneFilter(),0,DM_LOCATION_MANA,1,1,DM_HINTMSG_TOGRAVE)
-scard.tgop=dm.ChooseSendtoGraveOperation
+scard.tgtg=dm.TargetCardFunction(PLAYER_PLAYER,dm.ManaZoneFilter(Card.IsAbleToDMGrave),0,DM_LOCATION_MANA,1,1,DM_HINTMSG_TOGRAVE)
+scard.tgop=dm.TargetSendtoGraveOperation

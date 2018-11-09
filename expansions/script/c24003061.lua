@@ -8,10 +8,14 @@ function scard.initial_effect(c)
 	dm.AddSpellCastEffect(c,0,nil,scard.thop)
 end
 scard.duel_masters_card=true
+function scard.thfilter(c)
+	return c:IsCivilization(DM_CIVILIZATION_WATER) and c:IsAbleToHand()
+end
 function scard.thop(e,tp,eg,ep,ev,re,r,rp)
+	if Duel.GetFieldGroupCount(tp,LOCATION_DECK,0)==0 then return end
 	Duel.ConfirmDecktop(tp,4)
 	local g=Duel.GetDecktopGroup(tp,4)
-	local sg=g:Filter(Card.IsCivilization,nil,DM_CIVILIZATION_WATER)
+	local sg=g:Filter(scard.thfilter,nil)
 	Duel.DisableShuffleCheck()
 	if sg:GetCount()>0 then
 		if Duel.SendtoHand(sg,PLAYER_OWNER,REASON_EFFECT)~=0 then

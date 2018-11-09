@@ -6,8 +6,11 @@ function scard.initial_effect(c)
 	--shield trigger
 	dm.EnableShieldTrigger(c)
 	--return
-	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.rettg,scard.retop,DM_EFFECT_FLAG_CARD_CHOOSE)
+	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.rettg,scard.retop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
-scard.rettg=dm.ChooseCardFunction(PLAYER_PLAYER,Card.IsAbleToHand,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_RTOHAND)
-scard.retop=dm.ChooseSendtoHandOperation()
+function scard.retfilter(c)
+	return c:IsFaceup() and c:IsAbleToHand()
+end
+scard.rettg=dm.TargetCardFunction(PLAYER_PLAYER,scard.retfilter,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_RTOHAND)
+scard.retop=dm.TargetSendtoHandOperation()

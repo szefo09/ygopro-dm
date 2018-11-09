@@ -3,14 +3,18 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
-	--to hand
-	dm.AddSingleComeIntoPlayEffect(c,0,true,dm.CheckDeckFunction(PLAYER_PLAYER),scard.thop)
+	--confirm & to hand
+	dm.AddSingleComeIntoPlayEffect(c,0,true,dm.CheckDeckFunction(PLAYER_PLAYER),scard.confop)
 end
 scard.duel_masters_card=true
-function scard.thop(e,tp,eg,ep,ev,re,r,rp)
+function scard.thfilter(c)
+	return c:IsCivilization(DM_CIVILIZATIONS_LD) and c:IsAbleToHand()
+end
+function scard.confop(e,tp,eg,ep,ev,re,r,rp)
+	if Duel.GetFieldGroupCount(tp,LOCATION_DECK,0)==0 then return end
 	Duel.ConfirmDecktop(tp,3)
 	local g=Duel.GetDecktopGroup(tp,3)
-	local sg=g:Filter(Card.IsCivilization,nil,DM_CIVILIZATIONS_LD)
+	local sg=g:Filter(scard.thfilter,nil)
 	Duel.DisableShuffleCheck()
 	if sg:GetCount()>0 then
 		if Duel.SendtoHand(sg,PLAYER_OWNER,REASON_EFFECT)~=0 then

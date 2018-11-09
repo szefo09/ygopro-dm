@@ -20,7 +20,6 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 end
 function scard.maop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_CARD,0,sid)
-	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
 	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,DM_LOCATION_BATTLE,nil)
 	if g:GetCount()==0 then return end
 	for tc in aux.Next(g) do

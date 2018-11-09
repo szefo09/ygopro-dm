@@ -9,5 +9,7 @@ end
 scard.duel_masters_card=true
 function scard.atcon(e)
 	local tp=e:GetHandlerPlayer()
-	return Duel.GetFieldGroupCount(tp,0,DM_LOCATION_BATTLE)>Duel.GetFieldGroupCount(tp,DM_LOCATION_BATTLE,0)
+	local ct1=Duel.GetMatchingGroupCount(Card.IsFaceup,tp,DM_LOCATION_BATTLE,0,nil)
+	local ct2=Duel.GetMatchingGroupCount(Card.IsFaceup,tp,0,DM_LOCATION_BATTLE,nil)
+	return ct2>ct1
 end

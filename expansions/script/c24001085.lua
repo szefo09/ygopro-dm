@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--destroy
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.desop,DM_EFFECT_FLAG_CARD_CHOOSE)
+	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.desop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 function scard.desfilter(c,e)
@@ -12,7 +12,7 @@ function scard.desfilter(c,e)
 end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_DESTROY)
-	local g1=Duel.SelectMatchingCard(tp,nil,tp,DM_LOCATION_BATTLE,0,1,1,nil)
+	local g1=Duel.SelectMatchingCard(tp,Card.IsFaceup,tp,DM_LOCATION_BATTLE,0,1,1,nil)
 	if g1:GetCount()>0 then
 		Duel.HintSelection(g1)
 		Duel.Destroy(g1,REASON_EFFECT)

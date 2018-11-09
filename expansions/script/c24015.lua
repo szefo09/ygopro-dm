@@ -8,4 +8,7 @@ function scard.initial_effect(c)
 	dm.AddPlayerCastSpellEffect(c,0,nil,nil,nil,scard.posop)
 end
 scard.duel_masters_card=true
-scard.posop=dm.TapUntapOperation(PLAYER_PLAYER,Card.IsUntapped,0,DM_LOCATION_BATTLE,1,1,POS_FACEUP_TAPPED,true)
+function scard.posfilter(c)
+	return c:IsFaceup() and c:IsUntapped()
+end
+scard.posop=dm.TapUntapOperation(PLAYER_PLAYER,scard.posfilter,0,DM_LOCATION_BATTLE,1,1,POS_FACEUP_TAPPED,true)

@@ -11,4 +11,4 @@ function scard.retfilter(c)
 	return c:IsSpell() and c:IsAbleToHand()
 end
 scard.rettg=dm.CheckCardFunction(dm.ManaZoneFilter(scard.retfilter),DM_LOCATION_MANA,0)
-scard.retop=dm.SendtoHandOperation(PLAYER_PLAYER,dm.ManaZoneFilter(Card.IsSpell),DM_LOCATION_MANA,0,1)
+scard.retop=dm.SendtoHandOperation(PLAYER_PLAYER,dm.ManaZoneFilter(scard.retfilter),DM_LOCATION_MANA,0,1)

@@ -9,6 +9,6 @@ function scard.initial_effect(c)
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 	--to shield
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,dm.DecktopSendtoShieldOperation(PLAYER_ALL,PLAYER_ALL,2))
+	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,dm.DecktopSendtoShieldOperation(PLAYER_ALL,2))
 end
 scard.duel_masters_card=true

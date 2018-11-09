@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
 	--discard
-	dm.AddSpellCastEffect(c,0,scard.dhtg,scard.dhop,DM_EFFECT_FLAG_CARD_CHOOSE)
+	dm.AddSpellCastEffect(c,0,scard.dhtg,scard.dhop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 function scard.cfilter(c)
@@ -15,6 +15,6 @@ function scard.dhtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return true end
 	local ct=Duel.GetMatchingGroupCount(scard.cfilter,tp,0,DM_LOCATION_BATTLE,nil)
 	Duel.Hint(HINT_SELECTMSG,1-tp,DM_HINTMSG_DISCARD)
-	Duel.SelectTarget(1-tp,nil,1-tp,LOCATION_HAND,0,ct,ct,nil)
+	Duel.SelectTarget(1-tp,aux.TRUE,1-tp,LOCATION_HAND,0,ct,ct,nil)
 end
-scard.dhop=dm.ChooseDiscardOperation
+scard.dhop=dm.TargetDiscardOperation

@@ -8,5 +8,5 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.thfilter(c)
-	return c:IsDMRace(DM_RACE_GIANT_INSECT)
+	return c:IsDMRace(DM_RACE_GIANT_INSECT) and c:IsAbleToHand()
 end

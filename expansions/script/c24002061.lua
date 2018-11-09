@@ -12,6 +12,6 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.drop(e,tp,eg,ep,ev,re,r,rp)
-	local ct=Duel.GetMatchingGroupCount(nil,tp,0,DM_LOCATION_BATTLE,nil)
+	local ct=Duel.GetMatchingGroupCount(Card.IsFaceup,tp,0,DM_LOCATION_BATTLE,nil)
 	Duel.Draw(tp,ct,REASON_EFFECT)
 end

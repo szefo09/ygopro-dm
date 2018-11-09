@@ -11,5 +11,8 @@ function scard.initial_effect(c)
 	dm.AddSingleDestroyedEffect(c,0,true,scard.tbtg,scard.tbop)
 end
 scard.duel_masters_card=true
-scard.tbtg=dm.PutIntoBattleTarget(dm.ManaZoneFilter(Card.IsCode),DM_LOCATION_MANA,0,nil,sid)
-scard.tbop=dm.PutIntoBattleOperation(PLAYER_PLAYER,dm.ManaZoneFilter(Card.IsCode),DM_LOCATION_MANA,0,1,1,nil,nil,sid)
+function scard.tbfilter(c)
+	return c:IsCode(CARD_OBSIDIAN_SCARAB)
+end
+scard.tbtg=dm.SendtoBattleTarget(dm.ManaZoneFilter(scard.tbfilter),DM_LOCATION_MANA,0)
+scard.tbop=dm.SendtoBattleOperation(PLAYER_PLAYER,dm.ManaZoneFilter(scard.tbfilter),DM_LOCATION_MANA,0,1)

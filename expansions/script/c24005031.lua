@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
 	--discard
-	dm.AddSpellCastEffect(c,0,nil,scard.dhop,DM_EFFECT_FLAG_CARD_CHOOSE)
+	dm.AddSpellCastEffect(c,0,nil,scard.dhop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 function scard.dhop(e,tp,eg,ep,ev,re,r,rp)

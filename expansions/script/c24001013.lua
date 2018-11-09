@@ -4,8 +4,11 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--tap
-	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.postg,scard.posop,DM_EFFECT_FLAG_CARD_CHOOSE)
+	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.postg,scard.posop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
-scard.postg=dm.ChooseCardFunction(PLAYER_PLAYER,Card.IsUntapped,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TAP)
-scard.posop=dm.ChooseTapUntapOperation(POS_FACEUP_TAPPED)
+function scard.posfilter(c)
+	return c:IsFaceup() and c:IsUntapped()
+end
+scard.postg=dm.TargetCardFunction(PLAYER_PLAYER,scard.posfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TAP)
+scard.posop=dm.TargetTapUntapOperation(POS_FACEUP_TAPPED)

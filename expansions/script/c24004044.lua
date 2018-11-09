@@ -11,16 +11,16 @@ function scard.abfilter(c,e)
 	return c:IsFaceup() and c:IsCanBeEffectTarget(e)
 end
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
-	local g1=Duel.GetFieldGroup(tp,LOCATION_HAND,0)
-	g1:RemoveCard(e:GetHandler())
-	local ct=Duel.DiscardHand(tp,nil,0,g1:GetCount(),REASON_EFFECT,e:GetHandler())
-	if ct==0 then return end
-	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_CHOOSE)
-	local g2=Duel.SelectMatchingCard(tp,scard.abfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,ct,ct,nil,e)
-	if g2:GetCount()==0 then return end
-	Duel.SetTargetCard(g2)
-	for tc in aux.Next(g2) do
+	local c=e:GetHandler()
+	local ct1=Duel.GetMatchingGroupCount(aux.TRUE,tp,LOCATION_HAND,0,c)
+	local ct2=Duel.DiscardHand(tp,aux.TRUE,0,ct1,REASON_EFFECT,c)
+	if ct2==0 then return end
+	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TARGET)
+	local g=Duel.SelectMatchingCard(tp,scard.abfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,ct2,ct2,nil,e)
+	if g:GetCount()==0 then return end
+	Duel.SetTargetCard(g)
+	for tc in aux.Next(g) do
 		--double breaker
-		dm.GainEffectBreaker(e:GetHandler(),tc,1,DM_EFFECT_DOUBLE_BREAKER)
+		dm.GainEffectBreaker(c,tc,1,DM_EFFECT_DOUBLE_BREAKER)
 	end
 end

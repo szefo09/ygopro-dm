@@ -7,14 +7,14 @@ function scard.initial_effect(c)
 	dm.AddSingleAttackTriggerEffect(c,0,true,scard.destg,scard.desop)
 end
 scard.duel_masters_card=true
-scard.destg=dm.CheckCardFunction(nil,DM_LOCATION_BATTLE,0)
+scard.destg=dm.CheckCardFunction(Card.IsFaceup,DM_LOCATION_BATTLE,0)
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_DESTROY)
-	local g1=Duel.SelectMatchingCard(tp,nil,tp,DM_LOCATION_BATTLE,0,1,1,c)
-	if g1:GetCount()==0 then return end
-	Duel.HintSelection(g1)
-	if Duel.Destroy(g1,REASON_EFFECT)==0 then return end
+	local g=Duel.SelectMatchingCard(tp,Card.IsFaceup,tp,DM_LOCATION_BATTLE,0,1,1,c)
+	if g:GetCount()==0 then return end
+	Duel.HintSelection(g)
+	if Duel.Destroy(g,REASON_EFFECT)==0 then return end
 	--power up
 	dm.GainEffectUpdatePower(c,c,1,2000)
 	--double breaker

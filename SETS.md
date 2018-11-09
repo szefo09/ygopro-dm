@@ -441,8 +441,8 @@
 # Game Original Cards
 
 ### Archived
-- ~**Mar. 18, 2003** : GBA Duel Masters 2 Invincible Advance 「デュエル・マスターズ2 インビンシブル・アドバンス」 : `2401001-2401007`~
-- ~**Aug. 16, 2004** : GBA Duel Masters 2 Shobu Kirifuda Version 「デュエル・マスターズ2 切札勝舞Ver.」 : `2401008`~
-- ~**Dec. 3, 2004** : PS2 Duel Masters: Cobalt : `2402001-2402005`~
-- ~**Dec. 12, 2004** : GBA Duel Masters 3 「デュエル・マスターズ3」 : `2403001-2403012`~
-- ~**Mar. 24, 2005** : PS2 Duel Masters: Birth of the Super Dragon 「デュエル・マスターズ・-邪封超龍転生-」 : `2404001-2404005`~
+- ~**Mar. 18, 2003** : GBA Duel Masters 2 Invincible Advance 「デュエル・マスターズ2 インビンシブル・アドバンス」 : `24001-24007`~
+- ~**Aug. 16, 2004** : GBA Duel Masters 2 Shobu Kirifuda Version 「デュエル・マスターズ2 切札勝舞Ver.」 : `24008`~
+- ~**Dec. 3, 2004** : PS2 Duel Masters: Cobalt : `24009-24013`~
+- ~**Dec. 12, 2004** : GBA Duel Masters 3 「デュエル・マスターズ3」 : `24014-24025`~
+- ~**Mar. 24, 2005** : PS2 Duel Masters: Birth of the Super Dragon 「デュエル・マスターズ・-邪封超龍転生-」 : `24026-24030`~

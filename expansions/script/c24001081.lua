@@ -12,8 +12,9 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.SelectMatchingCard(tp,Card.IsFaceup,tp,DM_LOCATION_BATTLE,0,1,1,nil):GetFirst()
 	if not tc then return end
 	Duel.HintSelection(Group.FromCards(tc))
+	local c=e:GetHandler()
 	--power attacker
-	dm.GainEffectPowerAttacker(e:GetHandler(),tc,1,4000)
+	dm.GainEffectPowerAttacker(c,tc,1,4000)
 	--double breaker
-	dm.GainEffectBreaker(e:GetHandler(),tc,2,DM_EFFECT_DOUBLE_BREAKER)
+	dm.GainEffectBreaker(c,tc,2,DM_EFFECT_DOUBLE_BREAKER)
 end

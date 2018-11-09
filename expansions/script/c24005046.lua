@@ -6,8 +6,11 @@ function scard.initial_effect(c)
 	--power attacker
 	dm.EnablePowerAttacker(c,3000)
 	--to battle
-	dm.AddSingleDestroyedEffect(c,0,true,scard.tbtg,scard.tbop,DM_EFFECT_FLAG_CARD_CHOOSE)
+	dm.AddSingleDestroyedEffect(c,0,true,scard.tbtg,scard.tbop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
-scard.tbtg=dm.ChoosePutIntoBattleTarget(PLAYER_PLAYER,dm.ManaZoneFilter(Card.IsCode),DM_LOCATION_MANA,0,1,1,nil,sid)
-scard.tbop=dm.ChoosePutIntoBattleOperation()
+function scard.tbfilter(c)
+	return c:IsCode(CARD_AMBUSH_SCORPION)
+end
+scard.tbtg=dm.TargetSendtoBattleTarget(PLAYER_PLAYER,dm.ManaZoneFilter(scard.tbfilter),DM_LOCATION_MANA,0,1)
+scard.tbop=dm.TargetSendtoBattleOperation()

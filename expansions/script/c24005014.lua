@@ -11,8 +11,8 @@ function scard.initial_effect(c)
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end
 scard.duel_masters_card=true
-function scard.thfilter(c)
+function scard.retfilter(c)
 	return c:IsSpell() and c:IsAbleToHand()
 end
-scard.rettg=dm.CheckCardFunction(dm.ManaZoneFilter(scard.thfilter),DM_LOCATION_MANA,0)
-scard.retop=dm.SendtoHandOperation(PLAYER_PLAYER,dm.ManaZoneFilter(Card.IsSpell),DM_LOCATION_MANA,0,1)
+scard.rettg=dm.CheckCardFunction(dm.ManaZoneFilter(scard.retfilter),DM_LOCATION_MANA,0)
+scard.retop=dm.SendtoHandOperation(PLAYER_PLAYER,dm.ManaZoneFilter(scard.retfilter),DM_LOCATION_MANA,0,1)

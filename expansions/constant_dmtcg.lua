@@ -13,12 +13,15 @@ local DMTCG={}
 --Card ID
 --↑Rule
 CARD_DUEL_MASTERS_RULES				=24000000	--Duel Masters Rules (Unofficial card)
+--↑Support
+CARD_OBSIDIAN_SCARAB				=24005005	--"Obsidian Scarab" (DM-05 5/55)
+CARD_AMBUSH_SCORPION				=24005046	--"Ambush Scorpion" (DM-05 46/55)
 --↑EVENT_CUSTOM
 CARD_CREEPING_PLAGUE				=24001049	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_BECOMES_BLOCKED,e,0,0,0,0)
 CARD_SPIRAL_GRASS					=24002010	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_BLOCK,e,0,0,0,0)
 CARD_MARROW_OOZE_THE_TWISTER		=24002032	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_ATTACK_PLAYER,e,0,0,0,0)
 CARD_BRUTAL_CHARGE					=24005049	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD,e,0,0,0,0)
-CARD_WOLFIS_BLUE_DIVINE_DRAGON		=2404002	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER,e,0,0,0,0)
+CARD_WOLFIS_BLUE_DIVINE_DRAGON		=24027		--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER,e,0,0,0,0)
 --↑RegisterFlagEffect
 CARD_DIA_NORK_MOONLIGHT_GUARDIAN	=24001002	--c:RegisterFlagEffect(DM_EFFECT_BLOCKED,RESET_EVENT+RESETS_STANDARD+RESET_CHAIN,0,1)
 CARD_MIRACLE_QUEST					=24005019	--c:RegisterFlagEffect(DM_EFFECT_BREAK_SHIELD,RESET_PHASE+PHASE_END,0,1)
@@ -167,7 +170,6 @@ RESETS_REDIRECT						=0x47e0000	--RESETS_STANDARD+RESET_OVERLAY-RESET_TOFIELD-RE
 --Type (for Effect.SetType)
 DM_EFFECT_TYPE_CAST_SPELL			=EFFECT_TYPE_IGNITION			--Cast a spell
 --Flag
-DM_EFFECT_FLAG_CARD_CHOOSE			=EFFECT_FLAG_CARD_TARGET		--Included in all abilities that choose cards
 DM_EFFECT_FLAG_SUMMON_PARAM			=EFFECT_FLAG_SPSUM_PARAM		--Included in a creature's summon procedure
 DM_EFFECT_FLAG_ATTACK_TRIGGER		=0x10000000						--Included in all "Whenever this creature attacks" abilities
 DM_EFFECT_FLAG_CHARGE				=0x20000000						--Included in all non-"Charger" spell abilities that put the spell in the mana zone after it's cast
@@ -222,7 +224,7 @@ DM_DESC_EVOLUTION					=1199	--"Play this card by putting it on a creature in the
 DM_DECKERROR_DECKCOUNT				=1450	--"Your deck must be exactly 40 cards!"
 DM_DECKERROR_NONDM					=1451	--"You can't have any non-Duel Masters cards in your deck!"
 --↑Gameplay Hint Message (for Duel.Hint)
-DM_HINTMSG_NOTARGETS				=1650	--"There are no valid cards to select."
+DM_HINTMSG_NOTARGETS				=1650	--"There is no applicable card."
 DM_HINTMSG_NOSTRIGGER				=1651	--"No "Shield Trigger" ability can be activated."
 DM_HINTMSG_NOBZONES					=1652	--"You cannot put any more cards in the battle zone because all zones are occupied!"
 DM_HINTMSG_NOSZONES					=1653	--"You cannot put any more cards in the shield zone because all zones are occupied!"
@@ -243,33 +245,34 @@ DM_DESC_TRIPLE_BREAKER				=1802	--"Triple Breaker (This creature breaks 3 shield
 DM_DESC_BROKEN						=300	--"Broken shield"
 DM_DESC_SUMMONSICKNESS				=301	--"Summoning Sickness"
 --Hint Message
-DM_HINTMSG_APPLYABILITY				=556	--"Select an ability to apply."
-DM_HINTMSG_TOMANA					=600	--"Select a card to put into the mana zone."
-DM_HINTMSG_TAP						=601	--"Select a card to tap."
-DM_HINTMSG_LTAP						=602	--"Select a light card to tap."
-DM_HINTMSG_WTAP						=603	--"Select a water card to tap."
-DM_HINTMSG_DTAP						=604	--"Select a darkness card to tap."
-DM_HINTMSG_FTAP						=605	--"Select a fire card to tap."
-DM_HINTMSG_NTAP						=606	--"Select a nature card to tap."
-DM_HINTMSG_UNTAP					=607	--"Select a card to untap."
-DM_HINTMSG_BREAK					=608	--"Select a shield to break."
-DM_HINTMSG_CHOOSE					=609	--"Select a target for the ability."
-DM_HINTMSG_ATOHAND					=610	--"Select a card to put into your hand."
-DM_HINTMSG_RTOHAND					=611	--"Select a card to return to its owner's hand."
-DM_HINTMSG_DESTROY					=612	--"Select a card to destroy."
-DM_HINTMSG_DISCARD					=613	--"Select a card to discard."
-DM_HINTMSG_TOGRAVE					=614	--"Select a card to put into the graveyard."
-DM_HINTMSG_CREATURE					=615	--"Select a creature."
-DM_HINTMSG_EVOLVE					=616	--"Select a creature to evolve."
-DM_HINTMSG_CONFIRM					=617	--"Select a card to look at it."
-DM_HINTMSG_TODECK					=618	--"Select a card to return to its owner's deck."
-DM_HINTMSG_TOSHIELD					=619	--"Select a card to add to your shields face-down."
-DM_HINTMSG_TOBATTLE					=620	--"Select a creature to put into the battle zone."
+DM_HINTMSG_APPLYABILITY				=556	--"Choose an ability to apply."
+DM_HINTMSG_TOMANA					=600	--"Choose a card to put into the mana zone."
+DM_HINTMSG_TAP						=601	--"Choose a card to tap."
+DM_HINTMSG_LTAP						=602	--"Choose a light card to tap."
+DM_HINTMSG_WTAP						=603	--"Choose a water card to tap."
+DM_HINTMSG_DTAP						=604	--"Choose a darkness card to tap."
+DM_HINTMSG_FTAP						=605	--"Choose a fire card to tap."
+DM_HINTMSG_NTAP						=606	--"Choose a nature card to tap."
+DM_HINTMSG_UNTAP					=607	--"Choose a card to untap."
+DM_HINTMSG_BREAK					=608	--"Choose a shield to break."
+DM_HINTMSG_TARGET					=609	--"Choose a target for the ability."
+DM_HINTMSG_ATOHAND					=610	--"Choose a card to put into your hand."
+DM_HINTMSG_RTOHAND					=611	--"Choose a card to return to its owner's hand."
+DM_HINTMSG_DESTROY					=612	--"Choose a card to destroy."
+DM_HINTMSG_DISCARD					=613	--"Choose a card to discard."
+DM_HINTMSG_TOGRAVE					=614	--"Choose a card to put into the graveyard."
+DM_HINTMSG_CREATURE					=615	--"Choose a creature."
+DM_HINTMSG_EVOLVE					=616	--"Choose a creature to evolve."
+DM_HINTMSG_CONFIRM					=617	--"Choose a card to look at it."
+DM_HINTMSG_TODECK					=618	--"Choose a card to return to its owner's deck."
+DM_HINTMSG_TOSHIELD					=619	--"Choose a card to add to your shields face-down."
+DM_HINTMSG_TOBATTLE					=620	--"Choose a creature to put into the battle zone."
 --Question Hint Message
 DM_QHINTMSG_DRAW					=700	--"Draw a card(s)?"
 DM_QHINTMSG_NUMBERDRAW				=701	--"Draw how many cards?"
-DM_QHINTMSG_SELECT					=702	--"Select a card(s)?"
-DM_QHINTMSG_SELECTEXTRA				=703	--"Select another card?"
+DM_QHINTMSG_CHOOSE					=702	--"Choose a card(s)?"
+DM_QHINTMSG_NUMBERCHOOSE			=703	--"Choose how many cards?"
+DM_QHINTMSG_TOMANA					=704	--"Put a card(s) into your mana zone?"
 --Timing
 DM_TIMING_TAP_ABILITY				=TIMING_BATTLE_START+TIMING_BATTLE_END+TIMING_BATTLE_PHASE+TIMING_BATTLE_STEP_END	--Timing for a Tap Ability
 --Deck Sequence
@@ -278,5 +281,5 @@ DECK_SEQUENCE_BOTTOM				=1	--seq=DECK_SEQUENCE_BOTTOM in Duel.SendtoDeck(targets
 DECK_SEQUENCE_SHUFFLE				=2	--seq=DECK_SEQUENCE_SHUFFLE in Duel.SendtoDeck(targets, player, seq, reason)
 DECK_SEQUENCE_UNEXIST				=-2	--seq=DECK_SEQUENCE_UNEXIST in Duel.SendtoDeck(targets, player, seq, reason)
 --Zone (Location + Sequence)
-ZONE_ANY							=0xff	--zone=ZONE_ANY in Duel.PutIntoBattleZone(targets, sumtype, sumplayer, target_player, nocheck, nolimit, pos, zone)
+ZONE_ANY							=0xff	--zone=ZONE_ANY in Duel.SendtoBattle(targets, sumtype, sumplayer, target_player, nocheck, nolimit, pos, zone)
 return DMTCG

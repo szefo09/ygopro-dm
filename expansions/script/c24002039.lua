@@ -7,6 +7,9 @@ function scard.initial_effect(c)
 	dm.EnableUpdatePower(c,scard.powval,dm.SelfAttackerCondition)
 end
 scard.duel_masters_card=true
+function scard.cfilter(c)
+	return c:IsFaceup() and c:IsTapped()
+end
 function scard.powval(e,c)
-	return Duel.GetMatchingGroupCount(Card.IsTapped,c:GetControler(),DM_LOCATION_BATTLE,0,c)*2000
+	return Duel.GetMatchingGroupCount(scard.cfilter,c:GetControler(),DM_LOCATION_BATTLE,0,c)*2000
 end

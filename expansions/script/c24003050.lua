@@ -4,13 +4,13 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--to grave
-	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.tgtg,scard.tgop,DM_EFFECT_FLAG_CARD_CHOOSE)
+	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.tgtg,scard.tgop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 function scard.tgfilter(c)
-	return c:IsFaceup() and c:IsEvolutionCreature() and c:GetStackCount()>0 and c:IsAbleToDMGrave()
+	return c:IsFaceup() and c:IsEvolution() and c:GetStackCount()>0 and c:IsAbleToDMGrave()
 end
-scard.tgtg=dm.ChooseCardFunction(PLAYER_PLAYER,scard.tgfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TOGRAVE)
+scard.tgtg=dm.TargetCardFunction(PLAYER_PLAYER,scard.tgfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TOGRAVE)
 function scard.tgop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	local mg=tc:GetStackGroup()

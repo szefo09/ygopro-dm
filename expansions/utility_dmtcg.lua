@@ -77,7 +77,7 @@ function Card.IsCanBeSpecialSummoned(c,...)
 		return true --temporary workaround to allow face-down banished monsters to special summon
 	else return card_is_can_be_special_summoned(c,...) end
 end
-Card.IsCanBePutIntoBattleZone=Card.IsCanBeSpecialSummoned
+Card.IsCanSendtoBattle=Card.IsCanBeSpecialSummoned
 --check if a card can be discarded from a player's hand
 local card_is_discardable=Card.IsDiscardable
 function Card.IsDiscardable(c,...)
@@ -97,8 +97,8 @@ function Card.IsCreature(c)
 	return c:IsType(DM_TYPE_CREATURE)
 end
 --check if a card is an evolution creature
-function Card.IsEvolutionCreature(c)
-	return c:IsCreature() and c:IsType(DM_TYPE_EVOLUTION)
+function Card.IsEvolution(c)
+	return c:IsType(DM_TYPE_EVOLUTION)
 end
 --check if a card is a spell
 function Card.IsSpell(c)
@@ -193,7 +193,7 @@ function Card.IsCanAttackCreature(c)
 end
 --check if a creature can attack during the same turn it is summoned
 function Card.IsCanAttackTurn(c)
-	return c:IsEvolutionCreature() or c:IsHasEffect(DM_EFFECT_SPEED_ATTACKER)
+	return c:IsEvolution() or c:IsHasEffect(DM_EFFECT_SPEED_ATTACKER)
 		or c:IsHasEffect(DM_EFFECT_IGNORE_SUMMONING_SICKNESS)
 end
 --check if a creature can be attacked while untapped
@@ -366,9 +366,9 @@ function Duel.SpecialSummon(targets,sumtype,sumplayer,target_player,nocheck,noli
 	Duel.SpecialSummonComplete()
 	return ct
 end
-Duel.PutIntoBattleZone=Duel.SpecialSummon
-Duel.PutIntoBattleZoneStep=Duel.SpecialSummonStep
-Duel.PutIntoBattleZoneComplete=Duel.SpecialSummonComplete
+Duel.SendtoBattle=Duel.SpecialSummon
+Duel.SendtoBattleStep=Duel.SpecialSummonStep
+Duel.SendtoBattleComplete=Duel.SpecialSummonComplete
 --untap/tap a card in the battle/mana zone
 local duel_change_position=Duel.ChangePosition
 function Duel.ChangePosition(targets,au)
@@ -421,13 +421,56 @@ function Duel.SelectMatchingCard(sel_player,f,player,s,o,min,max,ex,...)
 	end
 	return duel_select_matching_card(sel_player,f,player,s,o,min,max,ex,...)
 end
---choose a card
+--target a card
 local duel_select_target=Duel.SelectTarget
 function Duel.SelectTarget(sel_player,f,player,s,o,min,max,ex,...)
 	if not Duel.IsExistingTarget(f,player,s,o,1,ex,...) then
 		Duel.Hint(HINT_MESSAGE,sel_player,DM_HINTMSG_NOTARGETS)
 	end
 	return duel_select_target(sel_player,f,player,s,o,min,max,ex,...)
+end
+--select a shield
+function Duel.SelectMatchingShieldCard(sel_player,f,target_player,min,max,ex,...)
+	if not Duel.IsExistingMatchingCard(Auxiliary.ShieldZoneFilter(f),target_player,DM_LOCATION_SHIELD,0,1,ex,...) then
+		Duel.Hint(HINT_MESSAGE,sel_player,DM_HINTMSG_NOTARGETS)
+	end
+	local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(f),target_player,DM_LOCATION_SHIELD,0,ex,...)
+	local ct=g:GetCount()
+	local sg1=Group.CreateGroup()
+	if ct>0 then
+		if min==0 and max>0 and Duel.SelectYesNo(sel_player,DM_QHINTMSG_CHOOSE) then
+			if ct>max then ct=max end
+			local t={}
+			for i=1,ct do t[i]=i end
+			Duel.Hint(HINT_SELECTMSG,sel_player,DM_QHINTMSG_NUMBERCHOOSE)
+			min=Duel.AnnounceNumber(sel_player,table.unpack(t))
+		end
+		local sg2=g:RandomSelect(sel_player,min) --changed to random because face-down cards can be viewed
+		sg1:Merge(sg2)
+	end
+	return sg1
+end
+--target a shield
+function Duel.SelectShieldTarget(sel_player,f,target_player,min,max,ex,e,...)
+	if not Duel.IsExistingTarget(Auxiliary.ShieldZoneFilter(f),target_player,DM_LOCATION_SHIELD,0,1,ex,...) then
+		Duel.Hint(HINT_MESSAGE,sel_player,DM_HINTMSG_NOTARGETS)
+	end
+	local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(Card.IsCanBeEffectTarget),target_player,DM_LOCATION_SHIELD,0,ex,e,f,...)
+	local ct=g:GetCount()
+	local sg1=Group.CreateGroup()
+	if ct>0 then
+		if min==0 and max>0 and Duel.SelectYesNo(sel_player,DM_QHINTMSG_CHOOSE) then
+			if ct>max then ct=max end
+			local t={}
+			for i=1,ct do t[i]=i end
+			Duel.Hint(HINT_SELECTMSG,sel_player,DM_QHINTMSG_NUMBERCHOOSE)
+			min=Duel.AnnounceNumber(sel_player,table.unpack(t))
+		end
+		local sg2=g:RandomSelect(sel_player,min) --changed to random because face-down cards can be viewed
+		sg1:Merge(sg2)
+		Duel.SetTargetCard(sg1)
+	end
+	return sg1
 end
 --tap a card in the mana zone to summon a creature or to cast a spell
 function Duel.PayManaCost(targets)
@@ -508,13 +551,13 @@ function Duel.SendDecktoptoManaUpTo(player,count,pos,reason)
 		repeat
 			ct=ct+Duel.DiscardDeck(player,1,reason)
 			count=count-1
-		until count==0 or not Duel.IsPlayerCanSendDecktoptoMana(player,1) or not Duel.SelectYesNo(player,DN_QHINTMSG_TOMANAEXTRA)
+		until count==0 or not Duel.IsPlayerCanSendDecktoptoMana(player,1) or not Duel.SelectYesNo(player,DM_QHINTMSG_TOMANAEXTRA)
 	elseif pos==POS_FACEUP_TAPPED then
 		local tc=Duel.GetDecktopGroup(player,1):GetFirst()
 		repeat
 			ct=ct+Duel.Remove(tc,POS_FACEDOWN,reason)
 			count=count-1
-		until count==0 or not Duel.IsPlayerCanSendDecktoptoMana(player,1) or not Duel.SelectYesNo(player,DN_QHINTMSG_TOMANAEXTRA)
+		until count==0 or not Duel.IsPlayerCanSendDecktoptoMana(player,1) or not Duel.SelectYesNo(player,DM_QHINTMSG_TOMANAEXTRA)
 	end
 	return ct
 end
@@ -643,14 +686,17 @@ function Auxiliary.AddEffectDescOperation(desc_id)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local c=e:GetHandler()
 				local desc=aux.Stringid(c:GetOriginalCode(),desc_id)
-				if c:GetFlagEffect(10+desc_id)>0 then return end
-				c:RegisterFlagEffect(10+desc_id,RESET_EVENT+RESETS_STANDARD+RESET_DISABLE,EFFECT_FLAG_CLIENT_HINT,1,0,desc)
+				if c:GetFlagEffect(10+desc_id)==0 then
+					c:RegisterFlagEffect(10+desc_id,RESET_EVENT+RESETS_STANDARD+RESET_DISABLE,EFFECT_FLAG_CLIENT_HINT,1,0,desc)
+				end
 			end
 end
 function Auxiliary.RemoveEffectDescOperation(desc_id)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
-				if e:GetHandler():GetFlagEffect(10+desc_id)==0 then return end
-				e:GetHandler():ResetFlagEffect(10+desc_id)
+				local c=e:GetHandler()
+				if c:GetFlagEffect(10+desc_id)>0 then
+					c:ResetFlagEffect(10+desc_id)
+				end
 			end
 end
 
@@ -890,7 +936,7 @@ function Auxiliary.PayManaFilter(c)
 end
 function Auxiliary.NonEvolutionSummonCondition(e,c)
 	if c==nil then return true end
-	if c:IsEvolutionCreature() then return false end
+	if c:IsEvolution() then return false end
 	local tp=c:GetControler()
 	local g=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MANA,0,nil)
 	if Duel.GetLocationCount(tp,DM_LOCATION_BATTLE)<=0 or g:GetCount()<c:GetManaCost() then return false end
@@ -1067,7 +1113,7 @@ end
 --==========[+Spell]==========
 --functions that are included on every spell
 --desc_id: 0~15 the string id of the script's text
---prop: include DM_EFFECT_FLAG_CARD_CHOOSE for a targeting ("choose") ability
+--prop: include EFFECT_FLAG_CARD_TARGET for a targeting ability
 function Auxiliary.EnableSpellAttribute(c)
 end
 function Auxiliary.AddSpellCastEffect(c,desc_id,targ_func,op_func,prop,cost_func,con_func,cate)
@@ -1125,7 +1171,7 @@ end
 
 --==========[+KeywordAbilities]==========
 --desc_id: 0~15 the string id of the script's text
---prop: include DM_EFFECT_FLAG_CARD_CHOOSE for a targeting ("choose") ability
+--prop: include EFFECT_FLAG_CARD_TARGET for a targeting ability
 --a creature applies a specified ability while in the battle zone
 --e.g. "Dia Nork, Moonlight Guardian" (DM-01 2/110), "Brawler Zyler" (DM-01 70/110), "Holy Awe" (DM-01 6/110)
 function Auxiliary.EnableEffectCustom(c,code,con_func,range,s_range,o_range,targ_func)
@@ -1268,12 +1314,12 @@ function Auxiliary.ShieldTriggerSummonCondition(e,tp,eg,ep,ev,re,r,rp)
 	return Auxiliary.ShieldTriggerCondition(e,tp,eg,ep,ev,re,r,rp) and e:GetHandler():IsCreature()
 end
 function Auxiliary.ShieldTriggerSummonTarget(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsCanBePutIntoBattleZone(e,0,tp,false,false) end
+	if chk==0 then return e:GetHandler():IsCanSendtoBattle(e,0,tp,false,false) end
 end
 function Auxiliary.ShieldTriggerSummonOperation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) then return end
-	Duel.PutIntoBattleZone(c,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
+	Duel.SendtoBattle(c,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
 end
 function Auxiliary.AddShieldTriggerCastEffect(c,desc_id,targ_func,op_func,prop,cost_func,con_func,cate)
 	local con_func=con_func or aux.TRUE
@@ -1382,8 +1428,9 @@ function Auxiliary.SlayerCondition(e,tp,eg,ep,ev,re,r,rp)
 end
 function Auxiliary.SlayerOperation(e,tp,eg,ep,ev,re,r,rp)
 	local tc=e:GetLabelObject()
-	if not tc:IsRelateToBattle() then return end
-	Duel.Destroy(tc,REASON_EFFECT)
+	if tc:IsRelateToBattle() then
+		Duel.Destroy(tc,REASON_EFFECT)
+	end
 end
 function Auxiliary.CivilizationSlayerTarget(civ)
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -1494,7 +1541,7 @@ end
 --desc_id: 0~15 the string id of the script's text
 --optional: true for optional ("you may") abilities
 --forced: true for forced abilities
---prop: include DM_EFFECT_FLAG_CARD_CHOOSE for a targeting ("choose") ability
+--prop: include EFFECT_FLAG_CARD_TARGET for a targeting ability
 --"When this creature would be destroyed, ABILITY."
 --e.g. "Chilias, the Oracle" (DM-01 1/110)
 function Auxiliary.AddSingleDestroyReplaceEffect(c,desc_id,targ_func,op_func,con_func,prop)
@@ -1559,9 +1606,11 @@ function Auxiliary.AddDestroyReplaceEffect(c,desc_id,targ_func,op_func,val,con_f
 end
 --"At the end of the turn, ABILITY."
 --e.g. "Frei, Vizier of Air" (DM-01 4/110)
-function Auxiliary.AddTurnEndEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,lmct,lmcd,cost_func,range,cate)
+function Auxiliary.AddTurnEndEffect(c,desc_id,p,optional,targ_func,op_func,prop,con_func,lmct,lmcd,cost_func,range,cate)
+	--p: PLAYER_PLAYER/tp for your turn, PLAYER_OPPONENT/1-tp for your opponent's, or nil for either player's
 	local typ=EFFECT_TYPE_TRIGGER_F
 	if optional then typ=EFFECT_TYPE_TRIGGER_O end
+	local con_func=con_func or aux.TRUE
 	local range=range or DM_LOCATION_BATTLE
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
@@ -1571,7 +1620,7 @@ function Auxiliary.AddTurnEndEffect(c,desc_id,optional,targ_func,op_func,prop,co
 	if prop then e1:SetProperty(prop) end
 	e1:SetRange(range)
 	if lmct then e1:SetCountLimit(lmct,lmcd) end
-	if con_func then e1:SetCondition(con_func) end
+	e1:SetCondition(aux.AND(Auxiliary.TurnPlayerCondition(p),con_func))
 	if cost_func then e1:SetCost(cost_func) end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
@@ -1674,7 +1723,6 @@ end
 function Auxiliary.AddSingleDestroyedEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
 	local typ=EFFECT_TYPE_TRIGGER_F
 	if optional then typ=EFFECT_TYPE_TRIGGER_O end
-	local con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e1:SetCategory(cate) end
@@ -1687,7 +1735,7 @@ function Auxiliary.AddSingleDestroyedEffect(c,desc_id,optional,targ_func,op_func
 	elseif prop then
 		e1:SetProperty(prop)
 	end
-	e1:SetCondition(Auxiliary.PreviousLocationCondition(DM_LOCATION_BATTLE),con_func)
+	if con_func then e1:SetCondition(con_func) end
 	if cost_func then e1:SetCost(cost_func) end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
@@ -1713,6 +1761,34 @@ function Auxiliary.AddDestroyedEffect(c,desc_id,optional,targ_func,op_func,prop,
 	end
 	e1:SetRange(range)
 	if con_func then e1:SetCondition(con_func) end
+	if cost_func then e1:SetCost(cost_func) end
+	if targ_func then e1:SetTarget(targ_func) end
+	e1:SetOperation(op_func)
+	c:RegisterEffect(e1)
+end
+--"Whenever a card is put into your graveyard, ABILITY."
+--e.g. "Snork La, Shrine Guardian" (DM-05 13/55)
+function Auxiliary.AddEnterGraveEffect(c,desc_id,p,optional,targ_func,op_func,prop,con_func,cost_func,range,lmct,lmcd,cate)
+	--p: PLAYER_PLAYER/tp for your graveyard, PLAYER_OPPONENT/1-tp for your opponent's, or nil for either player's
+	local typ=EFFECT_TYPE_TRIGGER_F
+	if optional then typ=EFFECT_TYPE_TRIGGER_O end
+	local con_func=con_func or aux.TRUE
+	local range=range or DM_LOCATION_BATTLE
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	if cate then e1:SetCategory(cate) end
+	e1:SetType(EFFECT_TYPE_FIELD+typ)
+	e1:SetCode(DM_EVENT_TO_GRAVE)
+	if typ==EFFECT_TYPE_TRIGGER_O and prop then
+		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY+prop)
+	elseif typ==EFFECT_TYPE_TRIGGER_O then
+		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
+	elseif prop then
+		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+prop)
+	end
+	e1:SetRange(range)
+	if lmct then e1:SetCountLimit(lmct,lmcd) end
+	e1:SetCondition(aux.AND(Auxiliary.EnterGraveCondition(p),con_func))
 	if cost_func then e1:SetCost(cost_func) end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
@@ -1774,7 +1850,7 @@ function Auxiliary.EventChainEndCondition(e,tp,eg,ep,ev,re,r,rp)
 end
 --"When this creature leaves the battle zone, ABILITY."
 --e.g. "Altimeth, Holy Divine Dragon" (Game Original)
-function Auxiliary.AddSingleLeavePlayEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
+function Auxiliary.AddSingleLeaveBattleEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
 	local typ=EFFECT_TYPE_TRIGGER_F
 	if optional then typ=EFFECT_TYPE_TRIGGER_O end
 	local con_func=con_func or aux.TRUE
@@ -1815,6 +1891,28 @@ function Auxiliary.AddBreakShieldEffect(c,desc_id,optional,targ_func,op_func,pro
 	end
 	e1:SetRange(DM_LOCATION_BATTLE)
 	if con_func then e1:SetCondition(con_func) end
+	if cost_func then e1:SetCost(cost_func) end
+	if targ_func then e1:SetTarget(targ_func) end
+	e1:SetOperation(op_func)
+	c:RegisterEffect(e1)
+end
+--"At the start of the turn, ABILITY."
+--e.g. "Altimeth, Holy Divine Dragon" (Game Original)
+function Auxiliary.AddTurnStartEffect(c,desc_id,p,optional,targ_func,op_func,prop,con_func,lmct,lmcd,cost_func,range,cate)
+	--p: PLAYER_PLAYER/tp for your turn, PLAYER_OPPONENT/1-tp for your opponent's, or nil for either player's
+	local typ=EFFECT_TYPE_TRIGGER_F
+	if optional then typ=EFFECT_TYPE_TRIGGER_O end
+	local con_func=con_func or aux.TRUE
+	local range=range or DM_LOCATION_BATTLE
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	if cate then e1:SetCategory(cate) end
+	e1:SetType(EFFECT_TYPE_FIELD+typ)
+	e1:SetCode(EVENT_PHASE+PHASE_DRAW)
+	if prop then e1:SetProperty(prop) end
+	e1:SetRange(range)
+	if lmct then e1:SetCountLimit(lmct,lmcd) end
+	e1:SetCondition(aux.AND(Auxiliary.TurnPlayerCondition(p),con_func))
 	if cost_func then e1:SetCost(cost_func) end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
@@ -1896,10 +1994,13 @@ function Auxiliary.SelfTapUntapTarget(pos)
 				if chk==0 then return b end
 			end
 end
-function Auxiliary.SelfTapUntapOperation(pos)
+function Auxiliary.SelfTapUntapOperation(pos,ram)
+	--ram: true for "tap/untap this creature at random"
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local c=e:GetHandler()
 				if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
+				local ct=math.random(4) --either 2 or 3: 50% chance to tap/untap
+				if ram and ct~=2 then return end
 				Duel.ChangePosition(c,pos)
 			end
 end
@@ -2188,8 +2289,8 @@ function Auxiliary.DestroyOperation(p,f,s,o,min,max,ram,ex,...)
 				end
 			end
 end
---operation function for abilities that choose cards to destroy
-function Auxiliary.ChooseDestroyOperation(e,tp,eg,ep,ev,re,r,rp)
+--operation function for abilities that target cards to destroy
+function Auxiliary.TargetDestroyOperation(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
 	if not g then return end
 	local sg=g:Filter(Card.IsRelateToEffect,nil,e)
@@ -2221,8 +2322,8 @@ function Auxiliary.DiscardOperation(p,f,s,o,min,max,ram,ex,...)
 				end
 			end
 end
---operation function for abilities that choose cards to discard
-function Auxiliary.ChooseDiscardOperation(e,tp,eg,ep,ev,re,r,rp)
+--operation function for abilities that target cards to discard
+function Auxiliary.TargetDiscardOperation(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
 	if not g then return end
 	local sg=g:Filter(Card.IsRelateToEffect,nil,e)
@@ -2258,24 +2359,24 @@ function Auxiliary.DrawUpToOperation(p,ct)
 				Duel.DrawUpTo(player,ct,REASON_EFFECT)
 			end
 end
---========== PutIntoBattle ==========
+--========== SendtoBattle ==========
 --target and operation functions for abilities that put creatures into the battle zone
-function Auxiliary.PutIntoBattleFilter(c,e,tp,f,...)
-	return c:IsCanBePutIntoBattleZone(e,0,tp,false,false) and (not f or f(c,e,tp,...))
+function Auxiliary.SendtoBattleFilter(c,e,tp,f,...)
+	return c:IsCanSendtoBattle(e,0,tp,false,false) and (not f or f(c,e,tp,...))
 end
-function Auxiliary.PutIntoBattleTarget(f,s,o,ex,...)
+function Auxiliary.SendtoBattleTarget(f,s,o,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
 				if chk==0 then
 					if s==LOCATION_DECK or o==LOCATION_DECK then
 						return Duel.GetFieldGroupCount(tp,s,o)>0
 					else
-						return Duel.IsExistingMatchingCard(Auxiliary.PutIntoBattleFilter,tp,s,o,1,ex,e,tp,f,table.unpack(funs))
+						return Duel.IsExistingMatchingCard(Auxiliary.SendtoBattleFilter,tp,s,o,1,ex,e,tp,f,table.unpack(funs))
 					end
 				end
 			end
 end
-function Auxiliary.PutIntoBattleOperation(p,f,s,o,min,max,pos,ex,...)
+function Auxiliary.SendtoBattleOperation(p,f,s,o,min,max,pos,ex,...)
 	--p,min,max: nil to put all creatures into the battle zone
 	--pos: POS_FACEUP_UNTAPPED to put in untapped position or POS_FACEUP_TAPPED to put in tapped position
 	local funs={...}
@@ -2288,7 +2389,7 @@ function Auxiliary.PutIntoBattleOperation(p,f,s,o,min,max,pos,ex,...)
 				local ft=Duel.GetLocationCount(player,DM_LOCATION_BATTLE)
 				if max>=0 and ft>max then ft=max end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
-				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
+				local g=Duel.GetMatchingGroup(Auxiliary.SendtoBattleFilter,tp,s,o,ex,e,tp,f,table.unpack(funs))
 				if s==LOCATION_DECK or o==LOCATION_DECK then
 					local dg=Duel.GetFieldGroup(player,s,o)
 					Duel.ConfirmCards(player,dg)
@@ -2299,9 +2400,9 @@ function Auxiliary.PutIntoBattleOperation(p,f,s,o,min,max,pos,ex,...)
 						local sg=g:Select(player,min,ft,ex,table.unpack(funs))
 						if sg:GetCount()==0 and s==LOCATION_DECK then Duel.ShuffleDeck(player) end
 						if sg:GetCount()==0 and o==LOCATION_DECK then Duel.ShuffleDeck(1-player) end
-						Duel.PutIntoBattleZone(sg,0,player,player,false,false,pos)
+						Duel.SendtoBattle(sg,0,player,player,false,false,pos)
 					else
-						Duel.PutIntoBattleZone(g,0,player,player,false,false,pos)
+						Duel.SendtoBattle(g,0,player,player,false,false,pos)
 					end
 				else
 					Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
@@ -2310,8 +2411,8 @@ function Auxiliary.PutIntoBattleOperation(p,f,s,o,min,max,pos,ex,...)
 				end
 			end
 end
---target and operation functions for abilities that choose creatures to put into the battle zone
-function Auxiliary.ChoosePutIntoBattleTarget(p,f,s,o,min,max,ex,...)
+--target and operation functions for abilities that target creatures to put into the battle zone
+function Auxiliary.TargetSendtoBattleTarget(p,f,s,o,min,max,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 				local player=nil
@@ -2325,13 +2426,13 @@ function Auxiliary.ChoosePutIntoBattleTarget(p,f,s,o,min,max,ex,...)
 				if location==o then controler=1-tp end
 				if chkc then
 					if s==o then
-						return chkc:IsLocation(location) and Auxiliary.PutIntoBattleFilter(chkc,e,tp,f,table.unpack(funs))
+						return chkc:IsLocation(location) and Auxiliary.SendtoBattleFilter(chkc,e,tp,f,table.unpack(funs))
 					elseif type(ex)=="Card" then
 						return chkc:IsLocation(location) and chkc:IsControler(controler)
-							and Auxiliary.PutIntoBattleFilter(chkc,e,tp,f,table.unpack(funs)) and chkc~=ex
+							and Auxiliary.SendtoBattleFilter(chkc,e,tp,f,table.unpack(funs)) and chkc~=ex
 					else
 						return chkc:IsLocation(location) and chkc:IsControler(controler)
-							and Auxiliary.PutIntoBattleFilter(chkc,e,tp,f,table.unpack(funs))
+							and Auxiliary.SendtoBattleFilter(chkc,e,tp,f,table.unpack(funs))
 					end
 				end
 				if chk==0 then
@@ -2341,7 +2442,7 @@ function Auxiliary.ChoosePutIntoBattleTarget(p,f,s,o,min,max,ex,...)
 					if s==LOCATION_DECK or o==LOCATION_DECK then
 						return Duel.GetFieldGroupCount(tp,s,o)>0
 					else
-						return Duel.IsExistingTarget(Auxiliary.PutIntoBattleFilter,tp,s,o,1,ex,e,tp,f,table.unpack(funs))
+						return Duel.IsExistingTarget(Auxiliary.SendtoBattleFilter,tp,s,o,1,ex,e,tp,f,table.unpack(funs))
 					end
 				end
 				if s==LOCATION_DECK or o==LOCATION_DECK then
@@ -2361,18 +2462,18 @@ function Auxiliary.ChoosePutIntoBattleTarget(p,f,s,o,min,max,ex,...)
 				end
 			end
 end
-function Auxiliary.ChoosePutIntoBattleOperation(pos)
+function Auxiliary.TargetSendtoBattleOperation(pos)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local pos=pos or POS_FACEUP_UNTAPPED
 				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
 				if not g then return end
 				local sg=g:Filter(Card.IsRelateToEffect,nil,e)
-				Duel.PutIntoBattleZone(sg,0,tp,tp,false,false,pos)
+				Duel.SendtoBattle(sg,0,tp,tp,false,false,pos)
 			end
 end
 --========== SendtoDeck ==========
---operation function for abilities that choose cards to put into a player's deck
-function Auxiliary.ChooseSendtoDeckOperation(seq)
+--operation function for abilities that target cards to put into a player's deck
+function Auxiliary.TargetSendtoDeckOperation(seq)
 	--seq: where to put the cards: DECK_SEQUENCE_TOP|BOTTOM|SHUFFLE
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
@@ -2390,11 +2491,12 @@ function Auxiliary.SendtoGraveOperation(p,f,s,o,min,max,ex,...)
 				local player=nil
 				if p==PLAYER_PLAYER or p==tp then player=tp
 				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				local f=f or aux.TRUE
 				local max=max or min
 				local c=e:GetHandler()
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
-				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
+				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToDMGrave,f),tp,s,o,ex,table.unpack(funs))
 				if s==LOCATION_DECK or o==LOCATION_DECK then
 					local dg=Duel.GetFieldGroup(player,s,o)
 					Duel.ConfirmCards(player,dg)
@@ -2419,8 +2521,8 @@ function Auxiliary.SendtoGraveOperation(p,f,s,o,min,max,ex,...)
 				end
 			end
 end
---operation functions for abilities that choose cards to put into the graveyard
-function Auxiliary.ChooseSendtoGraveOperation(e,tp,eg,ep,ev,re,r,rp)
+--operation functions for abilities that target cards to put into the graveyard
+function Auxiliary.TargetSendtoGraveOperation(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
 	if not g then return end
 	local sg=g:Filter(Card.IsRelateToEffect,nil,e)
@@ -2436,10 +2538,11 @@ function Auxiliary.SendtoHandOperation(p,f,s,o,min,max,conf,ex,...)
 				local player=nil
 				if p==PLAYER_PLAYER or p==tp then player=tp
 				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				local f=f or aux.TRUE
 				local max=max or min
 				local desc=DM_HINTMSG_RTOHAND
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
-				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
+				local g=Duel.GetMatchingGroup(aux.TRUE(Card.IsAbleToHand,f),tp,s,o,ex,table.unpack(funs))
 				if s==LOCATION_DECK or o==LOCATION_DECK then
 					local dg=Duel.GetFieldGroup(player,s,o)
 					Duel.ConfirmCards(player,dg)
@@ -2471,8 +2574,8 @@ function Auxiliary.SendtoHandOperation(p,f,s,o,min,max,conf,ex,...)
 				end
 			end
 end
---operation function for abilities that choose cards to put into a player's hand
-function Auxiliary.ChooseSendtoHandOperation(conf)
+--operation function for abilities that target cards to put into a player's hand
+function Auxiliary.TargetSendtoHandOperation(conf)
 	--conf: true to show cards added from the deck to the opponent
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
@@ -2496,11 +2599,12 @@ function Auxiliary.SendtoManaOperation(p,f,s,o,min,max,ex,...)
 				local player=nil
 				if p==PLAYER_PLAYER or p==tp then player=tp
 				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				local f=f or aux.TRUE
 				local max=max or min
 				local c=e:GetHandler()
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
-				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
+				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToMana,f),tp,s,o,ex,table.unpack(funs))
 				if s==LOCATION_DECK or o==LOCATION_DECK then
 					local dg=Duel.GetFieldGroup(player,s,o)
 					Duel.ConfirmCards(player,dg)
@@ -2525,8 +2629,8 @@ function Auxiliary.SendtoManaOperation(p,f,s,o,min,max,ex,...)
 				end
 			end
 end
---operation function for abilities that choose cards to put into the mana zone
-function Auxiliary.ChooseSendtoManaOperation(e,tp,eg,ep,ev,re,r,rp)
+--operation function for abilities that target cards to put into the mana zone
+function Auxiliary.TargetSendtoManaOperation(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
 	if not g then return end
 	local sg=g:Filter(Card.IsRelateToEffect,nil,e)
@@ -2592,10 +2696,10 @@ function Auxiliary.SendtoShieldOperation(p,f,s,o,min,max,ex,...)
 				end
 			end
 end
---operation functions for abilities that choose cards to put into the shield zone
+--operation functions for abilities that target cards to put into the shield zone
 --reserved
 --[[
-function Auxiliary.ChooseSendtoShieldOperation(e,tp,eg,ep,ev,re,r,rp)
+function Auxiliary.TargetSendtoShieldOperation(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
 	if not g then return end
 	local sg=g:Filter(Card.IsRelateToEffect,nil,e)
@@ -2666,8 +2770,8 @@ function Auxiliary.TapUntapOperation(p,f,s,o,min,max,pos,ram,ex,...)
 				end
 			end
 end
---operation function for abilities that choose cards to tap/untap
-function Auxiliary.ChooseTapUntapOperation(pos)
+--operation function for abilities that target cards to tap/untap
+function Auxiliary.TargetTapUntapOperation(pos)
 	--pos: POS_FACEUP_TAPPED to tap or POS_FACEUP_UNTAPPED to untap
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
@@ -2689,6 +2793,16 @@ function Auxiliary.TurnPlayerCondition(p)
 			end
 end
 Auxiliary.turnpcon=Auxiliary.TurnPlayerCondition
+--condition to check who the reason player is
+function Auxiliary.ReasonPlayerCondition(p)
+	return	function(e,tp,eg,ep,ev,re,r,rp)
+				local player=nil
+				if p==PLAYER_PLAYER or p==tp then player=tp
+				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				return rp==player
+			end
+end
+Auxiliary.rpcon=Auxiliary.ReasonPlayerCondition
 --condition for the battle phase
 function Auxiliary.BattlePhaseCondition()
 	return Duel.GetCurrentPhase()>=PHASE_BATTLE_START and Duel.GetCurrentPhase()<=PHASE_BATTLE
@@ -2736,6 +2850,22 @@ function Auxiliary.ManaExclusiveCondition(f2,...)
 			end
 end
 Auxiliary.mexcon=Auxiliary.ManaExclusiveCondition
+--condition for "When a card is put into your graveyard" + DM_EVENT_TO_GRAVE
+--e.g. "Snork La, Shrine Guardian" (DM-05 13/55)
+function Auxiliary.EnterGraveCondition(p)
+	return	function(e,tp,eg,ep,ev,re,r,rp)
+				local player=nil
+				if p==PLAYER_PLAYER or p==tp then player=tp
+				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				local f=function(c,player)
+					if player then
+						return c:IsControler(player)
+					else return true end
+				end
+				return eg:IsExists(Auxiliary.DMGraveFilter(f),1,nil,player)
+			end
+end
+Auxiliary.tgcon=Auxiliary.EnterGraveCondition
 --condition for "While a player has no shields"
 --e.g. "Gigazoul" (DM-05 28/55)
 function Auxiliary.NoShieldsCondition(p)
@@ -2759,7 +2889,7 @@ end
 Auxiliary.stapcost=Auxiliary.SelfTapCost
 
 --==========[+Targets]==========
---target function for optional abilities that do not choose cards
+--target function for optional abilities that do not target cards
 function Auxiliary.CheckCardFunction(f,s,o,ex,...)
 	--f: include Card.IsAbleToX for Duel.SendtoX, Card.IsDiscardable for Duel.DiscardHand, etc.
 	local funs={...}
@@ -2770,15 +2900,15 @@ function Auxiliary.CheckCardFunction(f,s,o,ex,...)
 			end
 end
 Auxiliary.chktg=Auxiliary.CheckCardFunction
---target function for abilities that choose cards
-function Auxiliary.ChooseCardFunction(p,f,s,o,min,max,desc,ex,...)
+--target function for abilities that target cards
+function Auxiliary.TargetCardFunction(p,f,s,o,min,max,desc,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 				local player=nil
 				if p==PLAYER_PLAYER or p==tp then player=tp
 				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
 				local max=max or min
-				local desc=desc or DM_HINTMSG_CHOOSE
+				local desc=desc or DM_HINTMSG_TARGET
 				local c=e:GetHandler()
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				local location=s
@@ -2820,7 +2950,44 @@ function Auxiliary.ChooseCardFunction(p,f,s,o,min,max,desc,ex,...)
 				end
 			end
 end
-Auxiliary.targtg=Auxiliary.ChooseCardFunction
+Auxiliary.targtg=Auxiliary.TargetCardFunction
+--target function for abilities that target shields
+function Auxiliary.TargetShieldFunction(p,f,s,o,min,max,desc,ex,...)
+	--f: include dm.ShieldZoneFilter
+	--s,o: DM_LOCATION_SHIELD
+	local funs={...}
+	return	function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+				local sel_player=nil
+				if p==PLAYER_PLAYER or p==tp then sel_player=tp
+				elseif p==PLAYER_OPPONENT or p==1-tp then sel_player=1-tp end
+				local max=max or min
+				local desc=desc or DM_HINTMSG_TARGET
+				local c=e:GetHandler()
+				local location=s
+				local controler=tp
+				if s==0 and o~=0 then location=o end
+				if location==o then controler=1-tp end
+				if chkc then
+					if s==o then
+						return chkc:IsLocation(location) and f(chkc)
+					elseif type(ex)=="Card" then
+						return chkc:IsLocation(location) and chkc:IsControler(controler) and f(chkc) and chkc~=ex
+					else
+						return chkc:IsLocation(location) and chkc:IsControler(controler) and f(chkc)
+					end
+				end
+				if chk==0 then
+					if e:IsHasType(EFFECT_TYPE_TRIGGER_F) or e:IsHasType(EFFECT_TYPE_QUICK_F) or c:IsSpell() then
+						return true
+					else
+						return Duel.IsExistingTarget(f,tp,s,o,1,ex,table.unpack(funs))
+					end
+				end
+				Duel.Hint(HINT_SELECTMSG,sel_player,desc)
+				Duel.SelectShieldTarget(sel_player,f,target_player,min,max,ex,e,table.unpack(funs))
+			end
+end
+Auxiliary.shdtg=Auxiliary.TargetShieldFunction
 --target function to check if a player has cards in their deck
 function Auxiliary.CheckDeckFunction(p)
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -2834,7 +3001,7 @@ end
 Auxiliary.chkdtg=Auxiliary.CheckDeckFunction
 --target function for Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
 function Auxiliary.HintTarget(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if e:IsHasProperty(DM_EFFECT_FLAG_CARD_CHOOSE) then
+	if e:IsHasProperty(EFFECT_FLAG_CARD_TARGET) then
 		if chkc then return false end
 	end
 	if chk==0 then return true end

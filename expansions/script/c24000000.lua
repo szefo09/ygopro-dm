@@ -289,7 +289,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 end
 --untap
 function scard.posfilter(c)
-	return c:IsTapped()
+	return c:IsFaceup() and c:IsCreature() and c:IsTapped()
 end
 function scard.poscon1(e)
 	local tp=e:GetHandlerPlayer()
@@ -297,7 +297,7 @@ function scard.poscon1(e)
 		and Duel.GetTurnPlayer()==tp
 end
 function scard.posop1(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(Card.IsTapped,tp,DM_LOCATION_BATTLE+DM_LOCATION_MANA,0,nil)
+	local g=Duel.GetMatchingGroup(scard.posfilter,tp,DM_LOCATION_BATTLE+DM_LOCATION_MANA,0,nil)
 	Duel.ChangePosition(g,POS_FACEUP_UNTAPPED)
 end
 --charge
@@ -307,8 +307,7 @@ function scard.tmcon(e)
 end
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOMANA)
-	local g=Duel.SelectMatchingCard(tp,nil,tp,LOCATION_HAND,0,0,1,nil)
-	if not g:IsExists(Card.IsAbleToMana,1,nil) then return end
+	local g=Duel.SelectMatchingCard(tp,Card.IsAbleToMana,tp,LOCATION_HAND,0,0,1,nil)
 	Duel.SendtoMana(g,POS_FACEUP_UNTAPPED,REASON_RULE)
 end
 --summoning sickness
@@ -378,7 +377,7 @@ end
 function scard.tgop1(e,tp,eg,ep,ev,re,r,rp)
 	local rc=re:GetHandler()
 	if not rc:IsSpell() or e:GetHandler():GetFlagEffect(1)==0 then return end
-	if re:IsHasProperty(DM_EFFECT_FLAG_CHARGE) then
+	if re:IsHasProperty(DM_EFFECT_FLAG_CHARGE) and rc:IsAbleToMana() then
 		Duel.SendtoMana(rc,POS_FACEUP_UNTAPPED,REASON_RULE)
 	else Duel.SendtoDMGrave(rc,REASON_RULE+REASON_DISCARD) end
 end
