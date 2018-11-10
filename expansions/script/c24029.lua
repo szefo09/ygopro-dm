@@ -34,6 +34,7 @@ function scard.tgtg2(e,tp,eg,ep,ev,re,r,rp,chk)
 	end
 end
 function scard.tgop2(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
-	Duel.SendtoDMGrave(eg,REASON_EFFECT)
+	if e:GetHandler():IsRelateToEffect(e) and e:GetHandler():IsFaceup() then
+		Duel.SendtoDMGrave(eg,REASON_EFFECT)
+	end
 end

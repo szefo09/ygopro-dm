@@ -26,7 +26,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SendtoDeck(fc1,PLAYER_OWNER,DECK_SEQUENCE_UNEXIST,REASON_RULE)
 		Duel.BreakEffect()
 	end
-	Duel.MoveToField(e:GetHandler(),tp,tp,DM_LOCATION_SHIELD,POS_FACEUP,true)
+	Duel.MoveToField(c,tp,tp,DM_LOCATION_SHIELD,POS_FACEUP,true)
 	--apply rules for opponent
 	local g=Duel.GetMatchingGroup(Card.IsCode,tp,0,LOCATIONS_ALL,nil,sid)
 	if g:GetCount()>0 then

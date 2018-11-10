@@ -48,13 +48,15 @@ function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function scard.chop1(e,tp,eg,ep,ev,re,r,rp)
-	if re:GetHandler():GetFlagEffect(sid)==0 then return end
-	e:GetLabelObject():SetLabel(0)
+	if re:GetHandler():GetFlagEffect(sid)>0 then
+		e:GetLabelObject():SetLabel(0)
+	end
 end
 function scard.chop2(e,tp,eg,ep,ev,re,r,rp)
 	local rc=re:GetHandler()
-	if rp==tp or not rc:IsBrokenShield() or not rc:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER) then return end
-	e:GetLabelObject():SetLabel(1)
+	if rp==1-tp and rc:IsBrokenShield() and rc:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER) then
+		e:GetLabelObject():SetLabel(1)
+	end
 end
 function scard.poscon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetLabel()==1

@@ -12,6 +12,7 @@ function scard.drcon(e,tp,eg,ep,ev,re,r,rp)
 end
 scard.drtg=dm.DrawTarget(PLAYER_PLAYER)
 function scard.drop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
-	Duel.Draw(tp,eg:GetCount(),REASON_EFFECT)
+	if e:GetHandler():IsRelateToEffect(e) and e:GetHandler():IsFaceup() then
+		Duel.Draw(tp,eg:GetCount(),REASON_EFFECT)
+	end
 end

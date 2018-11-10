@@ -956,7 +956,7 @@ end
 --==========[+KeywordAbilities]==========
 --desc_id: 0~15 the string id of the script's text
 --prop: include EFFECT_FLAG_CARD_TARGET for a targeting ability
---a creature applies a specified ability while in the battle zone
+--a creature applies a specified ability
 --e.g. "Dia Nork, Moonlight Guardian" (DM-01 2/110), "Brawler Zyler" (DM-01 70/110), "Holy Awe" (DM-01 6/110)
 function Auxiliary.EnableEffectCustom(c,code,con_func,range,s_range,o_range,targ_func)
 	--code: DM_EFFECT_BLOCKER, DM_EFFECT_POWER_ATTACKER, DM_EFFECT_SHIELD_TRIGGER, etc.
@@ -1102,8 +1102,9 @@ function Auxiliary.ShieldTriggerSummonTarget(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function Auxiliary.ShieldTriggerSummonOperation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) then return end
-	Duel.SendtoBattle(c,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
+	if c:IsRelateToEffect(e) then
+		Duel.SendtoBattle(c,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
+	end
 end
 function Auxiliary.AddShieldTriggerCastEffect(c,desc_id,targ_func,op_func,prop,cost_func,con_func,cate)
 	local con_func=con_func or aux.TRUE
@@ -1159,8 +1160,9 @@ function Auxiliary.AddShieldTriggerCastEffect(c,desc_id,targ_func,op_func,prop,c
 end
 function Auxiliary.ShieldTriggerOperation(e,tp,eg,ep,ev,re,r,rp)
 	local rc=re:GetHandler()
-	if not rc:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER) and not rc:IsBrokenShield() and not rc:IsControler(tp) then return end
-	e:GetLabelObject():SetLabel(1)
+	if rc:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER) and rc:IsBrokenShield() and rc:IsControler(tp) then
+		e:GetLabelObject():SetLabel(1)
+	end
 end
 function Auxiliary.ShieldTriggerCondition2(e,tp,eg,ep,ev,re,r,rp)
 	return Auxiliary.ShieldTriggerCondition(e,tp,eg,ep,ev,re,r,rp) and e:GetLabel()==1
@@ -1625,8 +1627,9 @@ function Auxiliary.EventChainSolvedOperation(p)
 				local reason_player=nil
 				if p==PLAYER_PLAYER or p==tp then reason_player=tp
 				elseif p==PLAYER_OPPONENT or p==1-tp then reason_player=1-tp end
-				if reason_player and rp~=reason_player or not re:GetHandler():IsSpell() then return end
-				e:GetLabelObject():SetLabel(1)
+				if reason_player and rp==reason_player and re:GetHandler():IsSpell() then
+					e:GetLabelObject():SetLabel(1)
+				end
 			end
 end
 function Auxiliary.EventChainEndCondition(e,tp,eg,ep,ev,re,r,rp)
@@ -1867,9 +1870,9 @@ end
 --e.g. "Hunter Fish" (DM-01 31/110)
 function Auxiliary.EnableCannotAttack(c,con_func)
 	local con_func=con_func or aux.TRUE
-	Auxiliary.EnableEffectCustom(c,EFFECT_CANNOT_ATTACK,aux.AND(Auxiliary.CannotAttackCondition,con_func))
+	Auxiliary.EnableEffectCustom(c,EFFECT_CANNOT_ATTACK,aux.AND(Auxiliary.SelfCannotAttackCondition,con_func))
 end
-function Auxiliary.CannotAttackCondition(e)
+function Auxiliary.SelfCannotAttackCondition(e)
 	return not e:GetHandler():IsHasEffect(DM_EFFECT_IGNORE_CANNOT_ATTACK)
 end
 --"When this creature wins a battle, destroy it."
@@ -1911,8 +1914,9 @@ function Auxiliary.EnableAttackUntapped(c,code1,code2,con_func)
 	local code1=code1 or DM_EFFECT_ATTACK_UNTAPPED
 	local con_func=con_func or aux.TRUE
 	Auxiliary.EnableEffectCustom(c,code1,con_func)
-	if not code2 then return end
-	Auxiliary.EnableEffectCustom(c,code2,con_func)
+	if code2 then
+		Auxiliary.EnableEffectCustom(c,code2,con_func)
+	end
 end
 --"A player's creatures/spells each cost N more/less to summon/cast. [They can't cost less than 1.]"
 --"Each creature costs N more/less to summon and each spell costs N more/less to cast. [They can't cost less than 1.]"
@@ -1942,12 +1946,9 @@ function Auxiliary.EnableCannotAttackCreature(c,con_func)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(EFFECT_CANNOT_SELECT_BATTLE_TARGET)
 	e1:SetCondition(con_func)
-	e1:SetValue(Auxiliary.CannotAttackCreatureValue)
+	e1:SetValue(aux.TargetBoolFunction(Card.IsCreature))
 	c:RegisterEffect(e1)
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_CANNOT_ATTACK_CREATURE,con_func)
-end
-function Auxiliary.CannotAttackCreatureValue(e,c)
-	return c:IsCreature()
 end
 --"This creature can't be attacked"
 --e.g. "Gulan Rias, Speed Guardian" (DM-04 10/55)
@@ -1998,8 +1999,9 @@ function Auxiliary.SelfReturnTarget(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function Auxiliary.SelfReturnOperation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
-	Duel.SendtoHand(c,PLAYER_OWNER,REASON_EFFECT)
+	if c:IsRelateToEffect(e) and c:IsFaceup() then
+		Duel.SendtoHand(c,PLAYER_OWNER,REASON_EFFECT)
+	end
 end
 --========== Break ==========
 --operation function for abilities that break shields
@@ -2075,10 +2077,10 @@ function Auxiliary.DestroyOperation(p,f,s,o,min,max,ram,ex,...)
 end
 --operation function for abilities that target cards to destroy
 function Auxiliary.TargetDestroyOperation(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-	if not g then return end
-	local sg=g:Filter(Card.IsRelateToEffect,nil,e)
-	Duel.Destroy(sg,REASON_EFFECT)
+	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
+	if g:GetCount()>0 then
+		Duel.Destroy(g,REASON_EFFECT)
+	end
 end
 --========== Discard ==========
 --operation function for abilities that discard cards
@@ -2108,10 +2110,10 @@ function Auxiliary.DiscardOperation(p,f,s,o,min,max,ram,ex,...)
 end
 --operation function for abilities that target cards to discard
 function Auxiliary.TargetDiscardOperation(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-	if not g then return end
-	local sg=g:Filter(Card.IsRelateToEffect,nil,e)
-	Duel.SendtoDMGrave(sg,REASON_EFFECT+REASON_DISCARD)
+	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
+	if g:GetCount()>0 then
+		Duel.SendtoDMGrave(g,REASON_EFFECT+REASON_DISCARD)
+	end
 end
 --========== Draw ==========
 --target and operation functions for abilities that draw a specified number of cards
@@ -2249,10 +2251,10 @@ end
 function Auxiliary.TargetSendtoBattleOperation(pos)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local pos=pos or POS_FACEUP_UNTAPPED
-				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-				if not g then return end
-				local sg=g:Filter(Card.IsRelateToEffect,nil,e)
-				Duel.SendtoBattle(sg,0,tp,tp,false,false,pos)
+				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
+				if g:GetCount()>0 then
+					Duel.SendtoBattle(g,0,tp,tp,false,false,pos)
+				end
 			end
 end
 --========== SendtoDeck ==========
@@ -2260,10 +2262,10 @@ end
 function Auxiliary.TargetSendtoDeckOperation(seq)
 	--seq: where to put the cards: DECK_SEQUENCE_TOP|BOTTOM|SHUFFLE
 	return	function(e,tp,eg,ep,ev,re,r,rp)
-				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-				if not g then return end
-				local sg=g:Filter(Card.IsRelateToEffect,nil,e)
-				Duel.SendtoDeck(sg,PLAYER_OWNER,seq,REASON_EFFECT)
+				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
+				if g:GetCount()>0 then
+					Duel.SendtoDeck(g,PLAYER_OWNER,seq,REASON_EFFECT)
+				end
 			end
 end
 --========== SendtoGrave ==========
@@ -2307,10 +2309,10 @@ function Auxiliary.SendtoGraveOperation(p,f,s,o,min,max,ex,...)
 end
 --operation functions for abilities that target cards to put into the graveyard
 function Auxiliary.TargetSendtoGraveOperation(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-	if not g then return end
-	local sg=g:Filter(Card.IsRelateToEffect,nil,e)
-	Duel.SendtoDMGrave(sg,REASON_EFFECT)
+	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
+	if g:GetCount()>0 then
+		Duel.SendtoDMGrave(g,REASON_EFFECT)
+	end
 end
 --========== SendtoHand ==========
 --operation function for abilities that put cards into a player's hand
@@ -2362,10 +2364,10 @@ end
 function Auxiliary.TargetSendtoHandOperation(conf)
 	--conf: true to show cards added from the deck to the opponent
 	return	function(e,tp,eg,ep,ev,re,r,rp)
-				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-				if not g then return end
-				local sg=g:Filter(Card.IsRelateToEffect,nil,e)
-				Duel.SendtoHand(sg,PLAYER_OWNER,REASON_EFFECT)
+				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
+				if g:GetCount()>0 then
+					Duel.SendtoHand(g,PLAYER_OWNER,REASON_EFFECT)
+				end
 				local og1=Duel.GetOperatedGroup():Filter(Card.IsControler,nil,tp)
 				local og2=Duel.GetOperatedGroup():Filter(Card.IsControler,nil,1-tp)
 				local og3=Duel.GetOperatedGroup():Filter(Card.IsPreviousLocation,nil,LOCATION_DECK)
@@ -2415,10 +2417,10 @@ function Auxiliary.SendtoManaOperation(p,f,s,o,min,max,ex,...)
 end
 --operation function for abilities that target cards to put into the mana zone
 function Auxiliary.TargetSendtoManaOperation(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-	if not g then return end
-	local sg=g:Filter(Card.IsRelateToEffect,nil,e)
-	Duel.SendtoMana(sg,POS_FACEUP_UNTAPPED,REASON_EFFECT)
+	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
+	if g:GetCount()>0 then
+		Duel.SendtoMana(g,POS_FACEUP_UNTAPPED,REASON_EFFECT)
+	end
 end
 --target and operation functions for abilities that put cards from the top of a player's deck into the mana zone
 function Auxiliary.DecktopSendtoManaTarget(p)
@@ -2484,9 +2486,8 @@ end
 --reserved
 --[[
 function Auxiliary.TargetSendtoShieldOperation(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-	if not g then return end
-	local sg=g:Filter(Card.IsRelateToEffect,nil,e)
+	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
+	if g:GetCount()==0 then return end
 	Duel.SendtoShield(sg,tp)
 	Duel.ConfirmCards(1-tp,sg)
 end
@@ -2558,10 +2559,10 @@ end
 function Auxiliary.TargetTapUntapOperation(pos)
 	--pos: POS_FACEUP_TAPPED to tap or POS_FACEUP_UNTAPPED to untap
 	return	function(e,tp,eg,ep,ev,re,r,rp)
-				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
-				if not g then return end
-				local sg=g:Filter(Card.IsRelateToEffect,nil,e)
-				Duel.ChangePosition(sg,pos)
+				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
+				if g:GetCount()>0 then
+					Duel.ChangePosition(g,pos)
+				end
 			end
 end
 
