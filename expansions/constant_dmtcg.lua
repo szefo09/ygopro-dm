@@ -171,10 +171,11 @@ RESETS_REDIRECT						=0x47e0000	--RESETS_STANDARD+RESET_OVERLAY-RESET_TOFIELD-RE
 DM_EFFECT_TYPE_CAST_SPELL			=EFFECT_TYPE_IGNITION			--Cast a spell
 --Flag
 DM_EFFECT_FLAG_SUMMON_PARAM			=EFFECT_FLAG_SPSUM_PARAM		--Included in a creature's summon procedure
-DM_EFFECT_FLAG_ATTACK_TRIGGER		=0x10000000						--Included in all "Whenever this creature attacks" abilities
-DM_EFFECT_FLAG_CHARGE				=0x20000000						--Included in all non-"Charger" spell abilities that put the spell in the mana zone after it's cast
+DM_EFFECT_FLAG_CHAIN_LIMIT			=0x10000000						--Included in an effect that cannot be chained to
+DM_EFFECT_FLAG_CHARGE				=0x20000000						--Included in a spell's ability where the spell puts itself in the mana zone after it's cast
 --Code
 DM_EFFECT_SUMMON_PROC				=EFFECT_SPSUMMON_PROC			--Summon creature procedure
+DM_EFFECT_TO_GRAVE_REDIRECT			=EFFECT_REMOVE_REDIRECT			--Put a card into another zone instead of the graveyard
 DM_EFFECT_CANNOT_ATTACK_PLAYER		=EFFECT_CANNOT_DIRECT_ATTACK	--Cannot attack player
 DM_EFFECT_ATTACK_PLAYER				=EFFECT_DIRECT_ATTACK			--Attack player
 DM_EFFECT_CANNOT_CHANGE_POS_ABILITY	=EFFECT_CANNOT_CHANGE_POS_E		--Cannot untap or tap a card by an ability 
@@ -215,7 +216,7 @@ DM_EVENT_ATTACK_PLAYER				=CARD_MARROW_OOZE_THE_TWISTER	--When a creature attack
 DM_EVENT_BREAK_SHIELD				=CARD_BRUTAL_CHARGE				--When a creature finishes attacking the opponent and broke a shield
 DM_EVENT_BECOME_SHIELD_TRIGGER		=CARD_WOLFIS_BLUE_DIVINE_DRAGON	--When a shield becomes broken, it may get "Shield Trigger"
 --Category (ability classification)
-DM_CATEGORY_BLOCKER					=CATEGORY_NEGATE	--Blocker ability ("Dia Nork, Moonlight Guardian" DM-01 2/110)
+DM_CATEGORY_BLOCKER					=CATEGORY_NEGATE	--Included in a "Blocker" ability, to prevent it from chaining to itself ("Dia Nork, Moonlight Guardian" DM-01 2/110)
 --Description
 --↑Play Description (for Effect.Description)
 DM_DESC_SUMMON						=2		--"Play this card by summoning it."

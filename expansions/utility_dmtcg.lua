@@ -111,16 +111,16 @@ end
 function Card.IsUntapped(c)
 	if c:IsLocation(LOCATION_GRAVE) then
 		return c:IsFaceup()
-	elseif c:IsLocation(LOCATION_MZONE) then 
-		return c:IsAttackPos()
+	elseif c:IsLocation(LOCATION_MZONE) then
+		return c:IsFaceup() and c:IsAttackPos()
 	else return false end
 end
 --check if a card is tapped
 function Card.IsTapped(c)
 	if c:IsLocation(LOCATION_REMOVED) then
 		return c:IsFacedown()
-	elseif c:IsLocation(LOCATION_MZONE) then 
-		return c:IsDefensePos()
+	elseif c:IsLocation(LOCATION_MZONE) then
+		return c:IsFaceup() and c:IsDefensePos()
 	else return false end
 end
 --check if a card can be untapped
@@ -1466,9 +1466,9 @@ function Auxiliary.AddSingleAttackTriggerEffect(c,desc_id,optional,targ_func,op_
 	e1:SetType(EFFECT_TYPE_SINGLE+typ)
 	e1:SetCode(EVENT_ATTACK_ANNOUNCE)
 	if prop then
-		e1:SetProperty(DM_EFFECT_FLAG_ATTACK_TRIGGER+prop)
+		e1:SetProperty(DM_EFFECT_FLAG_CHAIN_LIMIT+prop)
 	else
-		e1:SetProperty(DM_EFFECT_FLAG_ATTACK_TRIGGER)
+		e1:SetProperty(DM_EFFECT_FLAG_CHAIN_LIMIT)
 	end
 	if con_func then e1:SetCondition(con_func) end
 	if cost_func then e1:SetCost(cost_func) end

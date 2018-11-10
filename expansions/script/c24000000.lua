@@ -6,11 +6,11 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	--apply
 	local e1=Effect.CreateEffect(c)
-	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_NO_TURN_RESET+EFFECT_FLAG_IGNORE_IMMUNE)
+	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_NO_TURN_RESET)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EVENT_ADJUST)
-	e1:SetCountLimit(1)
 	e1:SetRange(LOCATIONS_ALL)
+	e1:SetCountLimit(1)
 	e1:SetOperation(scard.operation)
 	c:RegisterEffect(e1)
 end
@@ -18,8 +18,8 @@ scard.duel_masters_card=true
 --apply
 function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if Duel.GetFlagEffect(tp,CARD_DUEL_MASTERS_RULES)>0 or Duel.GetFlagEffect(1-tp,CARD_DUEL_MASTERS_RULES)>0 then return end
-	Duel.RegisterFlagEffect(tp,CARD_DUEL_MASTERS_RULES,0,0,0)
+	if Duel.GetFlagEffect(tp,sid)>0 or Duel.GetFlagEffect(1-tp,sid)>0 then return end
+	Duel.RegisterFlagEffect(tp,sid,0,0,0)
 	--apply rules for you
 	local fc1=Duel.GetFieldCard(tp,DM_LOCATION_SHIELD,5)
 	if fc1 then
@@ -150,13 +150,13 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	e8:SetOperation(aux.chainreg)
 	Duel.RegisterEffect(e8,tp)
 	local e9=e8:Clone()
-	e9:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+	e9:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_DELAY)
 	e9:SetCode(EVENT_CHAIN_SOLVED)
 	e9:SetOperation(scard.tgop1)
 	Duel.RegisterEffect(e9,tp)
 	--register broken shield
 	local e10=Effect.CreateEffect(c)
-	e10:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+	e10:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_DELAY)
 	e10:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e10:SetCode(EVENT_TO_HAND)
 	e10:SetCondition(scard.regcon2)
@@ -208,7 +208,9 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	e16:SetType(EFFECT_TYPE_FIELD)
 	e16:SetCode(EFFECT_SET_DEFENSE_FINAL)
 	e16:SetTargetRange(DM_LOCATION_BATTLE,DM_LOCATION_BATTLE)
-	e16:SetValue(scard.defval)
+	e16:SetValue(function(e,c)
+		return c:GetPower()
+	end)
 	Duel.RegisterEffect(e16,tp)
 	--destroy equal & lower def
 	local e17=Effect.CreateEffect(c)
@@ -321,11 +323,14 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 end
 --untap
 function scard.posfilter(c)
-	return c:IsTapped()
+	return c:IsFaceup() and c:IsCreature() and c:IsAbleToUntap()
 end
 function scard.posop1(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(scard.posfilter,Duel.GetTurnPlayer(),DM_LOCATION_BATTLE+DM_LOCATION_MANA,0,nil)
-	Duel.ChangePosition(g,POS_FACEUP_UNTAPPED)
+	local turnp=Duel.GetTurnPlayer()
+	local g1=Duel.GetMatchingGroup(scard.posfilter,turnp,DM_LOCATION_BATTLE,0,nil)
+	local g2=Duel.GetMatchingGroup(Card.IsAbleToUntap,turnp,DM_LOCATION_MANA,0,nil)
+	g1:Merge(g2)
+	Duel.ChangePosition(g1,POS_FACEUP_UNTAPPED)
 end
 --charge
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
@@ -371,12 +376,12 @@ function scard.rsop(e,tp,eg,ep,ev,re,r,rp)
 end
 --chain limit
 function scard.chop(e,tp,eg,ep,ev,re,r,rp)
-	if re:IsHasProperty(DM_EFFECT_FLAG_ATTACK_TRIGGER) or re:IsHasCategory(DM_CATEGORY_BLOCKER) then
+	if re:IsHasProperty(DM_EFFECT_FLAG_CHAIN_LIMIT) then
 		Duel.SetChainLimit(scard.chlimit)
 	end
 end
 function scard.chlimit(e,rp,tp)
-	return not e:IsHasCategory(DM_CATEGORY_BLOCKER)
+	return not e:IsHasProperty(DM_EFFECT_FLAG_CHAIN_LIMIT)
 end
 --attack cost workaround
 function scard.posop2(e,tp,eg,ep,ev,re,r,rp)
@@ -392,14 +397,14 @@ end
 function scard.descon(e)
 	return Duel.IsExistingMatchingCard(scard.desfilter,0,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,1,nil)
 end
-function scard.desop1(e)
+function scard.desop1(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(scard.desfilter,0,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil)
 	Duel.Destroy(g,REASON_RULE)
 end
 --discard spell
 function scard.tgop1(e,tp,eg,ep,ev,re,r,rp)
 	local rc=re:GetHandler()
-	if not rc:IsSpell() or e:GetHandler():GetFlagEffect(1)==0 then return end
+	if not rc:IsSpell() or not rc:IsLocation(LOCATION_HAND) or e:GetHandler():GetFlagEffect(1)==0 then return end
 	if re:IsHasProperty(DM_EFFECT_FLAG_CHARGE) and rc:IsAbleToMana() then
 		Duel.SendtoMana(rc,POS_FACEUP_UNTAPPED,REASON_RULE)
 	else
@@ -441,10 +446,6 @@ function scard.winop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Win(0,DM_WIN_REASON_DECKOUT)
 	end
 end
---set def equal to atk
-function scard.defval(e,c)
-	return c:GetPower()
-end
 --destroy equal & lower def
 function scard.desop2(e,tp,eg,ep,ev,re,r,rp)
 	local a=Duel.GetAttacker()
@@ -463,7 +464,7 @@ function scard.desop2(e,tp,eg,ep,ev,re,r,rp)
 end
 --to grave redirect
 function scard.tgtg(e,c)
-	return c:IsReason(REASON_DESTROY) or c:IsReason(REASON_BATTLE)
+	return (c:IsReason(REASON_DESTROY) or c:IsReason(REASON_BATTLE)) and not c:IsHasEffect(DM_EFFECT_TO_GRAVE_REDIRECT)
 end
 function scard.cfilter3(c)
 	return c:GetStackCount()>0
