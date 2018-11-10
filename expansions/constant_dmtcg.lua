@@ -111,8 +111,6 @@ DM_RACE_PEGASUS						=0x36		--"Aura Pegasus, Avatar of Life" (DM-12 S5/S5)
 --Min/Max Value
 MAX_NUMBER							=999999999	--Max number allowed in YGOPro
 DM_MAX_MANA_COST					=999		--"Dormageddon X, Forbidden Armageddon" (DMR-23 FFL1,FFL2,FFL3,FFL4,FFL5/FFL5)
---Location (Effect.SetRange)
-DM_LOCATION_RULES					=LOCATION_FZONE						--Location of the rule card
 --Location
 DM_LOCATION_BATTLE					=LOCATION_MZONE						--Location of cards in the battle zone
 DM_LOCATION_SHIELD					=LOCATION_SZONE						--Location of cards in the shield zone

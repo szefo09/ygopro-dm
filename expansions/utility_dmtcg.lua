@@ -601,8 +601,11 @@ function Duel.SendtoShield(targets,player)
 			if Duel.GetLocationCount(player,DM_LOCATION_SHIELD)<=0 then
 				Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOSZONES)
 				Duel.SendtoDMGrave(tc2,REASON_RULE) --put into the graveyard if all zones are occupied
+			else
+				if tc2:IsAbleToShield() then
+					b=Duel.MoveToField(tc2,player,player,DM_LOCATION_SHIELD,POS_FACEDOWN,true)
+				end
 			end
-			b=Duel.MoveToField(tc2,player,player,DM_LOCATION_SHIELD,POS_FACEDOWN,true)
 		end
 		if Duel.GetLocationCount(player,DM_LOCATION_SHIELD)<=0 then
 			Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOSZONES)
