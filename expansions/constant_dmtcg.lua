@@ -26,8 +26,8 @@ CARD_WOLFIS_BLUE_DIVINE_DRAGON		=24027		--Duel.Raise[Single]Event(c|g,EVENT_CUST
 CARD_DIA_NORK_MOONLIGHT_GUARDIAN	=24001002	--c:RegisterFlagEffect(DM_EFFECT_BLOCKED,RESET_EVENT+RESETS_STANDARD+RESET_CHAIN,0,1)
 CARD_MIRACLE_QUEST					=24005019	--c:RegisterFlagEffect(DM_EFFECT_BREAK_SHIELD,RESET_PHASE+PHASE_END,0,1)
 --Win Reason
-DM_WIN_REASON_INVALID				=0x4d		--"[Player]'s deck was invalid."
-DM_WIN_REASON_DECKOUT				=0x4e		--"[Player] ran out of cards in their deck."
+DM_WIN_REASON_INVALID				=0x4d		--"Deck was invalid."
+DM_WIN_REASON_DECKOUT				=0x4e		--"Ran out of cards in the deck."
 --Setname
 --↑Race
 DM_RACE_LIGHT_BRINGER				=0x1		--"Chilias, the Oracle" (DM-01 1/110)

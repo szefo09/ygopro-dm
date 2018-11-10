@@ -2323,7 +2323,7 @@ function Auxiliary.SendtoHandOperation(p,f,s,o,min,max,conf,ex,...)
 				local max=max or min
 				local desc=DM_HINTMSG_RTOHAND
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
-				local g=Duel.GetMatchingGroup(aux.TRUE(Card.IsAbleToHand,f),tp,s,o,ex,table.unpack(funs))
+				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToHand,f),tp,s,o,ex,table.unpack(funs))
 				if s==LOCATION_DECK or o==LOCATION_DECK then
 					local dg=Duel.GetFieldGroup(player,s,o)
 					Duel.ConfirmCards(player,dg)
@@ -2345,7 +2345,7 @@ function Auxiliary.SendtoHandOperation(p,f,s,o,min,max,conf,ex,...)
 					local og1=Duel.GetOperatedGroup():Filter(Card.IsControler,nil,tp)
 					local og2=Duel.GetOperatedGroup():Filter(Card.IsControler,nil,1-tp)
 					local og3=Duel.GetOperatedGroup():Filter(Card.IsPreviousLocation,nil,LOCATION_DECK)
-					local og4=Duel.GetOperatedGroup():Filter(Card.IsPreviousLocation,nil,DM_LOCATION_MANA+DM_LOCATION_GRAVE)
+					local og4=Duel.GetOperatedGroup():Filter(Card.IsPreviousLocation,nil,LOCATION_GRAVE+LOCATION_REMOVED)
 					if (conf and og1:GetCount()>0 and og3:GetCount()>0) or og4:GetCount()>0 then Duel.ConfirmCards(1-tp,og1) end
 					if (conf and og2:GetCount()>0 and og3:GetCount()>0) or og4:GetCount()>0 then Duel.ConfirmCards(tp,og2) end
 				else
