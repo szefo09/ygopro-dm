@@ -4,76 +4,128 @@
 	<img src="https://user-images.githubusercontent.com/18324297/34651382-49c5daba-f3d8-11e7-9222-1488ac1761d8.png">
 </p>
 
-### How to Install
+## How to Install
 1. Exit [YGOPro](https://github.com/Fluorohydride/ygopro).
 2. Put the following folders in YGOPro's main folder. **Make a backup of the original files, if you do not want to overwrite them**:<br>
--deck<br>
--expansions<br>
--textures
+● deck<br>
+● expansions<br>
+● textures
 3. Optional: Click [here](https://mega.nz/#F!5RAFSIYb!nF8pJNkmZk4TzwMGtiX8Xw) to download card pics. Put all card pics in expansions\pics.
 
-### How to Play
+## How to Play
 In [Yugioh](http://yugioh.wikia.com/wiki/Yu-Gi-Oh!_Trading_Card_Game) terms:
 1. Start YGOPro.
 2. Click on `Deck Management` to build your deck. Remember to add 1 *Duel Masters Rules* to your main deck!<br>
 If you do not build your deck according to the following rules, you will lose the duel and have to rebuild your deck:<br>
-	-Your main deck must be exactly 40 cards.<br>
-	-All 40 cards must be Duel Masters cards. You cannot have any non-Duel Masters cards in your deck.<br>
+● Your main deck must be exactly 40 cards.<br>
+● All 40 cards must be Duel Masters cards. You cannot have any non-Duel Masters cards in your deck.
 3. Enable `Auto shield placement` or `Auto Spell/Trap Card placement` in the Settings menu so YGOPro will not tell you the names of the cards to set as shields.
 4. Begin the duel with 1 life point, place the top 5 cards of your deck in your spell & trap zone face-down as [shields](http://duelmasters.wikia.com/wiki/Shield), then draw 5 cards. (You can only control a maximum of 5 shields in YGOPro.)
 5. Start your turn by changing any defense position monsters you control to attack position and sending all your face-down banished cards to the graveyard.
 6. During your draw phase, if it is not the first turn of the duel, draw 1 card. (There is no limit to the number of cards in your hand.)
 7. Optional: During your standby phase, send 1 card from your hand to the graveyard.
 8. Optional: During your main phase 1, by banishing cards from your graveyard face-down, equal to the level of a card in your hand, including at least 1 card with the same attribute as it, you can:<br>
-	-Special summon it in attack position, if it is a [creature](http://duelmasters.wikia.com/wiki/Creature). (You can only control a maximum of 6 creatures in YGOPro.)<br>
-	-Activate its effect in your hand, if it is a [spell](http://duelmasters.wikia.com/wiki/Spell), then banish it when its effect resolves.
+● Special summon it in attack position, if it is a [creature](http://duelmasters.wikia.com/wiki/Creature). (You can only control a maximum of 6 creatures in YGOPro.)<br>
+● Activate its effect in your hand, if it is a [spell](http://duelmasters.wikia.com/wiki/Spell), then banish it when its effect resolves.
 9. Optional: During your battle phase, if you control an attack position monster that was not special summoned this turn, attack with it by changing it to defense position. (There is no limit to the number of times a monster can attack each turn as long as it is in attack position and can be changed to defense position.)<br>
 Your attack position monsters can only attack an opponent's monster in defense position or attack your opponent directly by destroying their shields. If a monster is destroyed, banish it instead of sending it to the graveyard. (Neither player takes any battle damage.)
 10. Skip your main phase 2.
 11. During your end phase, "the end of your turn" effects activate and resolve. Then your turn ends.
 
-### How to Win
+## How to Win
 1. If your opponent controls no shields, your attack position monsters can attack them directly to reduce their life points to 0.
 2. If your opponent has no cards left in their deck.
 3. [Some cards](http://duelmasters.wikia.com/wiki/Template:Alternate_Win_Condition) will enable you to win the duel via their [effects](http://duelmasters.wikia.com/wiki/Effect).
 
-### Extra Information
+## Extra Information
 <details>
 <summary>Card Type</summary>
 
-- Creature = `Monster + Effect (Attribute = Civilization, Level = Mana Cost, ATK = DEF = Power)`
-	- Creature that has no abilities = `Monster + Effect + Tuner`
-	- Evolution Creature = `Monster + Effect + Special Summon`
-- Spell = `Monster + Spell (Attribute = Civilization, Level = Mana Cost)`
+- `0x3	Monster+Spell` = Spell
+	- `Attribute` = Civilization
+	- `Level` = Mana Cost
+- `0x21	Monster+Effect` = Creature
+	- `Attribute` = Civilization
+	- `Level` = Mana Cost
+	- `ATK` = `DEF` = Power
+- `0x1021	Monster+Effect+Tuner` = Creature that has no abilities
+- `0x2000021	Monster+Effect+Special Summon` = Evolution Creature
 </details>
 <details>
 <summary>Attribute</summary>
 
-- Light Civilization = `LIGHT Attribute`
-- Water Civilization = `WATER Attribute`
-- Darkness Civilization = `DARK Attribute`
-- Fire Civilization = `FIRE Attribute`
-- Nature Civilization = `EARTH Attribute`
+- `0x1	EARTH` = Nature Civilization
+- `0x2	WATER` = Water Civilization
+- `0x4	FIRE` = Fire Civilization
+- `0x10	LIGHT` = Light Civilization
+- `0x20	DARK` = Darkness Civilization
 </details>
 <details>
 <summary>Location</summary>
 
-- Battle Zone = `Monster Zone`
-- Shield Zone = `Spell & Trap Zone`
-- Mana Zone (untapped cards) = `Graveyard`
-- Mana Zone (tapped cards) = `Face-down banished cards` (text color = black)
-- Graveyard = `Face-up banished cards` (text color = blue)
-- Hyperspatial Zone = `Extra Deck`
+- `0x4	Monster Zone` = Battle Zone
+- `0x8	Spell & Trap Zone` = Shield Zone
+- `0x10	Graveyard` = Mana Zone (untapped cards)
+- `0x20	Banished` = Mana Zone (tapped cards) (text color = blue)
+- `0x20	Banished` = Graveyard (text color = black)
+- `0x40	Extra Deck` = Hyperspatial Zone
 </details>
 <details>
 <summary>Phase</summary>
 
-1. Start of Turn Step (Untap Step) = `EVENT_PREDRAW` = Untap all your tapped cards.<br>
-2. Draw Step = `PHASE_DRAW` = Draw a card from your deck.<br>
-3. Charge Step = `PHASE_STANDBY` = You may put a card from your hand into your mana zone.<br>
-4. Main Step = `PHASE_MAIN1` = You may use cards, such as summoning creatures, casting spells, generating and crossing cross gear or fortifying castles by paying the appropriate costs.<br>
-5. Attack Step = `PHASE_BATTLE` = You may attack with creatures or use Tap Abilities.<br>
-6. End Step = `PHASE_END` = Any abilities that trigger "the end of your turn" resolve now.
+1. `EVENT_PREDRAW` = Start of Turn Step (Untap Step) = Untap all your tapped cards.
+2. `PHASE_DRAW` = Draw Step = Draw a card from your deck.
+3. `PHASE_STANDBY` = Charge Step = You may put a card from your hand into your mana zone.
+4. `PHASE_MAIN1` = Main Step = You may use cards, such as summoning creatures, casting spells, generating and crossing cross gear or fortifying castles by paying the appropriate costs.
+5. `PHASE_BATTLE` = Attack Step = You may attack with creatures or use Tap Abilities.
+6. `PHASE_END` = End Step = Any abilities that trigger "the end of your turn" resolve now.
+</details>
+<details>
+<summary>OT</summary>
+
+- `0x5` = OCG only card (`0x1` OCG + `0x4` Anime/DIY)
+- `0x6` = TCG only card (`0x2` TCG + `0x4` Anime/DIY)
+- `0x7` = OCG + TCG card (`0x1` OCG + `0x2` TCG + `0x4` Anime/DIY)
+- `0x21` = OCG only + game original card (`0x1` OCG + `0x4` Anime/DIY + `0x16` Video Game)
+- `0x22` = TCG only + game original card (`0x2` TCG + `0x4` Anime/DIY + `0x16` Video Game)
+- `0x23` = OCG + TCG + game original card (`0x1` OCG + `0x2` TCG + `0x4` Anime/DIY + `0x16` Video Game)
+</details>
+<details>
+<summary>Category</summary>
+
+- `0x1	Destroy Spell/Trap` = Decrease the number of cards in a player's shield zone
+- `0x2	Destroy Monster` = Destroy a creature
+- `0x4	Banish Card` = Put a card into the graveyard
+- `0x8	Send to Graveyard` = Put a card into the mana zone
+- `0x10	Return to Hand` = Return a card from the battle zone, shield zone, mana zone or graveyard to a player's hand
+- `0x20	Return to Deck` = Put a card into a player's deck
+- `0x40	Destroy Hand` = Decrease the opponent's hand size
+- `0x80	Destroy Deck` = Decrease the opponent's deck size
+- `0x100	Increase Draw` = Put a card from the top of a player's deck into a player's hand
+- `0x200	Search Deck` = Look at a player's deck
+- `0x400	GY to Hand/Field` = Put a card from the graveyard into a player's hand or in play
+- `0x800	Change Battle Position` = Untap or tap a card
+- `0x1000	Get Control` = ～Reserved～
+- `0x2000	Increase/Decrease ATK/DEF` = Increase or decrease a creature's power
+- `0x4000	Piercing` = No summoning sickness; ignore any effects that prevent creatures from attacking
+- `0x8000	Attack Multiple Times` = Lists "can attack untapped creatures" in the card's text
+- `0x10000	Limit Attack` = Prevent an attack from taking place; can't attack or can't attack players
+- `0x20000	Direct Attack` = Lists "attacks each turn if able" or "blocks if able"
+- `0x40000	Special Summon` = Evolution creature; shield trigger creature; put a card into the battle zone
+- `0x80000	Token` = ～Reserved～
+- `0x100000	Type-related` = Lists "race" or a particular race in the card's text
+- `0x200000	Attribute-related` = Lists "civilization" or a particular civilization in the card's text
+- `0x400000	Reduce LP` = Decrease the number of cards in a player's mana zone
+- `0x800000	Increase LP` = Increase the number of cards in a player's shield zone
+- `0x1000000	Cannot Be Destroyed` = Prevent a card from being destroyed
+- `0x2000000	Cannot Be Targeted` = Prevent a creature from being blocked or chosen with an ability
+- `0x4000000	Counter` = Prevent a player from casting spells
+- `0x8000000	Gamble` = ～Reserved～
+- `0x10000000	Fusion` = ～Reserved～
+- `0x20000000	Synchro` = ～Reserved～
+- `0x40000000	Xyz` = Evolution creature; lists "evolution" in the card's text
+- `0x80000000	Negate Effect` = ～Reserved～
+- Uncategorized: `Play for Free`, `Increase/Decrease Mana Cost`
 </details>
 <details>
 <summary>Card Search</summary>
@@ -136,57 +188,10 @@ You can search for the following specific card information in YGOPro:
 - Untapped = `Attack Position/Card in the Graveyard`
 - Up to = `0 to N` (For example, if a card tells you to "draw up to 3 cards", you can draw 0,1,2, or 3 cards.)
 </details>
-<details>
-<summary>OT</summary>
 
-- `0x5` = OCG only card (`0x1` OCG + `0x4` Anime/DIY)
-- `0x6` = TCG only card (`0x2` TCG + `0x4` Anime/DIY)
-- `0x7` = OCG + TCG card (`0x1` OCG + `0x2` TCG + `0x4` Anime/DIY)
-- `0x21` = OCG only + game original card (`0x1` OCG + `0x4` Anime/DIY + `0x16` Video Game)
-- `0x22` = TCG only + game original card (`0x2` TCG + `0x4` Anime/DIY + `0x16` Video Game)
-- `0x23` = OCG + TCG + game original card (`0x1` OCG + `0x2` TCG + `0x4` Anime/DIY + `0x16` Video Game)
-</details>
-<details>
-<summary>Category</summary>
-
-- `0x1	Destroy Spell/Trap` = Decrease the number of cards in a player's shield zone
-- `0x2	Destroy Monster` = Destroy a creature
-- `0x4	Banish Card` = Put a card into the graveyard
-- `0x8	Send to Graveyard` = Put a card into the mana zone
-- `0x10	Return to Hand` = Return a card from the battle zone, shield zone, mana zone or graveyard to a player's hand
-- `0x20	Return to Deck` = Put a card into a player's deck
-- `0x40	Destroy Hand` = Decrease the opponent's hand size
-- `0x80	Destroy Deck` = Decrease the opponent's deck size
-- `0x100	Increase Draw` = Put a card from the top of a player's deck into a player's hand
-- `0x200	Search Deck` = Look at a player's deck
-- `0x400	GY to Hand/Field` = Put a card from the graveyard into a player's hand or in play
-- `0x800	Change Battle Position` = Untap or tap a card
-- `0x1000	Get Control` = ～Reserved～
-- `0x2000	Increase/Decrease ATK/DEF` = Increase or decrease a creature's power
-- `0x4000	Piercing` = No summoning sickness; ignore any effects that prevent creatures from attacking
-- `0x8000	Attack Multiple Times` = Lists "can attack untapped creatures" in the card's text
-- `0x10000	Limit Attack` = Prevent an attack from taking place; can't attack or can't attack players
-- `0x20000	Direct Attack` = Lists "attacks each turn if able" or "blocks if able"
-- `0x40000	Special Summon` = Evolution creature; shield trigger creature; put a card into the battle zone
-- `0x80000	Token` = ～Reserved～
-- `0x100000	Type-related` = Lists "race" or a particular race in the card's text
-- `0x200000	Attribute-related` = Lists "civilization" or a particular civilization in the card's text
-- `0x400000	Reduce LP` = Decrease the number of cards in a player's mana zone
-- `0x800000	Increase LP` = Increase the number of cards in a player's shield zone
-- `0x1000000	Cannot Be Destroyed` = Prevent a card from being destroyed
-- `0x2000000	Cannot Be Targeted` = Prevent a creature from being blocked or chosen with an ability
-- `0x4000000	Counter` = Prevent a player from casting spells
-- `0x8000000	Gamble` = ～Reserved～
-- `0x10000000	Fusion` = ～Reserved～
-- `0x20000000	Synchro` = ～Reserved～
-- `0x40000000	Xyz` = Evolution creature; lists "evolution" in the card's text
-- `0x80000000	Negate Effect` = ～Reserved～
-- Uncategorized: `Play for Free`, `Increase/Decrease Mana Cost`
-</details>
-
-#
-Duel Masters Official Card Game
+## Copyright
+Duel Masters Official Card Game<br>
 ©2002 Shogakukan, Mitsui & Co., Ltd
 
-Duel Masters Trading Card Game
+Duel Masters Trading Card Game<br>
 ©2004 Wizards of the Coast
