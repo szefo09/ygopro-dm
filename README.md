@@ -10,28 +10,27 @@
 -deck<br>
 -expansions<br>
 -textures
-3. Optional: Click [here](https://mega.nz/#F!4FxAXQiK!7rH4MxHlAnA256lwFwo7Ng) to download card pics. Put all card pics in expansions\pics.
+3. Optional: Click [here](https://mega.nz/#F!5RAFSIYb!nF8pJNkmZk4TzwMGtiX8Xw) to download card pics. Put all card pics in expansions\pics.
 
 ### How to Play
 In [Yugioh](http://yugioh.wikia.com/wiki/Yu-Gi-Oh!_Trading_Card_Game) terms:
 1. Start YGOPro.
-2. Disable `Auto` [chain](http://yugioh.wikia.com/wiki/Chain) `order` in the Settings tab.
-3. Click on `Deck Edit` to build your deck. Remember to add 1 *Duel Masters Rules* to your main deck!<br>
+2. Click on `Deck Management` to build your deck. Remember to add 1 *Duel Masters Rules* to your main deck!<br>
 If you do not build your deck according to the following rules, you will lose the duel and have to rebuild your deck:<br>
 	-Your main deck must be exactly 40 cards.<br>
 	-All 40 cards must be Duel Masters cards. You cannot have any non-Duel Masters cards in your deck.<br>
-4. Enable `Auto shield placement` or `Auto Spell/Trap Card placement` in the Settings tab so YGOPro will not tell you the names of the cards to set as shields.
-5. Begin the duel with 1 life point, place the top 5 cards of your deck in your spell & trap zone face-down as [shields](http://duelmasters.wikia.com/wiki/Shield), then draw 5 cards. (You can only control a maximum of 5 shields in YGOPro.)
-6. Start your turn by changing any defense position monsters you control to attack position and sending all your face-down banished cards to the graveyard.
-7. During your draw phase, if it is not the first turn of the duel, draw 1 card. (There is no limit to the number of cards in your hand.)
-8. Optional: During your standby phase, send 1 card from your hand to the graveyard.
-9. Optional: During your main phase 1, by banishing cards from your graveyard face-down, equal to the level of a card in your hand, including at least 1 card with the same attribute as it, you can:<br>
+3. Enable `Auto shield placement` or `Auto Spell/Trap Card placement` in the Settings menu so YGOPro will not tell you the names of the cards to set as shields.
+4. Begin the duel with 1 life point, place the top 5 cards of your deck in your spell & trap zone face-down as [shields](http://duelmasters.wikia.com/wiki/Shield), then draw 5 cards. (You can only control a maximum of 5 shields in YGOPro.)
+5. Start your turn by changing any defense position monsters you control to attack position and sending all your face-down banished cards to the graveyard.
+6. During your draw phase, if it is not the first turn of the duel, draw 1 card. (There is no limit to the number of cards in your hand.)
+7. Optional: During your standby phase, send 1 card from your hand to the graveyard.
+8. Optional: During your main phase 1, by banishing cards from your graveyard face-down, equal to the level of a card in your hand, including at least 1 card with the same attribute as it, you can:<br>
 	-Special summon it in attack position, if it is a [creature](http://duelmasters.wikia.com/wiki/Creature). (You can only control a maximum of 6 creatures in YGOPro.)<br>
 	-Activate its effect in your hand, if it is a [spell](http://duelmasters.wikia.com/wiki/Spell), then banish it when its effect resolves.
-10. Optional: During your battle phase, if you control an attack position monster that was not special summoned this turn, attack with it by changing it to defense position. (There is no limit to the number of times a monster can attack each turn as long as it is in attack position and can be changed to defense position.)<br>
+9. Optional: During your battle phase, if you control an attack position monster that was not special summoned this turn, attack with it by changing it to defense position. (There is no limit to the number of times a monster can attack each turn as long as it is in attack position and can be changed to defense position.)<br>
 Your attack position monsters can only attack an opponent's monster in defense position or attack your opponent directly by destroying their shields. If a monster is destroyed, banish it instead of sending it to the graveyard. (Neither player takes any battle damage.)
-11. Skip your main phase 2.
-12. During your end phase, "the end of your turn" effects activate and resolve. Then your turn ends.
+10. Skip your main phase 2.
+11. During your end phase, "the end of your turn" effects activate and resolve. Then your turn ends.
 
 ### How to Win
 1. If your opponent controls no shields, your attack position monsters can attack them directly to reduce their life points to 0.
