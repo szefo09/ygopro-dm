@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--evolution
-	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.IsDMRace,DM_RACE_PARASITE_WORM))
+	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsRace,DM_RACE_PARASITE_WORM))
 	--destroy
 	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.destg,scard.desop)
 end

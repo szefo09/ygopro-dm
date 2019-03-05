@@ -10,6 +10,6 @@ function scard.initial_effect(c)
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end
 scard.duel_masters_card=true
---scard.tgtg=dm.TargetCardFunction(PLAYER_PLAYER,dm.ShieldZoneFilter(Card.IsAbleToDMGrave),DM_LOCATION_SHIELD,0,1,1,DM_HINTMSG_TOGRAVE)
-scard.tgtg=dm.TargetShieldFunction(PLAYER_PLAYER,dm.ShieldZoneFilter(Card.IsAbleToDMGrave),DM_LOCATION_SHIELD,0,1,1,DM_HINTMSG_TOGRAVE)
+--scard.tgtg=dm.TargetCardFunction(PLAYER_PLAYER,dm.ShieldZoneFilter(Card.DMIsAbleToGrave),DM_LOCATION_SHIELD,0,1,1,DM_HINTMSG_TOGRAVE)
+scard.tgtg=dm.TargetShieldFunction(PLAYER_PLAYER,dm.ShieldZoneFilter(Card.DMIsAbleToGrave),DM_LOCATION_SHIELD,0,1,1,DM_HINTMSG_TOGRAVE)
 scard.tgop=dm.TargetSendtoGraveOperation

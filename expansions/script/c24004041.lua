@@ -29,4 +29,4 @@ function scard.initial_effect(c)
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER,nil,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,scard.abtg)
 end
 scard.duel_masters_card=true
-scard.abtg=aux.TargetBoolFunction(Card.IsDMRace,DM_RACE_DEMON_COMMAND)
+scard.abtg=aux.TargetBoolFunction(Card.DMIsRace,DM_RACE_DEMON_COMMAND)

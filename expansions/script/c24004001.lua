@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--evolution
-	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.IsDMRace,DM_RACE_ANGEL_COMMAND))
+	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsRace,DM_RACE_ANGEL_COMMAND))
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--cannot cast

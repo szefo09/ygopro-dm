@@ -15,6 +15,6 @@ function scard.tgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return true end
 	local ct=Duel.GetMatchingGroupCount(scard.cfilter,tp,DM_LOCATION_BATTLE,0,nil)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOGRAVE)
-	Duel.SelectTarget(tp,dm.ManaZoneFilter(Card.IsAbleToDMGrave),tp,0,DM_LOCATION_MANA,0,ct,nil)
+	Duel.SelectTarget(tp,dm.ManaZoneFilter(Card.DMIsAbleToGrave),tp,0,DM_LOCATION_MANA,0,ct,nil)
 end
 scard.tgop=dm.TargetSendtoGraveOperation

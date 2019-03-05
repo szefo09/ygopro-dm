@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--evolution
-	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.IsDMRace,DM_RACE_GIANT_INSECT))
+	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsRace,DM_RACE_GIANT_INSECT))
 	--destroy replace (to mana)
 	dm.AddDestroyReplaceEffect(c,0,scard.reptg,scard.repop,scard.repval)
 end

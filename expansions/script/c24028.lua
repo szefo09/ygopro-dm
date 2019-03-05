@@ -12,7 +12,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.opttg(e,tp,eg,ep,ev,re,r,rp,chk)
-	local b1=Duel.IsExistingMatchingCard(dm.ShieldZoneFilter(Card.IsAbleToDMGrave),tp,0,DM_LOCATION_SHIELD,1,nil)
+	local b1=Duel.IsExistingMatchingCard(dm.ShieldZoneFilter(Card.DMIsAbleToGrave),tp,0,DM_LOCATION_SHIELD,1,nil)
 	local b2=Duel.GetFieldGroupCount(tp,0,LOCATION_HAND)>0
 	local b3=Duel.IsExistingMatchingCard(Card.IsFaceup,tp,0,DM_LOCATION_BATTLE,1,nil)
 	if chk==0 then return b1 or b2 or b3 end
@@ -37,10 +37,10 @@ function scard.optop(e,tp,eg,ep,ev,re,r,rp)
 	local opt=e:GetLabel()
 	if opt==1 then
 		Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOGRAVE)
-		local g=Duel.SelectMatchingCard(tp,dm.ShieldZoneFilter(Card.IsAbleToDMGrave),tp,0,DM_LOCATION_SHIELD,1,1,nil)
+		local g=Duel.SelectMatchingCard(tp,dm.ShieldZoneFilter(Card.DMIsAbleToGrave),tp,0,DM_LOCATION_SHIELD,1,1,nil)
 		if g:GetCount()==0 then return end
 		Duel.HintSelection(g)
-		Duel.SendtoDMGrave(g,REASON_EFFECT)
+		Duel.DMSendtoGrave(g,REASON_EFFECT)
 	elseif opt==2 then
 		Duel.DiscardHand(1-tp,aux.TRUE,1,1,REASON_EFFECT)
 	elseif opt==3 then

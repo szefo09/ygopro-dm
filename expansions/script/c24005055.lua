@@ -14,7 +14,7 @@ function scard.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
 	e2:SetRange(DM_LOCATION_BATTLE)
 	e2:SetTargetRange(LOCATIONS_ALL,0)
-	e2:SetTarget(aux.TargetBoolFunction(Card.IsDMRace,DM_RACE_SURVIVOR))
+	e2:SetTarget(aux.TargetBoolFunction(Card.DMIsRace,DM_RACE_SURVIVOR))
 	e2:SetLabelObject(e1)
 	c:RegisterEffect(e2)
 end

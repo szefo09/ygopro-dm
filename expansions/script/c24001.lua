@@ -7,7 +7,7 @@ function scard.initial_effect(c)
 	--blocker
 	dm.EnableBlocker(c)
 	--wins all battles (human)
-	dm.EnableWinsAllBattles(c,0,nil,aux.FilterBoolFunction(Card.IsDMRace,DM_RACE_HUMAN))
+	dm.EnableWinsAllBattles(c,0,nil,aux.FilterBoolFunction(Card.DMIsRace,DM_RACE_HUMAN))
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 end

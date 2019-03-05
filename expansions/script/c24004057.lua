@@ -10,7 +10,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.powfilter(c)
-	return c:IsDMRace(DM_RACE_ANGEL_COMMAND) or c:IsDMRace(DM_RACE_DEMON_COMMAND)
+	return c:DMIsRace(DM_RACE_ANGEL_COMMAND) or c:DMIsRace(DM_RACE_DEMON_COMMAND)
 end
 function scard.retfilter(c)
 	return scard.powfilter(c) and c:IsAbleToHand()

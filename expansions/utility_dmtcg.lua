@@ -84,6 +84,7 @@ function Card.IsDiscardable(c,...)
 	return card_is_discardable(c,...)
 end
 --check if a card can attack
+--reserved
 --[[
 local card_is_attackable=Card.IsAttackable
 function Card.IsAttackable(c)
@@ -142,6 +143,8 @@ function Card.IsAbleToTap(c)
 	else return false end
 end
 --check if a card can be untapped as a cost
+--reserved
+--[[
 function Card.IsAbleToUntapAsCost(c)
 	if not c:IsTapped() then return false end
 	if c:IsLocation(LOCATION_REMOVED) then
@@ -150,6 +153,7 @@ function Card.IsAbleToUntapAsCost(c)
 		return c:IsDefensePos()
 	else return false end
 end
+]]
 --check if a card can be tapped as a cost
 function Card.IsAbleToTapAsCost(c)
 	if not c:IsUntapped() then return false end
@@ -160,9 +164,8 @@ function Card.IsAbleToTapAsCost(c)
 	else return false end
 end
 --check if a card can be added to a player's shields face down
---reserved
 function Card.IsAbleToShield(c)
-	return true--not c:IsHasEffect(DM_EFFECT_CANNOT_TO_SHIELD)
+	return true--not c:IsHasEffect(DM_EFFECT_CANNOT_TO_SHIELD) --reserved
 end
 --check if a card is a broken shield
 function Card.IsBrokenShield(c)
@@ -221,29 +224,36 @@ end
 function Card.GetBrokenShieldCount(c)
 	return c:GetFlagEffect(DM_EFFECT_BREAK_SHIELD)
 end
+--check if a creature can be summoned
+function Card.DMIsSummonable(c)
+	return not c:IsHasEffect(DM_EFFECT_CANNOT_SUMMON)
+end
 --check if a card has a particular race
-Card.IsDMRace=Card.IsSetCard
+Card.DMIsRace=Card.IsSetCard
 --check if a card originally had a particular race
-Card.IsOriginalDMRace=Card.IsOriginalSetCard
+--Card.DMIsOriginalRace=Card.IsOriginalSetCard --reserved
 --check if a card had a particular race when it was in the battle zone
-Card.IsPreviousDMRace=Card.IsPreviousSetCard
+--Card.DMIsPreviousRace=Card.IsPreviousSetCard --reserved
 --check if a card is included in a particular name category
-Card.IsNameCategory=Card.IsSetCard
+--Card.IsNameCategory=Card.IsSetCard --reserved
 --check if a card was originally included in a particular name category
-Card.IsOriginalNameCategory=Card.IsOriginalSetCard
+--Card.IsOriginalNameCategory=Card.IsOriginalSetCard --reserved
 --check if a card was included in a particular name category when it was in the battle zone
-Card.IsPreviousNameCategory=Card.IsPreviousSetCard
+--Card.IsPreviousNameCategory=Card.IsPreviousSetCard --reserved
 --get a card's CURRENT mana cost
 Card.GetManaCost=Card.GetLevel
 --get a card's ORIGINAL mana cost
-Card.GetOriginalManaCost=Card.GetOriginalLevel
+--Card.GetOriginalManaCost=Card.GetOriginalLevel --reserved
 --get the mana cost a card had when it was in the battle zone
-Card.GetPreviousManaCostOnField=Card.GetPreviousLevelOnField
+--Card.GetPreviousManaCostOnField=Card.GetPreviousLevelOnField --reserved
 --check if a card's mana cost is n
+--reserved
+--[[
 function Card.IsLevel(c,lv)
 	return c:GetLevel()==lv
 end
 Card.IsManaCost=Card.IsLevel
+]]
 --check if a card's mana cost is n or less
 Card.IsManaCostBelow=Card.IsLevelBelow
 --check if a card's mana cost is n or more
@@ -251,19 +261,19 @@ Card.IsManaCostAbove=Card.IsLevelAbove
 --get a card's CURRENT civilization
 Card.GetCivilization=Card.GetAttribute
 --get a card's ORIGINAL civilization
-Card.GetOriginalCivilization=Card.GetOriginalAttribute
+--Card.GetOriginalCivilization=Card.GetOriginalAttribute --reserved
 --get the civilization a card had when it was in the battle zone
-Card.GetPreviousCivilizationOnField=Card.GetPreviousAttributeOnField
+--Card.GetPreviousCivilizationOnField=Card.GetPreviousAttributeOnField --reserved
 --check what a card's current civilization is
 Card.IsCivilization=Card.IsAttribute
 --get a creature's CURRENT power
 Card.GetPower=Card.GetAttack
 --get a creature's ORIGINAL power
-Card.GetBasePower=Card.GetBaseAttack
+--Card.GetBasePower=Card.GetBaseAttack --reserved
 --get the power printed on a card
-Card.GetTextPower=Card.GetTextAttack
+--Card.GetTextPower=Card.GetTextAttack --reserved
 --get the power a creature had when it was in the battle zone
-Card.GetPreviousPowerOnField=Card.GetPreviousAttackOnField
+--Card.GetPreviousPowerOnField=Card.GetPreviousAttackOnField --reserved
 --check if a creature's power is n
 function Card.IsAttack(c,atk)
 	return c:GetAttack()==atk
@@ -276,9 +286,9 @@ Card.IsPowerAbove=Card.IsAttackAbove
 --check if a card can be put into the mana zone
 Card.IsAbleToMana=Card.IsAbleToGrave
 --check if a card can be put into the graveyard
-Card.IsAbleToDMGrave=Card.IsAbleToRemove
+Card.DMIsAbleToGrave=Card.IsAbleToRemove
 --check if a card can be put into the graveyard as a cost
-Card.IsAbleToDMGraveAsCost=Card.IsAbleToRemoveAsCost
+--Card.DMIsAbleToGraveAsCost=Card.IsAbleToRemoveAsCost --reserved
 --get the cards stacked under a card
 Card.GetStackGroup=Card.GetOverlayGroup
 --get the number of cards stacked under a card
@@ -355,7 +365,7 @@ function Duel.SpecialSummon(targets,sumtype,sumplayer,target_player,nocheck,noli
 	for tc in aux.Next(targets) do
 		if Duel.GetLocationCount(target_player,DM_LOCATION_BATTLE)<=0 then
 			Duel.Hint(HINT_MESSAGE,sumplayer,DM_HINTMSG_NOBZONES)
-			Duel.SendtoDMGrave(tc,REASON_RULE) --put into the graveyard if all zones are occupied
+			Duel.DMSendtoGrave(tc,REASON_RULE) --put into the graveyard if all zones are occupied
 		end
 		if Duel.SpecialSummonStep(tc,sumtype,sumplayer,target_player,nocheck,nolimit,pos,zone) then
 			ct=ct+1
@@ -365,8 +375,8 @@ function Duel.SpecialSummon(targets,sumtype,sumplayer,target_player,nocheck,noli
 	return ct
 end
 Duel.SendtoBattle=Duel.SpecialSummon
-Duel.SendtoBattleStep=Duel.SpecialSummonStep
-Duel.SendtoBattleComplete=Duel.SpecialSummonComplete
+--Duel.SendtoBattleStep=Duel.SpecialSummonStep --reserved
+--Duel.SendtoBattleComplete=Duel.SpecialSummonComplete --reserved
 --untap/tap a card in the battle/mana zone
 local duel_change_position=Duel.ChangePosition
 function Duel.ChangePosition(targets,au)
@@ -409,7 +419,19 @@ function Duel.DiscardHand(player,f,min,max,reason,ex,...)
 	if g:GetCount()==0 then
 		return discard_hand(player,f,min,max,reason,ex,...)
 	end
-	return Duel.Remove(g,POS_FACEUP,reason+REASON_DISCARD)
+	local redir_count=0
+	for c in aux.Next(g) do
+		--check for discard redirect abilities
+		local t={c:IsHasEffect(DM_EFFECT_DISCARD_REDIRECT)}
+		for _,te in pairs(t) do
+			if te:GetValue()==DM_LOCATION_BATTLE then
+				redir_count=redir_count+Duel.SendtoBattle(c,0,c:GetControler(),c:GetControler(),false,false,POS_FACEUP_UNTAPPED)
+			end
+		end
+	end
+	if redir_count>0 then
+		return redir_count
+	else return Duel.Remove(g,POS_FACEUP,reason+REASON_DISCARD) end
 end
 --select a card
 local duel_select_matching_card=Duel.SelectMatchingCard
@@ -483,8 +505,7 @@ end
 function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason)
 	local reason=reason or 0
 	local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(),target_player,DM_LOCATION_SHIELD,0,nil)
-	local ct1=g:GetCount()
-	if ct1==0 then return end
+	if g:GetCount()==0 then return end
 	if rc then
 		if not rc:IsCanBreakShield() then return end
 		local db=rc:IsHasEffect(DM_EFFECT_DOUBLE_BREAKER)
@@ -497,8 +518,8 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason)
 			if db then table.insert(available_list,1) end
 			if tb then table.insert(available_list,2) end
 			local option_list={}
-			for _,ab in pairs(available_list) do
-				table.insert(option_list,Auxiliary.break_select_list[ab])
+			for _,te in pairs(available_list) do
+				table.insert(option_list,Auxiliary.break_select_list[te])
 			end
 			Duel.Hint(HINT_SELECTMSG,sel_player,DM_HINTMSG_APPLYABILITY)
 			local opt=Duel.SelectOption(sel_player,table.unpack(option_list))+1
@@ -509,11 +530,15 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason)
 	Duel.Hint(HINT_SELECTMSG,sel_player,DM_HINTMSG_BREAK)
 	local sg=g:Select(sel_player,min,max,nil)
 	Duel.HintSelection(sg)
-	local ct2=Duel.SendtoHand(sg,PLAYER_OWNER,reason+DM_REASON_BREAK)
+	local ct=Duel.SendtoHand(sg,PLAYER_OWNER,reason+DM_REASON_BREAK)
 	--raise event for "Whenever this creature breaks a shield" + re:GetHandler()==e:GetHandler()
 	Duel.RaiseEvent(sg,EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD,e,0,0,0,0)
-	return ct2
+	return ct
 end
+Auxiliary.break_select_list={
+	[1]=DM_DESC_DOUBLE_BREAKER,
+	[2]=DM_DESC_TRIPLE_BREAKER,
+}
 --put a card into the mana zone
 function Duel.SendtoMana(targets,pos,reason)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
@@ -561,7 +586,7 @@ function Duel.SendDecktoptoManaUpTo(player,count,pos,reason)
 end
 ]]
 --put a card into the graveyard
-function Duel.SendtoDMGrave(targets,reason)
+function Duel.DMSendtoGrave(targets,reason)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
 	local ct=0
 	for tc1 in aux.Next(targets) do
@@ -578,17 +603,20 @@ function Duel.SendtoDMGrave(targets,reason)
 	return ct
 end
 --put a card from the top of a player's deck into the graveyard
-function Duel.SendDecktoptoDMGrave(player,ct,reason)
-	local g=Duel.GetDecktopGroup(player,ct)
+--reserved
+--[[
+function Duel.DMSendDecktoptoGrave(player,count,reason)
+	local g=Duel.GetDecktopGroup(player,count)
 	Duel.DisableShuffleCheck()
-	return Duel.SendtoDMGrave(g,reason)
+	return Duel.DMSendtoGrave(g,reason)
 end
+]]
 --check if a player can put a card from the top of their deck into the graveyard
 --reserved
 --[[
-function Duel.IsPlayerCanSendDecktoptoDMGrave(player,ct)
-	local g=Duel.GetDecktopGroup(player,ct)
-	return g:FilterCount(Card.IsAbleToDMGrave,nil)>0
+function Duel.DMIsPlayerCanSendDecktoptoGrave(player,count)
+	local g=Duel.GetDecktopGroup(player,count)
+	return g:FilterCount(Card.DMIsAbleToGrave,nil)>0
 end
 ]]
 --add a card to a player's shields face down
@@ -600,7 +628,7 @@ function Duel.SendtoShield(targets,player)
 		for tc2 in aux.Next(g) do
 			if Duel.GetLocationCount(player,DM_LOCATION_SHIELD)<=0 then
 				Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOSZONES)
-				Duel.SendtoDMGrave(tc2,REASON_RULE) --put into the graveyard if all zones are occupied
+				Duel.DMSendtoGrave(tc2,REASON_RULE) --put into the graveyard if all zones are occupied
 			else
 				if tc2:IsAbleToShield() then
 					b=Duel.MoveToField(tc2,player,player,DM_LOCATION_SHIELD,POS_FACEDOWN,true)
@@ -609,7 +637,7 @@ function Duel.SendtoShield(targets,player)
 		end
 		if Duel.GetLocationCount(player,DM_LOCATION_SHIELD)<=0 then
 			Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOSZONES)
-			Duel.SendtoDMGrave(tc1,REASON_RULE) --put into the graveyard if all zones are occupied
+			Duel.DMSendtoGrave(tc1,REASON_RULE) --put into the graveyard if all zones are occupied
 		end
 		if tc1:IsAbleToShield() then
 			b=Duel.MoveToField(tc1,player,player,DM_LOCATION_SHIELD,POS_FACEDOWN,true)
@@ -618,21 +646,30 @@ function Duel.SendtoShield(targets,player)
 	return b
 end
 --add a card from the top of a player's deck to their shields face down
-function Duel.SendDecktoptoShield(player,ct)
+function Duel.SendDecktoptoShield(player,count)
 	local b=nil
-	local g=Duel.GetDecktopGroup(player,ct)
+	local g=Duel.GetDecktopGroup(player,count)
 	Duel.DisableShuffleCheck()
 	b=Duel.SendtoShield(g,player)
 	return b
 end
+--add up to a number of cards from the top of a player's deck to their shields face down
+function Duel.SendDecktoptoShieldUpTo(player,count)
+	local ct=Duel.GetFieldGroupCount(player,LOCATION_DECK,0)
+	if ct==0 or not Duel.IsPlayerCanSendDecktoptoShield(player,1)
+		or not Duel.SelectYesNo(player,DM_QHINTMSG_TOSHIELD) then return end
+	if ct>count then ct=count end
+	local t={}
+	for i=1,ct do t[i]=i end
+	Duel.Hint(HINT_SELECTMSG,player,DM_QHINTMSG_NUMBERTOSHIELD)
+	local an=Duel.AnnounceNumber(player,table.unpack(t))
+	return Duel.SendDecktoptoShield(player,an) 
+end
 --check if a player can add a card from the top of their deck to their shields face down
---reserved
---[[
-function Duel.IsPlayerCanSendDecktoptoShield(player,ct)
-	local g=Duel.GetDecktopGroup(player,ct)
+function Duel.IsPlayerCanSendDecktoptoShield(player,count)
+	local g=Duel.GetDecktopGroup(player,count)
 	return g:FilterCount(Card.IsAbleToShield,nil)>0
 end
-]]
 --draw up to a number of cards
 function Duel.DrawUpTo(player,count,reason)
 	local ct=Duel.GetFieldGroupCount(player,LOCATION_DECK,0)
@@ -650,12 +687,23 @@ function Duel.RandomDiscardHand(player,count,reason,ex)
 	local g=Duel.GetFieldGroup(player,LOCATION_HAND,0):RandomSelect(player,count)
 	if type(ex)=="Card" then g:RemoveCard(ex)
 	elseif type(ex)=="Group" then g:Sub(ex) end
-	return Duel.Remove(g,POS_FACEUP,reason+REASON_DISCARD)
+	local redir_count=0
+	for c in aux.Next(g) do
+		--check for discard redirect abilities
+		local t={c:IsHasEffect(DM_EFFECT_DISCARD_REDIRECT)}
+		for _,te in pairs(t) do
+			if te:GetValue()==DM_LOCATION_BATTLE then
+				redir_count=redir_count+Duel.SendtoBattle(c,0,c:GetControler(),c:GetControler(),false,false,POS_FACEUP_UNTAPPED)
+			end
+		end
+	end
+	if redir_count>0 then
+		return redir_count
+	else return Duel.Remove(g,POS_FACEUP,reason+REASON_DISCARD) end
 end
 --check if a player can trigger a creature's "blocker" ability
---reserved
 function Duel.IsPlayerCanBlock(player)
-	return not Duel.IsPlayerAffectedByEffect(player,DM_EFFECT_CANNOT_BLOCK)
+	return true--not Duel.IsPlayerAffectedByEffect(player,DM_EFFECT_CANNOT_BLOCK) --reserved
 end
 --get the number of shields a player's creatures broke during the current turn
 function Duel.GetBrokenShieldCount(player)
@@ -666,7 +714,7 @@ Duel.PutOnTop=Duel.Overlay
 --check if a player can put a card from the top of their deck into the mana zone
 Duel.IsPlayerCanSendDecktoptoMana=Duel.IsPlayerCanDiscardDeck
 --check if a player can put a card from the top of their deck into the mana zone as a cost
-Duel.IsPlayerCanSendDecktoptoManaAsCost=Duel.IsPlayerCanDiscardDeckAsCost
+--Duel.IsPlayerCanSendDecktoptoManaAsCost=Duel.IsPlayerCanDiscardDeckAsCost --reserved
 --========== Auxiliary ==========
 --add and remove a description from a card
 function Auxiliary.AddEffectDescription(c,desc_id,con_func)
@@ -712,6 +760,7 @@ function Auxiliary.AddSummonProcedure(c)
 	e1:SetRange(LOCATION_HAND)
 	e1:SetTargetRange(POS_FACEUP_UNTAPPED,0)
 	e1:SetCondition(Auxiliary.NonEvolutionSummonCondition)
+	e1:SetTarget(Auxiliary.NonEvolutionSummonTarget)
 	e1:SetOperation(Auxiliary.NonEvolutionSummonOperation)
 	c:RegisterEffect(e1)
 end
@@ -720,11 +769,16 @@ function Auxiliary.PayManaFilter(c)
 end
 function Auxiliary.NonEvolutionSummonCondition(e,c)
 	if c==nil then return true end
-	if c:IsEvolution() then return false end
+	if c:IsEvolution() or not c:DMIsSummonable() then return false end
 	local tp=c:GetControler()
 	local g=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MANA,0,nil)
 	if Duel.GetLocationCount(tp,DM_LOCATION_BATTLE)<=0 or g:GetCount()<c:GetManaCost() then return false end
 	return g:IsExists(Card.IsCivilization,1,nil,c:GetCivilization())
+end
+function Auxiliary.NonEvolutionSummonTarget(e,tp,eg,ep,ev,re,r,rp,chk,c)
+	--check for "This creature enters the battle zone tapped."
+	if c:IsHasEffect(DM_EFFECT_ENTER_TAPPED) then e:SetTargetRange(POS_FACEUP_TAPPED,0) end
+	return true
 end
 function Auxiliary.NonEvolutionSummonOperation(e,tp,eg,ep,ev,re,r,rp,c)
 	local civ=c:GetCivilization()
@@ -801,10 +855,6 @@ end
 function Auxiliary.AttackShieldTarget(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return not e:GetHandler():IsStatus(STATUS_CHAINING) end
 end
-Auxiliary.break_select_list={
-	[1]=DM_DESC_DOUBLE_BREAKER,
-	[2]=DM_DESC_TRIPLE_BREAKER,
-}
 function Auxiliary.AttackShieldOperation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	Duel.ChangePosition(c,POS_FACEUP_TAPPED) --fix attack cost position
@@ -846,10 +896,11 @@ end
 function Auxiliary.SummonEvolutionCondition(f)
 	return	function(e,c)
 				if c==nil then return true end
+				if not c:DMIsSummonable() then return false end
 				local tp=c:GetControler()
 				local g=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MANA,0,nil)
 				if Duel.GetLocationCount(tp,DM_LOCATION_BATTLE)<-1 or g:GetCount()<c:GetManaCost() then return false end
-				return Duel.IsExistingMatchingCard(f,tp,DM_LOCATION_BATTLE,0,1,nil)
+				return Duel.IsExistingMatchingCard(Auxiliary.EvolutionFilter,tp,DM_LOCATION_BATTLE,0,1,nil,f)
 					and g:IsExists(Card.IsCivilization,1,nil,c:GetCivilization())
 			end
 end
@@ -862,7 +913,10 @@ function Auxiliary.SummonEvolutionTarget(f)
 					Duel.HintSelection(g)
 					g:KeepAlive()
 					e:SetLabelObject(g)
-					e:SetTargetRange(pos,0)
+					--check for "This creature enters the battle zone tapped."
+					if c:IsHasEffect(DM_EFFECT_ENTER_TAPPED) then
+						e:SetTargetRange(POS_FACEUP_TAPPED,0)
+					else e:SetTargetRange(pos,0) end
 					return true
 				else return false end
 			end
@@ -1034,7 +1088,10 @@ function Auxiliary.BlockerOperation(e,tp,eg,ep,ev,re,r,rp)
 	if not a --[[or not a:IsAttackable()]] or a:IsImmuneToEffect(e) --[[or a:IsStatus(STATUS_ATTACK_CANCELED)]] then return end
 	Duel.ChangePosition(c,POS_FACEUP_TAPPED)
 	if not Duel.ChangeAttackTarget(c) then return end
-	Duel.DoBattle(c,a)
+	--check for "Whenever this creature blocks, no battle happens. (Both creatures stay tapped.)"
+	if not c:IsHasEffect(DM_EFFECT_NO_BLOCKED_BATTLE) then
+		Duel.DoBattle(c,a)
+	end
 	--register flag effect for Card.IsBlocked
 	a:RegisterFlagEffect(DM_EFFECT_BLOCKED,RESET_EVENT+RESETS_STANDARD+RESET_CHAIN,0,1)
 	Duel.Hint(HINT_OPSELECTED,1-tp,DM_DESC_BLOCKED)
@@ -2022,7 +2079,7 @@ function Auxiliary.BreakOperation(sp,tgp,min,max,rc)
 			end
 end
 --========== Confirm ==========
---operation function for abilities that let a player to look at cards that are not public knowledge
+--operation function for abilities that let a player look at cards that are not public knowledge
 function Auxiliary.ConfirmOperation(p,f,s,o,min,max,ex,...)
 	--f: include Card.IsFacedown for DM_LOCATION_SHIELD, not Card.IsPublic for LOCATION_HAND
 	--p,min,max: nil to look at all cards
@@ -2044,6 +2101,13 @@ function Auxiliary.ConfirmOperation(p,f,s,o,min,max,ex,...)
 					Duel.ConfirmCards(player,g)
 				end
 			end
+end
+--operation function for abilities that target cards that are not public knowledge that a player to look at them
+function Auxiliary.TargetConfirmOperation(e,tp,eg,ep,ev,re,r,rp)
+	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
+	if g:GetCount()>0 then
+		Duel.ConfirmCards(tp,g)
+	end
 end
 --========== Destroy ==========
 --operation function for abilities that destroy cards
@@ -2104,7 +2168,7 @@ function Auxiliary.DiscardOperation(p,f,s,o,min,max,ram,ex,...)
 						Duel.DiscardHand(player,f,min,max,REASON_EFFECT,ex,table.unpack(funs))
 					end
 				else
-					Duel.SendtoDMGrave(g,REASON_EFFECT+REASON_DISCARD)
+					Duel.DMSendtoGrave(g,REASON_EFFECT+REASON_DISCARD)
 				end
 			end
 end
@@ -2112,7 +2176,7 @@ end
 function Auxiliary.TargetDiscardOperation(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
 	if g:GetCount()>0 then
-		Duel.SendtoDMGrave(g,REASON_EFFECT+REASON_DISCARD)
+		Duel.DMSendtoGrave(g,REASON_EFFECT+REASON_DISCARD)
 	end
 end
 --========== Draw ==========
@@ -2282,7 +2346,7 @@ function Auxiliary.SendtoGraveOperation(p,f,s,o,min,max,ex,...)
 				local c=e:GetHandler()
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
-				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToDMGrave,f),tp,s,o,ex,table.unpack(funs))
+				local g=Duel.GetMatchingGroup(aux.AND(Card.DMIsAbleToGrave,f),tp,s,o,ex,table.unpack(funs))
 				if s==LOCATION_DECK or o==LOCATION_DECK then
 					local dg=Duel.GetFieldGroup(player,s,o)
 					Duel.ConfirmCards(player,dg)
@@ -2296,9 +2360,9 @@ function Auxiliary.SendtoGraveOperation(p,f,s,o,min,max,ex,...)
 						if s==DM_LOCATION_BATTLE or o==DM_LOCATION_BATTLE or s==DM_LOCATION_SHIELD or o==DM_LOCATION_SHIELD then
 							Duel.HintSelection(sg)
 						end
-						Duel.SendtoDMGrave(sg,REASON_EFFECT)
+						Duel.DMSendtoGrave(sg,REASON_EFFECT)
 					else
-						Duel.SendtoDMGrave(g,REASON_EFFECT)
+						Duel.DMSendtoGrave(g,REASON_EFFECT)
 					end
 				else
 					Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
@@ -2311,7 +2375,7 @@ end
 function Auxiliary.TargetSendtoGraveOperation(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
 	if g:GetCount()>0 then
-		Duel.SendtoDMGrave(g,REASON_EFFECT)
+		Duel.DMSendtoGrave(g,REASON_EFFECT)
 	end
 end
 --========== SendtoHand ==========
@@ -2521,6 +2585,16 @@ function Auxiliary.DecktopSendtoShieldOperation(p,ct)
 				if p==PLAYER_ALL then
 					Duel.SendDecktoptoShield(player2,ct)
 				end
+			end
+end
+--operation function for abilities that put an unspecified number of cards from the top of a player's deck into the shield zone
+function Auxiliary.DecktopSendtoShieldUpToOperation(p,ct)
+	return	function(e,tp,eg,ep,ev,re,r,rp)
+				local player=nil
+				if p==PLAYER_PLAYER or p==tp then player=tp
+				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
+				Duel.SendDecktoptoShieldUpTo(player,ct)
 			end
 end
 --========== TapUntap ==========
@@ -2769,7 +2843,7 @@ function Auxiliary.TargetShieldFunction(p,f,s,o,min,max,desc,ex,...)
 					end
 				end
 				Duel.Hint(HINT_SELECTMSG,sel_player,desc)
-				Duel.SelectShieldTarget(sel_player,f,target_player,min,max,ex,e,table.unpack(funs))
+				Duel.SelectShieldTarget(sel_player,f,controler,min,max,ex,e,table.unpack(funs))
 			end
 end
 Auxiliary.targtg2=Auxiliary.TargetShieldFunction

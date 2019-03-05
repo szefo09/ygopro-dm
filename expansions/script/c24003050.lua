@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.tgfilter(c)
-	return c:IsFaceup() and c:IsEvolution() and c:GetStackCount()>0 and c:IsAbleToDMGrave()
+	return c:IsFaceup() and c:IsEvolution() and c:GetStackCount()>0 and c:DMIsAbleToGrave()
 end
 scard.tgtg=dm.TargetCardFunction(PLAYER_PLAYER,scard.tgfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TOGRAVE)
 function scard.tgop(e,tp,eg,ep,ev,re,r,rp)
@@ -21,7 +21,7 @@ function scard.tgop(e,tp,eg,ep,ev,re,r,rp)
 	for mc in aux.Next(mg) do
 		g:AddCard(mc)
 	end
-	Duel.SendtoDMGrave(tc,REASON_EFFECT)
+	Duel.DMSendtoGrave(tc,REASON_EFFECT)
 	--keep stacked pile
 	local sg=g:GetFirst()
 	Duel.MoveToField(sg,tp,1-tp,DM_LOCATION_BATTLE,pos,true)

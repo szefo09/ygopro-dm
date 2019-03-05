@@ -23,5 +23,5 @@ function scard.confop(e,tp,eg,ep,ev,re,r,rp)
 			g:Sub(sg)
 		end
 	end
-	Duel.SendtoDMGrave(g,REASON_EFFECT)
+	Duel.DMSendtoGrave(g,REASON_EFFECT)
 end

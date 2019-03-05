@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.cfilter(c)
-	return c:IsFaceup() and c:IsDMRace(DM_RACE_CYBER_LORD)
+	return c:IsFaceup() and c:DMIsRace(DM_RACE_CYBER_LORD)
 end
 function scard.drcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsExistingMatchingCard(scard.cfilter,tp,DM_LOCATION_BATTLE,0,1,nil)

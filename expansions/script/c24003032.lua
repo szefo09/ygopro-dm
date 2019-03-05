@@ -9,7 +9,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.tgfilter(c,e)
-	return c:IsAbleToDMGrave() and c:IsCanBeEffectTarget(e)
+	return c:DMIsAbleToGrave() and c:IsCanBeEffectTarget(e)
 end
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local g1=Duel.GetMatchingGroup(Card.IsFaceup,tp,DM_LOCATION_BATTLE,0,nil)
@@ -23,5 +23,5 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local g2=Duel.SelectMatchingShieldCard(tp,scard.tgfilter,tp,1,1,nil,e)
 	if g2:GetCount()==0 then return end
 	Duel.SetTargetCard(g2)
-	Duel.SendtoDMGrave(g2,REASON_EFFECT)
+	Duel.DMSendtoGrave(g2,REASON_EFFECT)
 end

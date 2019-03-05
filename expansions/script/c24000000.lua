@@ -408,7 +408,7 @@ function scard.tgop1(e,tp,eg,ep,ev,re,r,rp)
 	if re:IsHasProperty(DM_EFFECT_FLAG_CHARGE) and rc:IsAbleToMana() then
 		Duel.SendtoMana(rc,POS_FACEUP_UNTAPPED,REASON_RULE)
 	else
-		Duel.SendtoDMGrave(rc,REASON_RULE+REASON_DISCARD)
+		Duel.DMSendtoGrave(rc,REASON_RULE+REASON_DISCARD)
 	end
 end
 --register broken shield
@@ -475,9 +475,9 @@ end
 function scard.tgop2(e,tp,eg,ep,ev,re,r,rp)
 	for ec in aux.Next(eg) do
 		local g=ec:GetStackGroup()
-		g=g:Filter(Card.IsAbleToDMGrave,nil)
+		g=g:Filter(Card.DMIsAbleToGrave,nil)
 		for c in aux.Next(g) do
-			Duel.SendtoDMGrave(c,REASON_RULE)
+			Duel.DMSendtoGrave(c,REASON_RULE)
 		end
 	end
 end

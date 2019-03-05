@@ -16,10 +16,10 @@ function scard.initial_effect(c)
 	dm.EnableAttackUntapped(c)
 end
 scard.duel_masters_card=true
-scard.tgtg1=dm.CheckCardFunction(dm.ManaZoneFilter(Card.IsAbleToDMGrave),0,DM_LOCATION_MANA)
-scard.tgop1=dm.SendtoGraveOperation(PLAYER_PLAYER,dm.ManaZoneFilter(Card.IsAbleToDMGrave),0,DM_LOCATION_MANA,1)
+scard.tgtg1=dm.CheckCardFunction(dm.ManaZoneFilter(Card.DMIsAbleToGrave),0,DM_LOCATION_MANA)
+scard.tgop1=dm.SendtoGraveOperation(PLAYER_PLAYER,dm.ManaZoneFilter(Card.DMIsAbleToGrave),0,DM_LOCATION_MANA,1)
 function scard.tgcon(e,tp,eg,ep,ev,re,r,rp)
-	return re:GetHandler()==e:GetHandler() and eg:IsExists(Card.IsAbleToDMGrave,1,nil)
+	return re:GetHandler()==e:GetHandler() and eg:IsExists(Card.DMIsAbleToGrave,1,nil)
 end
 function scard.tgtg2(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
@@ -35,6 +35,6 @@ function scard.tgtg2(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function scard.tgop2(e,tp,eg,ep,ev,re,r,rp)
 	if e:GetHandler():IsRelateToEffect(e) and e:GetHandler():IsFaceup() then
-		Duel.SendtoDMGrave(eg,REASON_EFFECT)
+		Duel.DMSendtoGrave(eg,REASON_EFFECT)
 	end
 end

@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--evolution
-	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.IsDMRace,DM_RACE_INITIATE))
+	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsRace,DM_RACE_INITIATE))
 	--get ability (blocker)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(DM_DESC_BLOCKER)
