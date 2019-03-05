@@ -14,6 +14,6 @@ function scard.dhop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_DISCARD)
 	local sg=g:FilterSelect(tp,Card.IsCanBeEffectTarget,1,1,nil,e)
 	Duel.SetTargetCard(sg)
-	Duel.SendtoKADPile(sg,REASON_EFFECT+REASON_DISCARD)
+	Duel.DMSendtoGrave(sg,REASON_EFFECT+REASON_DISCARD)
 	Duel.ShuffleHand(1-tp)
 end
