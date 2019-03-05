@@ -45,11 +45,11 @@ Your attack position monsters can only attack an opponent's monster in defense p
 	- `Attribute` = Civilization
 	- `Level` = Mana Cost
 - `0x21	Monster+Effect` = Creature
+- `0x1021	Monster+Effect+Tuner` = Creature that has no abilities
+- `0x2000021	Monster+Effect+Special Summon` = Evolution Creature
 	- `Attribute` = Civilization
 	- `Level` = Mana Cost
 	- `ATK` = `DEF` = Power
-- `0x1021	Monster+Effect+Tuner` = Creature that has no abilities
-- `0x2000021	Monster+Effect+Special Summon` = Evolution Creature
 </details>
 <details>
 <summary>Attribute</summary>
@@ -133,9 +133,9 @@ Your attack position monsters can only attack an opponent's monster in defense p
 You can search for the following specific card information in YGOPro:
 
 - Card Ability: Use the `No Ability` tab for creatures that have [no abilities](http://duelmasters.wikia.com/wiki/Vanilla)
-- Card Type: Use the `Card Type` tab or type `Type:` in the search bar
+- Card Type: Use the `Card Type` tab
 - Civilization: Use the `Civilization` (`Civ`) tab
-- Evolution Creature: Use the `Evolution` tab or type `Type: Evolution Creature` in the search bar
+- Evolution Creature: Use the `Evolution` tab
 - Mana Cost: Use the `Mana` tab
 - Multicolored: Type `put into your mana zone tapped.)` in the search bar
 - Power: Use the `Power` tab
