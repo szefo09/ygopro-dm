@@ -762,6 +762,7 @@ function Auxiliary.AddSummonProcedure(c)
 	e1:SetCondition(Auxiliary.NonEvolutionSummonCondition)
 	e1:SetTarget(Auxiliary.NonEvolutionSummonTarget)
 	e1:SetOperation(Auxiliary.NonEvolutionSummonOperation)
+	e1:SetValue(DM_SUMMON_TYPE_NORMAL)
 	c:RegisterEffect(e1)
 end
 function Auxiliary.PayManaFilter(c)
@@ -1155,12 +1156,12 @@ function Auxiliary.ShieldTriggerSummonCondition(e,tp,eg,ep,ev,re,r,rp)
 	return Auxiliary.ShieldTriggerCondition(e,tp,eg,ep,ev,re,r,rp) and e:GetHandler():IsCreature()
 end
 function Auxiliary.ShieldTriggerSummonTarget(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsCanSendtoBattle(e,0,tp,false,false) end
+	if chk==0 then return e:GetHandler():DMIsSummonable() end
 end
 function Auxiliary.ShieldTriggerSummonOperation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsRelateToEffect(e) then
-		Duel.SendtoBattle(c,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
+		Duel.SendtoBattle(c,DM_SUMMON_TYPE_NORMAL,tp,tp,false,false,POS_FACEUP_UNTAPPED)
 	end
 end
 function Auxiliary.AddShieldTriggerCastEffect(c,desc_id,targ_func,op_func,prop,cost_func,con_func,cate)
@@ -2102,7 +2103,7 @@ function Auxiliary.ConfirmOperation(p,f,s,o,min,max,ex,...)
 				end
 			end
 end
---operation function for abilities that target cards that are not public knowledge that a player to look at them
+--operation function for abilities that target cards that are not public knowledge that let a player look at them
 function Auxiliary.TargetConfirmOperation(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
 	if g:GetCount()>0 then
