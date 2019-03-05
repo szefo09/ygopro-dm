@@ -157,8 +157,8 @@ DM_REASON_BREAK						=0x20000000		--The reason for breaking a player's shield
 DM_SUMMON_TYPE_EVOLUTION			=SUMMON_TYPE_XYZ	--Summon a creature by evolving a creature in the battle zone
 --Player
 PLAYER_OWNER						=nil	--player=PLAYER_OWNER in Duel.Sendto..(targets, player, reason)
-PLAYER_PLAYER						=0		--player=PLAYER_PLAYER in Effect.SetCondition(Auxiliary.TurnPlayerCondition(player)), etc.
-PLAYER_OPPONENT						=1		--player=PLAYER_OPPONENT in Effect.SetCondition(Auxiliary.TurnPlayerCondition(player)), etc.
+PLAYER_PLAYER						=0		--player=PLAYER_PLAYER in Effect.SetCondition(Auxiliary.Function(player)), etc.
+PLAYER_OPPONENT						=1		--player=PLAYER_OPPONENT in Effect.SetCondition(Auxiliary.Function(player)), etc.
 --Reset
 DM_RESET_TOMANA						=RESET_TOGRAVE	--Reset a card's gained ability when it is put into the mana zone
 DM_RESET_TOGRAVE					=RESET_REMOVE	--Reset a card's gained ability when it is put into the graveyard
@@ -200,7 +200,10 @@ DM_EFFECT_ATTACK_UNTAPPED_LIGHT		=715	--Can attack untapped light creatures ("Ph
 DM_EFFECT_TRIPLE_BREAKER			=716	--Triple Breaker ("Bolgash Dragon" DM-05 37/55)
 DM_EFFECT_SPEED_ATTACKER			=717	--Speed Attacker ("Bombat, General of Speed" DM-05 38/55)
 DM_EFFECT_ATTACK_UNTAPPED_WATER		=718	--Can attack untapped water creatures ("Ruthless Skyterror" DM-05 44/55)
-DM_EFFECT_WINS_ALL_BATTLES			=799	--Wins All Battles ("Marshias, Spirit of the Sun" DM-14 S1/S10)
+DM_EFFECT_ENTER_TAPPED				=719	--Creature is put into the battle zone tapped ("Lu Gila, Silver Rift Guardian" DM-06 2/110)
+DM_EFFECT_NO_BLOCKED_BATTLE			=720	--No battle happens when a creature blocks ("Chekicul, Vizier of Endurance" DM-06 15/110)
+DM_EFFECT_CANNOT_SUMMON				=721	--Cannot summon a creature ("Gariel, Elemental of Sunbeams" DM-06 20/110)
+DM_EFFECT_WINS_ALL_BATTLES			=799	--Wins All Battles ("Marshias, Spirit of the Sun" DM-14 S1/S10)		
 --DM_EFFECT_CHARGER					=000	--RESERVED --Charger ("Lightning Charger" DM-07 15/55")
 --Abilities that trigger or actions that occur at the appropriate event
 DM_EVENT_ATTACK_SHIELD				=EVENT_PRE_DAMAGE_CALCULATE		--Before an attacking creature breaks the opponent's shield
@@ -219,10 +222,10 @@ DM_CATEGORY_BLOCKER					=CATEGORY_NEGATE	--Included in a "Blocker" ability, to p
 --↑Play Description (for Effect.Description)
 DM_DESC_SUMMON						=2		--"Play this card by summoning it."
 DM_DESC_EVOLUTION					=1199	--"Play this card by putting it on a creature in the battle zone."
---↑Deck Error Hint Message (for Duel.Hint)
+--↑Deck Error Hint Message
 DM_DECKERROR_DECKCOUNT				=1450	--"Your deck must be exactly 40 cards!"
 DM_DECKERROR_NONDM					=1451	--"You can't have any non-Duel Masters cards in your deck!"
---↑Gameplay Hint Message (for Duel.Hint)
+--↑Gameplay Hint Message
 DM_HINTMSG_NOTARGETS				=1650	--"There is no applicable card."
 DM_HINTMSG_NOSTRIGGER				=1651	--"No "Shield Trigger" ability can be activated."
 DM_HINTMSG_NOBZONES					=1652	--"You cannot put any more cards in the battle zone because all zones are occupied!"
@@ -267,18 +270,20 @@ DM_HINTMSG_TODECK					=618	--"Choose a card to return to its owner's deck."
 DM_HINTMSG_TOSHIELD					=619	--"Choose a card to add to your shields face-down."
 DM_HINTMSG_TOBATTLE					=620	--"Choose a creature to put into the battle zone."
 --Question Hint Message
-DM_QHINTMSG_DRAW					=700	--"Draw a card(s)?"
+DM_QHINTMSG_DRAW					=700	--"Draw a card?"
 DM_QHINTMSG_NUMBERDRAW				=701	--"Draw how many cards?"
-DM_QHINTMSG_CHOOSE					=702	--"Choose a card(s)?"
+DM_QHINTMSG_CHOOSE					=702	--"Choose a card?"
 DM_QHINTMSG_NUMBERCHOOSE			=703	--"Choose how many cards?"
-DM_QHINTMSG_TOMANA					=704	--"Put a card(s) into your mana zone?"
+DM_QHINTMSG_TOMANA					=704	--"Put a card into your mana zone?"
+DM_QHINTMSG_TOSHIELD				=705	--"Add a card to your shields face down?"
+DM_QHINTMSG_NUMBERTOSHIELD			=706	--"Add how many new shields?"
 --Timing
 DM_TIMING_TAP_ABILITY				=TIMING_BATTLE_START+TIMING_BATTLE_END+TIMING_BATTLE_PHASE+TIMING_BATTLE_STEP_END	--Timing for a Tap Ability
 --Deck Sequence
-DECK_SEQUENCE_TOP					=0	--seq=DECK_SEQUENCE_TOP in Duel.SendtoDeck(targets, player, seq, reason)
-DECK_SEQUENCE_BOTTOM				=1	--seq=DECK_SEQUENCE_BOTTOM in Duel.SendtoDeck(targets, player, seq, reason)
-DECK_SEQUENCE_SHUFFLE				=2	--seq=DECK_SEQUENCE_SHUFFLE in Duel.SendtoDeck(targets, player, seq, reason)
-DECK_SEQUENCE_UNEXIST				=-2	--seq=DECK_SEQUENCE_UNEXIST in Duel.SendtoDeck(targets, player, seq, reason)
+DECK_SEQUENCE_TOP					=0		--seq=DECK_SEQUENCE_TOP in Duel.SendtoDeck(targets, player, seq, reason)
+DECK_SEQUENCE_BOTTOM				=1		--seq=DECK_SEQUENCE_BOTTOM in Duel.SendtoDeck(targets, player, seq, reason)
+DECK_SEQUENCE_SHUFFLE				=2		--seq=DECK_SEQUENCE_SHUFFLE in Duel.SendtoDeck(targets, player, seq, reason)
+DECK_SEQUENCE_UNEXIST				=-2		--seq=DECK_SEQUENCE_UNEXIST in Duel.SendtoDeck(targets, player, seq, reason)
 --Zone (Location + Sequence)
 ZONE_ANY							=0xff	--zone=ZONE_ANY in Duel.SendtoBattle(targets, sumtype, sumplayer, target_player, nocheck, nolimit, pos, zone)
 return DMTCG
