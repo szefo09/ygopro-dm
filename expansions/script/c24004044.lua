@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
 	--get ability
-	dm.AddSpellCastEffect(c,0,nil,scard.abop)
+	dm.AddSpellCastEffect(c,0,nil,scard.abop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 function scard.abfilter(c,e)

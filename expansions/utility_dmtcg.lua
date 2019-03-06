@@ -228,6 +228,10 @@ end
 function Card.DMIsSummonable(c)
 	return not c:IsHasEffect(DM_EFFECT_CANNOT_SUMMON)
 end
+--check if a card has a particular race to put the appropriate evolution creature on it
+function Card.DMIsEvolutionRace(c,race)
+	return c:DMIsRace(race) or c:IsHasEffect(DM_EFFECT_EVOLUTION_ANY_RACE)
+end
 --check if a card has a particular race
 Card.DMIsRace=Card.IsSetCard
 --check if a card originally had a particular race
@@ -419,18 +423,18 @@ function Duel.DiscardHand(player,f,min,max,reason,ex,...)
 	if g:GetCount()==0 then
 		return discard_hand(player,f,min,max,reason,ex,...)
 	end
-	local redir_count=0
+	local rep_count=0
 	for c in aux.Next(g) do
-		--check for discard redirect abilities
-		local t={c:IsHasEffect(DM_EFFECT_DISCARD_REDIRECT)}
+		--check for discard replace abilities
+		local t={c:IsHasEffect(DM_EFFECT_DISCARD_REPLACE)}
 		for _,te in pairs(t) do
 			if te:GetValue()==DM_LOCATION_BATTLE then
-				redir_count=redir_count+Duel.SendtoBattle(c,0,c:GetControler(),c:GetControler(),false,false,POS_FACEUP_UNTAPPED)
+				rep_count=rep_count+Duel.SendtoBattle(c,0,c:GetControler(),c:GetControler(),false,false,POS_FACEUP_UNTAPPED)
 			end
 		end
 	end
-	if redir_count>0 then
-		return redir_count
+	if rep_count>0 then
+		return rep_count
 	else return Duel.Remove(g,POS_FACEUP,reason+REASON_DISCARD) end
 end
 --select a card
@@ -530,9 +534,20 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason)
 	Duel.Hint(HINT_SELECTMSG,sel_player,DM_HINTMSG_BREAK)
 	local sg=g:Select(sel_player,min,max,nil)
 	Duel.HintSelection(sg)
-	local ct=Duel.SendtoHand(sg,PLAYER_OWNER,reason+DM_REASON_BREAK)
-	--raise event for "Whenever this creature breaks a shield" + re:GetHandler()==e:GetHandler()
-	Duel.RaiseEvent(sg,EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD,e,0,0,0,0)
+	local ct=0
+	--check for break replace abilities
+	local to_grave=nil
+	local t={rc:IsHasEffect(DM_EFFECT_BREAK_SHIELD_REPLACE)}
+	if #t>0 then
+		for _,te in pairs(t) do
+			if te:GetValue()==DM_LOCATION_GRAVE then to_grave=true end
+		end
+		if to_grave then Duel.DMSendtoGrave(sg,reason) end
+	else
+		ct=ct+Duel.SendtoHand(sg,PLAYER_OWNER,reason+DM_REASON_BREAK)
+		--raise event for "Whenever this creature breaks a shield" + re:GetHandler()==e:GetHandler()
+		Duel.RaiseEvent(sg,EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD,e,0,0,0,0)
+	end
 	return ct
 end
 Auxiliary.break_select_list={
@@ -687,18 +702,18 @@ function Duel.RandomDiscardHand(player,count,reason,ex)
 	local g=Duel.GetFieldGroup(player,LOCATION_HAND,0):RandomSelect(player,count)
 	if type(ex)=="Card" then g:RemoveCard(ex)
 	elseif type(ex)=="Group" then g:Sub(ex) end
-	local redir_count=0
+	local rep_count=0
 	for c in aux.Next(g) do
-		--check for discard redirect abilities
-		local t={c:IsHasEffect(DM_EFFECT_DISCARD_REDIRECT)}
+		--check for discard replace abilities
+		local t={c:IsHasEffect(DM_EFFECT_DISCARD_REPLACE)}
 		for _,te in pairs(t) do
 			if te:GetValue()==DM_LOCATION_BATTLE then
-				redir_count=redir_count+Duel.SendtoBattle(c,0,c:GetControler(),c:GetControler(),false,false,POS_FACEUP_UNTAPPED)
+				rep_count=rep_count+Duel.SendtoBattle(c,0,c:GetControler(),c:GetControler(),false,false,POS_FACEUP_UNTAPPED)
 			end
 		end
 	end
-	if redir_count>0 then
-		return redir_count
+	if rep_count>0 then
+		return rep_count
 	else return Duel.Remove(g,POS_FACEUP,reason+REASON_DISCARD) end
 end
 --check if a player can trigger a creature's "blocker" ability
@@ -863,7 +878,10 @@ function Auxiliary.AttackShieldOperation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RaiseEvent(c,EVENT_CUSTOM+DM_EVENT_ATTACK_PLAYER,e,0,0,0,0)
 	--raise event for "Whenever this creature attacks a player"
 	Duel.RaiseSingleEvent(c,EVENT_CUSTOM+DM_EVENT_ATTACK_PLAYER,e,0,0,0,0)
-	Duel.BreakShield(e,tp,1-tp,1,1,c)
+	local sel_player=tp
+	--check for "Whenever an opponent's creature would break a shield, you choose the shield instead of your opponent."
+	if Duel.IsPlayerAffectedByEffect(1-tp,DM_EFFECT_CHANGE_SHIELD_BREAK_PLAYER) then sel_player=1-tp end
+	Duel.BreakShield(e,sel_player,1-tp,1,1,c)
 	--no battle damage
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -1089,8 +1107,8 @@ function Auxiliary.BlockerOperation(e,tp,eg,ep,ev,re,r,rp)
 	if not a --[[or not a:IsAttackable()]] or a:IsImmuneToEffect(e) --[[or a:IsStatus(STATUS_ATTACK_CANCELED)]] then return end
 	Duel.ChangePosition(c,POS_FACEUP_TAPPED)
 	if not Duel.ChangeAttackTarget(c) then return end
-	--check for "Whenever this creature blocks, no battle happens. (Both creatures stay tapped.)"
-	if not c:IsHasEffect(DM_EFFECT_NO_BLOCKED_BATTLE) then
+	--check for "Whenever this creature blocks/becomes blocked, no battle happens. (Both creatures stay tapped.)"
+	if not c:IsHasEffect(DM_EFFECT_NO_BLOCK_BATTLE) and not a:IsHasEffect(DM_EFFECT_NO_BE_BLOCKED_BATTLE) then
 		Duel.DoBattle(c,a)
 	end
 	--register flag effect for Card.IsBlocked
