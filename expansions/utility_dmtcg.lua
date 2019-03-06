@@ -14,7 +14,7 @@
 --[+EvolutionCreature].......................................functions that are included on every evolution creature
 --[+Spell]...................................................functions that are included on every spell
 --[+KeywordAbilities]........................................keyword abilities that are shared by many cards
---[+Abilities]...............................................abilities that are shared by many cards
+--[+Abilities]...............................................non-keyword abilities that are shared by many cards
 --[+Conditions]..............................................condition functions
 --[+Costs]...................................................cost functions
 --[+Targets].................................................target functions
@@ -78,11 +78,14 @@ function Card.IsCanBeSpecialSummoned(c,...)
 end
 Card.IsCanSendtoBattle=Card.IsCanBeSpecialSummoned
 --check if a card can be discarded from a player's hand
+--reserved
+--[[
 local card_is_discardable=Card.IsDiscardable
 function Card.IsDiscardable(c,...)
-	if c:IsHasEffect(EFFECT_CANNOT_BE_DISCARD) or c:IsHasEffect(EFFECT_CANNOT_REMOVE) then return false end
+	if c:IsHasEffect(EFFECT_CANNOT_BE_DISCARD) then return false end
 	return card_is_discardable(c,...)
 end
+]]
 --check if a card can attack
 --reserved
 --[[
@@ -207,7 +210,7 @@ function Card.IsCanAttackUntapped(c)
 end
 --check if a creature can trigger its "blocker" ability
 function Card.IsCanBlock(c)
-	return c:IsFaceup() and c:IsUntapped() --and not c:IsHasEffect(DM_EFFECT_CANNOT_BLOCK) --reserved
+	return true--and not c:IsHasEffect(DM_EFFECT_CANNOT_BLOCK) --reserved
 end
 --check if a creature can break a shield
 function Card.IsCanBreakShield(c)
@@ -434,7 +437,7 @@ function Duel.DiscardHand(player,f,min,max,reason,ex,...)
 		end
 	end
 	if rep_count>0 then
-		return rep_count
+		return 0
 	else return Duel.Remove(g,POS_FACEUP,reason+REASON_DISCARD) end
 end
 --select a card
@@ -713,7 +716,7 @@ function Duel.RandomDiscardHand(player,count,reason,ex)
 		end
 	end
 	if rep_count>0 then
-		return rep_count
+		return 0
 	else return Duel.Remove(g,POS_FACEUP,reason+REASON_DISCARD) end
 end
 --check if a player can trigger a creature's "blocker" ability
@@ -724,6 +727,8 @@ end
 function Duel.GetBrokenShieldCount(player)
 	return Duel.GetFlagEffect(player,DM_EFFECT_BREAK_SHIELD)
 end
+--let 2 creatures do battle with each other
+Duel.DoBattle=Duel.CalculateDamage
 --put a card on top of another card
 Duel.PutOnTop=Duel.Overlay
 --check if a player can put a card from the top of their deck into the mana zone
@@ -1088,27 +1093,37 @@ function Auxiliary.EnableBlocker(c,con_func,desc)
 	e1:SetProperty(EFFECT_FLAG_DELAY)
 	e1:SetRange(DM_LOCATION_BATTLE)
 	e1:SetCondition(aux.AND(Auxiliary.BlockerCondition,con_func))
+	e1:SetCost(Auxiliary.BlockerCost)
 	e1:SetTarget(Auxiliary.BlockerTarget)
 	e1:SetOperation(Auxiliary.BlockerOperation)
 	c:RegisterEffect(e1)
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_BLOCKER,con_func)
 end
 function Auxiliary.BlockerCondition(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetAttacker():GetControler()~=tp and Duel.IsPlayerCanBlock(tp)
+	local d=Duel.GetAttackTarget()
+	if d and d==e:GetHandler() then return false end
+	return Duel.GetAttacker():GetControler()~=tp
+end
+function Auxiliary.BlockerCost(e,tp,eg,ep,ev,re,r,rp,chk)
+	local c=e:GetHandler()
+	if chk==0 then return c:IsFaceup() and c:IsUntapped() and c:GetFlagEffect(DM_EFFECT_BLOCKER)==0 end
+	Duel.ChangePosition(c,POS_FACEUP_TAPPED)
+	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
+	c:RegisterFlagEffect(DM_EFFECT_BLOCKER,RESET_CHAIN,0,1)
 end
 function Auxiliary.BlockerTarget(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsCanBlock() end
-	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
+	if chk==0 then return e:GetHandler():IsCanBlock() and Duel.IsPlayerCanBlock(tp) end
 end
 function Auxiliary.BlockerOperation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) or not c:IsUntapped() or c:IsFacedown() then return end
+	if not c:IsRelateToEffect(e) then return end
 	local a=Duel.GetAttacker()
-	if not a --[[or not a:IsAttackable()]] or a:IsImmuneToEffect(e) --[[or a:IsStatus(STATUS_ATTACK_CANCELED)]] then return end
-	Duel.ChangePosition(c,POS_FACEUP_TAPPED)
-	if not Duel.ChangeAttackTarget(c) then return end
+	if not a or a:IsImmuneToEffect(e) or c:IsImmuneToEffect(e) or a:IsStatus(STATUS_ATTACK_CANCELED) then return end
+	Duel.ChangePosition(a,POS_FACEUP_TAPPED) --fix attack cost position
+	Duel.NegateAttack()
 	--check for "Whenever this creature blocks/becomes blocked, no battle happens. (Both creatures stay tapped.)"
 	if not c:IsHasEffect(DM_EFFECT_NO_BLOCK_BATTLE) and not a:IsHasEffect(DM_EFFECT_NO_BE_BLOCKED_BATTLE) then
+		Duel.BreakEffect()
 		Duel.DoBattle(c,a)
 	end
 	--register flag effect for Card.IsBlocked
@@ -2632,7 +2647,7 @@ function Auxiliary.TapUntapOperation(p,f,s,o,min,max,pos,ram,ex,...)
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
 				--the attacker is excluded because it's supposed to be tapped according to the attack rule
-				g:RemoveCard(Duel.GetAttacker())
+				if Duel.GetAttacker() then g:RemoveCard(Duel.GetAttacker()) end
 				local sg=nil
 				if min and max then
 					if ram then
