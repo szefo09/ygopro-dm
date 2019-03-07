@@ -2065,6 +2065,41 @@ function Auxiliary.CannotBeAttackedCivValue(civ)
 				return c:IsCivilization(civ)
 			end
 end
+--"Whenever a player summons a creature, ABILITY."
+--e.g. "Aqua Rider" (DM-06 31/110)
+function Auxiliary.AddPlayerSummonCreatureEffect(c,desc_id,p,optional,targ_func,op_func,prop)
+	--p: PLAYER_PLAYER/tp if you summon, PLAYER_OPPONENT/1-tp if your opponent does, or nil if either player does
+	local typ=EFFECT_TYPE_TRIGGER_F
+	if optional then typ=EFFECT_TYPE_TRIGGER_O end
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	e1:SetType(EFFECT_TYPE_FIELD+typ)
+	e1:SetCode(DM_EVENT_SUMMON_SUCCESS)
+	if typ==EFFECT_TYPE_TRIGGER_O and prop then
+		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY+prop)
+	elseif typ==EFFECT_TYPE_TRIGGER_O then
+		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
+	elseif prop then
+		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+prop)
+	end
+	e1:SetRange(DM_LOCATION_BATTLE)
+	e1:SetCondition(Auxiliary.PlayerSummonCreatureCondition(p))
+	if targ_func then e1:SetTarget(targ_func) end
+	e1:SetOperation(op_func)
+	c:RegisterEffect(e1)
+end
+function Auxiliary.PlayerSummonCreatureCondition(p)
+	return	function(e,tp,eg,ep,ev,re,r,rp)
+				local sumplayer=nil
+				if p==PLAYER_PLAYER or p==tp then sumplayer=tp
+				elseif p==PLAYER_OPPONENT or p==1-tp then sumplayer=1-tp end
+				local filter_func=function(c,sp)
+					if c:GetSummonType()~=DM_SUMMON_TYPE_NORMAL then return false end
+					return sp and c:GetSummonPlayer()==sp
+				end
+				return eg:IsExists(filter_func,1,nil,sumplayer)
+			end
+end
 --"At the end of each of your turns, destroy this creature."
 --e.g. "Gnarvash, Merchant of Blood" (DM-06 57/110)
 function Auxiliary.EnableTurnEndSelfDestroy(c,desc_id,con_func)
@@ -2100,7 +2135,6 @@ function Auxiliary.SelfBattleEndCondition(e,tp,eg,ep,ev,re,r,rp)
 end
 function Auxiliary.SelfBattleEndOperation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local bc=c:GetBattleTarget()
 	if c:IsRelateToBattle() then
 		Duel.Destroy(c,REASON_EFFECT)
 	end
