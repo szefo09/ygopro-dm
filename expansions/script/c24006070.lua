@@ -8,7 +8,6 @@ function scard.initial_effect(c)
 	--cannot attack
 	dm.EnableCannotAttack(c)
 	--destroy
-	--UNTESTED
 	dm.EnableBattleEndSelfDestroy(c)
 end
 scard.duel_masters_card=true
