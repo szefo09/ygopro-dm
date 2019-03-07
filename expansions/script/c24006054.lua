@@ -1,0 +1,31 @@
+--Frost Specter, Shadow of Age
+local dm=require "expansions.utility_dmtcg"
+local scard,sid=dm.GetID()
+function scard.initial_effect(c)
+	dm.EnableCreatureAttribute(c)
+	--evolution
+	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_GHOST))
+	--get ability (slayer)
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(DM_DESC_SLAYER)
+	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
+	e1:SetCode(DM_EVENT_ATTACK_END)
+	e1:SetCondition(dm.SlayerCondition)
+	e1:SetTarget(dm.HintTarget)
+	e1:SetOperation(dm.SlayerOperation)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
+	e2:SetRange(DM_LOCATION_BATTLE)
+	e2:SetTargetRange(DM_LOCATION_BATTLE,0)
+	e2:SetTarget(aux.TargetBoolFunction(Card.DMIsRace,DM_RACE_GHOST))
+	e2:SetLabelObject(e1)
+	c:RegisterEffect(e2)
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_FIELD)
+	e3:SetCode(DM_EFFECT_SLAYER)
+	e3:SetRange(DM_LOCATION_BATTLE)
+	e3:SetTargetRange(DM_LOCATION_BATTLE,0)
+	e3:SetTarget(aux.TargetBoolFunction(Card.DMIsRace,DM_RACE_GHOST))
+	c:RegisterEffect(e3)
+end
+scard.duel_masters_card=true

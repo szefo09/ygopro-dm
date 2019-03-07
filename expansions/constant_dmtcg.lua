@@ -180,6 +180,7 @@ DM_EFFECT_ATTACK_PLAYER				=EFFECT_DIRECT_ATTACK			--Attack player
 DM_EFFECT_CANNOT_CHANGE_POS_ABILITY	=EFFECT_CANNOT_CHANGE_POS_E		--Cannot untap or tap a card by an ability 
 DM_EFFECT_UPDATE_POWER				=EFFECT_UPDATE_ATTACK			--Increase or decrease a creature's power
 DM_EFFECT_UPDATE_MANA_COST			=EFFECT_UPDATE_LEVEL			--Increase or decrease a card's mana cost
+DM_EFFECT_MUST_ATTACK_CREATURE		=EFFECT_MUST_ATTACK_MONSTER		--A creature can only attack a creature
 DM_EFFECT_BROKEN_SHIELD				=CARD_DUEL_MASTERS_RULES		--Register a broken shield
 DM_EFFECT_BLOCKED					=CARD_DIA_NORK_MOONLIGHT_GUARDIAN	--Register a creature that has become blocked
 DM_EFFECT_BREAK_SHIELD				=CARD_MIRACLE_QUEST				--Register number of broken shields ("Miracle Quest" DM-05 19/55)
@@ -252,6 +253,7 @@ DM_DESC_NATURE_LIGHT_SLAYER			=1665	--"Nature and light slayer (Whenever this cr
 DM_DESC_NON_BREAKER					=1800	--"This creature breaks 1 shield."
 DM_DESC_DOUBLE_BREAKER				=1801	--"Double Breaker (This creature breaks 2 shields.)"
 DM_DESC_TRIPLE_BREAKER				=1802	--"Triple Breaker (This creature breaks 3 shields.)"
+DM_DESC_CREW_BREAKER				=1803	--"Crew Breaker—"RACE" (This creature breaks one more shield for each of your other "RACE" in the battle zone.)"
 --↑Ability (for card hint)
 DM_DESC_BROKEN						=300	--"Broken shield"
 DM_DESC_SUMMONSICKNESS				=301	--"Summoning Sickness"
@@ -286,6 +288,7 @@ DM_QHINTMSG_NUMBERCHOOSE			=703	--"Choose how many cards?"
 DM_QHINTMSG_TOMANA					=704	--"Put a card into your mana zone?"
 DM_QHINTMSG_TOSHIELD				=705	--"Add a card to your shields face down?"
 DM_QHINTMSG_NUMBERTOSHIELD			=706	--"Add how many new shields?"
+DM_QHINTMSG_RTOHAND					=707	--"Return a card to its owner's hand?"
 --Timing
 DM_TIMING_TAP_ABILITY				=TIMING_BATTLE_START+TIMING_BATTLE_END+TIMING_BATTLE_PHASE+TIMING_BATTLE_STEP_END	--Timing for a Tap Ability
 --Deck Sequence

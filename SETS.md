@@ -3,7 +3,6 @@
 ## Booster Packs
 
 ### Not Yet Scripted
-- **Apr., 2005** : DM-06 Stomp-A-Trons of Invincible Wrath : `24006001-24006120`
 - **July, 2005** : DM-07 Thundercharge of Ultra Destruction : `24007001-24007060`
 - **Oct., 2005** : DM-08 Epic Dragons of Hyperchaos : `24008001-24008060`
 - **Jan., 2006** : DM-09 Fatal Brood of Infinite Ruin : `24009001-24009060`
@@ -17,6 +16,7 @@
 - ~**Aug. 6, 2004** : DM-03 Rampage of the Super Warriors : `24003001-24003060`~
 - ~**Nov. 13, 2004** : DM-04 Shadowclash of Blinding Night : `24004001-24004060`~
 - ~**Jan. 15, 2005** : DM-05 Survivors of the Megapocalypse : `24005001-24005060`~
+- ~**Apr., 2005** : DM-06 Stomp-A-Trons of Invincible Wrath : `24006001-24006120`~
 
 ## English Promotional Cards
 
@@ -52,9 +52,6 @@
 
 ### DM Packs - Not Yet Scripted
 ### Fighting Spirit Saga 闘魂編, インビンシブル・ソウル
-- **June 26, 2003** : DM-06 Invincible Soul 「闘魂編（インビンシブル・ソウル）第1弾」
-	- Wicked Soul Reincarnation 《邪魂転生》 : `24006121` (OCG only)
-	- Hell Slash 《ヘル・スラッシュ》 : `24006122` (OCG only)
 - **Sept. 25, 2003** : DM-07 Invincible Charge 「闘魂編 第2弾 時空超獣の呪（インビンシブル・チャージ）」
 	- Cursed Totem 《呪紋の化身（カース・トーテム）》 : `24007061` (OCG only)
 - **Dec. 25, 2003** : DM-08 Invincible Legend 「闘魂編 第3弾 超神龍の復活（インビンシブル・レジェンド）」
@@ -102,6 +99,7 @@
 - **Mar. 19, 2011** : DM-39 Psychic Splash 「覚醒編 第4弾 覚醒爆発（サイキック・スプラッシュ）」 : `24039001-24039067` (60 + 7)
 
 ### Archived
+### Fighting Spirit Saga 闘魂編, インビンシブル・ソウル
 - ~**May 30, 2002** : DM-01 Base Set 第1弾「基本編（デュエル・マスターズ）」~
 	- ~Cyber Brain 《サイバー・ブレイン》 : `24001121` (OCG only)~
 	- ~Aqua Guard : `24001122`~
@@ -114,6 +112,9 @@
 	- ~Astral Reef 《アストラル・リーフ》 : `24004062`~
 - ~**Mar. 20, 2003** : DM-05 Return of the Survivor 第5弾「漂流大陸の末裔（リターン・オブ・ザ・サバイバー）」~
 	- ~Storm Javelin Wyvern 《ストームジャベリン・ワイバーン》 : `24005061`~
+- **June 26, 2003** : DM-06 Invincible Soul 「闘魂編（インビンシブル・ソウル）第1弾」
+	- ~Wicked Soul Reincarnation 《邪魂転生》 : `24006121` (OCG only)~
+	- ~Hell Slash 《ヘル・スラッシュ》 : `24006122` (OCG only)~
 
 ### DMR Packs - Not Yet Scripted
 ### Episode 1 エピソード1

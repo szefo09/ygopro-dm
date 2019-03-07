@@ -1107,8 +1107,8 @@ end
 function Auxiliary.BlockerCost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	if chk==0 then return c:IsFaceup() and c:IsUntapped() and c:GetFlagEffect(DM_EFFECT_BLOCKER)==0 end
-	Duel.ChangePosition(c,POS_FACEUP_TAPPED)
 	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
+	Duel.ChangePosition(c,POS_FACEUP_TAPPED)
 	c:RegisterFlagEffect(DM_EFFECT_BLOCKER,RESET_CHAIN,0,1)
 end
 function Auxiliary.BlockerTarget(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -1983,7 +1983,7 @@ function Auxiliary.SelfDestroyOperation(ram)
 	--ram: true for "destroyed at random"
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local c=e:GetHandler()
-				Duel.ChangePosition(c,POS_FACEUP_TAPPED) --fix attack cost position
+				if Duel.GetAttacker()==c then Duel.ChangePosition(c,POS_FACEUP_TAPPED) end --fix attack cost position
 				if not c:IsRelateToEffect(e) then return end
 				local ct=math.random(4) --either 2 or 3: 50% chance to destroy
 				if ram and ct~=2 then return end
@@ -2064,6 +2064,46 @@ function Auxiliary.CannotBeAttackedCivValue(civ)
 	return	function(e,c)
 				return c:IsCivilization(civ)
 			end
+end
+--"At the end of each of your turns, destroy this creature."
+--e.g. "Gnarvash, Merchant of Blood" (DM-06 57/110)
+function Auxiliary.EnableTurnEndSelfDestroy(c,desc_id,con_func)
+	local desc_id=desc_id or 0
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
+	e1:SetCode(EVENT_PHASE+PHASE_END)
+	e1:SetRange(DM_LOCATION_BATTLE)
+	if con_func then
+		e1:SetCondition(aux.AND(Auxiliary.TurnPlayerCondition(PLAYER_PLAYER),con_func))
+	else
+		e1:SetCondition(Auxiliary.TurnPlayerCondition(PLAYER_PLAYER))
+	end
+	e1:SetOperation(Auxiliary.SelfDestroyOperation())
+	c:RegisterEffect(e1)
+end
+--"When this creature battles, destroy it after the battle."
+--e.g. "Vile Mulder, Wing of the Void" (DM-06 69/110)
+function Auxiliary.EnableBattleEndSelfDestroy(c,desc_id)
+	local desc_id=desc_id or 0
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
+	e1:SetCode(DM_EVENT_BATTLE_END)
+	e1:SetCondition(Auxiliary.SelfBattleEndCondition)
+	e1:SetOperation(Auxiliary.SelfBattleEndOperation)
+	c:RegisterEffect(e1)
+end
+function Auxiliary.SelfBattleEndCondition(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	return c:IsRelateToBattle() and c:GetBattleTarget()
+end
+function Auxiliary.SelfBattleEndOperation(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	local bc=c:GetBattleTarget()
+	if c:IsRelateToBattle() then
+		Duel.Destroy(c,REASON_EFFECT)
+	end
 end
 --"At the end of your turn, [you may] return this creature to your hand."
 --e.g. "Ganzo, Flame Fisherman" (Game Original)
