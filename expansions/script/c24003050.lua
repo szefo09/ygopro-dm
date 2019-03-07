@@ -12,22 +12,22 @@ function scard.tgfilter(c)
 end
 scard.tgtg=dm.TargetCardFunction(PLAYER_PLAYER,scard.tgfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TOGRAVE)
 function scard.tgop(e,tp,eg,ep,ev,re,r,rp)
-	local tc=Duel.GetFirstTarget()
-	local mg=tc:GetStackGroup()
-	local pos=tc:GetPosition()
-	local seq=tc:GetSequence()
-	if not tc:IsRelateToEffect(e) or mg:GetCount()==0 then return end
+	local tc1=Duel.GetFirstTarget()
+	local mg=tc1:GetStackGroup()
+	local pos=tc1:GetPosition()
+	local seq=tc1:GetSequence()
+	if not tc1:IsRelateToEffect(e) or mg:GetCount()==0 then return end
 	local g=Group.CreateGroup()
 	for mc in aux.Next(mg) do
 		g:AddCard(mc)
 	end
-	Duel.DMSendtoGrave(tc,REASON_EFFECT)
-	--keep stacked pile
-	local sg=g:GetFirst()
-	Duel.MoveToField(sg,tp,1-tp,DM_LOCATION_BATTLE,pos,true)
-	g:RemoveCard(sg)
-	Duel.MoveSequence(sg,seq)
+	Duel.DMSendtoGrave(tc1,REASON_EFFECT)
+	--workaround to keep stacked pile
+	local tc2=g:GetFirst()
+	Duel.MoveToField(tc2,tp,1-tp,DM_LOCATION_BATTLE,pos,true)
+	g:RemoveCard(tc2)
+	Duel.MoveSequence(tc2,seq)
 	if g:GetCount()~=0 then
-		Duel.PutOnTop(sg,g)
+		Duel.PutOnTop(tc2,g)
 	end
 end
