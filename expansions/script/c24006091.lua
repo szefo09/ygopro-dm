@@ -8,4 +8,4 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 scard.tmtg=dm.CheckCardFunction(dm.DMGraveFilter(Card.IsAbleToMana),DM_LOCATION_GRAVE,0)
-scard.tmop=dm.SendtoManaOperation(PLAYER_PLAYER,dm.DMGraveFilter(Card.IsAbleToMana),DM_LOCATION_GRAVE,0,1,3)
+scard.tmop=dm.SendtoManaOperation(PLAYER_PLAYER,dm.DMGraveFilter(Card.IsAbleToMana),DM_LOCATION_GRAVE,0,0,3)

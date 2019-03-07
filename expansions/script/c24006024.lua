@@ -6,14 +6,13 @@ function scard.initial_effect(c)
 	--shield trigger
 	dm.EnableShieldTrigger(c)
 	--get ability
-	dm.AddSpellCastEffect(c,0,scard.abtg,scard.abop)
-	dm.AddShieldTriggerCastEffect(c,0,scard.abtg,scard.abop)
+	dm.AddSpellCastEffect(c,0,nil,scard.abop)
+	dm.AddShieldTriggerCastEffect(c,0,nil,scard.abop)
 end
 scard.duel_masters_card=true
 function scard.abfilter(c)
 	return c:IsFaceup() and c:IsHasEffect(DM_EFFECT_BLOCKER)
 end
-scard.abtg=dm.CheckCardFunction(scard.abfilter,DM_LOCATION_BATTLE,0)
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_CREATURE)
 	local g=Duel.SelectMatchingCard(tp,scard.abfilter,tp,DM_LOCATION_BATTLE,0,1,1,nil)

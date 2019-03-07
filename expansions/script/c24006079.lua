@@ -20,7 +20,7 @@ function scard.tgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local g2=Duel.GetMatchingGroup(dm.ManaZoneFilter(Card.IsCanBeEffectTarget),0,DM_LOCATION_MANA,nil,e)
 	g1:Merge(g2)
 	if g1:GetCount()==0 then return end
-	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOGRAVE)
+	Duel.Hint(HINT_SELECTMSG,1-tp,DM_HINTMSG_TOGRAVE)
 	local sg=g1:Select(1-tp,1,1,nil)
 	Duel.SetTargetCard(sg)
 end

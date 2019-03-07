@@ -7,6 +7,7 @@ function scard.initial_effect(c)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(DM_EFFECT_DISCARD_REPLACE)
+	e1:SetCondition(dm.TurnPlayerCondition(PLAYER_OPPONENT))
 	e1:SetValue(DM_LOCATION_BATTLE)
 	c:RegisterEffect(e1)
 end
