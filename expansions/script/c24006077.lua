@@ -4,9 +4,10 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--mana cost down
-	dm.EnableUpdateManaCost(c,LOCATION_HAND,0,nil,scard.mctg,-2)
+	dm.EnableUpdateManaCost(c,scard.mcval,LOCATION_HAND,0,aux.TargetBoolFunction(Card.DMIsRace(DM_RACE_DRAGON)))
 end
 scard.duel_masters_card=true
-function scard.mctg(e,c)
-	return c:DMIsRace(DM_RACE_DRAGON) and c:IsManaCostAbove(4)
+function scard.mcval(e,c)
+	if c:GetManaCost()<=1 then return 0
+	else return -1 end
 end

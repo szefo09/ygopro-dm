@@ -2009,25 +2009,24 @@ function Auxiliary.EnableAttackUntapped(c,code1,code2,con_func)
 		Auxiliary.EnableEffectCustom(c,code2,con_func)
 	end
 end
---"A player's creatures/spells each cost N more/less to summon/cast. [They can't cost less than 1.]"
---"Each creature costs N more/less to summon and each spell costs N more/less to cast. [They can't cost less than 1.]"
+--"A player's creatures/spells each cost N more/less to summon/cast."
+--"Each creature costs N more/less to summon and each spell costs N more/less to cast."
 --e.g. "Elf-X" (DM-02 46/55), "Milieus, the Daystretcher" (DM-04 12/55)
-function Auxiliary.EnableUpdateManaCost(c,s_range,o_range,con_func1,targ_func1,val,con_func2,targ_func2)
+function Auxiliary.EnableUpdateManaCost(c,val,s_range,o_range,targ_func)
 	--s_range,o_range: LOCATION_HAND (mostly)
 	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_FIELD)
+	if s_range or o_range then
+		e1:SetType(EFFECT_TYPE_FIELD)
+		e1:SetTargetRange(s_range,o_range)
+		if targ_func then e1:SetTarget(targ_func) end
+	else
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	end
 	e1:SetCode(DM_EFFECT_UPDATE_MANA_COST)
 	e1:SetRange(DM_LOCATION_BATTLE)
-	e1:SetTargetRange(s_range,o_range)
-	if con_func1 then e1:SetCondition(con_func1) end
-	if targ_func1 then e1:SetTarget(targ_func1) end
 	e1:SetValue(val)
 	c:RegisterEffect(e1)
-	if not con_func2 and not targ_func2 then return end
-	local e2=e1:Clone()
-	e2:SetCondition(con_func2)
-	e2:SetTarget(targ_func2)
-	c:RegisterEffect(e2)
 end
 --"This creature can't attack creatures."
 --e.g. "Dawn Giant" (DM-03 46/55)

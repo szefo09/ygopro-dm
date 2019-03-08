@@ -5,20 +5,11 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--mana cost down
-	dm.EnableUpdateManaCost(c,LOCATION_HAND,0,scard.mccon,scard.mctg,-3)
+	dm.EnableUpdateManaCost(c,-3,LOCATION_HAND,0,aux.TargetBoolFunction(Card.IsSpell))
 	--tap ability (return)
 	dm.EnableTapAbility(c,0,scard.rettg,scard.retop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
---mana cost down
-function scard.mcfilter(c)
-	return c:IsSpell() and c:IsManaCostAbove(2)
-end
-function scard.mccon(e)
-	return Duel.IsExistingMatchingCard(scard.mcfilter,e:GetHandlerPlayer(),LOCATION_HAND,0,1,nil)
-end
-scard.mctg=aux.TargetBoolFunction(Card.IsSpell)
---tap ability (return)
 function scard.retfilter1(c)
 	return c:IsSpell() and c:IsAbleToHand()
 end
