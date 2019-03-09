@@ -258,6 +258,7 @@ DM_DESC_CREW_BREAKER				=1803	--"Crew Breaker—"RACE" (This creature breaks one
 DM_DESC_BROKEN						=300	--"Broken shield"
 DM_DESC_SUMMONSICKNESS				=301	--"Summoning Sickness"
 --Hint Message
+DM_HINTMSG_ATTACKTARGET				=549	--"Choose a creature to attack."
 DM_HINTMSG_APPLYABILITY				=556	--"Choose an ability to apply."
 DM_HINTMSG_TOMANA					=600	--"Choose a card to put into the mana zone."
 DM_HINTMSG_TAP						=601	--"Choose a card to tap."

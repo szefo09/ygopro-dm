@@ -112,7 +112,7 @@
 	- ~Astral Reef 《アストラル・リーフ》 : `24004062`~
 - ~**Mar. 20, 2003** : DM-05 Return of the Survivor 第5弾「漂流大陸の末裔（リターン・オブ・ザ・サバイバー）」~
 	- ~Storm Javelin Wyvern 《ストームジャベリン・ワイバーン》 : `24005061`~
-- **June 26, 2003** : DM-06 Invincible Soul 「闘魂編（インビンシブル・ソウル）第1弾」
+- ~**June 26, 2003** : DM-06 Invincible Soul 「闘魂編（インビンシブル・ソウル）第1弾」~
 	- ~Wicked Soul Reincarnation 《邪魂転生》 : `24006121` (OCG only)~
 	- ~Hell Slash 《ヘル・スラッシュ》 : `24006122` (OCG only)~
 

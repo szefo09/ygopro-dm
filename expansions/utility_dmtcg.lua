@@ -37,7 +37,8 @@ EFFECT_INDESTRUCTIBLE_EFFECT=EFFECT_INDESTRUCTABLE_EFFECT
 EFFECT_INDESTRUCTIBLE_BATTLE=EFFECT_INDESTRUCTABLE_BATTLE
 
 --==========[+UniversalFunctions]==========
---get the script's name and card id
+--return a card script's name and id
+--include in each script: local scard,sid=dm.GetID()
 function Auxiliary.GetID()
 	local str=string.match(debug.getinfo(2,'S')['source'],"c%d+%.lua")
 	str=string.sub(str,1,string.len(str)-4)
@@ -45,10 +46,10 @@ function Auxiliary.GetID()
 	local sid=tonumber(string.sub(str,2))
 	return scard,sid
 end
---include this code on each script: local scard,sid=dm.GetID()
 
 --========== Lua ==========
---get the value type of a variable
+--Overwritten Lua functions
+--return the value type of a variable
 local lua_type=type
 function type(o)
 	local m=getmetatable(o)
@@ -59,6 +60,7 @@ function type(o)
 	elseif m==Effect then return "Effect"
 	else return "Card" end
 end
+--New Lua functions
 --select a random item from a table
 function math.randomchoice(t)
 	local keys={}
@@ -69,6 +71,7 @@ function math.randomchoice(t)
 	return t[index]
 end
 --========== Card ==========
+--Overwritten Card functions
 --check if a card can be put into the battle zone
 local card_is_can_be_special_summoned=Card.IsCanBeSpecialSummoned
 function Card.IsCanBeSpecialSummoned(c,...)
@@ -95,6 +98,7 @@ function Card.IsAttackable(c)
 	return card_is_attackable(c)
 end
 ]]
+--New Card functions
 --check if a card is a creature
 function Card.IsCreature(c)
 	return c:IsType(DM_TYPE_CREATURE)
@@ -223,7 +227,7 @@ function Card.IsHasNoAbility(c)
 	return c:IsType(DM_TYPE_NO_ABILITY)
 end
 ]]
---get the number of shields a creature broke during the current turn
+--return the number of shields a creature broke during the current turn
 function Card.GetBrokenShieldCount(c)
 	return c:GetFlagEffect(DM_EFFECT_BREAK_SHIELD)
 end
@@ -235,27 +239,31 @@ end
 function Card.DMIsEvolutionRace(c,race)
 	return c:DMIsRace(race) or c:IsHasEffect(DM_EFFECT_EVOLUTION_ANY_RACE)
 end
+--Renamed Card functions
 --check if a card has a particular race
 Card.DMIsRace=Card.IsSetCard
---check if a card originally had a particular race
---Card.DMIsOriginalRace=Card.IsOriginalSetCard --reserved
---check if a card had a particular race when it was in the battle zone
---Card.DMIsPreviousRace=Card.IsPreviousSetCard --reserved
---check if a card is included in a particular name category
---Card.IsNameCategory=Card.IsSetCard --reserved
---check if a card was originally included in a particular name category
---Card.IsOriginalNameCategory=Card.IsOriginalSetCard --reserved
---check if a card was included in a particular name category when it was in the battle zone
---Card.IsPreviousNameCategory=Card.IsPreviousSetCard --reserved
---get a card's CURRENT mana cost
-Card.GetManaCost=Card.GetLevel
---get a card's ORIGINAL mana cost
---Card.GetOriginalManaCost=Card.GetOriginalLevel --reserved
---get the mana cost a card had when it was in the battle zone
---Card.GetPreviousManaCostOnField=Card.GetPreviousLevelOnField --reserved
---check if a card's mana cost is n
 --reserved
 --[[
+--check if a card originally had a particular race
+Card.DMIsOriginalRace=Card.IsOriginalSetCard
+--check if a card had a particular race when it was in the battle zone
+Card.DMIsPreviousRace=Card.IsPreviousSetCard
+--check if a card is included in a particular name category
+Card.IsNameCategory=Card.IsSetCard
+--check if a card was originally included in a particular name category
+Card.IsOriginalNameCategory=Card.IsOriginalSetCard
+--check if a card was included in a particular name category when it was in the battle zone
+Card.IsPreviousNameCategory=Card.IsPreviousSetCard
+]]
+--return a card's CURRENT mana cost
+Card.GetManaCost=Card.GetLevel
+--reserved
+--[[
+--return a card's ORIGINAL mana cost
+Card.GetOriginalManaCost=Card.GetOriginalLevel
+--return the mana cost a card had when it was in the battle zone
+Card.GetPreviousManaCostOnField=Card.GetPreviousLevelOnField
+--check if a card's mana cost is n
 function Card.IsLevel(c,lv)
 	return c:GetLevel()==lv
 end
@@ -265,22 +273,28 @@ Card.IsManaCost=Card.IsLevel
 Card.IsManaCostBelow=Card.IsLevelBelow
 --check if a card's mana cost is n or more
 Card.IsManaCostAbove=Card.IsLevelAbove
---get a card's CURRENT civilization
+--return a card's CURRENT civilization
 Card.GetCivilization=Card.GetAttribute
---get a card's ORIGINAL civilization
---Card.GetOriginalCivilization=Card.GetOriginalAttribute --reserved
---get the civilization a card had when it was in the battle zone
---Card.GetPreviousCivilizationOnField=Card.GetPreviousAttributeOnField --reserved
+--reserved
+--[[
+--return a card's ORIGINAL civilization
+Card.GetOriginalCivilization=Card.GetOriginalAttribute
+--return the civilization a card had when it was in the battle zone
+Card.GetPreviousCivilizationOnField=Card.GetPreviousAttributeOnField
+]]
 --check what a card's current civilization is
 Card.IsCivilization=Card.IsAttribute
---get a creature's CURRENT power
+--return a creature's CURRENT power
 Card.GetPower=Card.GetAttack
---get a creature's ORIGINAL power
---Card.GetBasePower=Card.GetBaseAttack --reserved
---get the power printed on a card
---Card.GetTextPower=Card.GetTextAttack --reserved
---get the power a creature had when it was in the battle zone
---Card.GetPreviousPowerOnField=Card.GetPreviousAttackOnField --reserved
+--reserved
+--[[
+--return a creature's ORIGINAL power
+Card.GetBasePower=Card.GetBaseAttack
+--return the power printed on a card
+Card.GetTextPower=Card.GetTextAttack
+--return the power a creature had when it was in the battle zone
+Card.GetPreviousPowerOnField=Card.GetPreviousAttackOnField
+]]
 --check if a creature's power is n
 function Card.IsAttack(c,atk)
 	return c:GetAttack()==atk
@@ -296,11 +310,12 @@ Card.IsAbleToMana=Card.IsAbleToGrave
 Card.DMIsAbleToGrave=Card.IsAbleToRemove
 --check if a card can be put into the graveyard as a cost
 --Card.DMIsAbleToGraveAsCost=Card.IsAbleToRemoveAsCost --reserved
---get the cards stacked under a card
+--return the cards stacked under a card
 Card.GetStackGroup=Card.GetOverlayGroup
---get the number of cards stacked under a card
+--return the number of cards stacked under a card
 Card.GetStackCount=Card.GetOverlayCount
 --========== Group ==========
+--Overwritten Group functions
 --select a specified card from a group
 local group_filter_select=Group.FilterSelect
 function Group.FilterSelect(g,player,f,min,max,ex,...)
@@ -320,6 +335,7 @@ function Group.RandomSelect(g,player,count)
 	return group_random_select(g,player,count)
 end
 --========== Duel ==========
+--Overwritten Duel functions
 --put a card into a player's hand
 local duel_send_to_hand=Duel.SendtoHand
 function Duel.SendtoHand(targets,player,reason)
@@ -456,6 +472,7 @@ function Duel.SelectTarget(sel_player,f,player,s,o,min,max,ex,...)
 	end
 	return duel_select_target(sel_player,f,player,s,o,min,max,ex,...)
 end
+--New Duel functions
 --select a shield
 function Duel.SelectMatchingShieldCard(sel_player,f,target_player,min,max,ex,...)
 	if not Duel.IsExistingMatchingCard(Auxiliary.ShieldZoneFilter(f),target_player,DM_LOCATION_SHIELD,0,1,ex,...) then
@@ -723,10 +740,11 @@ end
 function Duel.IsPlayerCanBlock(player)
 	return true--not Duel.IsPlayerAffectedByEffect(player,DM_EFFECT_CANNOT_BLOCK) --reserved
 end
---get the number of shields a player's creatures broke during the current turn
+--return the number of shields a player's creatures broke during the current turn
 function Duel.GetBrokenShieldCount(player)
 	return Duel.GetFlagEffect(player,DM_EFFECT_BREAK_SHIELD)
 end
+--Renamed Duel functions
 --let 2 creatures do battle with each other
 Duel.DoBattle=Duel.CalculateDamage
 --put a card on top of another card
@@ -2787,7 +2805,7 @@ function Auxiliary.SelfBattleWinCondition(e,tp,eg,ep,ev,re,r,rp)
 	return c:IsRelateToBattle() and c:IsOnField()
 end
 Auxiliary.sbwcon=Auxiliary.SelfBattleWinCondition
---condition to get a card's previous location
+--condition to return a card's previous location
 --e.g. "Bombersaur" (DM-02 36/55), "Altimeth, Holy Divine Dragon" (Game Original)
 function Auxiliary.PreviousLocationCondition(loc)
 	--loc: DM_LOCATION_BATTLE for "When this creature is destroyed/leaves the battle zone" + EVENT_DESTROYED
@@ -2975,7 +2993,7 @@ end
 Auxiliary.hinttg=Auxiliary.HintTarget
 
 --==========[+Filters]==========
---filter to get a card in the mana zone
+--filter to return a card in the mana zone
 function Auxiliary.ManaZoneFilter(f)
 	--DM_LOCATION_MANA + f: function
 	return	function(target,...)
@@ -2984,7 +3002,7 @@ function Auxiliary.ManaZoneFilter(f)
 			end
 end
 Auxiliary.mzfilter=Auxiliary.ManaZoneFilter
---filter to get a card in the graveyard
+--filter to return a card in the graveyard
 function Auxiliary.DMGraveFilter(f)
 	--DM_LOCATION_GRAVE + f: function
 	return	function(target,...)
@@ -2992,7 +3010,7 @@ function Auxiliary.DMGraveFilter(f)
 			end
 end
 Auxiliary.gyfilter=Auxiliary.DMGraveFilter
---filter to get a card in the shield zone
+--filter to return a card in the shield zone
 function Auxiliary.ShieldZoneFilter(f)
 	--DM_LOCATION_SHIELD + f: function
 	return	function(target,...)
