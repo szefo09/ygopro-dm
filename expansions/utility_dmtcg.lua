@@ -532,15 +532,19 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason)
 	if g:GetCount()==0 then return end
 	if rc then
 		if not rc:IsCanBreakShield() then return end
+		local m=_G["c"..rc:GetCode()]
 		local db=rc:IsHasEffect(DM_EFFECT_DOUBLE_BREAKER)
 		local tb=rc:IsHasEffect(DM_EFFECT_TRIPLE_BREAKER)
+		local cb=rc:IsHasEffect(DM_EFFECT_CREW_BREAKER)
 		if rc:GetEffectCount(DM_EFFECT_BREAKER)==1 then
 			if db then min,max=2,2
-			elseif tb then min,max=3,3 end
+			elseif tb then min,max=3,3
+			elseif cb then min,max=m.crew_breaker_count(rc),m.crew_breaker_count(rc) end
 		elseif rc:GetEffectCount(DM_EFFECT_BREAKER)>1 then
 			local available_list={}
 			if db then table.insert(available_list,1) end
 			if tb then table.insert(available_list,2) end
+			if cb then table.insert(available_list,3) end
 			local option_list={}
 			for _,te in pairs(available_list) do
 				table.insert(option_list,Auxiliary.break_select_list[te])
@@ -548,7 +552,8 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason)
 			Duel.Hint(HINT_SELECTMSG,sel_player,DM_HINTMSG_APPLYABILITY)
 			local opt=Duel.SelectOption(sel_player,table.unpack(option_list))+1
 			if opt==1 then min,max=2,2
-			elseif opt==2 then min,max=3,3 end
+			elseif opt==2 then min,max=3,3
+			elseif opt==3 then min,max=m.crew_breaker_count(rc),m.crew_breaker_count(rc) end
 		end
 	end
 	Duel.Hint(HINT_SELECTMSG,sel_player,DM_HINTMSG_BREAK)
@@ -573,6 +578,7 @@ end
 Auxiliary.break_select_list={
 	[1]=DM_DESC_DOUBLE_BREAKER,
 	[2]=DM_DESC_TRIPLE_BREAKER,
+	[3]=DM_DESC_CREW_BREAKER,
 }
 --put a card into the mana zone
 function Duel.SendtoMana(targets,pos,reason)
