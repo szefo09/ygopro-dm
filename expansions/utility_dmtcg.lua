@@ -1491,6 +1491,16 @@ function Auxiliary.SelftoShieldDestroyReplaceOperation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_CARD,0,c:GetOriginalCode())
 	Duel.SendtoShield(c,tp)
 end
+--"When this creature would be destroyed, shuffle it into your deck instead."
+--e.g. "Ryudmila, Channeler of Suns" (DM-10 2/110)
+function Auxiliary.SelftoDeckDestroyReplaceOperation(seq)
+	--seq: where to put the cards: DECK_SEQUENCE_TOP|BOTTOM|SHUFFLE
+	return	function(e,tp,eg,ep,ev,re,r,rp)
+				local c=e:GetHandler()
+				Duel.Hint(HINT_CARD,0,c:GetOriginalCode())
+				Duel.SendtoDeck(c,PLAYER_OWNER,seq,REASON_EFFECT+REASON_REPLACE)
+			end
+end
 --"When one of your creatures would be destroyed, ABILITY."
 --e.g. "King Ambergris" (Game Original)
 function Auxiliary.AddDestroyReplaceEffect(c,desc_id,targ_func,op_func,val,con_func)
