@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.tmfilter(c)
-	return c:IsFaceup() and c:IsCivilization(DM_CIVILIZATION_WATER+DM_CIVILIZATION_DARKNESS) and c:IsAbleToMana()
+	return c:IsFaceup() and c:IsCivilization(DM_CIVILIZATIONS_WD) and c:IsAbleToMana()
 end
 scard.tmtg=dm.TargetCardFunction(PLAYER_OPPONENT,scard.tmfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TOMANA)
 scard.tmop=dm.TargetSendtoManaOperation
