@@ -54,8 +54,6 @@
 ### Fighting Spirit Saga 闘魂編, インビンシブル・ソウル
 - **Sept. 25, 2003** : DM-07 Invincible Charge 「闘魂編 第2弾 時空超獣の呪（インビンシブル・チャージ）」
 	- Cursed Totem 《呪紋の化身（カース・トーテム）》 : `24007061` (OCG only)
-- **Dec. 25, 2003** : DM-08 Invincible Legend 「闘魂編 第3弾 超神龍の復活（インビンシブル・レジェンド）」
-	- Skeleton Vice 《スケルトン･バイス》 : `24008061` (OCG only)
 ### Holy Fist Saga 聖拳編, エターナル・アームズ
 - **Mar. 26, 2005** : DM-13 Eternal Phoenix 「聖拳編 第4弾 龍炎鳳神誕（エターナル・フェニックス）」 : `24013001-24013060`
 ### Reincarnation Saga 転生編, ジェネレート・ギア
@@ -115,6 +113,8 @@
 - ~**June 26, 2003** : DM-06 Invincible Soul 「闘魂編（インビンシブル・ソウル）第1弾」~
 	- ~Wicked Soul Reincarnation 《邪魂転生》 : `24006121` (OCG only)~
 	- ~Hell Slash 《ヘル・スラッシュ》 : `24006122` (OCG only)~
+- ~**Dec. 25, 2003** : DM-08 Invincible Legend 「闘魂編 第3弾 超神龍の復活（インビンシブル・レジェンド）」~
+	- ~Skeleton Vice 《スケルトン･バイス》 : `24008061` (OCG only)~
 
 ### DMR Packs - Not Yet Scripted
 ### Episode 1 エピソード1
