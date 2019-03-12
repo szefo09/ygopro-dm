@@ -1444,19 +1444,16 @@ end
 --forced: true for forced abilities
 --prop: include EFFECT_FLAG_CARD_TARGET for a targeting ability
 --"When this creature would be destroyed, ABILITY."
---e.g. "Chilias, the Oracle" (DM-01 1/110)
-function Auxiliary.AddSingleDestroyReplaceEffect(c,desc_id,targ_func,op_func,con_func,prop)
+--e.g. "Chilias, the Oracle" (DM-01 1/110), "Coiling Vines" (DM-01 92/110), "Aless, the Oracle" (DM-03 2/55)
+function Auxiliary.AddSingleDestroyReplaceEffect(c,desc_id,targ_func,op_func)
+	--targ_func: targ_func or Auxiliary.SingleDestroyReplaceTarget
+	--op_func: op_func or Auxiliary.SingleDestroyReplaceOperation
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EFFECT_DESTROY_REPLACE)
-	if prop then
-		e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE+prop)
-	else
-		e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
-	end
+	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
 	e1:SetRange(DM_LOCATION_BATTLE)
-	if con_func then e1:SetCondition(con_func) end
 	e1:SetTarget(targ_func)
 	if op_func then e1:SetOperation(op_func) end
 	c:RegisterEffect(e1)
@@ -1470,35 +1467,13 @@ function Auxiliary.SingleDestroyReplaceTarget(f,...)
 				return true
 			end
 end
---"Return it to your hand instead"
---e.g. "Chilias, the Oracle" (DM-01 1/110)
-function Auxiliary.SelftoHandDestroyReplaceOperation(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	Duel.Hint(HINT_CARD,0,c:GetOriginalCode())
-	Duel.SendtoHand(c,PLAYER_OWNER,REASON_EFFECT+REASON_REPLACE)
-end
---"Put it into your mana zone instead"
---e.g. "Coiling Vines" (DM-01 92/110)
-function Auxiliary.SelftoManaDestroyReplaceOperation(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	Duel.Hint(HINT_CARD,0,c:GetOriginalCode())
-	Duel.SendtoMana(c,POS_FACEUP_UNTAPPED,REASON_EFFECT+REASON_REPLACE)
-end
---"Add it to your shields face down instead"
---e.g. "Aless, the Oracle" (DM-03 2/55)
-function Auxiliary.SelftoShieldDestroyReplaceOperation(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	Duel.Hint(HINT_CARD,0,c:GetOriginalCode())
-	Duel.SendtoShield(c,tp)
-end
---"When this creature would be destroyed, shuffle it into your deck instead."
---e.g. "Ryudmila, Channeler of Suns" (DM-10 2/110)
-function Auxiliary.SelftoDeckDestroyReplaceOperation(seq)
-	--seq: where to put the cards: DECK_SEQUENCE_TOP|BOTTOM|SHUFFLE
+function Auxiliary.SingleDestroyReplaceOperation(op_func,...)
+	---...: Duel.SendtoX
+	local ext_params={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local c=e:GetHandler()
 				Duel.Hint(HINT_CARD,0,c:GetOriginalCode())
-				Duel.SendtoDeck(c,PLAYER_OWNER,seq,REASON_EFFECT+REASON_REPLACE)
+				op_func(c,table.unpack(ext_params))
 			end
 end
 --"When one of your creatures would be destroyed, ABILITY."

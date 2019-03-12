@@ -12,4 +12,4 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 scard.reptg=dm.SingleDestroyReplaceTarget(Card.IsAbleToHand)
-scard.repop=dm.SelftoHandDestroyReplaceOperation
+scard.repop=dm.SingleDestroyReplaceOperation(Duel.SendtoHand,PLAYER_OWNER,REASON_EFFECT+REASON_REPLACE)

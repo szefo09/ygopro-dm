@@ -34,4 +34,4 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 end
 --destroy replace (return)
 scard.reptg=dm.SingleDestroyReplaceTarget(Card.IsAbleToHand)
-scard.repop=dm.SelftoHandDestroyReplaceOperation
+scard.repop=dm.SingleDestroyReplaceOperation(Duel.SendtoHand,PLAYER_OWNER,REASON_EFFECT+REASON_REPLACE)

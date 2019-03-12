@@ -18,4 +18,4 @@ function scard.powval(e,c)
 end
 --destroy replace (to deck)
 scard.reptg=dm.SingleDestroyReplaceTarget(Card.IsAbleToDeck)
-scard.repop=dm.SelftoDeckDestroyReplaceOperation(DECK_SEQUENCE_SHUFFLE)
+scard.repop=dm.SingleDestroyReplaceOperation(Duel.SendtoDeck,PLAYER_OWNER,DECK_SEQUENCE_SHUFFLE,REASON_EFFECT+REASON_REPLACE)
