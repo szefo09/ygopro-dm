@@ -6,10 +6,10 @@ function scard.initial_effect(c)
 	--return
 	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.rettg,scard.retop)
 	--power up
-	dm.EnableUpdatePower(c,2000,nil,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,aux.TargetBoolFunction(scard.powfilter))
+	dm.EnableUpdatePower(c,2000,nil,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,scard.powtg)
 end
 scard.duel_masters_card=true
-function scard.powfilter(c)
+function scard.powtg(e,c)
 	return c:DMIsRace(DM_RACE_ANGEL_COMMAND) or c:DMIsRace(DM_RACE_DEMON_COMMAND)
 end
 function scard.retfilter(c)
