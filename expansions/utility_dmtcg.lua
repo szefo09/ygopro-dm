@@ -1300,6 +1300,28 @@ function Auxiliary.EnablePowerAttacker(c,val,con_func)
 	Auxiliary.EnableUpdatePower(c,val,aux.AND(Auxiliary.SelfAttackerCondition,con_func))
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_POWER_ATTACKER,con_func)
 end
+--"Each of your creatures has "Power attacker +N000."
+--e.g. "Überdragon Jabaha" (DM-03 43/55), "Terradragon Hulcoon Berga" (Game Original)
+function Auxiliary.AddStaticEffectPowerAttacker(c,val,s_range,o_range,targ_func)
+	local s_range=s_range or LOCATION_ALL
+	local o_range=o_range or 0
+	local targ_func=targ_func or aux.TRUE
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetCode(DM_EFFECT_UPDATE_POWER)
+	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e1:SetRange(DM_LOCATION_BATTLE)
+	e1:SetCondition(Auxiliary.SelfAttackerCondition)
+	e1:SetValue(val)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
+	e2:SetRange(DM_LOCATION_BATTLE)
+	e2:SetTargetRange(s_range,o_range)
+	e2:SetTarget(targ_func)
+	e2:SetLabelObject(e1)
+	c:RegisterEffect(e2)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_POWER_ATTACKER,nil,DM_LOCATION_BATTLE,s_range,o_range,targ_func)
+end
 --function for a granted "Power attacker +N000" ability
 --e.g. "Burning Power" (DM-01 71/110)
 function Auxiliary.RegisterEffectPowerAttacker(c,tc,desc_id,val,reset_flag,reset_count)
