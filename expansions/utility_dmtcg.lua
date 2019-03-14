@@ -1151,7 +1151,7 @@ function Auxiliary.CivilizationBlockerCondition(civ)
 			end
 end
 Auxiliary.civblcon=Auxiliary.CivilizationBlockerCondition
---"Each of your creatures has "Blocker."
+--"Each of your creatures has "Blocker"."
 --e.g. "Sieg Balicula, the Intense" (DM-03 8/55), "Gallia Zohl, Iron Guardian Q" (DM-05 8/55)
 function Auxiliary.AddStaticEffectBlocker(c,s_range,o_range,targ_func)
 	local s_range=s_range or LOCATION_ALL
@@ -1300,7 +1300,7 @@ function Auxiliary.EnablePowerAttacker(c,val,con_func)
 	Auxiliary.EnableUpdatePower(c,val,aux.AND(Auxiliary.SelfAttackerCondition,con_func))
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_POWER_ATTACKER,con_func)
 end
---"Each of your creatures has "Power attacker +N000."
+--"Each of your creatures has "Power attacker +N000"."
 --e.g. "Überdragon Jabaha" (DM-03 43/55), "Terradragon Hulcoon Berga" (Game Original)
 function Auxiliary.AddStaticEffectPowerAttacker(c,val,s_range,o_range,targ_func)
 	local s_range=s_range or LOCATION_ALL
@@ -1374,7 +1374,7 @@ function Auxiliary.CivilizationSlayerTarget(civ)
 			end
 end
 Auxiliary.civsltg=Auxiliary.CivilizationSlayerTarget
---"Each of your creatures has "Slayer."
+--"Each of your creatures has "Slayer"."
 --e.g. "Gigaling Q" (DM-05 27/55), "Frost Specter, Shadow of Age" (DM-06 54/110)
 function Auxiliary.AddStaticEffectSlayer(c,s_range,o_range,targ_func)
 	local s_range=s_range or LOCATION_ALL
@@ -1417,7 +1417,7 @@ function Auxiliary.RegisterEffectSlayer(c,tc,desc_id,reset_flag,reset_count)
 	Auxiliary.RegisterEffectCustom(c,tc,desc_id,DM_EFFECT_SLAYER,-DM_RESET_TOGRAVE-RESET_LEAVE+reset_flag,reset_count)
 end
 --"Breaker (This creature breaks N shields.)"
---"Each creature in the battle zone has "Breaker""
+--"Each creature in the battle zone has "Breaker"."
 --e.g. "Gigaberos" (DM-01 55/110), "Chaotic Skyterror" (DM-04 41/55)
 function Auxiliary.EnableBreaker(c,code,con_func,range,s_range,o_range,targ_func)
 	--code: DM_EFFECT_DOUBLE_BREAKER, DM_EFFECT_TRIPLE_BREAKER, DM_EFFECT_QUATTRO_BREAKER, etc.
@@ -1454,6 +1454,33 @@ function Auxiliary.TapAbilityCondition(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	return Auxiliary.BattlePhaseCondition() and Duel.GetAttacker()==nil and Duel.GetCurrentChain()==0
 		and c:GetAttackAnnouncedCount()==0 and c:IsAttackable()
+end
+--"Each of your creatures may tap instead of attacking to use this Tap ability."
+--e.g. "Arc Bine, the Astounding" (DM-06 12/110)
+function Auxiliary.AddStaticEffectTapAbility(c,desc_id,targ_func1,op_func,s_range,o_range,targ_func2,prop)
+	--targ_func1: include Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
+	local desc_id=desc_id or 0
+	local s_range=s_range or LOCATION_ALL
+	local o_range=o_range or 0
+	local targ_func2=targ_func2 or aux.TRUE
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	e1:SetType(EFFECT_TYPE_QUICK_O)
+	e1:SetCode(EVENT_FREE_CHAIN)
+	if prop then e1:SetProperty(prop) end
+	e1:SetRange(DM_LOCATION_BATTLE)
+	e1:SetHintTiming(DM_TIMING_TAP_ABILITY,0)
+	e1:SetCondition(Auxiliary.TapAbilityCondition)
+	e1:SetCost(Auxiliary.SelfTapCost)
+	if targ_func1 then e1:SetTarget(targ_func1) end
+	e1:SetOperation(op_func)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
+	e2:SetRange(DM_LOCATION_BATTLE)
+	e2:SetTargetRange(s_range,o_range)
+	e2:SetTarget(targ_func2)
+	e2:SetLabelObject(e1)
+	c:RegisterEffect(e2)
 end
 --"RACE Hunter (This creature wins all battles against RACE.)"
 --e.g. "Pearl Carras, Barrier Guardian" (Game Original)
@@ -1615,6 +1642,31 @@ function Auxiliary.AddComeIntoPlayEffect(c,desc_id,optional,targ_func,op_func,pr
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
 end
+--"Each of your creatures has "When you put this creature into the battle zone, ABILITY"."
+--e.g. "Forbos, Sanctum Guardian Q" (DM-06 19/110) 
+function Auxiliary.AddStaticEffectComeIntoPlay(c,desc_id,optional,targ_func1,op_func,s_range,o_range,targ_func2,prop)
+	--targ_func1: include Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
+	local desc_id=desc_id or 0
+	local typ=EFFECT_TYPE_TRIGGER_F
+	if optional then typ=EFFECT_TYPE_TRIGGER_O end
+	local s_range=s_range or LOCATION_ALL
+	local o_range=o_range or 0
+	local targ_func2=targ_func2 or aux.TRUE
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	e1:SetType(EFFECT_TYPE_SINGLE+typ)
+	e1:SetCode(DM_EVENT_COME_INTO_PLAY_SUCCESS)
+	if prop then e1:SetProperty(prop) end
+	if targ_func1 then e1:SetTarget(targ_func1) end
+	e1:SetOperation(op_func)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
+	e2:SetRange(DM_LOCATION_BATTLE)
+	e2:SetTargetRange(s_range,o_range)
+	e2:SetTarget(targ_func2)
+	e2:SetLabelObject(e1)
+	c:RegisterEffect(e2)
+end
 --"Whenever this creature attacks, ABILITY."
 --e.g. "Laguna, Lightning Enforcer" (DM-02 4/55)
 function Auxiliary.AddSingleAttackTriggerEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
@@ -1635,6 +1687,35 @@ function Auxiliary.AddSingleAttackTriggerEffect(c,desc_id,optional,targ_func,op_
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
+end
+--"Each of your creatures has "Whenever this creature attacks, ABILITY"."
+--e.g. "Split-Head Hydroturtle Q" (DM-05 24/55)
+function Auxiliary.AddStaticEffectAttackTrigger(c,desc_id,optional,targ_func1,op_func,s_range,o_range,targ_func2,prop)
+	--targ_func1: include Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
+	local desc_id=desc_id or 0
+	local typ=EFFECT_TYPE_TRIGGER_F
+	if optional then typ=EFFECT_TYPE_TRIGGER_O end
+	local s_range=s_range or LOCATION_ALL
+	local o_range=o_range or 0
+	local targ_func2=targ_func2 or aux.TRUE
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	e1:SetType(EFFECT_TYPE_SINGLE+typ)
+	e1:SetCode(EVENT_ATTACK_ANNOUNCE)
+	if prop then
+		e1:SetProperty(DM_EFFECT_FLAG_CHAIN_LIMIT+prop)
+	else
+		e1:SetProperty(DM_EFFECT_FLAG_CHAIN_LIMIT)
+	end
+	if targ_func1 then e1:SetTarget(targ_func1) end
+	e1:SetOperation(op_func)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
+	e2:SetRange(DM_LOCATION_BATTLE)
+	e2:SetTargetRange(s_range,o_range)
+	e2:SetTarget(targ_func2)
+	e2:SetLabelObject(e1)
+	c:RegisterEffect(e2)
 end
 --"Whenever this creature blocks, ABILITY."
 --e.g. "Spiral Grass" (DM-02 10/55)
@@ -1886,6 +1967,26 @@ function Auxiliary.EnableUpdatePower(c,val,con_func,s_range,o_range,targ_func)
 	e1:SetValue(val)
 	c:RegisterEffect(e1)
 end
+--"Each of your creatures has "This creature gets +/-N000 power"." 
+--e.g. "Smash Horn Q" (DM-05 55/55)
+function Auxiliary.AddStaticEffectUpdatePower(c,val,s_range,o_range,targ_func)
+	local s_range=s_range or LOCATION_ALL
+	local o_range=o_range or 0
+	local targ_func=targ_func or aux.TRUE
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetCode(DM_EFFECT_UPDATE_POWER)
+	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e1:SetRange(DM_LOCATION_BATTLE)
+	e1:SetValue(val)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
+	e2:SetRange(DM_LOCATION_BATTLE)
+	e2:SetTargetRange(s_range,o_range)
+	e2:SetTarget(targ_func)
+	e2:SetLabelObject(e1)
+	c:RegisterEffect(e2)
+end
 --function for a granted "+/-N000 power" ability
 --e.g. "Rumble Gate" (DM-02 44/55)
 function Auxiliary.RegisterEffectUpdatePower(c,tc,desc_id,val,reset_flag,reset_count,con_func)
@@ -1988,6 +2089,29 @@ function Auxiliary.CannotBeBlockedCivValue(civ)
 	return	function(e,re,tp)
 				return re:GetHandler():IsCivilization(civ)
 			end
+end
+--"Each of your creatures has "This creature can't be blocked"."
+--e.g. "King Nautilus" (DM-02 17/55)
+function Auxiliary.AddStaticEffectCannotBeBlocked(c,s_range,o_range,targ_func)
+	local s_range=s_range or LOCATION_ALL
+	local o_range=o_range or 0
+	local targ_func=targ_func or aux.TRUE
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetCode(EFFECT_CANNOT_ACTIVATE)
+	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e1:SetRange(DM_LOCATION_BATTLE)
+	e1:SetTargetRange(1,1)
+	e1:SetCondition(Auxiliary.SelfAttackerCondition)
+	e1:SetValue(Auxiliary.CannotBeBlockedValue())
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
+	e2:SetRange(DM_LOCATION_BATTLE)
+	e2:SetTargetRange(s_range,o_range)
+	e2:SetTarget(targ_func)
+	e2:SetLabelObject(e1)
+	c:RegisterEffect(e2)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_UNBLOCKABLE,nil,DM_LOCATION_BATTLE,s_range,o_range,targ_func)
 end
 --function for a granted "This creature can't be blocked" ability
 --e.g. "Laser Wing" (DM-01 11/110)
