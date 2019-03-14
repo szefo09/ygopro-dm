@@ -21,6 +21,6 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SetTargetCard(g)
 	for tc in aux.Next(g) do
 		--double breaker
-		dm.GainEffectBreaker(c,tc,1,DM_EFFECT_DOUBLE_BREAKER)
+		dm.RegisterEffectBreaker(c,tc,1,DM_EFFECT_DOUBLE_BREAKER)
 	end
 end

@@ -14,5 +14,5 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()==0 then return end
 	Duel.HintSelection(g)
 	--slayer
-	dm.GainEffectSlayer(e:GetHandler(),g:GetFirst(),1)
+	dm.RegisterEffectSlayer(e:GetHandler(),g:GetFirst(),1)
 end

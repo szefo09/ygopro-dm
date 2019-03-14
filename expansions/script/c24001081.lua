@@ -14,7 +14,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.HintSelection(Group.FromCards(tc))
 	local c=e:GetHandler()
 	--power attacker
-	dm.GainEffectPowerAttacker(c,tc,1,4000)
+	dm.RegisterEffectPowerAttacker(c,tc,1,4000)
 	--double breaker
-	dm.GainEffectBreaker(c,tc,2,DM_EFFECT_DOUBLE_BREAKER)
+	dm.RegisterEffectBreaker(c,tc,2,DM_EFFECT_DOUBLE_BREAKER)
 end

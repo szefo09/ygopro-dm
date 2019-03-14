@@ -12,8 +12,8 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()==0 then return end
 	for tc in aux.Next(g) do
 		--power attacker
-		dm.GainEffectPowerAttacker(e:GetHandler(),tc,1,4000)
+		dm.RegisterEffectPowerAttacker(e:GetHandler(),tc,1,4000)
 		--double breaker
-		dm.GainEffectBreaker(e:GetHandler(),tc,2,DM_EFFECT_DOUBLE_BREAKER)
+		dm.RegisterEffectBreaker(e:GetHandler(),tc,2,DM_EFFECT_DOUBLE_BREAKER)
 	end
 end

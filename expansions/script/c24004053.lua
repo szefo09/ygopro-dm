@@ -12,7 +12,7 @@ function scard.powop(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()==0 then return end
 	for tc in aux.Next(g) do
 		--power up
-		dm.GainEffectUpdatePower(e:GetHandler(),tc,1,scard.powval)
+		dm.RegisterEffectUpdatePower(e:GetHandler(),tc,1,scard.powval)
 	end
 end
 function scard.cfilter(c)

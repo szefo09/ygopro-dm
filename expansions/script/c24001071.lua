@@ -13,5 +13,5 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()==0 then return end
 	Duel.HintSelection(g)
 	--power attacker
-	dm.GainEffectPowerAttacker(e:GetHandler(),g:GetFirst(),1,2000)
+	dm.RegisterEffectPowerAttacker(e:GetHandler(),g:GetFirst(),1,2000)
 end

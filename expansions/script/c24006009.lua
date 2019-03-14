@@ -13,8 +13,8 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	for tc in aux.Next(g) do
 		--power up
-		dm.GainEffectUpdatePower(c,tc,1,8000)
+		dm.RegisterEffectUpdatePower(c,tc,1,8000)
 		--triple breaker
-		dm.GainEffectBreaker(c,tc,2,DM_EFFECT_TRIPLE_BREAKER)
+		dm.RegisterEffectBreaker(c,tc,2,DM_EFFECT_TRIPLE_BREAKER)
 	end
 end

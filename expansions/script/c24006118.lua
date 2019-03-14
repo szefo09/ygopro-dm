@@ -5,7 +5,7 @@ function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_DRAGO_NOID))
-	--get ability (tap ability - get ability)
+	--get ability (tap ability) (get ability)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(sid,0))
 	e1:SetType(EFFECT_TYPE_QUICK_O)
@@ -38,5 +38,5 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()==0 then return end
 	Duel.HintSelection(g)
 	--power up
-	dm.GainEffectUpdatePower(e:GetHandler(),g:GetFirst(),1,3000)
+	dm.RegisterEffectUpdatePower(e:GetHandler(),g:GetFirst(),1,3000)
 end

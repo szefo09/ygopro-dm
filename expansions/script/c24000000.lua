@@ -9,7 +9,7 @@ function scard.initial_effect(c)
 	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_NO_TURN_RESET)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EVENT_ADJUST)
-	e1:SetRange(LOCATIONS_ALL)
+	e1:SetRange(LOCATION_ALL)
 	e1:SetCountLimit(1)
 	e1:SetOperation(scard.operation)
 	c:RegisterEffect(e1)
@@ -28,7 +28,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	end
 	Duel.MoveToField(c,tp,tp,DM_LOCATION_SHIELD,POS_FACEUP,true)
 	--apply rules for opponent
-	local g=Duel.GetMatchingGroup(Card.IsCode,tp,0,LOCATIONS_ALL,nil,sid)
+	local g=Duel.GetMatchingGroup(Card.IsCode,tp,0,LOCATION_ALL,nil,sid)
 	if g:GetCount()>0 then
 		local fc2=Duel.GetFieldCard(1-tp,DM_LOCATION_SHIELD,5)
 		if fc2 then
@@ -59,8 +59,8 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	local f=function(c)
 		return not c.duel_masters_card
 	end
-	local b3=Duel.GetMatchingGroupCount(f,tp,LOCATIONS_ALL,0,nil)>0
-	local b4=Duel.GetMatchingGroupCount(f,1-tp,LOCATIONS_ALL,0,nil)>0
+	local b3=Duel.GetMatchingGroupCount(f,tp,LOCATION_ALL,0,nil)>0
+	local b4=Duel.GetMatchingGroupCount(f,1-tp,LOCATION_ALL,0,nil)>0
 	if b1 then Duel.Hint(HINT_MESSAGE,tp,DM_DECKERROR_DECKCOUNT) end
 	if b2 then Duel.Hint(HINT_MESSAGE,1-tp,DM_DECKERROR_DECKCOUNT) end
 	if b3 then Duel.Hint(HINT_MESSAGE,tp,DM_DECKERROR_NONDM) end
@@ -175,7 +175,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	e12:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_IGNORE_RANGE)
 	e12:SetType(EFFECT_TYPE_FIELD)
 	e12:SetCode(EFFECT_MONSTER_SSET)
-	e12:SetTargetRange(LOCATIONS_ALL,LOCATIONS_ALL)
+	e12:SetTargetRange(LOCATION_ALL,LOCATION_ALL)
 	e12:SetTarget(aux.TargetBoolFunction(Card.IsCreature))
 	e12:SetValue(TYPE_SPELL)
 	Duel.RegisterEffect(e12,tp)
@@ -225,7 +225,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	e18:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_IGNORE_RANGE)
 	e18:SetType(EFFECT_TYPE_FIELD)
 	e18:SetCode(EFFECT_TO_GRAVE_REDIRECT)
-	e18:SetTargetRange(LOCATIONS_ALL,LOCATIONS_ALL)
+	e18:SetTargetRange(LOCATION_ALL,LOCATION_ALL)
 	e18:SetTarget(scard.tgtg)
 	e18:SetValue(DM_LOCATION_GRAVE)
 	Duel.RegisterEffect(e18,tp)

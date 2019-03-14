@@ -24,6 +24,6 @@ function scard.maop(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()==0 then return end
 	for tc in aux.Next(g) do
 		--attack if able
-		dm.GainEffectCustom(e:GetHandler(),tc,2,EFFECT_MUST_ATTACK)
+		dm.RegisterEffectCustom(e:GetHandler(),tc,2,EFFECT_MUST_ATTACK)
 	end
 end

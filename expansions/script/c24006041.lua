@@ -12,5 +12,5 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
 	--blocker
-	dm.GainEffectBlocker(c,c,1)
+	dm.RegisterEffectBlocker(c,c,1)
 end

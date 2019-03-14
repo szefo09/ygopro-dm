@@ -22,7 +22,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()==0 then return end
 	for tc in aux.Next(g) do
 		--blocker
-		dm.GainEffectBlocker(c,tc,3,RESET_PHASE+PHASE_END+RESET_OPPO_TURN)
+		dm.RegisterEffectBlocker(c,tc,3,RESET_PHASE+PHASE_END+RESET_OPPO_TURN)
 	end
 end
 --tap

@@ -1,11 +1,9 @@
 --[[
-	Duel Masters Trading Card Game Constants
-	
+	constant_dmtcg.lua
+
 	Usage: Put this file in the expansions folder
-	
-	Include the following code in your script
-	
-	local DMTCG=require "expansions.constant_dmtcg"
+
+	Include the following code in your script: local DMTCG=require "expansions.constant_dmtcg"
 ]]
 
 local DMTCG={}
@@ -117,7 +115,7 @@ DM_LOCATION_SHIELD					=LOCATION_SZONE						--Location of cards in the shield zo
 DM_LOCATION_MANA					=LOCATION_GRAVE+LOCATION_REMOVED	--Location of cards in the mana zone
 DM_LOCATION_GRAVE					=LOCATION_REMOVED					--Location of cards in the graveyard
 --↑Location combinations
-LOCATIONS_ALL						=0xff		--All locations
+LOCATION_ALL						=0xff		--All locations
 --Position
 POS_FACEUP_UNTAPPED					=POS_FACEUP_ATTACK		--The position of an untapped card in the battle zone
 POS_FACEDOWN_UNTAPPED				=POS_FACEDOWN_ATTACK	--N/A

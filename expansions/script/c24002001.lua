@@ -16,10 +16,10 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	for tc in aux.Next(g) do
 		--ignore summoning sickness
-		dm.GainEffectCustom(c,tc,1,DM_EFFECT_IGNORE_SUMMONING_SICKNESS)
+		dm.RegisterEffectCustom(c,tc,1,DM_EFFECT_IGNORE_SUMMONING_SICKNESS)
 		--ignore cannot attack
-		dm.GainEffectCustom(c,tc,1,DM_EFFECT_IGNORE_CANNOT_ATTACK)
+		dm.RegisterEffectCustom(c,tc,1,DM_EFFECT_IGNORE_CANNOT_ATTACK)
 		--ignore cannot attack player
-		dm.GainEffectCustom(c,tc,1,DM_EFFECT_IGNORE_CANNOT_ATTACK_PLAYER)
+		dm.RegisterEffectCustom(c,tc,1,DM_EFFECT_IGNORE_CANNOT_ATTACK_PLAYER)
 	end
 end

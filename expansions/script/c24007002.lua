@@ -18,6 +18,6 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()==0 then return end
 	for tc in aux.Next(g) do
 		--cannot be blocked
-		dm.GainEffectCannotBeBlocked(e:GetHandler(),tc,1)
+		dm.RegisterEffectCannotBeBlocked(e:GetHandler(),tc,1)
 	end
 end

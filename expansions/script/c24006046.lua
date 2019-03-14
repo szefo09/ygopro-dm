@@ -12,5 +12,5 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if not tc or not tc:IsRelateToEffect(e) then return end
 	--cannot be blocked
-	dm.GainEffectCannotBeBlocked(e:GetHandler(),tc,1)
+	dm.RegisterEffectCannotBeBlocked(e:GetHandler(),tc,1)
 end

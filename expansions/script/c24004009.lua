@@ -17,6 +17,6 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetTurnPlayer()==tp then reset_count=2 end
 	for tc in aux.Next(g) do
 		--blocker
-		dm.GainEffectBlocker(e:GetHandler(),tc,1,RESET_PHASE+PHASE_DRAW,reset_count)
+		dm.RegisterEffectBlocker(e:GetHandler(),tc,1,RESET_PHASE+PHASE_DRAW,reset_count)
 	end
 end

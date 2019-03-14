@@ -1,24 +1,10 @@
 --[[
-	Duel Masters Trading Card Game Utility
+	utility_dmtcg.lua
 
 	Usage: Put this file in the expansions folder
-	
-	Include the following code in your script
-	
-	local dm=require "expansions.utility_dmtcg"
-]]
 
---CONTENTS
---[+UniversalFunctions]......................................functions that are included on every script
---[+Creature]................................................functions that are included on every creature
---[+EvolutionCreature].......................................functions that are included on every evolution creature
---[+Spell]...................................................functions that are included on every spell
---[+KeywordAbilities]........................................keyword abilities that are shared by many cards
---[+Abilities]...............................................non-keyword abilities that are shared by many cards
---[+Conditions]..............................................condition functions
---[+Costs]...................................................cost functions
---[+Targets].................................................target functions
---[+Filters].................................................filter functions
+	Include the following code in your script: local dm=require "expansions.utility_dmtcg"
+]]
 
 local Auxiliary={}
 local DMTCG=require "expansions.constant_dmtcg"
@@ -32,11 +18,12 @@ DM_CIVILIZATIONS_WN=DM_CIVILIZATIONS_WATER_NATURE
 DM_CIVILIZATIONS_DF=DM_CIVILIZATIONS_DARKNESS_FIRE
 DM_CIVILIZATIONS_DN=DM_CIVILIZATIONS_DARKNESS_NATURE
 DM_CIVILIZATIONS_FN=DM_CIVILIZATIONS_FIRE_NATURE
+DM_DESC_FN_BLOCKER=DM_DESC_FIRE_NATURE_BLOCKER
+DM_DESC_NL_SLAYER=DM_DESC_NATURE_LIGHT_SLAYER
 EFFECT_INDESTRUCTIBLE=EFFECT_INDESTRUCTABLE
 EFFECT_INDESTRUCTIBLE_EFFECT=EFFECT_INDESTRUCTABLE_EFFECT
 EFFECT_INDESTRUCTIBLE_BATTLE=EFFECT_INDESTRUCTABLE_BATTLE
 
---==========[+UniversalFunctions]==========
 --return a card script's name and id
 --include in each script: local scard,sid=dm.GetID()
 function Auxiliary.GetID()
@@ -46,7 +33,6 @@ function Auxiliary.GetID()
 	local sid=tonumber(string.sub(str,2))
 	return scard,sid
 end
-
 --========== Lua ==========
 --Overwritten Lua functions
 --return the value type of a variable
@@ -120,7 +106,7 @@ function Card.IsUntapped(c)
 	if c:IsLocation(LOCATION_GRAVE) then
 		return c:IsFaceup()
 	elseif c:IsLocation(LOCATION_MZONE) then
-		return c:IsFaceup() and c:IsAttackPos()
+		return c:IsAttackPos()
 	else return false end
 end
 --check if a card is tapped
@@ -128,7 +114,7 @@ function Card.IsTapped(c)
 	if c:IsLocation(LOCATION_REMOVED) then
 		return c:IsFacedown()
 	elseif c:IsLocation(LOCATION_MZONE) then
-		return c:IsFaceup() and c:IsDefensePos()
+		return c:IsDefensePos()
 	else return false end
 end
 --check if a card can be untapped
@@ -793,8 +779,7 @@ function Auxiliary.RemoveEffectDescOperation(desc_id)
 			end
 end
 
---==========[+Creature]==========
---summon procedure
+--add procedure and rules to creature
 function Auxiliary.AddSummonProcedure(c)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(DM_DESC_SUMMON)
@@ -843,9 +828,8 @@ function Auxiliary.NonEvolutionSummonOperation(e,tp,eg,ep,ev,re,r,rp,c)
 	sg2:Merge(sg1)
 	Duel.PayManaCost(sg2)
 end
---functions that are included on every creature
 function Auxiliary.EnableCreatureAttribute(c)
-	--summon
+	--summon procedure
 	Auxiliary.AddSummonProcedure(c)
 	--cannot be battle target
 	local e1=Effect.CreateEffect(c)
@@ -857,8 +841,8 @@ function Auxiliary.EnableCreatureAttribute(c)
 	e1:SetValue(Auxiliary.CannotBeBattleTargetValue)
 	c:RegisterEffect(e1)
 	--attack shield
-	--not yet implemented: quattro, world, galaxy, infinity, crew, civilization, age, master
 	--note: must be updated each time new "breaker" abilities are released
+	--not yet implemented: quattro, world, galaxy, infinity, civilization, age, master
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
 	e2:SetCode(DM_EVENT_ATTACK_SHIELD)
@@ -922,8 +906,7 @@ function Auxiliary.AttackShieldOperation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e1,tp)	
 end
 
---==========[+EvolutionCreature]==========
---evolution procedure
+--add procedure to evolution creature
 function Auxiliary.AddEvolutionProcedure(c,f)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(DM_DESC_EVOLUTION)
@@ -996,12 +979,12 @@ function Auxiliary.SummonEvolutionOperation(e,tp,eg,ep,ev,re,r,rp,c)
 	g2:DeleteGroup()
 end
 
---==========[+Spell]==========
---functions that are included on every spell
---desc_id: 0~15 the string id of the script's text
---prop: include EFFECT_FLAG_CARD_TARGET for a targeting ability
+--add rules to spell
 function Auxiliary.EnableSpellAttribute(c)
 end
+--function for spell casting
+--desc_id: 0~15 the string id of the script's text
+--prop: include EFFECT_FLAG_CARD_TARGET for a targeting ability
 function Auxiliary.AddSpellCastEffect(c,desc_id,targ_func,op_func,prop,cost_func,con_func,cate)
 	--cost_func: include dm.CastSpellCost
 	local e1=Effect.CreateEffect(c)
@@ -1031,7 +1014,7 @@ function Auxiliary.AddSpellCastEffect(c,desc_id,targ_func,op_func,prop,cost_func
 	e2:SetOperation(op_func)
 	c:RegisterEffect(e2)
 end
---cost for casting spells
+--cost function for casting spells
 function Auxiliary.CastSpellCost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	if c:IsCanCastFree() then return true end
@@ -1055,10 +1038,12 @@ function Auxiliary.CastSpellCost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.PayManaCost(sg2)
 end
 
---==========[+KeywordAbilities]==========
+--c: the card that grants the ability
+--tc: the card that gets the ability
 --desc_id: 0~15 the string id of the script's text
 --prop: include EFFECT_FLAG_CARD_TARGET for a targeting ability
---a creature applies a specified ability
+
+--function for a static ability that grants a card an ability
 --e.g. "Dia Nork, Moonlight Guardian" (DM-01 2/110), "Brawler Zyler" (DM-01 70/110), "Holy Awe" (DM-01 6/110)
 function Auxiliary.EnableEffectCustom(c,code,con_func,range,s_range,o_range,targ_func)
 	--code: DM_EFFECT_BLOCKER, DM_EFFECT_POWER_ATTACKER, DM_EFFECT_SHIELD_TRIGGER, etc.
@@ -1076,9 +1061,9 @@ function Auxiliary.EnableEffectCustom(c,code,con_func,range,s_range,o_range,targ
 	if con_func then e1:SetCondition(con_func) end
 	c:RegisterEffect(e1)
 end
---a creature gets a specified ability
+--function for a granted ability
 --e.g. "Chaos Strike" (DM-01 72/110), "Diamond Cutter" (DM-02 1/55), "Rumble Gate" (DM-02 44/55)
-function Auxiliary.GainEffectCustom(c,tc,desc_id,code,reset_flag,reset_count)
+function Auxiliary.RegisterEffectCustom(c,tc,desc_id,code,reset_flag,reset_count)
 	--code: DM_EFFECT_UNTAPPED_BE_ATTACKED, DM_EFFECT_IGNORE_SUMMONING_SICKNESS, DM_EFFECT_ATTACK_UNTAPPED, etc.
 	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
 	local reset_count=reset_count or 1
@@ -1103,7 +1088,7 @@ end
 --e.g. "Dia Nork, Moonlight Guardian" (DM-01 2/110), "Lurking Eel" (DM-05 18/55)
 function Auxiliary.EnableBlocker(c,con_func,desc)
 	--con_func: include dm.CivilizationBlockerCondition for "CIVILIZATION blocker"
-	--desc: DM_DESC_FIRE_NATURE_BLOCKER for "Fire and nature blocker", etc.
+	--desc: DM_DESC_FN_BLOCKER for "Fire and nature blocker", etc.
 	local con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	if desc then
@@ -1166,9 +1151,35 @@ function Auxiliary.CivilizationBlockerCondition(civ)
 			end
 end
 Auxiliary.civblcon=Auxiliary.CivilizationBlockerCondition
---a creature gets "Blocker"
+--"Each of your creatures has "Blocker."
+--e.g. "Sieg Balicula, the Intense" (DM-03 8/55), "Gallia Zohl, Iron Guardian Q" (DM-05 8/55)
+function Auxiliary.AddStaticEffectBlocker(c,s_range,o_range,targ_func)
+	local s_range=s_range or LOCATION_ALL
+	local o_range=o_range or 0
+	local targ_func=targ_func or aux.TRUE
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(DM_DESC_BLOCKER)
+	e1:SetCategory(DM_CATEGORY_BLOCKER)
+	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_QUICK_O)
+	e1:SetCode(EVENT_ATTACK_ANNOUNCE)
+	e1:SetProperty(EFFECT_FLAG_DELAY)
+	e1:SetRange(DM_LOCATION_BATTLE)
+	e1:SetCondition(Auxiliary.BlockerCondition)
+	e1:SetCost(Auxiliary.BlockerCost)
+	e1:SetTarget(Auxiliary.BlockerTarget)
+	e1:SetOperation(Auxiliary.BlockerOperation)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
+	e2:SetRange(DM_LOCATION_BATTLE)
+	e2:SetTargetRange(s_range,o_range)
+	e2:SetTarget(targ_func)
+	e2:SetLabelObject(e1)
+	c:RegisterEffect(e2)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_BLOCKER,nil,DM_LOCATION_BATTLE,s_range,o_range,targ_func)
+end
+--function for a granted "Blocker" ability
 --e.g. "Full Defensor" (DM-04 9/55)
-function Auxiliary.GainEffectBlocker(c,tc,desc_id,reset_flag,reset_count)
+function Auxiliary.RegisterEffectBlocker(c,tc,desc_id,reset_flag,reset_count)
 	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
 	local reset_count=reset_count or 1
 	local e1=Effect.CreateEffect(c)
@@ -1187,7 +1198,7 @@ function Auxiliary.GainEffectBlocker(c,tc,desc_id,reset_flag,reset_count)
 		e1:SetReset(RESET_EVENT+RESETS_STANDARD+reset_flag,reset_count)
 	end
 	tc:RegisterEffect(e1)
-	Auxiliary.GainEffectCustom(c,tc,desc_id,DM_EFFECT_BLOCKER,reset_flag,reset_count)
+	Auxiliary.RegisterEffectCustom(c,tc,desc_id,DM_EFFECT_BLOCKER,reset_flag,reset_count)
 end
 --"Shield trigger (When this spell is put into your hand from your shield zone, you may cast it immediately for no cost.)"
 --"Shield trigger (When this creature is put into your hand from your shield zone, you may summon it immediately for no cost.)"
@@ -1289,20 +1300,20 @@ function Auxiliary.EnablePowerAttacker(c,val,con_func)
 	Auxiliary.EnableUpdatePower(c,val,aux.AND(Auxiliary.SelfAttackerCondition,con_func))
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_POWER_ATTACKER,con_func)
 end
---a creature gets "Power attacker +N000"
+--function for a granted "Power attacker +N000" ability
 --e.g. "Burning Power" (DM-01 71/110)
-function Auxiliary.GainEffectPowerAttacker(c,tc,desc_id,val,reset_flag,reset_count)
+function Auxiliary.RegisterEffectPowerAttacker(c,tc,desc_id,val,reset_flag,reset_count)
 	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
 	local reset_count=reset_count or 1
-	Auxiliary.GainEffectUpdatePower(c,tc,desc_id,val,reset_flag,reset_count,Auxiliary.SelfAttackerCondition)
-	Auxiliary.GainEffectCustom(c,tc,desc_id,DM_EFFECT_POWER_ATTACKER,reset_flag,reset_count)
+	Auxiliary.RegisterEffectUpdatePower(c,tc,desc_id,val,reset_flag,reset_count,Auxiliary.SelfAttackerCondition)
+	Auxiliary.RegisterEffectCustom(c,tc,desc_id,DM_EFFECT_POWER_ATTACKER,reset_flag,reset_count)
 end
 --"Slayer (Whenever this creature battles, destroy the other creature after the battle.)"
 --"CIVILIZATION1 and CIVILIZATION2 slayer (Whenever this creature battles a CIVILIZATION1 or CIVILIZATION2 creature, destroy the other creature after the battle.)"
 --e.g. "Bone Assassin, the Ripper" (DM-01 47/110), "Gigakail" (DM-05 26/55)
 function Auxiliary.EnableSlayer(c,con_func,targ_func,desc)
 	--targ_func: include dm.CivilizationSlayerTarget for "CIVILIZATION slayer"
-	--desc: DM_DESC_NATURE_LIGHT_SLAYER for "Nature and light slayer", etc.
+	--desc: DM_DESC_NL_SLAYER for "Nature and light slayer", etc.
 	local con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	if desc then
@@ -1341,9 +1352,31 @@ function Auxiliary.CivilizationSlayerTarget(civ)
 			end
 end
 Auxiliary.civsltg=Auxiliary.CivilizationSlayerTarget
---a creature gets "Slayer"
+--"Each of your creatures has "Slayer."
+--e.g. "Gigaling Q" (DM-05 27/55), "Frost Specter, Shadow of Age" (DM-06 54/110)
+function Auxiliary.AddStaticEffectSlayer(c,s_range,o_range,targ_func)
+	local s_range=s_range or LOCATION_ALL
+	local o_range=o_range or 0
+	local targ_func=targ_func or aux.TRUE
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(DM_DESC_SLAYER)
+	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
+	e1:SetCode(DM_EVENT_ATTACK_END)
+	e1:SetCondition(Auxiliary.SlayerCondition)
+	e1:SetTarget(Auxiliary.HintTarget)
+	e1:SetOperation(Auxiliary.SlayerOperation)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
+	e2:SetRange(DM_LOCATION_BATTLE)
+	e2:SetTargetRange(s_range,o_range)
+	e2:SetTarget(targ_func)
+	e2:SetLabelObject(e1)
+	c:RegisterEffect(e2)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_SLAYER,nil,DM_LOCATION_BATTLE,s_range,o_range,targ_func)
+end
+--function for a granted "Slayer" ability
 --e.g. "Creeping Plague" (DM-01 49/110)
-function Auxiliary.GainEffectSlayer(c,tc,desc_id,reset_flag,reset_count)
+function Auxiliary.RegisterEffectSlayer(c,tc,desc_id,reset_flag,reset_count)
 	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
 	local reset_count=reset_count or 1
 	local e1=Effect.CreateEffect(c)
@@ -1359,7 +1392,7 @@ function Auxiliary.GainEffectSlayer(c,tc,desc_id,reset_flag,reset_count)
 		e1:SetReset(RESET_EVENT+RESETS_STANDARD-DM_RESET_TOGRAVE-RESET_LEAVE+reset_flag,reset_count)
 	end
 	tc:RegisterEffect(e1)
-	Auxiliary.GainEffectCustom(c,tc,desc_id,DM_EFFECT_SLAYER,-DM_RESET_TOGRAVE-RESET_LEAVE+reset_flag,reset_count)
+	Auxiliary.RegisterEffectCustom(c,tc,desc_id,DM_EFFECT_SLAYER,-DM_RESET_TOGRAVE-RESET_LEAVE+reset_flag,reset_count)
 end
 --"Breaker (This creature breaks N shields.)"
 --"Each creature in the battle zone has "Breaker""
@@ -1370,13 +1403,13 @@ function Auxiliary.EnableBreaker(c,code,con_func,range,s_range,o_range,targ_func
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_BREAKER,con_func,range,s_range,o_range,targ_func)
 	Auxiliary.EnableEffectCustom(c,code,con_func,range,s_range,o_range,targ_func)
 end
---a creature gets "Breaker"
+--function for a granted "Breaker" ability
 --e.g. "Magma Gazer" (DM-01 81/110)
-function Auxiliary.GainEffectBreaker(c,tc,desc_id,code,reset_flag,reset_count)
+function Auxiliary.RegisterEffectBreaker(c,tc,desc_id,code,reset_flag,reset_count)
 	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
 	local reset_count=reset_count or 1
-	Auxiliary.GainEffectCustom(c,tc,desc_id,DM_EFFECT_BREAKER,reset_flag,reset_count)
-	Auxiliary.GainEffectCustom(c,tc,desc_id,code,reset_flag,reset_count)
+	Auxiliary.RegisterEffectCustom(c,tc,desc_id,DM_EFFECT_BREAKER,reset_flag,reset_count)
+	Auxiliary.RegisterEffectCustom(c,tc,desc_id,code,reset_flag,reset_count)
 end
 --"Instead of having this creature attack, you may tap it to use its Tap ability."
 --e.g. "Tank Mutant" (DM-06 6/110)
@@ -1438,11 +1471,11 @@ function Auxiliary.WinsAllBattlesOperation(e,tp,eg,ep,ev,re,r,rp)
 	else Duel.Destroy(tc,REASON_EFFECT+REASON_BATTLE) end
 end
 
---==========[+Abilities]==========
 --desc_id: 0~15 the string id of the script's text
 --optional: true for optional ("you may") abilities
 --forced: true for forced abilities
 --prop: include EFFECT_FLAG_CARD_TARGET for a targeting ability
+
 --"When this creature would be destroyed, ABILITY."
 --e.g. "Chilias, the Oracle" (DM-01 1/110), "Coiling Vines" (DM-01 92/110), "Aless, the Oracle" (DM-03 2/55)
 function Auxiliary.AddSingleDestroyReplaceEffect(c,desc_id,targ_func,op_func)
@@ -1831,9 +1864,9 @@ function Auxiliary.EnableUpdatePower(c,val,con_func,s_range,o_range,targ_func)
 	e1:SetValue(val)
 	c:RegisterEffect(e1)
 end
---a creature gets "+/-N000 power"
+--function for a granted "+/-N000 power" ability
 --e.g. "Rumble Gate" (DM-02 44/55)
-function Auxiliary.GainEffectUpdatePower(c,tc,desc_id,val,reset_flag,reset_count,con_func)
+function Auxiliary.RegisterEffectUpdatePower(c,tc,desc_id,val,reset_flag,reset_count,con_func)
 	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
 	local reset_count=reset_count or 1
 	local e1=Effect.CreateEffect(c)
@@ -1887,8 +1920,9 @@ function Auxiliary.SelfTapUntapOperation(pos,ram)
 				local c=e:GetHandler()
 				if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
 				local ct=math.random(4) --either 2 or 3: 50% chance to tap/untap
-				if ram and ct~=2 then return end
-				Duel.ChangePosition(c,pos)
+				if ram and ct==2 then
+					Duel.ChangePosition(c,pos)
+				end
 			end
 end
 --"This creature can't be blocked."
@@ -1933,9 +1967,9 @@ function Auxiliary.CannotBeBlockedCivValue(civ)
 				return re:GetHandler():IsCivilization(civ)
 			end
 end
---a creature gets "This creature can't be blocked."
+--function for a granted "This creature can't be blocked" ability
 --e.g. "Laser Wing" (DM-01 11/110)
-function Auxiliary.GainEffectCannotBeBlocked(c,tc,desc_id,con_func,reset_flag,reset_count)
+function Auxiliary.RegisterEffectCannotBeBlocked(c,tc,desc_id,con_func,reset_flag,reset_count)
 	local con_func=con_func or aux.TRUE
 	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
 	local reset_count=reset_count or 1
@@ -1995,8 +2029,9 @@ function Auxiliary.SelfDestroyOperation(ram)
 				if Duel.GetAttacker()==c then Duel.ChangePosition(c,POS_FACEUP_TAPPED) end --fix attack cost position
 				if not c:IsRelateToEffect(e) then return end
 				local ct=math.random(4) --either 2 or 3: 50% chance to destroy
-				if ram and ct~=2 then return end
-				Duel.Destroy(c,REASON_EFFECT)
+				if ram and ct==2 then
+					Duel.Destroy(c,REASON_EFFECT)
+				end
 			end
 end
 --"This creature attacks each turn if able."
@@ -2051,13 +2086,12 @@ function Auxiliary.EnableCannotAttackCreature(c,con_func)
 end
 --"This creature can't be attacked"
 --e.g. "Gulan Rias, Speed Guardian" (DM-04 10/55)
-function Auxiliary.EnableCannotBeAttacked(c,f,con_func)
+function Auxiliary.EnableCannotBeAttacked(c,f)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(EFFECT_CANNOT_BE_BATTLE_TARGET)
 	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
 	e1:SetRange(DM_LOCATION_BATTLE)
-	if con_func then e1:SetCondition(con_func) end
 	e1:SetValue(Auxiliary.CannotBeAttackedValue(f))
 	c:RegisterEffect(e1)
 end
@@ -2101,11 +2135,11 @@ function Auxiliary.PlayerSummonCreatureCondition(p)
 				local sumplayer=nil
 				if p==PLAYER_PLAYER or p==tp then sumplayer=tp
 				elseif p==PLAYER_OPPONENT or p==1-tp then sumplayer=1-tp end
-				local filter_func=function(c,sp)
+				local f=function(c,sp)
 					if c:GetSummonType()~=DM_SUMMON_TYPE_NORMAL then return false end
 					return sp and c:GetSummonPlayer()==sp
 				end
-				return eg:IsExists(filter_func,1,nil,sumplayer)
+				return eg:IsExists(f,1,nil,sumplayer)
 			end
 end
 --"At the end of each of your turns, destroy this creature."
@@ -2756,7 +2790,6 @@ function Auxiliary.TargetTapUntapOperation(pos)
 			end
 end
 
---==========[+Conditions]==========
 --condition to check who the turn player is
 function Auxiliary.TurnPlayerCondition(p)
 	return	function(e)
@@ -2796,7 +2829,7 @@ function Auxiliary.SelfBattleWinCondition(e,tp,eg,ep,ev,re,r,rp)
 	return c:IsRelateToBattle() and c:IsOnField()
 end
 Auxiliary.sbwcon=Auxiliary.SelfBattleWinCondition
---condition to return a card's previous location
+--condition to check what a card's previous location was
 --e.g. "Bombersaur" (DM-02 36/55), "Altimeth, Holy Divine Dragon" (Game Original)
 function Auxiliary.PreviousLocationCondition(loc)
 	--loc: DM_LOCATION_BATTLE for "When this creature is destroyed/leaves the battle zone" + EVENT_DESTROYED
@@ -2813,15 +2846,15 @@ end
 Auxiliary.stapcon=Auxiliary.SelfTappedCondition
 --condition for "While all the cards in your mana zone are CIVILIZATION cards"
 --e.g. "Sparkle Flower" (DM-03 9/55)
-function Auxiliary.ManaExclusiveCondition(f2,...)
+function Auxiliary.ManaExclusiveCondition(f,...)
 	local funs={...}
 	return	function(e)
 				local tp=e:GetHandlerPlayer()
-				local f1=function(c,f2,...)
-					return not f2(c,...)
+				local filter_func=function(c,f,...)
+					return not f(c,...)
 				end
-				return Duel.IsExistingMatchingCard(Auxiliary.ManaZoneFilter(),tp,DM_LOCATION_MANA,0,1,nil,f2,table.unpack(funs))
-					and not Duel.IsExistingMatchingCard(Auxiliary.ManaZoneFilter(f1),tp,DM_LOCATION_MANA,0,1,nil,f2,table.unpack(funs))
+				return Duel.IsExistingMatchingCard(Auxiliary.ManaZoneFilter(),tp,DM_LOCATION_MANA,0,1,nil,f,table.unpack(funs))
+					and not Duel.IsExistingMatchingCard(Auxiliary.ManaZoneFilter(filter_func),tp,DM_LOCATION_MANA,0,1,nil,f,table.unpack(funs))
 			end
 end
 Auxiliary.mexcon=Auxiliary.ManaExclusiveCondition
@@ -2852,9 +2885,7 @@ function Auxiliary.NoShieldsCondition(p)
 			end
 end
 Auxiliary.nszcon=Auxiliary.NoShieldsCondition
-
---==========[+Costs]==========
---cost for a card tapping itself
+--cost function for a card tapping itself
 --e.g. "Millstone Man" (Game Original)
 function Auxiliary.SelfTapCost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
@@ -2862,8 +2893,6 @@ function Auxiliary.SelfTapCost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.ChangePosition(c,POS_FACEUP_TAPPED)
 end
 Auxiliary.stapcost=Auxiliary.SelfTapCost
-
---==========[+Targets]==========
 --target function for optional abilities that do not target cards
 function Auxiliary.CheckCardFunction(f,s,o,ex,...)
 	--f: include Card.IsAbleToX for Duel.SendtoX, Card.IsDiscardable for Duel.DiscardHand, etc.
@@ -2982,8 +3011,6 @@ function Auxiliary.HintTarget(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
 end
 Auxiliary.hinttg=Auxiliary.HintTarget
-
---==========[+Filters]==========
 --filter to return a card in the mana zone
 function Auxiliary.ManaZoneFilter(f)
 	--DM_LOCATION_MANA + f: function

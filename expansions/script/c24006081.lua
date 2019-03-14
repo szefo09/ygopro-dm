@@ -16,5 +16,5 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()==0 then return end
 	Duel.HintSelection(g)
 	--speed attacker
-	dm.GainEffectCustom(e:GetHandler(),g:GetFirst(),1,DM_EFFECT_SPEED_ATTACKER)
+	dm.RegisterEffectCustom(e:GetHandler(),g:GetFirst(),1,DM_EFFECT_SPEED_ATTACKER)
 end

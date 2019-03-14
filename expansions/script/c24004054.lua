@@ -16,7 +16,7 @@ function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.HintSelection(g)
 	if Duel.Destroy(g,REASON_EFFECT)==0 then return end
 	--power up
-	dm.GainEffectUpdatePower(c,c,1,2000)
+	dm.RegisterEffectUpdatePower(c,c,1,2000)
 	--double breaker
-	dm.GainEffectBreaker(c,c,2,DM_EFFECT_DOUBLE_BREAKER)
+	dm.RegisterEffectBreaker(c,c,2,DM_EFFECT_DOUBLE_BREAKER)
 end

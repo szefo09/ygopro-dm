@@ -25,5 +25,5 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_CARD,0,sid)
 	Duel.HintSelection(Group.FromCards(c))
 	--slayer
-	dm.GainEffectSlayer(c,c,2)
+	dm.RegisterEffectSlayer(c,c,2)
 end

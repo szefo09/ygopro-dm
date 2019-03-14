@@ -14,7 +14,7 @@ function scard.tgop(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()==0 or Duel.DMSendtoGrave(g,REASON_EFFECT)==0 then return end
 	local c=e:GetHandler()
 	--power attacker
-	dm.GainEffectPowerAttacker(c,c,1,3000,0)
+	dm.RegisterEffectPowerAttacker(c,c,1,3000,0)
 	--double breaker
-	dm.GainEffectBreaker(c,c,2,DM_EFFECT_DOUBLE_BREAKER,0)
+	dm.RegisterEffectBreaker(c,c,2,DM_EFFECT_DOUBLE_BREAKER,0)
 end

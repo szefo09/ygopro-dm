@@ -16,7 +16,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	if g1:GetCount()>0 then
 		for tc in aux.Next(g1) do
 			--double breaker
-			dm.GainEffectBreaker(e:GetHandler(),tc,1,DM_EFFECT_DOUBLE_BREAKER)
+			dm.RegisterEffectBreaker(e:GetHandler(),tc,1,DM_EFFECT_DOUBLE_BREAKER)
 		end
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOGRAVE)

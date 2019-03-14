@@ -48,7 +48,7 @@ function scard.powop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
 	--power up
-	dm.GainEffectUpdatePower(c,c,1,scard.powval,0)
+	dm.RegisterEffectUpdatePower(c,c,1,scard.powval,0)
 end
 function scard.powval(e,c)
 	local t={1000,2000,3000,4000,5000}

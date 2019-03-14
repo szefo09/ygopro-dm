@@ -15,5 +15,5 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if not tc or not tc:IsRelateToEffect(e) then return end
 	--make attackable
-	dm.GainEffectCustom(e:GetHandler(),tc,1,DM_EFFECT_UNTAPPED_BE_ATTACKED)
+	dm.RegisterEffectCustom(e:GetHandler(),tc,1,DM_EFFECT_UNTAPPED_BE_ATTACKED)
 end
