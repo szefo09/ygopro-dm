@@ -5,7 +5,7 @@ function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--survivor (double breaker)
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
-	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER,nil,DM_LOCATION_BATTLE,LOCATION_ALL,0,scard.dbtg)
+	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER,nil,LOCATION_ALL,0,scard.dbtg)
 end
 scard.duel_masters_card=true
 function scard.dbtg(e,c)

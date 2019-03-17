@@ -858,19 +858,14 @@ function Auxiliary.CannotBeBattleTargetCondition(e)
 	return c:IsFaceup() and c:IsUntapped() and not c:IsCanBeUntappedAttacked()
 end
 function Auxiliary.CannotBeBattleTargetValue(e,c)
-	local ab1=c:IsHasEffect(DM_EFFECT_ATTACK_UNTAPPED_LIGHT)
-	local ab2=c:IsHasEffect(DM_EFFECT_ATTACK_UNTAPPED_WATER)
-	local ab3=c:IsHasEffect(DM_EFFECT_ATTACK_UNTAPPED_DARKNESS)
-	local ab4=c:IsHasEffect(DM_EFFECT_ATTACK_UNTAPPED_FIRE)
-	local ab5=c:IsHasEffect(DM_EFFECT_ATTACK_UNTAPPED_NATURE)
+	--check for "This creature can attack untapped CIVILIZATION creatures."
+	local t={c:IsHasEffect(DM_EFFECT_ATTACK_UNTAPPED)}
 	local civ=0
-	if ab1 then civ=civ+DM_CIVILIZATION_LIGHT end
-	if ab2 then civ=civ+DM_CIVILIZATION_WATER end
-	if ab3 then civ=civ+DM_CIVILIZATION_DARKNESS end
-	if ab4 then civ=civ+DM_CIVILIZATION_FIRE end
-	if ab5 then civ=civ+DM_CIVILIZATION_NATURE end
+	for _,te in pairs(t) do
+		civ=civ+te:GetValue()
+	end
 	if civ>0 then
-		return not c:IsCanAttackUntapped() and not e:GetHandler():IsCivilization(civ)
+		return not e:GetHandler():IsCivilization(civ)
 	else
 		return not c:IsCanAttackUntapped()
 	end
@@ -1419,11 +1414,11 @@ end
 --"Breaker (This creature breaks N shields.)"
 --"Each creature in the battle zone has "Breaker"."
 --e.g. "Gigaberos" (DM-01 55/110), "Chaotic Skyterror" (DM-04 41/55)
-function Auxiliary.EnableBreaker(c,code,con_func,range,s_range,o_range,targ_func)
+function Auxiliary.EnableBreaker(c,code,con_func,s_range,o_range,targ_func)
 	--code: DM_EFFECT_DOUBLE_BREAKER, DM_EFFECT_TRIPLE_BREAKER, DM_EFFECT_QUATTRO_BREAKER, etc.
 	local con_func=con_func or aux.TRUE
-	Auxiliary.EnableEffectCustom(c,DM_EFFECT_BREAKER,con_func,range,s_range,o_range,targ_func)
-	Auxiliary.EnableEffectCustom(c,code,con_func,range,s_range,o_range,targ_func)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_BREAKER,con_func,DM_LOCATION_BATTLE,s_range,o_range,targ_func)
+	Auxiliary.EnableEffectCustom(c,code,con_func,DM_LOCATION_BATTLE,s_range,o_range,targ_func)
 end
 --function for a granted "Breaker" ability
 --e.g. "Magma Gazer" (DM-01 81/110)
@@ -2188,16 +2183,14 @@ function Auxiliary.EnableAttackIfAble(c,con_func)
 end
 --"This creature can attack untapped creatures."
 --"This creature can attack untapped CIVILIZATION creatures."
---"This creature can attack untapped CIVILIZATION1 or CIVILIZATION2 creatures."
 --e.g. "Gatling Skyterror" (DM-01 79/110), "Aeris, Flight Elemental" (DM-04 6/55), "Storm Javelin Wyvern" (Game Original)
-function Auxiliary.EnableAttackUntapped(c,code1,code2,con_func)
-	--code1,code2: DM_EFFECT_ATTACK_UNTAPPED_X
-	local code1=code1 or DM_EFFECT_ATTACK_UNTAPPED
-	local con_func=con_func or aux.TRUE
-	Auxiliary.EnableEffectCustom(c,code1,con_func)
-	if code2 then
-		Auxiliary.EnableEffectCustom(c,code2,con_func)
-	end
+function Auxiliary.EnableAttackUntapped(c,val,con_func)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetCode(DM_EFFECT_ATTACK_UNTAPPED)
+	if con_func then e1:SetCondition(con_func) end
+	if val then e1:SetValue(val) end
+	c:RegisterEffect(e1)
 end
 --"A player's creatures/spells each cost N more/less to summon/cast."
 --"Each creature costs N more/less to summon and each spell costs N more/less to cast."

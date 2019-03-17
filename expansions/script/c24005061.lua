@@ -7,6 +7,6 @@ function scard.initial_effect(c)
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 	--attack untapped
-	dm.EnableAttackUntapped(c,DM_EFFECT_ATTACK_UNTAPPED_LIGHT,DM_EFFECT_ATTACK_UNTAPPED_WATER)
+	dm.EnableAttackUntapped(c,DM_CIVILIZATION_LIGHT+DM_CIVILIZATION_WATER)
 end
 scard.duel_masters_card=true

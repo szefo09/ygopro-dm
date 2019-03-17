@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	--get ability (power attacker)
 	dm.AddStaticEffectPowerAttacker(c,4000,DM_LOCATION_BATTLE,0,scard.abtg)
 	--double breaker
-	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER,dm.SelfTappedCondition,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,0,scard.abtg)
+	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER,dm.SelfTappedCondition,DM_LOCATION_BATTLE,0,scard.abtg)
 	--get ability
 	dm.AddTurnEndEffect(c,1,nil,nil,nil,scard.powop,nil,dm.SelfTappedCondition,1)
 	--double breaker
