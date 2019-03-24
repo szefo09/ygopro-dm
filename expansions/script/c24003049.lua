@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--power up
 	dm.EnableUpdatePower(c,scard.powval)
 	--cannot be blocked
-	dm.EnableCannotBeBlocked(c,dm.CannotBeBlockedPowerBelowValue(4000))
+	dm.EnableCannotBeBlocked(c,dm.CannotBeBlockedBoolFunction(Card.IsPowerBelow,4000))
 end
 scard.duel_masters_card=true
 function scard.cfilter(c)

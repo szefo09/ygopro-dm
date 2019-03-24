@@ -6,6 +6,6 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--cannot be blocked
-	dm.EnableCannotBeBlocked(c,dm.CannotBeBlockedCivValue(DM_CIVILIZATION_DARKNESS))
+	dm.EnableCannotBeBlocked(c,dm.CannotBeBlockedBoolFunction(Card.IsCivilization,DM_CIVILIZATION_DARKNESS))
 end
 scard.duel_masters_card=true

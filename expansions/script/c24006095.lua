@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--power attacker
 	dm.EnablePowerAttacker(c,2000)
 	--cannot be blocked
-	dm.EnableCannotBeBlocked(c,dm.CannotBeBlockedPowerBelowValue(5000))
+	dm.EnableCannotBeBlocked(c,dm.CannotBeBlockedBoolFunction(Card.IsPowerBelow,5000))
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end

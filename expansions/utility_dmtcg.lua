@@ -1128,7 +1128,7 @@ function Auxiliary.BlockerOperation(e,tp,eg,ep,ev,re,r,rp)
 	--check for "Whenever this creature blocks/becomes blocked, no battle happens. (Both creatures stay tapped.)"
 	if not c:IsHasEffect(DM_EFFECT_NO_BLOCK_BATTLE) and not a:IsHasEffect(DM_EFFECT_NO_BE_BLOCKED_BATTLE) then
 		Duel.BreakEffect()
-		Duel.DoBattle(c,a)
+		Duel.DoBattle(a,c)
 	end
 	--register flag effect for Card.IsBlocked
 	a:RegisterFlagEffect(DM_EFFECT_BLOCKED,RESET_EVENT+RESETS_STANDARD+RESET_CHAIN,0,1)
@@ -1537,10 +1537,10 @@ function Auxiliary.AddSingleDestroyReplaceEffect(c,desc_id,targ_func,op_func)
 end
 function Auxiliary.SingleDestroyReplaceTarget(f,...)
 	--f: Card.IsAbleToX
-	local funs={...}
+	local ext_params={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
 				local c=e:GetHandler()
-				if chk==0 then return not c:IsReason(REASON_REPLACE) and (not f or f(c,table.unpack(funs))) end
+				if chk==0 then return not c:IsReason(REASON_REPLACE) and (not f or f(c,table.unpack(ext_params))) end
 				return true
 			end
 end
@@ -2058,31 +2058,18 @@ function Auxiliary.EnableCannotBeBlocked(c,f,con_func)
 	c:RegisterEffect(e1)
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_UNBLOCKABLE,con_func)
 end
+--f: "This creature can't be blocked by X creatures."
+--e.g. "Stampeding Longhorn" (DM-01 104/110), "Calgo, Vizier of Rainclouds" (DM-05 7/55)
 function Auxiliary.CannotBeBlockedValue(f)
 	return	function(e,re,tp)
 				return re:IsHasCategory(DM_CATEGORY_BLOCKER) and not re:GetHandler():IsImmuneToEffect(e)
 					and (not f or f(e,re,tp))
 			end
 end
---filter for "This creature can't be blocked by creatures that have power N000 or less."
---e.g. "Stampeding Longhorn" (DM-01 104/110)
-function Auxiliary.CannotBeBlockedPowerBelowValue(pwr)
+function Auxiliary.CannotBeBlockedBoolFunction(f,...)
+	local ext_params={...}
 	return	function(e,re,tp)
-				return re:GetHandler():IsPowerBelow(pwr)
-			end
-end
---filter for "This creature can't be blocked by creatures that have power N000 or more."
---e.g. "Calgo, Vizier of Rainclouds" (DM-05 7/55)
-function Auxiliary.CannotBeBlockedPowerAboveValue(pwr)
-	return	function(e,re,tp)
-				return re:GetHandler():IsPowerAbove(pwr)
-			end
-end
---filter for "This creature can't be blocked by CIVILIZATION creatures."
---e.g. "Gulan Rias, Speed Guardian" (DM-04 10/55)
-function Auxiliary.CannotBeBlockedCivValue(civ)
-	return	function(e,re,tp)
-				return re:GetHandler():IsCivilization(civ)
+				return f(re:GetHandler(),table.unpack(ext_params))
 			end
 end
 --"Each of your creatures has "This creature can't be blocked"."
@@ -2234,23 +2221,11 @@ function Auxiliary.EnableCannotBeAttacked(c,f)
 	e1:SetValue(Auxiliary.CannotBeAttackedValue(f))
 	c:RegisterEffect(e1)
 end
+--f: "This creature can't be attacked by X creatures."
+--e.g. "Gulan Rias, Speed Guardian" (DM-04 10/55), "Misha, Channeler of Suns" (DM-08 10/55)
 function Auxiliary.CannotBeAttackedValue(f)
 	return	function(e,c)
 				return not c:IsImmuneToEffect(e) and (not f or f(e,c))
-			end
-end
---filter for "This creature can't be attacked by CIVILIZATION creatures"
---e.g. "Gulan Rias, Speed Guardian" (DM-04 10/55)
-function Auxiliary.CannotBeAttackedCivValue(civ)
-	return	function(e,c)
-				return c:IsCivilization(civ)
-			end
-end
---filter for "This creature can't be attacked by any RACE creatures"
---e.g. "Misha, Channeler of Suns" (DM-08 10/55)
-function Auxiliary.CannotBeAttackedRaceValue(race)
-	return	function(e,c)
-				return c:DMIsRace(race)
 			end
 end
 --"Whenever a player summons a creature, ABILITY."
