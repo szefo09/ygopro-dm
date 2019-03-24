@@ -2246,6 +2246,13 @@ function Auxiliary.CannotBeAttackedCivValue(civ)
 				return c:IsCivilization(civ)
 			end
 end
+--filter for "This creature can't be attacked by any RACE creatures"
+--e.g. "Misha, Channeler of Suns" (DM-08 10/55)
+function Auxiliary.CannotBeAttackedRaceValue(race)
+	return	function(e,c)
+				return c:DMIsRace(race)
+			end
+end
 --"Whenever a player summons a creature, ABILITY."
 --e.g. "Aqua Rider" (DM-06 31/110)
 function Auxiliary.AddPlayerSummonCreatureEffect(c,desc_id,p,optional,targ_func,op_func,prop)

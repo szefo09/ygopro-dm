@@ -222,7 +222,7 @@ DM_EVENT_ATTACK_PLAYER				=CARD_MARROW_OOZE_THE_TWISTER	--When a creature attack
 DM_EVENT_BREAK_SHIELD				=CARD_BRUTAL_CHARGE				--When a creature finishes attacking the opponent and broke a shield
 DM_EVENT_BECOME_SHIELD_TRIGGER		=CARD_WOLFIS_BLUE_DIVINE_DRAGON	--When a shield becomes broken, it may get "Shield Trigger"
 --Category (ability classification)
-DM_CATEGORY_BLOCKER					=CATEGORY_NEGATE	--Included in a "Blocker" ability, to prevent it from chaining to itself ("Dia Nork, Moonlight Guardian" DM-01 2/110)
+DM_CATEGORY_BLOCKER					=CATEGORY_NEGATE	--"Blocker" ability, needed for unblockable abilities ( ("Dia Nork, Moonlight Guardian" DM-01 2/110)
 --Description
 --↑Play Description (for Effect.Description)
 DM_DESC_SUMMON						=2		--"Play this card by summoning it."
