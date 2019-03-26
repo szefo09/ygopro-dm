@@ -711,11 +711,12 @@ end
 --discard a card at random
 function Duel.RandomDiscardHand(player,count,reason,ex)
 	local reason=reason or REASON_EFFECT
-	local g=Duel.GetFieldGroup(player,LOCATION_HAND,0):RandomSelect(player,count)
+	local g=Duel.GetFieldGroup(player,LOCATION_HAND,0)
 	if type(ex)=="Card" then g:RemoveCard(ex)
 	elseif type(ex)=="Group" then g:Sub(ex) end
+	local sg=g:RandomSelect(player,count)
 	local rep_count=0
-	for c in aux.Next(g) do
+	for c in aux.Next(sg) do
 		--check for discard replace abilities
 		local t={c:IsHasEffect(DM_EFFECT_DISCARD_REPLACE)}
 		for _,te in pairs(t) do
