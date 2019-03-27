@@ -7,7 +7,7 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--get ability
-	dm.AddTurnStartEffect(c,0,nil,true,nil,scard.abop,nil,nil,1)
+	dm.AddTurnStartEffect(c,0,nil,true,nil,scard.abop)
 	--to shield
 	dm.AddSingleLeaveBattleEffect(c,1,nil,nil,dm.DecktopSendtoShieldOperation(PLAYER_PLAYER,1))
 	--tap

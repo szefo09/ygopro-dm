@@ -1894,22 +1894,19 @@ function Auxiliary.AddBreakShieldEffect(c,desc_id,optional,targ_func,op_func,pro
 end
 --"At the start of the turn, ABILITY."
 --e.g. "Altimeth, Holy Divine Dragon" (Game Original)
-function Auxiliary.AddTurnStartEffect(c,desc_id,p,optional,targ_func,op_func,prop,con_func,lmct,lmcd,cost_func,range,cate)
+function Auxiliary.AddTurnStartEffect(c,desc_id,p,optional,targ_func,op_func,con_func,prop)
 	--p: PLAYER_PLAYER/tp for your turn, PLAYER_OPPONENT/1-tp for your opponent's, or nil for either player's
 	local typ=EFFECT_TYPE_TRIGGER_F
 	if optional then typ=EFFECT_TYPE_TRIGGER_O end
 	local con_func=con_func or aux.TRUE
-	local range=range or DM_LOCATION_BATTLE
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	if cate then e1:SetCategory(cate) end
 	e1:SetType(EFFECT_TYPE_FIELD+typ)
 	e1:SetCode(EVENT_PHASE+PHASE_DRAW)
 	if prop then e1:SetProperty(prop) end
-	e1:SetRange(range)
-	if lmct then e1:SetCountLimit(lmct,lmcd) end
+	e1:SetRange(DM_LOCATION_BATTLE)
+	e1:SetCountLimit(1)
 	e1:SetCondition(aux.AND(Auxiliary.TurnPlayerCondition(p),con_func))
-	if cost_func then e1:SetCost(cost_func) end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
