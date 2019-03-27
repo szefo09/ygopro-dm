@@ -1076,9 +1076,9 @@ end
 --"Blocker (Whenever an opponent's creature attacks, you may tap this creature to stop the attack. Then the 2 creatures battle.)"
 --"Whenever an opponent's CIVILIZATION1 or CIVILIZATION2 creature attacks, you may tap this creature to stop the attack. Then the 2 creatures battle."
 --e.g. "Dia Nork, Moonlight Guardian" (DM-01 2/110), "Lurking Eel" (DM-05 18/55)
-function Auxiliary.EnableBlocker(c,con_func,desc)
-	--con_func: include dm.CivilizationBlockerCondition for "CIVILIZATION blocker"
+function Auxiliary.EnableBlocker(c,con_func,desc,f)
 	--desc: DM_DESC_FN_BLOCKER for "Fire and nature blocker", etc.
+	--f: include function for "Whenever an opponent's X creature attacks"
 	local con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	if desc then
@@ -1091,17 +1091,20 @@ function Auxiliary.EnableBlocker(c,con_func,desc)
 	e1:SetCode(EVENT_ATTACK_ANNOUNCE)
 	e1:SetProperty(EFFECT_FLAG_DELAY)
 	e1:SetRange(DM_LOCATION_BATTLE)
-	e1:SetCondition(aux.AND(Auxiliary.BlockerCondition,con_func))
+	e1:SetCondition(aux.AND(Auxiliary.BlockerCondition(f),con_func))
 	e1:SetCost(Auxiliary.BlockerCost)
 	e1:SetTarget(Auxiliary.BlockerTarget)
 	e1:SetOperation(Auxiliary.BlockerOperation)
 	c:RegisterEffect(e1)
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_BLOCKER,con_func)
 end
-function Auxiliary.BlockerCondition(e,tp,eg,ep,ev,re,r,rp)
-	local d=Duel.GetAttackTarget()
-	if d and d==e:GetHandler() then return false end
-	return Duel.GetAttacker():GetControler()~=tp
+function Auxiliary.BlockerCondition(f)
+	return	function(e,tp,eg,ep,ev,re,r,rp)
+				local d=Duel.GetAttackTarget()
+				if d and d==e:GetHandler() then return false end
+				local a=Duel.GetAttacker()
+				return a:GetControler()~=tp and (not f or f(a))
+			end
 end
 function Auxiliary.BlockerCost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
@@ -1135,12 +1138,6 @@ function Auxiliary.BlockerOperation(e,tp,eg,ep,ev,re,r,rp)
 	--raise event for "Whenever any of your creatures becomes blocked"
 	Duel.RaiseEvent(a,EVENT_CUSTOM+DM_EVENT_BECOMES_BLOCKED,e,0,0,0,0)
 end
-function Auxiliary.CivilizationBlockerCondition(civ)
-	return	function(e,tp,eg,ep,ev,re,r,rp)
-				return Duel.GetAttacker():GetControler()~=tp and Duel.GetAttacker():IsCivilization(civ)
-			end
-end
-Auxiliary.civblcon=Auxiliary.CivilizationBlockerCondition
 --"Each of your creatures has "Blocker"."
 --e.g. "Sieg Balicula, the Intense" (DM-03 8/55), "Gallia Zohl, Iron Guardian Q" (DM-05 8/55)
 function Auxiliary.AddStaticEffectBlocker(c,s_range,o_range,targ_func)
@@ -1540,7 +1537,7 @@ function Auxiliary.SingleDestroyReplaceTarget(f,...)
 			end
 end
 function Auxiliary.SingleDestroyReplaceOperation(op_func,...)
-	---...: Duel.SendtoX
+	--op_func: Duel.SendtoX
 	local ext_params={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local c=e:GetHandler()
@@ -2053,7 +2050,7 @@ function Auxiliary.EnableCannotBeBlocked(c,f,con_func)
 	c:RegisterEffect(e1)
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_UNBLOCKABLE,con_func)
 end
---f: "This creature can't be blocked by X creatures."
+--f: include function for "This creature can't be blocked by X creatures."
 --e.g. "Stampeding Longhorn" (DM-01 104/110), "Calgo, Vizier of Rainclouds" (DM-05 7/55)
 function Auxiliary.CannotBeBlockedValue(f)
 	return	function(e,re,tp)
@@ -2216,7 +2213,7 @@ function Auxiliary.EnableCannotBeAttacked(c,f)
 	e1:SetValue(Auxiliary.CannotBeAttackedValue(f))
 	c:RegisterEffect(e1)
 end
---f: "This creature can't be attacked by X creatures."
+--f: include function for "This creature can't be attacked by X creatures."
 --e.g. "Gulan Rias, Speed Guardian" (DM-04 10/55), "Misha, Channeler of Suns" (DM-08 10/55)
 function Auxiliary.CannotBeAttackedValue(f)
 	return	function(e,c)
