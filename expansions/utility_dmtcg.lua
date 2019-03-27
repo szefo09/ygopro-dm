@@ -79,7 +79,7 @@ end
 local card_is_attackable=Card.IsAttackable
 function Card.IsAttackable(c)
 	if c:IsHasEffect(DM_EFFECT_IGNORE_CANNOT_ATTACK) then return true end
-	return card_is_attackable(c) and not c:IsHasEffect(EFFECT_CANNOT_ATTACK)
+	return card_is_attackable(c)
 end
 Card.IsCanAttack=Card.IsAttackable
 --New Card functions
