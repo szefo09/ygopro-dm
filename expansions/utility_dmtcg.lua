@@ -62,7 +62,7 @@ end
 local card_is_can_be_special_summoned=Card.IsCanBeSpecialSummoned
 function Card.IsCanBeSpecialSummoned(c,...)
 	if c:IsLocation(LOCATION_REMOVED) and c:IsFacedown() then
-		return true --temporary workaround to allow face-down banished monsters to special summon
+		return true --workaround to allow face-down banished monsters to special summon
 	else return card_is_can_be_special_summoned(c,...) end
 end
 Card.IsCanSendtoBattle=Card.IsCanBeSpecialSummoned
@@ -75,15 +75,13 @@ function Card.IsDiscardable(c,...)
 	return card_is_discardable(c,...)
 end
 ]]
---check if a card can attack
---reserved
---[[
+--check if a creature can attack
 local card_is_attackable=Card.IsAttackable
 function Card.IsAttackable(c)
 	if c:IsHasEffect(DM_EFFECT_IGNORE_CANNOT_ATTACK) then return true end
-	return card_is_attackable(c)
+	return card_is_attackable(c) and not c:IsHasEffect(EFFECT_CANNOT_ATTACK)
 end
-]]
+Card.IsCanAttack=Card.IsAttackable
 --New Card functions
 --check if a card is a creature
 function Card.IsCreature(c)
@@ -171,11 +169,6 @@ end
 --check if a creature has become blocked
 function Card.IsBlocked(c)
 	return c:GetFlagEffect(DM_EFFECT_BLOCKED)>0
-end
---check if a creature can attack
-function Card.IsCanAttack(c)
-	if c:IsHasEffect(DM_EFFECT_IGNORE_CANNOT_ATTACK) then return true end
-	return --[[c:IsAttackable() and]] not c:IsHasEffect(EFFECT_CANNOT_ATTACK)
 end
 --check if a creature can attack players
 function Card.IsCanAttackPlayer(c)
@@ -388,20 +381,20 @@ Duel.SendtoBattle=Duel.SpecialSummon
 --Duel.SendtoBattleComplete=Duel.SpecialSummonComplete --reserved
 --untap/tap a card in the battle/mana zone
 local duel_change_position=Duel.ChangePosition
-function Duel.ChangePosition(targets,au)
+function Duel.ChangePosition(targets,pos)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
 	for tc in aux.Next(targets) do
-		if au==POS_FACEUP_UNTAPPED and tc:IsAbleToUntap() then
+		if pos==POS_FACEUP_UNTAPPED and tc:IsAbleToUntap() then
 			if tc:IsLocation(LOCATION_REMOVED) then
 				Duel.SendtoGrave(tc,REASON_EFFECT)
 			end
-		elseif au==POS_FACEUP_TAPPED and tc:IsAbleToTap() then
+		elseif pos==POS_FACEUP_TAPPED and tc:IsAbleToTap() then
 			if tc:IsLocation(LOCATION_GRAVE) then
 				Duel.Remove(tc,POS_FACEUP,REASON_EFFECT)
 			end
 		end
 	end
-	return duel_change_position(targets,au)
+	return duel_change_position(targets,pos)
 end
 --draw equal to or less than a number of cards
 local duel_draw=Duel.Draw
@@ -459,7 +452,8 @@ function Duel.SelectTarget(sel_player,f,player,s,o,min,max,ex,...)
 	return duel_select_target(sel_player,f,player,s,o,min,max,ex,...)
 end
 --New Duel functions
---select a shield
+--select a shield (changed to random because face-down cards can be viewed)
+--Note: Remove this function when YGOPro forbids players to look at their face-down cards
 function Duel.SelectMatchingShieldCard(sel_player,f,target_player,min,max,ex,...)
 	if not Duel.IsExistingMatchingCard(Auxiliary.ShieldZoneFilter(f),target_player,DM_LOCATION_SHIELD,0,1,ex,...) then
 		Duel.Hint(HINT_MESSAGE,sel_player,DM_HINTMSG_NOTARGETS)
@@ -475,12 +469,13 @@ function Duel.SelectMatchingShieldCard(sel_player,f,target_player,min,max,ex,...
 			Duel.Hint(HINT_SELECTMSG,sel_player,DM_QHINTMSG_NUMBERCHOOSE)
 			min=Duel.AnnounceNumber(sel_player,table.unpack(t))
 		end
-		local sg2=g:RandomSelect(sel_player,min) --changed to random because face-down cards can be viewed
+		local sg2=g:RandomSelect(sel_player,min)
 		sg1:Merge(sg2)
 	end
 	return sg1
 end
---target a shield
+--target a shield (changed to random because face-down cards can be viewed)
+--Note: Remove this function when YGOPro forbids players to look at their face-down cards
 function Duel.SelectShieldTarget(sel_player,f,target_player,min,max,ex,e,...)
 	if not Duel.IsExistingTarget(Auxiliary.ShieldZoneFilter(f),target_player,DM_LOCATION_SHIELD,0,1,ex,...) then
 		Duel.Hint(HINT_MESSAGE,sel_player,DM_HINTMSG_NOTARGETS)
@@ -496,7 +491,7 @@ function Duel.SelectShieldTarget(sel_player,f,target_player,min,max,ex,e,...)
 			Duel.Hint(HINT_SELECTMSG,sel_player,DM_QHINTMSG_NUMBERCHOOSE)
 			min=Duel.AnnounceNumber(sel_player,table.unpack(t))
 		end
-		local sg2=g:RandomSelect(sel_player,min) --changed to random because face-down cards can be viewed
+		local sg2=g:RandomSelect(sel_player,min)
 		sg1:Merge(sg2)
 		Duel.SetTargetCard(sg1)
 	end
@@ -512,6 +507,8 @@ function Duel.PayManaCost(targets)
 	return ct
 end
 --break a shield
+--Note: Update this function each time new "breaker" abilities are introduced
+--not yet implemented: quattro, world, galaxy, infinity, civilization, age, master
 function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason)
 	local reason=reason or 0
 	local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(),target_player,DM_LOCATION_SHIELD,0,nil)
@@ -674,11 +671,9 @@ function Duel.SendtoShield(targets,player)
 end
 --add a card from the top of a player's deck to their shields face down
 function Duel.SendDecktoptoShield(player,count)
-	local b=nil
 	local g=Duel.GetDecktopGroup(player,count)
 	Duel.DisableShuffleCheck()
-	b=Duel.SendtoShield(g,player)
-	return b
+	return Duel.SendtoShield(g,player)
 end
 --add up to a number of cards from the top of a player's deck to their shields face down
 function Duel.SendDecktoptoShieldUpTo(player,count)
@@ -842,8 +837,6 @@ function Auxiliary.EnableCreatureAttribute(c)
 	e1:SetValue(Auxiliary.CannotBeBattleTargetValue)
 	c:RegisterEffect(e1)
 	--attack shield
-	--note: must be updated each time new "breaker" abilities are released
-	--not yet implemented: quattro, world, galaxy, infinity, civilization, age, master
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
 	e2:SetCode(DM_EVENT_ATTACK_SHIELD)
@@ -891,6 +884,7 @@ function Auxiliary.AttackShieldOperation(e,tp,eg,ep,ev,re,r,rp)
 	--check for "Whenever an opponent's creature would break a shield, you choose the shield instead of your opponent."
 	if Duel.IsPlayerAffectedByEffect(1-tp,DM_EFFECT_CHANGE_SHIELD_BREAK_PLAYER) then sel_player=1-tp end
 	Duel.BreakShield(e,sel_player,1-tp,1,1,c)
+	--ignore yugioh rules
 	--no battle damage
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -1449,7 +1443,7 @@ end
 function Auxiliary.TapAbilityCondition(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	return Auxiliary.BattlePhaseCondition() and Duel.GetAttacker()==nil and Duel.GetCurrentChain()==0
-		and c:GetAttackAnnouncedCount()==0 and c:IsAttackable()
+		and c:GetAttackAnnouncedCount()==0 and c:IsCanAttack()
 end
 --"Each of your creatures may tap instead of attacking to use this Tap ability."
 --e.g. "Arc Bine, the Astounding" (DM-06 12/110)
