@@ -1078,7 +1078,7 @@ end
 --e.g. "Dia Nork, Moonlight Guardian" (DM-01 2/110), "Lurking Eel" (DM-05 18/55)
 function Auxiliary.EnableBlocker(c,con_func,desc,f)
 	--desc: DM_DESC_FN_BLOCKER for "Fire and nature blocker", etc.
-	--f: include function for "Whenever an opponent's X creature attacks"
+	--f: include function for "CIVILIZATION blocker"
 	local con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	if desc then
@@ -1151,7 +1151,7 @@ function Auxiliary.AddStaticEffectBlocker(c,s_range,o_range,targ_func)
 	e1:SetCode(EVENT_ATTACK_ANNOUNCE)
 	e1:SetProperty(EFFECT_FLAG_DELAY)
 	e1:SetRange(DM_LOCATION_BATTLE)
-	e1:SetCondition(Auxiliary.BlockerCondition)
+	e1:SetCondition(Auxiliary.BlockerCondition())
 	e1:SetCost(Auxiliary.BlockerCost)
 	e1:SetTarget(Auxiliary.BlockerTarget)
 	e1:SetOperation(Auxiliary.BlockerOperation)
@@ -1176,7 +1176,7 @@ function Auxiliary.RegisterEffectBlocker(c,tc,desc_id,reset_flag,reset_count)
 	e1:SetCode(EVENT_ATTACK_ANNOUNCE)
 	e1:SetProperty(EFFECT_FLAG_DELAY)
 	e1:SetRange(DM_LOCATION_BATTLE)
-	e1:SetCondition(Auxiliary.BlockerCondition)
+	e1:SetCondition(Auxiliary.BlockerCondition())
 	e1:SetTarget(Auxiliary.BlockerTarget)
 	e1:SetOperation(Auxiliary.BlockerOperation)
 	if tc==c then
@@ -1190,15 +1190,14 @@ end
 --"Shield trigger (When this spell is put into your hand from your shield zone, you may cast it immediately for no cost.)"
 --"Shield trigger (When this creature is put into your hand from your shield zone, you may summon it immediately for no cost.)"
 --e.g. "Holy Awe" (DM-01 6/110), "Amber Grass" (DM-04 7/55)
-function Auxiliary.EnableShieldTrigger(c,con_func)
-	local con_func=con_func or aux.TRUE
-	Auxiliary.EnableEffectCustom(c,DM_EFFECT_SHIELD_TRIGGER,con_func)
+function Auxiliary.EnableShieldTrigger(c)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_SHIELD_TRIGGER)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(DM_DESC_SHIELD_TRIGGER_CREATURE)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e1:SetCode(EVENT_TO_HAND)
 	e1:SetProperty(EFFECT_FLAG_DELAY)
-	e1:SetCondition(aux.AND(Auxiliary.ShieldTriggerSummonCondition,con_func))
+	e1:SetCondition(Auxiliary.ShieldTriggerSummonCondition)
 	e1:SetTarget(Auxiliary.ShieldTriggerSummonTarget)
 	e1:SetOperation(Auxiliary.ShieldTriggerSummonOperation)
 	c:RegisterEffect(e1)
@@ -1320,9 +1319,9 @@ end
 --"Slayer (Whenever this creature battles, destroy the other creature after the battle.)"
 --"CIVILIZATION1 and CIVILIZATION2 slayer (Whenever this creature battles a CIVILIZATION1 or CIVILIZATION2 creature, destroy the other creature after the battle.)"
 --e.g. "Bone Assassin, the Ripper" (DM-01 47/110), "Gigakail" (DM-05 26/55)
-function Auxiliary.EnableSlayer(c,con_func,targ_func,desc)
-	--targ_func: include dm.CivilizationSlayerTarget for "CIVILIZATION slayer"
+function Auxiliary.EnableSlayer(c,con_func,desc,f)
 	--desc: DM_DESC_NL_SLAYER for "Nature and light slayer", etc.
+	--f: include function for "CIVILIZATION slayer"
 	local con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	if desc then
@@ -1332,20 +1331,18 @@ function Auxiliary.EnableSlayer(c,con_func,targ_func,desc)
 	end
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
 	e1:SetCode(DM_EVENT_ATTACK_END)
-	e1:SetCondition(aux.AND(Auxiliary.SlayerCondition,con_func))
-	if targ_func then
-		e1:SetTarget(targ_func)
-	else
-		e1:SetTarget(Auxiliary.HintTarget)
-	end
+	e1:SetCondition(aux.AND(Auxiliary.SlayerCondition(f),con_func))
+	e1:SetTarget(Auxiliary.HintTarget)
 	e1:SetOperation(Auxiliary.SlayerOperation)
 	c:RegisterEffect(e1)
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_SLAYER,con_func)
 end
-function Auxiliary.SlayerCondition(e,tp,eg,ep,ev,re,r,rp)
-	local tc=e:GetHandler():GetBattleTarget()
-	e:SetLabelObject(tc)
-	return tc and tc:IsRelateToBattle()
+function Auxiliary.SlayerCondition(f)
+	return	function(e,tp,eg,ep,ev,re,r,rp)
+				local tc=e:GetHandler():GetBattleTarget()
+				e:SetLabelObject(tc)
+				return tc and tc:IsRelateToBattle() and (not f or f(tc))
+			end
 end
 function Auxiliary.SlayerOperation(e,tp,eg,ep,ev,re,r,rp)
 	local tc=e:GetLabelObject()
@@ -1353,14 +1350,6 @@ function Auxiliary.SlayerOperation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Destroy(tc,REASON_EFFECT)
 	end
 end
-function Auxiliary.CivilizationSlayerTarget(civ)
-	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
-				local tc=e:GetHandler():GetBattleTarget()
-				if chk==0 then return tc and tc:IsCivilization(civ) and tc:IsRelateToBattle() end
-				Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
-			end
-end
-Auxiliary.civsltg=Auxiliary.CivilizationSlayerTarget
 --"Each of your creatures has "Slayer"."
 --e.g. "Gigaling Q" (DM-05 27/55), "Frost Specter, Shadow of Age" (DM-06 54/110)
 function Auxiliary.AddStaticEffectSlayer(c,s_range,o_range,targ_func)
@@ -1371,7 +1360,7 @@ function Auxiliary.AddStaticEffectSlayer(c,s_range,o_range,targ_func)
 	e1:SetDescription(DM_DESC_SLAYER)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
 	e1:SetCode(DM_EVENT_ATTACK_END)
-	e1:SetCondition(Auxiliary.SlayerCondition)
+	e1:SetCondition(Auxiliary.SlayerCondition())
 	e1:SetTarget(Auxiliary.HintTarget)
 	e1:SetOperation(Auxiliary.SlayerOperation)
 	local e2=Effect.CreateEffect(c)
@@ -1392,7 +1381,7 @@ function Auxiliary.RegisterEffectSlayer(c,tc,desc_id,reset_flag,reset_count)
 	e1:SetDescription(DM_DESC_SLAYER)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
 	e1:SetCode(DM_EVENT_ATTACK_END)
-	e1:SetCondition(Auxiliary.SlayerCondition)
+	e1:SetCondition(Auxiliary.SlayerCondition())
 	e1:SetTarget(Auxiliary.HintTarget)
 	e1:SetOperation(Auxiliary.SlayerOperation)
 	if tc==c then
