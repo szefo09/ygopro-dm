@@ -5,7 +5,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--to mana
-	dm.AddTurnEndEffect(c,0,PLAYER_PLAYER,nil,nil,scard.tmop,nil,nil,1)
+	dm.AddTurnEndEffect(c,0,PLAYER_PLAYER,nil,nil,scard.tmop)
 end
 scard.duel_masters_card=true
 function scard.tmfilter(c)

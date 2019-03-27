@@ -7,7 +7,7 @@ function scard.initial_effect(c)
 	--draw
 	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,dm.DrawOperation(PLAYER_PLAYER,1))
 	--return
-	dm.AddTurnEndEffect(c,1,PLAYER_PLAYER,nil,nil,scard.retop,nil,nil,1)
+	dm.AddTurnEndEffect(c,1,PLAYER_PLAYER,nil,nil,scard.retop)
 end
 scard.duel_masters_card=true
 function scard.retfilter(c)

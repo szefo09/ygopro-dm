@@ -1461,7 +1461,7 @@ end
 --"RACE Hunter (This creature wins all battles against RACE.)"
 --e.g. "Pearl Carras, Barrier Guardian" (Game Original)
 function Auxiliary.EnableWinsAllBattles(c,desc_id,con_func,f)
-	--f: include filter for "RACE Hunter"
+	--f: include function for "RACE Hunter"
 	local con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
@@ -1525,13 +1525,13 @@ function Auxiliary.SingleDestroyReplaceTarget(f,...)
 				return true
 			end
 end
-function Auxiliary.SingleDestroyReplaceOperation(op_func,...)
-	--op_func: Duel.SendtoX
+function Auxiliary.SingleDestroyReplaceOperation(f,...)
+	--f: Duel.SendtoX
 	local ext_params={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local c=e:GetHandler()
 				Duel.Hint(HINT_CARD,0,c:GetOriginalCode())
-				op_func(c,table.unpack(ext_params))
+				f(c,table.unpack(ext_params))
 			end
 end
 --"When one of your creatures would be destroyed, ABILITY."
@@ -1550,22 +1550,19 @@ function Auxiliary.AddDestroyReplaceEffect(c,desc_id,targ_func,op_func,val,con_f
 end
 --"At the end of the turn, ABILITY."
 --e.g. "Frei, Vizier of Air" (DM-01 4/110)
-function Auxiliary.AddTurnEndEffect(c,desc_id,p,optional,targ_func,op_func,prop,con_func,lmct,lmcd,cost_func,range,cate)
+function Auxiliary.AddTurnEndEffect(c,desc_id,p,optional,targ_func,op_func,con_func,prop)
 	--p: PLAYER_PLAYER/tp for your turn, PLAYER_OPPONENT/1-tp for your opponent's, or nil for either player's
 	local typ=EFFECT_TYPE_TRIGGER_F
 	if optional then typ=EFFECT_TYPE_TRIGGER_O end
 	local con_func=con_func or aux.TRUE
-	local range=range or DM_LOCATION_BATTLE
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	if cate then e1:SetCategory(cate) end
 	e1:SetType(EFFECT_TYPE_FIELD+typ)
 	e1:SetCode(EVENT_PHASE+PHASE_END)
 	if prop then e1:SetProperty(prop) end
-	e1:SetRange(range)
-	if lmct then e1:SetCountLimit(lmct,lmcd) end
+	e1:SetRange(DM_LOCATION_BATTLE)
+	e1:SetCountLimit(1)
 	e1:SetCondition(aux.AND(Auxiliary.TurnPlayerCondition(p),con_func))
-	if cost_func then e1:SetCost(cost_func) end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
@@ -2949,14 +2946,14 @@ Auxiliary.stapcon=Auxiliary.SelfTappedCondition
 --condition for "While all the cards in your mana zone are CIVILIZATION cards"
 --e.g. "Sparkle Flower" (DM-03 9/55)
 function Auxiliary.ManaExclusiveCondition(f,...)
-	local funs={...}
+	local ext_params={...}
 	return	function(e)
 				local tp=e:GetHandlerPlayer()
 				local filter_func=function(c,f,...)
 					return not f(c,...)
 				end
-				return Duel.IsExistingMatchingCard(Auxiliary.ManaZoneFilter(),tp,DM_LOCATION_MANA,0,1,nil,f,table.unpack(funs))
-					and not Duel.IsExistingMatchingCard(Auxiliary.ManaZoneFilter(filter_func),tp,DM_LOCATION_MANA,0,1,nil,f,table.unpack(funs))
+				return Duel.IsExistingMatchingCard(Auxiliary.ManaZoneFilter(),tp,DM_LOCATION_MANA,0,1,nil,f,table.unpack(ext_params))
+					and not Duel.IsExistingMatchingCard(Auxiliary.ManaZoneFilter(filter_func),tp,DM_LOCATION_MANA,0,1,nil,f,table.unpack(ext_params))
 			end
 end
 Auxiliary.mexcon=Auxiliary.ManaExclusiveCondition
