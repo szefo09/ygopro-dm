@@ -10,4 +10,4 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 scard.destg=dm.CheckCardFunction(Card.IsFaceup,0,DM_LOCATION_BATTLE)
-scard.desop=dm.DestroyOperation(PLAYER_PLAYER,Card.IsFaceup,0,DM_LOCATION_BATTLE,1)
+scard.desop=dm.DestroyOperation(PLAYER_SELF,Card.IsFaceup,0,DM_LOCATION_BATTLE,1)

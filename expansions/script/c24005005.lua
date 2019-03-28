@@ -15,4 +15,4 @@ function scard.tbfilter(c)
 	return c:IsCode(CARD_OBSIDIAN_SCARAB)
 end
 scard.tbtg=dm.SendtoBattleTarget(dm.ManaZoneFilter(scard.tbfilter),DM_LOCATION_MANA,0)
-scard.tbop=dm.SendtoBattleOperation(PLAYER_PLAYER,dm.ManaZoneFilter(scard.tbfilter),DM_LOCATION_MANA,0,1)
+scard.tbop=dm.SendtoBattleOperation(PLAYER_SELF,dm.ManaZoneFilter(scard.tbfilter),DM_LOCATION_MANA,0,1)

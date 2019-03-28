@@ -11,4 +11,4 @@ function scard.retfilter(c)
 	return c:IsSpell() and c:IsAbleToHand()
 end
 scard.rettg=dm.CheckCardFunction(dm.DMGraveFilter(scard.retfilter),DM_LOCATION_GRAVE,0)
-scard.retop=dm.SendtoHandOperation(PLAYER_PLAYER,dm.DMGraveFilter(scard.retfilter),DM_LOCATION_GRAVE,0,1)
+scard.retop=dm.SendtoHandOperation(PLAYER_SELF,dm.DMGraveFilter(scard.retfilter),DM_LOCATION_GRAVE,0,1)

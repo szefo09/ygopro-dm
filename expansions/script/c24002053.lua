@@ -7,5 +7,5 @@ function scard.initial_effect(c)
 	dm.AddSingleAttackTriggerEffect(c,0,true,scard.tmtg,scard.tmop)
 end
 scard.duel_masters_card=true
-scard.tmtg=dm.DecktopSendtoManaTarget(PLAYER_PLAYER)
-scard.tmop=dm.DecktopSendtoManaOperation(PLAYER_PLAYER,1)
+scard.tmtg=dm.DecktopSendtoManaTarget(PLAYER_SELF)
+scard.tmop=dm.DecktopSendtoManaOperation(PLAYER_SELF,1)

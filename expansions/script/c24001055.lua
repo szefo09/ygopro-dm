@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--destroy
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,dm.DestroyOperation(PLAYER_PLAYER,nil,LOCATION_BATTLE,0,2))
+	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,dm.DestroyOperation(PLAYER_SELF,nil,LOCATION_BATTLE,0,2))
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end

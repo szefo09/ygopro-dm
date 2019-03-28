@@ -5,9 +5,9 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--draw
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,dm.DrawOperation(PLAYER_PLAYER,1))
+	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,dm.DrawOperation(PLAYER_SELF,1))
 	--return
-	dm.AddTurnEndEffect(c,1,PLAYER_PLAYER,nil,nil,scard.retop)
+	dm.AddTurnEndEffect(c,1,PLAYER_SELF,nil,nil,scard.retop)
 end
 scard.duel_masters_card=true
 function scard.retfilter(c)

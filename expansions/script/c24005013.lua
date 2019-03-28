@@ -8,10 +8,10 @@ function scard.initial_effect(c)
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 	--return
-	dm.AddEnterGraveEffect(c,0,PLAYER_PLAYER,true,nil,scard.retop,nil,scard.retcon)
+	dm.AddEnterGraveEffect(c,0,PLAYER_SELF,true,nil,scard.retop,nil,scard.retcon)
 end
 scard.duel_masters_card=true
-scard.retcon=dm.ReasonPlayerCondition(PLAYER_OPPONENT)
+scard.retcon=dm.ReasonPlayerCondition(PLAYER_OPPO)
 function scard.retop(e,tp,eg,ep,ev,re,r,rp)
 	if e:GetHandler():IsRelateToEffect(e) and e:GetHandler():IsFaceup() then
 		Duel.SendtoMana(eg,POS_FACEUP_UNTAPPED,REASON_EFFECT)

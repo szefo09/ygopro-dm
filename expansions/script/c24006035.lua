@@ -4,8 +4,8 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--get ability
-	dm.AddPlayerSummonCreatureEffect(c,0,PLAYER_OPPONENT,nil,nil,scard.abop)
-	dm.AddPlayerCastSpellEffect(c,0,PLAYER_OPPONENT,nil,nil,scard.abop)
+	dm.AddPlayerSummonCreatureEffect(c,0,PLAYER_OPPO,nil,nil,scard.abop)
+	dm.AddPlayerCastSpellEffect(c,0,PLAYER_OPPO,nil,nil,scard.abop)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end

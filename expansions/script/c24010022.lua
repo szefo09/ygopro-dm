@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--blocker
 	dm.EnableBlocker(c)
 	--power up
-	dm.EnableUpdatePower(c,2000,dm.TurnPlayerCondition(PLAYER_OPPONENT),DM_LOCATION_BATTLE,0,scard.powtg)
+	dm.EnableUpdatePower(c,2000,dm.TurnPlayerCondition(PLAYER_OPPO),DM_LOCATION_BATTLE,0,scard.powtg)
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 end

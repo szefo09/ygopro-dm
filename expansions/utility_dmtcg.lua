@@ -1549,7 +1549,7 @@ end
 --"At the end of the turn, ABILITY."
 --e.g. "Frei, Vizier of Air" (DM-01 4/110)
 function Auxiliary.AddTurnEndEffect(c,desc_id,p,optional,targ_func,op_func,con_func,prop)
-	--p: PLAYER_PLAYER/tp for your turn, PLAYER_OPPONENT/1-tp for your opponent's, or nil for either player's
+	--p: PLAYER_SELF/tp for your turn, PLAYER_OPPO/1-tp for your opponent's, or nil for either player's
 	local typ=EFFECT_TYPE_TRIGGER_F
 	if optional then typ=EFFECT_TYPE_TRIGGER_O end
 	local con_func=con_func or aux.TRUE
@@ -1762,7 +1762,7 @@ end
 --"Whenever a card is put into your graveyard, ABILITY."
 --e.g. "Snork La, Shrine Guardian" (DM-05 13/55)
 function Auxiliary.AddEnterGraveEffect(c,desc_id,p,optional,targ_func,op_func,prop,con_func,cost_func,range,lmct,lmcd,cate)
-	--p: PLAYER_PLAYER/tp for your graveyard, PLAYER_OPPONENT/1-tp for your opponent's, or nil for either player's
+	--p: PLAYER_SELF/tp for your graveyard, PLAYER_OPPO/1-tp for your opponent's, or nil for either player's
 	local typ=EFFECT_TYPE_TRIGGER_F
 	if optional then typ=EFFECT_TYPE_TRIGGER_O end
 	local con_func=con_func or aux.TRUE
@@ -1790,7 +1790,7 @@ end
 --"Whenever a player casts a spell, ABILITY."
 --e.g. "Natalia, Channeler of Suns" (Game Original)
 function Auxiliary.AddPlayerCastSpellEffect(c,desc_id,p,optional,targ_func,op_func,con_func,prop)
-	--p: PLAYER_PLAYER/tp if you cast a spell, PLAYER_OPPONENT/1-tp if your opponent does, or nil if either player does
+	--p: PLAYER_SELF/tp if you cast a spell, PLAYER_OPPO/1-tp if your opponent does, or nil if either player does
 	local typ=EFFECT_TYPE_TRIGGER_F
 	if optional then typ=EFFECT_TYPE_TRIGGER_O end
 	local con_func=con_func or aux.TRUE
@@ -1831,8 +1831,8 @@ end
 function Auxiliary.EventChainSolvedOperation(p)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local reason_player=nil
-				if p==PLAYER_PLAYER or p==tp then reason_player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then reason_player=1-tp end
+				if p==PLAYER_SELF or p==tp then reason_player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then reason_player=1-tp end
 				if reason_player and rp==reason_player and re:GetHandler():IsSpell() then
 					e:GetLabelObject():SetLabel(1)
 				end
@@ -1892,7 +1892,7 @@ end
 --"At the start of the turn, ABILITY."
 --e.g. "Altimeth, Holy Divine Dragon" (Game Original)
 function Auxiliary.AddTurnStartEffect(c,desc_id,p,optional,targ_func,op_func,con_func,prop)
-	--p: PLAYER_PLAYER/tp for your turn, PLAYER_OPPONENT/1-tp for your opponent's, or nil for either player's
+	--p: PLAYER_SELF/tp for your turn, PLAYER_OPPO/1-tp for your opponent's, or nil for either player's
 	local typ=EFFECT_TYPE_TRIGGER_F
 	if optional then typ=EFFECT_TYPE_TRIGGER_O end
 	local con_func=con_func or aux.TRUE
@@ -1984,9 +1984,9 @@ function Auxiliary.EnableTurnEndSelfUntap(c,desc_id,con_func,forced)
 	e1:SetCode(EVENT_PHASE+PHASE_END)
 	e1:SetRange(DM_LOCATION_BATTLE)
 	if con_func then
-		e1:SetCondition(aux.AND(Auxiliary.TurnPlayerCondition(PLAYER_PLAYER),con_func))
+		e1:SetCondition(aux.AND(Auxiliary.TurnPlayerCondition(PLAYER_SELF),con_func))
 	else
-		e1:SetCondition(Auxiliary.TurnPlayerCondition(PLAYER_PLAYER))
+		e1:SetCondition(Auxiliary.TurnPlayerCondition(PLAYER_SELF))
 	end
 	if typ==EFFECT_TYPE_TRIGGER_O then
 		e1:SetTarget(Auxiliary.SelfTapUntapTarget(POS_FACEUP_UNTAPPED))
@@ -2199,7 +2199,7 @@ end
 --"Whenever a player summons a creature, ABILITY."
 --e.g. "Aqua Rider" (DM-06 31/110)
 function Auxiliary.AddPlayerSummonCreatureEffect(c,desc_id,p,optional,targ_func,op_func,prop)
-	--p: PLAYER_PLAYER/tp if you summon, PLAYER_OPPONENT/1-tp if your opponent does, or nil if either player does
+	--p: PLAYER_SELF/tp if you summon, PLAYER_OPPO/1-tp if your opponent does, or nil if either player does
 	local typ=EFFECT_TYPE_TRIGGER_F
 	if optional then typ=EFFECT_TYPE_TRIGGER_O end
 	local e1=Effect.CreateEffect(c)
@@ -2222,8 +2222,8 @@ end
 function Auxiliary.PlayerSummonCreatureCondition(p)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local sumplayer=nil
-				if p==PLAYER_PLAYER or p==tp then sumplayer=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then sumplayer=1-tp end
+				if p==PLAYER_SELF or p==tp then sumplayer=tp
+				elseif p==PLAYER_OPPO or p==1-tp then sumplayer=1-tp end
 				local f=function(c,sp)
 					if c:GetSummonType()~=DM_SUMMON_TYPE_NORMAL then return false end
 					return sp and c:GetSummonPlayer()==sp
@@ -2241,9 +2241,9 @@ function Auxiliary.EnableTurnEndSelfDestroy(c,desc_id,con_func)
 	e1:SetCode(EVENT_PHASE+PHASE_END)
 	e1:SetRange(DM_LOCATION_BATTLE)
 	if con_func then
-		e1:SetCondition(aux.AND(Auxiliary.TurnPlayerCondition(PLAYER_PLAYER),con_func))
+		e1:SetCondition(aux.AND(Auxiliary.TurnPlayerCondition(PLAYER_SELF),con_func))
 	else
-		e1:SetCondition(Auxiliary.TurnPlayerCondition(PLAYER_PLAYER))
+		e1:SetCondition(Auxiliary.TurnPlayerCondition(PLAYER_SELF))
 	end
 	e1:SetOperation(Auxiliary.SelfDestroyOperation())
 	c:RegisterEffect(e1)
@@ -2282,9 +2282,9 @@ function Auxiliary.EnableTurnEndSelfReturn(c,desc_id,con_func,optional)
 	e1:SetCode(EVENT_PHASE+PHASE_END)
 	e1:SetRange(DM_LOCATION_BATTLE)
 	if con_func then
-		e1:SetCondition(aux.AND(Auxiliary.TurnPlayerCondition(PLAYER_PLAYER),con_func))
+		e1:SetCondition(aux.AND(Auxiliary.TurnPlayerCondition(PLAYER_SELF),con_func))
 	else
-		e1:SetCondition(Auxiliary.TurnPlayerCondition(PLAYER_PLAYER))
+		e1:SetCondition(Auxiliary.TurnPlayerCondition(PLAYER_SELF))
 	end
 	if typ==EFFECT_TYPE_TRIGGER_O then e1:SetTarget(Auxiliary.SelfReturnTarget) end
 	e1:SetOperation(Auxiliary.SelfReturnOperation)
@@ -2309,10 +2309,10 @@ function Auxiliary.BreakOperation(sp,tgp,min,max,rc)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local sel_player=nil
 				local target_player=nil
-				if sp==PLAYER_PLAYER or sp==tp then sel_player=tp
-				elseif sp==PLAYER_OPPONENT or sp==1-tp then sel_player=1-tp end
-				if tgp==PLAYER_PLAYER or tgp==tp then target_player=tp
-				elseif tgp==PLAYER_OPPONENT or tgp==1-tp then target_player=1-tp end
+				if sp==PLAYER_SELF or sp==tp then sel_player=tp
+				elseif sp==PLAYER_OPPO or sp==1-tp then sel_player=1-tp end
+				if tgp==PLAYER_SELF or tgp==tp then target_player=tp
+				elseif tgp==PLAYER_OPPO or tgp==1-tp then target_player=1-tp end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
 				Duel.BreakShield(e,sel_player,target_player,min,max,rc,REASON_EFFECT)
 			end
@@ -2325,8 +2325,8 @@ function Auxiliary.ConfirmOperation(p,f,s,o,min,max,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				local max=max or min
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
@@ -2356,8 +2356,8 @@ function Auxiliary.DestroyOperation(p,f,s,o,min,max,ram,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				local max=max or min
 				local c=e:GetHandler()
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
@@ -2393,8 +2393,8 @@ function Auxiliary.DiscardOperation(p,f,s,o,min,max,ram,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				local max=max or min
 				local c=e:GetHandler()
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
@@ -2421,11 +2421,11 @@ end
 --========== Draw ==========
 --target and operation functions for abilities that draw a specified number of cards
 function Auxiliary.DrawTarget(p)
-	--p: PLAYER_PLAYER/tp for you to draw or PLAYER_OPPONENT/1-tp for your opponent to draw
+	--p: PLAYER_SELF/tp for you to draw or PLAYER_OPPO/1-tp for your opponent to draw
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				if chk==0 then return Duel.IsPlayerCanDraw(player,1) end
 			end
 end
@@ -2433,8 +2433,8 @@ function Auxiliary.DrawOperation(p,ct)
 	--ct: the number of cards to draw
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				Duel.Draw(player,ct,REASON_EFFECT)
 			end
 end
@@ -2443,8 +2443,8 @@ end
 function Auxiliary.DrawUpToOperation(p,ct)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				Duel.DrawUpTo(player,ct,REASON_EFFECT)
 			end
 end
@@ -2471,8 +2471,8 @@ function Auxiliary.SendtoBattleOperation(p,f,s,o,min,max,pos,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				local max=max or min
 				local pos=pos or POS_FACEUP_UNTAPPED
 				local ft=Duel.GetLocationCount(player,DM_LOCATION_BATTLE)
@@ -2505,8 +2505,8 @@ function Auxiliary.TargetSendtoBattleTarget(p,f,s,o,min,max,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				local f=f or aux.TRUE
 				local max=max or min
 				local location=s
@@ -2578,8 +2578,8 @@ function Auxiliary.SendtoGraveOperation(p,f,s,o,min,max,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				local f=f or aux.TRUE
 				local max=max or min
 				local c=e:GetHandler()
@@ -2625,8 +2625,8 @@ function Auxiliary.SendtoHandOperation(p,f,s,o,min,max,conf,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				local f=f or aux.TRUE
 				local max=max or min
 				local desc=DM_HINTMSG_RTOHAND
@@ -2686,8 +2686,8 @@ function Auxiliary.SendtoManaOperation(p,f,s,o,min,max,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				local f=f or aux.TRUE
 				local max=max or min
 				local c=e:GetHandler()
@@ -2727,11 +2727,11 @@ function Auxiliary.TargetSendtoManaOperation(e,tp,eg,ep,ev,re,r,rp)
 end
 --target and operation functions for abilities that put cards from the top of a player's deck into the mana zone
 function Auxiliary.DecktopSendtoManaTarget(p)
-	--p: PLAYER_PLAYER/tp for the top of your deck or PLAYER_OPPONENT/1-tp for your opponent's
+	--p: PLAYER_SELF/tp for the top of your deck or PLAYER_OPPO/1-tp for your opponent's
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				if chk==0 then return Duel.IsPlayerCanSendDecktoptoMana(player,1) end
 			end
 end
@@ -2739,8 +2739,8 @@ function Auxiliary.DecktopSendtoManaOperation(p,ct)
 	--ct: the number of cards to put into the mana zone
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
 				Duel.SendDecktoptoMana(player,ct,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 			end
@@ -2752,8 +2752,8 @@ function Auxiliary.SendtoShieldOperation(p,f,s,o,min,max,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				local max=max or min
 				local ft=Duel.GetLocationCount(player,DM_LOCATION_SHIELD)
 				if max>=0 and ft>max then ft=max end
@@ -2799,11 +2799,11 @@ end
 --reserved
 --[[
 function Auxiliary.DecktopSendtoShieldTarget(p)
-	--p: PLAYER_PLAYER/tp for the top of your deck or PLAYER_OPPONENT/1-tp for your opponent's
+	--p: PLAYER_SELF/tp for the top of your deck or PLAYER_OPPO/1-tp for your opponent's
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				if chk==0 then return Duel.GetFieldGroupCount(player,LOCATION_DECK,0)>0 end
 			end
 end
@@ -2813,8 +2813,8 @@ function Auxiliary.DecktopSendtoShieldOperation(p,ct)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player1=nil
 				local player2=nil
-				if p==PLAYER_PLAYER or p==tp then player1=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player2=1-tp
+				if p==PLAYER_SELF or p==tp then player1=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player2=1-tp
 				elseif p==PLAYER_ALL then
 					player1=tp
 					player2=1-tp
@@ -2830,8 +2830,8 @@ end
 function Auxiliary.DecktopSendtoShieldUpToOperation(p,ct)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
 				Duel.SendDecktoptoShieldUpTo(player,ct)
 			end
@@ -2845,8 +2845,8 @@ function Auxiliary.TapUntapOperation(p,f,s,o,min,max,pos,ram,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				local desc=DM_HINTMSG_TAP
 				if pos==POS_FACEUP_UNTAPPED then desc=DM_HINTMSG_UNTAP end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
@@ -2884,8 +2884,8 @@ function Auxiliary.TurnPlayerCondition(p)
 	return	function(e)
 				local tp=e:GetHandlerPlayer()
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				return Duel.GetTurnPlayer()==player
 			end
 end
@@ -2894,8 +2894,8 @@ Auxiliary.turnpcon=Auxiliary.TurnPlayerCondition
 function Auxiliary.ReasonPlayerCondition(p)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				return rp==player
 			end
 end
@@ -2952,8 +2952,8 @@ Auxiliary.mexcon=Auxiliary.ManaExclusiveCondition
 function Auxiliary.EnterGraveCondition(p)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				local f=function(c,player)
 					if player then
 						return c:IsControler(player)
@@ -2968,8 +2968,8 @@ Auxiliary.tgcon=Auxiliary.EnterGraveCondition
 function Auxiliary.NoShieldsCondition(p)
 	return	function(e)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				return Duel.GetMatchingGroupCount(Auxiliary.ShieldZoneFilter(),player,DM_LOCATION_SHIELD,0,nil)==0
 			end
 end
@@ -2998,8 +2998,8 @@ function Auxiliary.TargetCardFunction(p,f,s,o,min,max,desc,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				local max=max or min
 				local desc=desc or DM_HINTMSG_TARGET
 				local c=e:GetHandler()
@@ -3051,8 +3051,8 @@ function Auxiliary.TargetShieldFunction(p,f,s,o,min,max,desc,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 				local sel_player=nil
-				if p==PLAYER_PLAYER or p==tp then sel_player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then sel_player=1-tp end
+				if p==PLAYER_SELF or p==tp then sel_player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then sel_player=1-tp end
 				local max=max or min
 				local desc=desc or DM_HINTMSG_TARGET
 				local c=e:GetHandler()
@@ -3085,8 +3085,8 @@ Auxiliary.targtg2=Auxiliary.TargetShieldFunction
 function Auxiliary.CheckDeckFunction(p)
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
 				local player=nil
-				if p==PLAYER_PLAYER or p==tp then player=tp
-				elseif p==PLAYER_OPPONENT or p==1-tp then player=1-tp end
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				if chk==0 then return Duel.GetFieldGroupCount(player,LOCATION_DECK,0)>0 end
 			end
 end

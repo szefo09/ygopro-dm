@@ -13,4 +13,4 @@ scard.duel_masters_card=true
 function scard.conffilter(c)
 	return (c:IsShield() and c:IsFacedown()) or (c:IsLocation(LOCATION_HAND) and not c:IsPublic())
 end
-scard.confop=dm.ConfirmOperation(PLAYER_PLAYER,scard.conffilter,0,LOCATION_HAND+DM_LOCATION_SHIELD)
+scard.confop=dm.ConfirmOperation(PLAYER_SELF,scard.conffilter,0,LOCATION_HAND+DM_LOCATION_SHIELD)

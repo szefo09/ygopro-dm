@@ -156,8 +156,8 @@ DM_SUMMON_TYPE_NORMAL				=0x49000000		--Summon a creature by paying its mana cos
 DM_SUMMON_TYPE_EVOLUTION			=0x49100000		--Summon a creature by evolving a creature in the battle zone(SUMMON_TYPE_XYZ+0x100000)
 --Player
 PLAYER_OWNER						=nil	--player=PLAYER_OWNER in Duel.Sendto..(targets, player, reason)
-PLAYER_PLAYER						=0		--player=PLAYER_PLAYER in Effect.SetCondition(Auxiliary.Function(player)), etc.
-PLAYER_OPPONENT						=1		--player=PLAYER_OPPONENT in Effect.SetCondition(Auxiliary.Function(player)), etc.
+PLAYER_SELF							=0		--player=PLAYER_SELF in Effect.SetCondition(Auxiliary.Function(player)), etc.
+PLAYER_OPPO							=1		--player=PLAYER_OPPO in Effect.SetCondition(Auxiliary.Function(player)), etc.
 --Reset
 DM_RESET_TOMANA						=RESET_TOGRAVE	--Reset a card's gained ability when it is put into the mana zone
 DM_RESET_TOGRAVE					=RESET_REMOVE	--Reset a card's gained ability when it is put into the graveyard

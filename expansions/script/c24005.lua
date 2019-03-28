@@ -27,7 +27,7 @@ function scard.abcon(civ)
 			end
 end
 --to mana
-scard.tmop=dm.DecktopSendtoManaOperation(PLAYER_PLAYER,1)
+scard.tmop=dm.DecktopSendtoManaOperation(PLAYER_SELF,1)
 --untap
 function scard.poscon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsExistingMatchingCard(scard.cfilter,tp,0,DM_LOCATION_BATTLE,1,nil,DM_CIVILIZATION_LIGHT)

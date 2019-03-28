@@ -12,4 +12,4 @@ function scard.tmcon(e,tp,eg,ep,ev,re,r,rp)
 	local ct2=Duel.GetMatchingGroupCount(dm.ManaZoneFilter(),tp,0,DM_LOCATION_MANA,nil)
 	return ct1<ct2
 end
-scard.tmop=dm.DecktopSendtoManaOperation(PLAYER_PLAYER,1)
+scard.tmop=dm.DecktopSendtoManaOperation(PLAYER_SELF,1)

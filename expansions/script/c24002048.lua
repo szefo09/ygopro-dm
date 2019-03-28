@@ -7,5 +7,5 @@ function scard.initial_effect(c)
 	dm.AddSingleComeIntoPlayEffect(c,0,nil,scard.tgtg,scard.tgop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
-scard.tgtg=dm.TargetCardFunction(PLAYER_PLAYER,dm.ManaZoneFilter(Card.DMIsAbleToGrave),0,DM_LOCATION_MANA,0,2,DM_HINTMSG_TOGRAVE)
+scard.tgtg=dm.TargetCardFunction(PLAYER_SELF,dm.ManaZoneFilter(Card.DMIsAbleToGrave),0,DM_LOCATION_MANA,0,2,DM_HINTMSG_TOGRAVE)
 scard.tgop=dm.TargetSendtoGraveOperation

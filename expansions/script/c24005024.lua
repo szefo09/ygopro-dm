@@ -12,7 +12,7 @@ function scard.drtg1(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,1) end
 	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
 end
-scard.drop=dm.DrawOperation(PLAYER_PLAYER,1)
+scard.drop=dm.DrawOperation(PLAYER_SELF,1)
 function scard.drtg2(e,c)
 	return c~=e:GetHandler() and c:DMIsRace(DM_RACE_SURVIVOR)
 end

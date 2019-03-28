@@ -10,5 +10,5 @@ scard.duel_masters_card=true
 function scard.tmfilter(c)
 	return c:IsFaceup() and c:IsCivilization(DM_CIVILIZATIONS_WD) and c:IsAbleToMana()
 end
-scard.tmtg=dm.TargetCardFunction(PLAYER_OPPONENT,scard.tmfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TOMANA)
+scard.tmtg=dm.TargetCardFunction(PLAYER_OPPO,scard.tmfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TOMANA)
 scard.tmop=dm.TargetSendtoManaOperation

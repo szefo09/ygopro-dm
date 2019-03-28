@@ -15,7 +15,7 @@ function scard.rettg1(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(dm.DMGraveFilter(scard.retfilter),tp,DM_LOCATION_GRAVE,0,1,nil) end
 	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
 end
-scard.retop=dm.SendtoHandOperation(PLAYER_PLAYER,dm.DMGraveFilter(scard.retfilter),DM_LOCATION_GRAVE,0,1)
+scard.retop=dm.SendtoHandOperation(PLAYER_SELF,dm.DMGraveFilter(scard.retfilter),DM_LOCATION_GRAVE,0,1)
 function scard.rettg2(e,c)
 	return c~=e:GetHandler() and c:DMIsRace(DM_RACE_SURVIVOR)
 end

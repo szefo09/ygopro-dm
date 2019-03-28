@@ -10,5 +10,5 @@ scard.duel_masters_card=true
 function scard.tdfilter(c)
 	return c:IsFaceup() and c:IsAbleToDeck()
 end
-scard.tdtg=dm.TargetCardFunction(PLAYER_PLAYER,scard.tdfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TODECK)
+scard.tdtg=dm.TargetCardFunction(PLAYER_SELF,scard.tdfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TODECK)
 scard.tdop=dm.TargetSendtoDeckOperation(DECK_SEQUENCE_TOP)

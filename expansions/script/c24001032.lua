@@ -13,4 +13,4 @@ end
 function scard.drcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsExistingMatchingCard(scard.cfilter,tp,DM_LOCATION_BATTLE,0,1,nil)
 end
-scard.drop=dm.DrawUpToOperation(PLAYER_PLAYER,3)
+scard.drop=dm.DrawUpToOperation(PLAYER_SELF,3)

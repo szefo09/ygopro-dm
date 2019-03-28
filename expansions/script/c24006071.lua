@@ -13,4 +13,4 @@ function scard.desfilter(c)
 	return c:IsFaceup() and c:IsPowerBelow(4000)
 end
 scard.destg=dm.CheckCardFunction(scard.desfilter,0,DM_LOCATION_BATTLE)
-scard.desop=dm.DestroyOperation(PLAYER_PLAYER,scard.desfilter,0,DM_LOCATION_BATTLE,1)
+scard.desop=dm.DestroyOperation(PLAYER_SELF,scard.desfilter,0,DM_LOCATION_BATTLE,1)

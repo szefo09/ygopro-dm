@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--shield trigger
 	dm.EnableShieldTrigger(c)
 	--return
-	dm.AddSpellCastEffect(c,0,nil,dm.SendtoHandOperation(PLAYER_PLAYER,dm.ManaZoneFilter(Card.IsAbleToHand),DM_LOCATION_MANA,0,0,3))
-	dm.AddShieldTriggerCastEffect(c,0,nil,dm.SendtoHandOperation(PLAYER_PLAYER,dm.ManaZoneFilter(Card.IsAbleToHand),DM_LOCATION_MANA,0,0,3))
+	dm.AddSpellCastEffect(c,0,nil,dm.SendtoHandOperation(PLAYER_SELF,dm.ManaZoneFilter(Card.IsAbleToHand),DM_LOCATION_MANA,0,0,3))
+	dm.AddShieldTriggerCastEffect(c,0,nil,dm.SendtoHandOperation(PLAYER_SELF,dm.ManaZoneFilter(Card.IsAbleToHand),DM_LOCATION_MANA,0,0,3))
 end
 scard.duel_masters_card=true

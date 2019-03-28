@@ -12,4 +12,4 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 scard.conftg=dm.CheckCardFunction(dm.ShieldZoneFilter(Card.IsFacedown),DM_LOCATION_SHIELD,0)
-scard.confop=dm.ConfirmOperation(PLAYER_PLAYER,dm.ShieldZoneFilter(Card.IsFacedown),DM_LOCATION_SHIELD,0)
+scard.confop=dm.ConfirmOperation(PLAYER_SELF,dm.ShieldZoneFilter(Card.IsFacedown),DM_LOCATION_SHIELD,0)

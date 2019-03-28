@@ -4,6 +4,6 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
 	--search (to hand)
-	dm.AddSpellCastEffect(c,0,nil,dm.SendtoHandOperation(PLAYER_PLAYER,Card.IsAbleToHand,LOCATION_DECK,0,0,MAX_NUMBER,true))
+	dm.AddSpellCastEffect(c,0,nil,dm.SendtoHandOperation(PLAYER_SELF,Card.IsAbleToHand,LOCATION_DECK,0,0,MAX_NUMBER,true))
 end
 scard.duel_masters_card=true

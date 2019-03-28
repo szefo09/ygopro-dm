@@ -11,4 +11,4 @@ function scard.thfilter(c)
 	return c:IsCreature() and c:IsAbleToHand()
 end
 scard.thtg=dm.CheckCardFunction(scard.thfilter,LOCATION_DECK,0)
-scard.thop=dm.SendtoHandOperation(PLAYER_PLAYER,scard.thfilter,LOCATION_DECK,0,0,1,true)
+scard.thop=dm.SendtoHandOperation(PLAYER_SELF,scard.thfilter,LOCATION_DECK,0,0,1,true)

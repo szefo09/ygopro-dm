@@ -9,7 +9,7 @@ function scard.initial_effect(c)
 	--get ability
 	dm.AddTurnStartEffect(c,0,nil,true,nil,scard.abop)
 	--to shield
-	dm.AddSingleLeaveBattleEffect(c,1,nil,nil,dm.DecktopSendtoShieldOperation(PLAYER_PLAYER,1))
+	dm.AddSingleLeaveBattleEffect(c,1,nil,nil,dm.DecktopSendtoShieldOperation(PLAYER_SELF,1))
 	--tap
 	dm.AddSingleComeIntoPlayEffect(c,2,true,scard.postg,scard.posop)
 end

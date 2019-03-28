@@ -10,7 +10,7 @@ scard.duel_masters_card=true
 function scard.drcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(Card.IsPreviousLocation,1,nil,DM_LOCATION_BATTLE)
 end
-scard.drtg=dm.DrawTarget(PLAYER_PLAYER)
+scard.drtg=dm.DrawTarget(PLAYER_SELF)
 function scard.drop(e,tp,eg,ep,ev,re,r,rp)
 	if e:GetHandler():IsRelateToEffect(e) and e:GetHandler():IsFaceup() then
 		Duel.Draw(tp,eg:GetCount(),REASON_EFFECT)

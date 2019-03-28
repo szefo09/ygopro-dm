@@ -11,7 +11,7 @@ scard.duel_masters_card=true
 function scard.thfilter(c)
 	return c:DMIsRace(DM_RACE_SURVIVOR) and c:IsAbleToHand()
 end
-scard.thop=dm.SendtoHandOperation(PLAYER_PLAYER,scard.thfilter,LOCATION_DECK,0,0,1,true)
+scard.thop=dm.SendtoHandOperation(PLAYER_SELF,scard.thfilter,LOCATION_DECK,0,0,1,true)
 function scard.thtg(e,c)
 	return c~=e:GetHandler() and c:DMIsRace(DM_RACE_SURVIVOR)
 end

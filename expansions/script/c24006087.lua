@@ -11,4 +11,4 @@ function scard.desfilter(c)
 	return c:IsFaceup() and c:IsHasEffect(DM_EFFECT_BLOCKER)
 end
 scard.destg=dm.CheckCardFunction(scard.desfilter,0,DM_LOCATION_BATTLE)
-scard.desop=dm.DestroyOperation(PLAYER_PLAYER,scard.desfilter,0,DM_LOCATION_BATTLE,1)
+scard.desop=dm.DestroyOperation(PLAYER_SELF,scard.desfilter,0,DM_LOCATION_BATTLE,1)

@@ -11,4 +11,4 @@ function scard.tmfilter(c)
 	return c:IsCivilization(DM_CIVILIZATION_NATURE) and c:IsAbleToMana()
 end
 scard.tmtg=dm.CheckCardFunction(dm.DMGraveFilter(scard.tmfilter1),DM_LOCATION_GRAVE,0)
-scard.tmop=dm.SendtoManaOperation(PLAYER_PLAYER,dm.DMGraveFilter(scard.tmfilter),DM_LOCATION_GRAVE,0,1)
+scard.tmop=dm.SendtoManaOperation(PLAYER_SELF,dm.DMGraveFilter(scard.tmfilter),DM_LOCATION_GRAVE,0,1)

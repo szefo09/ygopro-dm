@@ -13,5 +13,5 @@ function scard.dhtg1(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(aux.TRUE,tp,0,LOCATION_HAND,1,nil) end
 	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
 end
-scard.dhop=dm.DiscardOperation(PLAYER_OPPONENT,aux.TRUE,0,LOCATION_HAND,1,1,true)
+scard.dhop=dm.DiscardOperation(PLAYER_OPPO,aux.TRUE,0,LOCATION_HAND,1,1,true)
 scard.dhtg2=aux.TargetBoolFunction(Card.IsCivilization,DM_CIVILIZATION_DARKNESS)
