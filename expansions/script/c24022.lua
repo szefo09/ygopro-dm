@@ -5,7 +5,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--wins all battles (liquid people)
-	dm.EnableWinsAllBattles(c,0,nil,aux.FilterBoolFunction(Card.DMIsRace,DM_RACE_LIQUID_PEOPLE))
+	dm.EnableWinsAllBattles(c,0,aux.FilterBoolFunction(Card.DMIsRace,DM_RACE_LIQUID_PEOPLE))
 	--speed attacker
 	dm.EnableEffectCustom(c,DM_EFFECT_SPEED_ATTACKER)
 	--return

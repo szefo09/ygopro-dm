@@ -5,7 +5,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--wins all battles (ghost)
-	dm.EnableWinsAllBattles(c,0,nil,aux.FilterBoolFunction(Card.DMIsRace,DM_RACE_GHOST))
+	dm.EnableWinsAllBattles(c,0,aux.FilterBoolFunction(Card.DMIsRace,DM_RACE_GHOST))
 	--power attacker
 	dm.EnablePowerAttacker(c,2000)
 end

@@ -1460,17 +1460,16 @@ function Auxiliary.AddStaticEffectTapAbility(c,desc_id,targ_func1,op_func,s_rang
 end
 --"RACE Hunter (This creature wins all battles against RACE.)"
 --e.g. "Pearl Carras, Barrier Guardian" (Game Original)
-function Auxiliary.EnableWinsAllBattles(c,desc_id,con_func,f)
+function Auxiliary.EnableWinsAllBattles(c,desc_id,f)
 	--f: include function for "RACE Hunter"
-	local con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EVENT_BATTLE_START)
-	e1:SetCondition(aux.AND(Auxiliary.WinsAllBattlesCondition(f),con_func))
+	e1:SetCondition(Auxiliary.WinsAllBattlesCondition(f))
 	e1:SetOperation(Auxiliary.WinsAllBattlesOperation)
 	c:RegisterEffect(e1)
-	Auxiliary.EnableEffectCustom(c,DM_EFFECT_WINS_ALL_BATTLES,con_func)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_WINS_ALL_BATTLES)
 end
 function Auxiliary.WinsAllBattlesCondition(f)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
@@ -1536,13 +1535,12 @@ function Auxiliary.SingleDestroyReplaceOperation(f,...)
 end
 --"When one of your creatures would be destroyed, ABILITY."
 --e.g. "King Ambergris" (Game Original)
-function Auxiliary.AddDestroyReplaceEffect(c,desc_id,targ_func,op_func,val,con_func)
+function Auxiliary.AddDestroyReplaceEffect(c,desc_id,targ_func,op_func,val)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EFFECT_DESTROY_REPLACE)
 	e1:SetRange(DM_LOCATION_BATTLE)
-	if con_func then e1:SetCondition(con_func) end
 	e1:SetTarget(targ_func)
 	e1:SetValue(val)
 	e1:SetOperation(op_func)
@@ -1791,7 +1789,7 @@ function Auxiliary.AddEnterGraveEffect(c,desc_id,p,optional,targ_func,op_func,pr
 end
 --"Whenever a player casts a spell, ABILITY."
 --e.g. "Natalia, Channeler of Suns" (Game Original)
-function Auxiliary.AddPlayerCastSpellEffect(c,desc_id,p,optional,targ_func,op_func,con_func,prop,cate)
+function Auxiliary.AddPlayerCastSpellEffect(c,desc_id,p,optional,targ_func,op_func,con_func,prop)
 	--p: PLAYER_PLAYER/tp if you cast a spell, PLAYER_OPPONENT/1-tp if your opponent does, or nil if either player does
 	local typ=EFFECT_TYPE_TRIGGER_F
 	if optional then typ=EFFECT_TYPE_TRIGGER_O end
@@ -1812,7 +1810,6 @@ function Auxiliary.AddPlayerCastSpellEffect(c,desc_id,p,optional,targ_func,op_fu
 	c:RegisterEffect(e2)
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	if cate then e3:SetCategory(cate) end
 	e3:SetType(EFFECT_TYPE_FIELD+typ)
 	e3:SetCode(EVENT_CHAIN_END)
 	if prop then
@@ -1913,9 +1910,8 @@ function Auxiliary.AddTurnStartEffect(c,desc_id,p,optional,targ_func,op_func,con
 end
 --"This creature can't attack players."
 --e.g. "Dia Nork, Moonlight Guardian" (DM-01 2/110)
-function Auxiliary.EnableCannotAttackPlayer(c,con_func)
-	local con_func=con_func or aux.TRUE
-	Auxiliary.EnableEffectCustom(c,DM_EFFECT_CANNOT_ATTACK_PLAYER,con_func)
+function Auxiliary.EnableCannotAttackPlayer(c)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_CANNOT_ATTACK_PLAYER)
 end
 --"This creature gets +/-N000 power."
 --"Each of your/your opponent's creatures gets +/-N000 power."
@@ -2116,6 +2112,7 @@ end
 --"When this creature wins a battle, it is destroyed at random."
 --e.g. "Bloody Squito" (DM-01 46/110), "Hanakage, Shadow of Transience" (Game Original)
 function Auxiliary.EnableBattleWinSelfDestroy(c,desc_id,ram)
+	--ram: true for "This creature is destroyed at random"
 	local desc_id=desc_id or 0
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
@@ -2126,7 +2123,6 @@ function Auxiliary.EnableBattleWinSelfDestroy(c,desc_id,ram)
 	c:RegisterEffect(e1)
 end
 function Auxiliary.SelfDestroyOperation(ram)
-	--ram: true for "destroyed at random"
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local c=e:GetHandler()
 				if Duel.GetAttacker()==c then Duel.ChangePosition(c,POS_FACEUP_TAPPED) end --fix attack cost position
@@ -2139,9 +2135,8 @@ function Auxiliary.SelfDestroyOperation(ram)
 end
 --"This creature attacks each turn if able."
 --e.g. "Deadly Fighter Braid Claw" (DM-01 74/110)
-function Auxiliary.EnableAttackIfAble(c,con_func)
-	local con_func=con_func or aux.TRUE
-	Auxiliary.EnableEffectCustom(c,EFFECT_MUST_ATTACK,con_func)
+function Auxiliary.EnableAttackIfAble(c)
+	Auxiliary.EnableEffectCustom(c,EFFECT_MUST_ATTACK)
 end
 --"This creature can attack untapped creatures."
 --"This creature can attack untapped CIVILIZATION creatures."
@@ -2175,15 +2170,13 @@ function Auxiliary.EnableUpdateManaCost(c,val,s_range,o_range,targ_func)
 end
 --"This creature can't attack creatures."
 --e.g. "Dawn Giant" (DM-03 46/55)
-function Auxiliary.EnableCannotAttackCreature(c,con_func)
-	local con_func=con_func or aux.TRUE
+function Auxiliary.EnableCannotAttackCreature(c)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(EFFECT_CANNOT_SELECT_BATTLE_TARGET)
-	e1:SetCondition(con_func)
 	e1:SetValue(aux.TargetBoolFunction(Card.IsCreature))
 	c:RegisterEffect(e1)
-	Auxiliary.EnableEffectCustom(c,DM_EFFECT_CANNOT_ATTACK_CREATURE,con_func)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_CANNOT_ATTACK_CREATURE)
 end
 --"This creature can't be attacked"
 --e.g. "Gulan Rias, Speed Guardian" (DM-04 10/55)
