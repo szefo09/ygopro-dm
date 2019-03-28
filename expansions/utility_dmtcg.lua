@@ -1458,6 +1458,22 @@ function Auxiliary.AddStaticEffectTapAbility(c,desc_id,targ_func1,op_func,s_rang
 	e2:SetLabelObject(e1)
 	c:RegisterEffect(e2)
 end
+--"CIVILIZATION stealth (This creature can't be blocked while your opponent has any CIVILIZATION cards in his mana zone.)"
+--e.g. "Kizar Basiku, the Outrageous" (DM-07 9/55)
+function Auxiliary.EnableStealth(c,civ)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetCode(DM_EFFECT_STEALTH)
+	e1:SetValue(civ)
+	c:RegisterEffect(e1)
+	Auxiliary.EnableCannotBeBlocked(c,nil,Auxiliary.StealthCondition(civ))
+end
+function Auxiliary.StealthCondition(civ)
+	return	function(e)
+				local tp=e:GetHandlerPlayer()
+				return Duel.IsExistingMatchingCard(Auxiliary.ManaZoneFilter(Card.IsCivilization),tp,0,DM_LOCATION_MANA,1,nil,civ)
+			end
+end
 --"RACE Hunter (This creature wins all battles against RACE.)"
 --e.g. "Pearl Carras, Barrier Guardian" (Game Original)
 function Auxiliary.EnableWinsAllBattles(c,desc_id,f)
@@ -1531,6 +1547,19 @@ function Auxiliary.SingleDestroyReplaceOperation(f,...)
 				local c=e:GetHandler()
 				Duel.Hint(HINT_CARD,0,c:GetOriginalCode())
 				f(c,table.unpack(ext_params))
+			end
+end
+--target function for "When this creature would be destroyed, you may ABILITY."
+--e.g. "Aqua Agent" (DM-07 16/55)
+function Auxiliary.SingleDestroyReplaceTarget2(desc_id,f,...)
+	--f: Card.IsAbleToX
+	local ext_params={...}
+	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
+				local c=e:GetHandler()
+				if chk==0 then return not c:IsReason(REASON_REPLACE) and (not f or f(c,table.unpack(ext_params))) end
+				if Duel.SelectYesNo(tp,aux.Stringid(c:GetOriginalCode(),desc_id)) then
+					return true
+				else return false end
 			end
 end
 --"When one of your creatures would be destroyed, ABILITY."
