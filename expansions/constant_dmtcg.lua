@@ -206,8 +206,8 @@ DM_EFFECT_NO_BE_BLOCKED_BATTLE		=721	--No battle happens when a creature becomes
 DM_EFFECT_CREW_BREAKER				=722	--Crew Breaker ("Q-tronic Gargantua" DM-06 86/110)
 DM_EFFECT_EVOLUTION_ANY_RACE		=723	--Can put an evolution creature of any race on it ("Innocent Hunter, Blade of All" DM-06 103/110)
 DM_EFFECT_BREAK_SHIELD_REPLACE		=724	--When a creature would break a shield, do something else to that shield instead ("Bolmeteus Steel Dragon" DM-06 S7/S10)
+DM_EFFECT_CHARGER					=798	--Charger ("Lightning Charger" DM-07 15/55")
 DM_EFFECT_WINS_ALL_BATTLES			=799	--Wins All Battles ("Marshias, Spirit of the Sun" DM-14 S1/S10)		
---DM_EFFECT_CHARGER					=000	--RESERVED --Charger ("Lightning Charger" DM-07 15/55")
 --Abilities that trigger or actions that occur at the appropriate event
 DM_EVENT_ATTACK_SHIELD				=EVENT_PRE_DAMAGE_CALCULATE		--Before an attacking creature breaks the opponent's shield
 DM_EVENT_TO_GRAVE					=EVENT_REMOVE					--When a card is put into the graveyard
