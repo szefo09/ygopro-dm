@@ -8,6 +8,7 @@ function scard.initial_effect(c)
 	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.tstg,scard.tsop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
+scard.tstg=dm.CheckCardFunction(Card.IsAbleToShield,LOCATION_HAND,0)
 function scard.thfilter(c,e)
 	return c:IsAbleToHand() and c:IsCanBeEffectTarget(e)
 end
