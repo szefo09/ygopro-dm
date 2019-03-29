@@ -509,11 +509,12 @@ end
 --break a shield
 --Note: Update this function each time new "breaker" abilities are introduced
 --not yet implemented: quattro, world, galaxy, infinity, civilization, age, master
-function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason)
+function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason,ignore_breaker)
+	--ignore_breaker: true to not break a number of shields according to the breaker abilities a creature may have
 	local reason=reason or 0
 	local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(),target_player,DM_LOCATION_SHIELD,0,nil)
 	if g:GetCount()==0 then return end
-	if rc then
+	if rc and not ignore_breaker then
 		if not rc:IsCanBreakShield() then return end
 		local m=_G["c"..rc:GetCode()]
 		local db=rc:IsHasEffect(DM_EFFECT_DOUBLE_BREAKER)
@@ -1411,10 +1412,9 @@ function Auxiliary.RegisterEffectBreaker(c,tc,desc_id,code,reset_flag,reset_coun
 end
 --"Instead of having this creature attack, you may tap it to use its Tap ability."
 --e.g. "Tank Mutant" (DM-06 6/110)
-function Auxiliary.EnableTapAbility(c,desc_id,targ_func,op_func,prop,cate)
+function Auxiliary.EnableTapAbility(c,desc_id,targ_func,op_func,prop)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	if cate then e1:SetCategory(cate) end
 	e1:SetType(EFFECT_TYPE_QUICK_O)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	if prop then e1:SetProperty(prop) end
@@ -2330,11 +2330,12 @@ function Auxiliary.SelfReturnOperation(e,tp,eg,ep,ev,re,r,rp)
 end
 --========== Break ==========
 --operation function for abilities that break shields
-function Auxiliary.BreakOperation(sp,tgp,min,max,rc)
+function Auxiliary.BreakOperation(sp,tgp,min,max,rc,ignore_breaker)
 	--sp: the player that selects the shields
 	--tgp: the player whose shields to break
 	--min,max: the number of shields to break
 	--rc: the creature that breaks the shields
+	--ignore_breaker: true to not break a number of shields according to the breaker abilities a creature may have
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local sel_player=nil
 				local target_player=nil
@@ -2343,7 +2344,7 @@ function Auxiliary.BreakOperation(sp,tgp,min,max,rc)
 				if tgp==PLAYER_SELF or tgp==tp then target_player=tp
 				elseif tgp==PLAYER_OPPO or tgp==1-tp then target_player=1-tp end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
-				Duel.BreakShield(e,sel_player,target_player,min,max,rc,REASON_EFFECT)
+				Duel.BreakShield(e,sel_player,target_player,min,max,rc,REASON_EFFECT,ignore_breaker)
 			end
 end
 --========== Confirm ==========
@@ -2468,7 +2469,7 @@ function Auxiliary.DrawOperation(p,ct)
 			end
 end
 --operation function for abilities that draw an unspecified number of cards
---use Auxiliary.DrawTarget for the target function
+--use Auxiliary.DrawTarget for the target function, if needed
 function Auxiliary.DrawUpToOperation(p,ct)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=nil
@@ -2863,6 +2864,25 @@ function Auxiliary.DecktopSendtoShieldUpToOperation(p,ct)
 				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
 				Duel.SendDecktoptoShieldUpTo(player,ct)
+			end
+end
+--========== Sort ==========
+--operation function for abilities that let a player look at the top cards of a player's deck and return them in any order
+--use Auxiliary.CheckDeckFunction for the target function, if needed
+function Auxiliary.SortDecktopOperation(sortp,tgp,ct)
+	--sortp: PLAYER_SELF/tp for you to sort cards or PLAYER_OPPO/1-tp for your opponent to sort
+	--tgp: PLAYER_SELF/tp to sort your cards or PLAYER_OPPO/1-tp to sort your opponent's
+	--ct: the number of cards to sort
+	return	function(e,tp,eg,ep,ev,re,r,rp)
+				local sort_player=nil
+				if sortp==PLAYER_SELF or sortp==tp then sort_player=tp
+				elseif sortp==PLAYER_OPPO or sortp==1-tp then sort_player=1-tp end
+				local target_player=nil
+				if tgp==PLAYER_SELF or tgp==tp then target_player=tp
+				elseif tgp==PLAYER_OPPO or tgp==1-tp then target_player=1-tp end
+				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
+				local g=Duel.GetDecktopGroup(target_player,ct)
+				Duel.SortDecktop(sort_player,target_player,ct)
 			end
 end
 --========== TapUntap ==========
