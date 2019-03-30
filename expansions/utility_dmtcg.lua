@@ -3023,6 +3023,17 @@ function Auxiliary.NoShieldsCondition(p)
 			end
 end
 Auxiliary.nszcon=Auxiliary.NoShieldsCondition
+--condition for "While a player has no cards in their hand"
+--e.g. "Headlong Giant" (DM-07 S5/S5)
+function Auxiliary.NoHandCondition(p)
+	return	function(e)
+				local player=nil
+				if p==PLAYER_SELF or p==tp then player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
+				return Duel.GetFieldGroupCount(player,LOCATION_HAND,0)==0
+			end
+end
+Auxiliary.nhcon=Auxiliary.NoHandCondition
 --cost function for a card tapping itself
 --e.g. "Millstone Man" (Game Original)
 function Auxiliary.SelfTapCost(e,tp,eg,ep,ev,re,r,rp,chk)

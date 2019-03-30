@@ -18,8 +18,8 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 		--ignore summoning sickness
 		dm.RegisterEffectCustom(c,tc,1,DM_EFFECT_IGNORE_SUMMONING_SICKNESS)
 		--ignore cannot attack
-		dm.RegisterEffectCustom(c,tc,1,DM_EFFECT_IGNORE_CANNOT_ATTACK)
+		dm.RegisterEffectCustom(c,tc,2,DM_EFFECT_IGNORE_CANNOT_ATTACK)
 		--ignore cannot attack player
-		dm.RegisterEffectCustom(c,tc,1,DM_EFFECT_IGNORE_CANNOT_ATTACK_PLAYER)
+		dm.RegisterEffectCustom(c,tc,2,DM_EFFECT_IGNORE_CANNOT_ATTACK_PLAYER)
 	end
 end

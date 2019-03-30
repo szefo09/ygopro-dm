@@ -1,0 +1,33 @@
+--Justice Jamming
+local dm=require "expansions.utility_dmtcg"
+local scard,sid=dm.GetID()
+function scard.initial_effect(c)
+	dm.EnableSpellAttribute(c)
+	--tap
+	dm.AddSpellCastEffect(c,0,nil,scard.posop)
+end
+scard.duel_masters_card=true
+function scard.posfilter(c,civ)
+	return c:IsFaceup() and c:IsUntapped() and c:IsCivilization(civ)
+end
+function scard.posop(e,tp,eg,ep,ev,re,r,rp)
+	local g1=Duel.GetMatchingGroup(scard.posfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,DM_CIVILIZATION_DARKNESS)
+	local g2=Duel.GetMatchingGroup(scard.posfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,DM_CIVILIZATION_FIRE)
+	if g1:GetCount()==0 or g2:GetCount()==0 then return end
+	local ops={}
+	local t={}
+	if g1:GetCount()>0 then
+		table.insert(ops,aux.Stringid(sid,1))
+		table.insert(t,1)
+	end
+	if g2:GetCount()>0 then
+		table.insert(ops,aux.Stringid(sid,2))
+		table.insert(t,2)
+	end
+	local opt=t[Duel.SelectOption(tp,table.unpack(ops))+1]
+	if opt==1 then
+		Duel.ChangePosition(g1,POS_FACEUP_TAPPED)
+	elseif opt==2 then
+		Duel.ChangePosition(g2,POS_FACEUP_TAPPED)
+	end
+end
