@@ -13,7 +13,7 @@ end
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 	local g1=Duel.GetMatchingGroup(scard.posfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,DM_CIVILIZATION_DARKNESS)
 	local g2=Duel.GetMatchingGroup(scard.posfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,DM_CIVILIZATION_FIRE)
-	if g1:GetCount()==0 or g2:GetCount()==0 then return end
+	if g1:GetCount()==0 and g2:GetCount()==0 then return end
 	local ops={}
 	local t={}
 	if g1:GetCount()>0 then

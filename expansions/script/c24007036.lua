@@ -29,5 +29,5 @@ end
 --[[
 	References
 		1. Ninjitsu Art of Duplication
-		https://github.com/Fluorohydride/ygopro-scripts/blob/master/c50766506.lua#L41
+		https://github.com/Fluorohydride/ygopro-scripts/blob/db63e8c7f254c0d7e528f3a3a47203973ece3a57/c50766506.lua#L41
 ]]

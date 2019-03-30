@@ -12,7 +12,7 @@ function scard.initial_effect(c)
 	e1:SetCode(EFFECT_CANNOT_ACTIVATE)
 	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
 	e1:SetRange(DM_LOCATION_BATTLE)
-	e1:SetTargetRange(1,1)
+	e1:SetTargetRange(0,1)
 	e1:SetValue(scard.actval)
 	c:RegisterEffect(e1)
 end
