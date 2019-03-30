@@ -1052,6 +1052,20 @@ function Auxiliary.EnableEffectCustom(c,code,con_func,range,s_range,o_range,targ
 	if con_func then e1:SetCondition(con_func) end
 	c:RegisterEffect(e1)
 end
+--function for a static ability that grants a player an ability
+--e.g. "Alcadeias, Lord of Spirits" (DM-04 1/55), "Kyuroro" (DM-06 36/110)
+function Auxiliary.EnablePlayerEffectCustom(c,code,s_range,o_range,val,con_func)
+	--code: EFFECT_CANNOT_ACTIVATE, DM_EFFECT_CHANGE_SHIELD_BREAK_PLAYER, etc.
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetCode(code)
+	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e1:SetRange(DM_LOCATION_BATTLE)
+	e1:SetTargetRange(s_range,o_range)
+	if con_func then e1:SetCondition(con_func) end
+	if val then e1:SetValue(val) end
+	c:RegisterEffect(e1)
+end
 --function for a granted ability
 --e.g. "Chaos Strike" (DM-01 72/110), "Diamond Cutter" (DM-02 1/55), "Rumble Gate" (DM-02 44/55)
 function Auxiliary.RegisterEffectCustom(c,tc,desc_id,code,reset_flag,reset_count)
