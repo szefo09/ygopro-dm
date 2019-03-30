@@ -1830,6 +1830,29 @@ function Auxiliary.AddEnterGraveEffect(c,desc_id,p,optional,targ_func,op_func,pr
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
 end
+--"Whenever this creature becomes blocked, ABILITY."
+--e.g. "Avalanche Giant" (DM-05 S5/S5)
+function Auxiliary.AddSingleBecomeBlockedEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
+	local typ=EFFECT_TYPE_TRIGGER_F
+	if optional then typ=EFFECT_TYPE_TRIGGER_O end
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	if cate then e1:SetCategory(cate) end
+	e1:SetType(EFFECT_TYPE_SINGLE+typ)
+	e1:SetCode(EVENT_CUSTOM+DM_EVENT_BECOMES_BLOCKED)
+	if typ==EFFECT_TYPE_TRIGGER_O and prop then
+		e1:SetProperty(EFFECT_FLAG_DELAY+prop)
+	elseif typ==EFFECT_TYPE_TRIGGER_O then
+		e1:SetProperty(EFFECT_FLAG_DELAY)
+	elseif prop then
+		e1:SetProperty(prop)
+	end
+	if con_func then e1:SetCondition(con_func) end
+	if cost_func then e1:SetCost(cost_func) end
+	if targ_func then e1:SetTarget(targ_func) end
+	e1:SetOperation(op_func)
+	c:RegisterEffect(e1)
+end
 --"Whenever a player casts a spell, ABILITY."
 --e.g. "Natalia, Channeler of Suns" (Game Original)
 function Auxiliary.AddPlayerCastSpellEffect(c,desc_id,p,optional,targ_func,op_func,con_func,prop)
