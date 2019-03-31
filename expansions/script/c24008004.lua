@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	--turbo rush (get ability)
 	dm.EnableTurboRush(c,0,scard.abop)
 end
-scard.kaijudo_card=true
+scard.duel_masters_card=true
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,DM_LOCATION_BATTLE,0,nil)
 	if g:GetCount()==0 then return end
