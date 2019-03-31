@@ -207,7 +207,8 @@ DM_EFFECT_CREW_BREAKER				=722	--Crew Breaker ("Q-tronic Gargantua" DM-06 86/110
 DM_EFFECT_EVOLUTION_ANY_RACE		=723	--Can put an evolution creature of any race on a creature with this ability ("Innocent Hunter, Blade of All" DM-06 103/110)
 DM_EFFECT_BREAK_SHIELD_REPLACE		=724	--When a creature would break a shield, do something else to that shield instead ("Bolmeteus Steel Dragon" DM-06 S7/S10)
 DM_EFFECT_STEALTH					=725	--Stealth ("Kizar Basiku, the Outrageous" DM-07 9/55)
-DM_EFFECT_CHARGER					=726	--Charger ("Lightning Charger" DM-07 15/55")
+DM_EFFECT_CHARGER					=726	--Charger ("Lightning Charger" DM-07 15/55)
+DM_EFFECT_DONOT_DISCARD_SHIELD_TRIGGER=727	--Do not discard a spell after using its "shield trigger" ability ("Super Terradragon Bailas Gale" DM-08 S5/S5)
 DM_EFFECT_WINS_ALL_BATTLES			=799	--Wins All Battles ("Marshias, Spirit of the Sun" DM-14 S1/S10)		
 --Abilities that trigger or actions that occur at the appropriate event
 DM_EVENT_ATTACK_SHIELD				=EVENT_PRE_DAMAGE_CALCULATE		--Before an attacking creature breaks the opponent's shield
@@ -223,7 +224,8 @@ DM_EVENT_ATTACK_PLAYER				=CARD_MARROW_OOZE_THE_TWISTER	--When a creature attack
 DM_EVENT_BREAK_SHIELD				=CARD_BRUTAL_CHARGE				--When a creature finishes attacking the opponent and broke a shield
 DM_EVENT_BECOME_SHIELD_TRIGGER		=CARD_WOLFIS_BLUE_DIVINE_DRAGON	--When a shield becomes broken, it may get "Shield Trigger"
 --Category (ability classification)
-DM_CATEGORY_BLOCKER					=CATEGORY_NEGATE	--"Blocker" ability, needed for unblockable abilities ("Dia Nork, Moonlight Guardian" DM-01 2/110)
+DM_CATEGORY_BLOCKER					=CATEGORY_NEGATE	--"Blocker" ability, needed for unblockable abilities ("Laser Wing" DM-01 11/110)
+DM_CATEGORY_SHIELD_TRIGGER			=CATEGORY_FLIP		--"Shield Trigger" ability, needed for "Emperor Quazla" (DM-08 S2/S5)
 --Description
 --↑Play Description (for Effect.Description)
 DM_DESC_SUMMON						=2		--"Play this card by summoning it."
@@ -286,6 +288,8 @@ DM_QHINTMSG_TOMANA					=704	--"Put a card into your mana zone?"
 DM_QHINTMSG_TOSHIELD				=705	--"Add a card to your shields face down?"
 DM_QHINTMSG_NUMBERTOSHIELD			=706	--"Add how many new shields?"
 DM_QHINTMSG_RTOHAND					=707	--"Return a card to its owner's hand?"
+DM_QHINTMSG_TAP						=708	--RESERVED	--"Tap a card?"
+DM_QHINTMSG_UNTAP					=709	--"Untap a card?"
 --Timing
 DM_TIMING_TAP_ABILITY				=TIMING_BATTLE_START+TIMING_BATTLE_END+TIMING_BATTLE_PHASE+TIMING_BATTLE_STEP_END	--Timing for a Tap Ability
 --Deck Sequence

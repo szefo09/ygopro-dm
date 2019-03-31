@@ -1254,7 +1254,7 @@ function Auxiliary.AddShieldTriggerCastEffect(c,desc_id,targ_func,op_func,prop,c
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e2:SetCode(EVENT_CHAIN_SOLVED)
-	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	e2:SetRange(LOCATION_HAND)
 	e2:SetOperation(Auxiliary.ShieldTriggerOperation)
 	c:RegisterEffect(e2)
@@ -1271,7 +1271,11 @@ function Auxiliary.AddShieldTriggerCastEffect(c,desc_id,targ_func,op_func,prop,c
 	e2:SetLabelObject(e3)
 	local e4=Effect.CreateEffect(c)
 	e4:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	if cate then e4:SetCategory(cate) end
+	if cate then
+		e4:SetCategory(DM_CATEGORY_SHIELD_TRIGGER+cate)
+	else
+		e4:SetCategory(DM_CATEGORY_SHIELD_TRIGGER)
+	end
 	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
 	e4:SetCode(EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER)
 	if prop then
@@ -1487,6 +1491,21 @@ function Auxiliary.StealthCondition(civ)
 				local tp=e:GetHandlerPlayer()
 				return Duel.IsExistingMatchingCard(Auxiliary.ManaZoneFilter(Card.IsCivilization),tp,0,DM_LOCATION_MANA,1,nil,civ)
 			end
+end
+--"Turbo rush (If any of your other creatures broke any shields this turn, this creature gets its Turborush ability until the end of the turn.)"
+--e.g. "Magmadragon Jagalzor" (DM-08 4/55)
+function Auxiliary.EnableTurboRush(c,desc_id,op_func)
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	e1:SetType(EFFECT_TYPE_IGNITION)
+	e1:SetRange(DM_LOCATION_BATTLE)
+	e1:SetCondition(Auxiliary.TurboRushCondition)
+	e1:SetTarget(Auxiliary.HintTarget)
+	e1:SetOperation(op_func)
+	c:RegisterEffect(e1)
+end
+function Auxiliary.TurboRushCondition(e,tp,eg,ep,ev,re,r,rp)
+	return e:GetHandler():GetBrokenShieldCount()==0 and Duel.GetBrokenShieldCount(tp)>0
 end
 --"RACE Hunter (This creature wins all battles against RACE.)"
 --e.g. "Pearl Carras, Barrier Guardian" (Game Original)
@@ -1863,14 +1882,14 @@ function Auxiliary.AddPlayerCastSpellEffect(c,desc_id,p,optional,targ_func,op_fu
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EVENT_CHAINING)
-	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	e1:SetRange(DM_LOCATION_BATTLE)
 	e1:SetOperation(Auxiliary.EventChainingOperation)
 	c:RegisterEffect(e1)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e2:SetCode(EVENT_CHAIN_SOLVED)
-	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	e2:SetRange(DM_LOCATION_BATTLE)
 	e2:SetOperation(Auxiliary.EventChainSolvedOperation(p))
 	c:RegisterEffect(e2)
