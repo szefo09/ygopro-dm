@@ -9,5 +9,6 @@ end
 scard.duel_masters_card=true
 function scard.actval(e,re,tp)
 	local rc=re:GetHandler()
-	return rc:IsBrokenShield() and rc:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER) and rc:IsCivilization(DM_CIVILIZATION_LIGHT)
+	return re:IsHasCategory(DM_CATEGORY_SHIELD_TRIGGER) and rc:IsBrokenShield()
+		and rc:IsCivilization(DM_CIVILIZATION_LIGHT)
 end

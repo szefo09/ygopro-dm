@@ -53,8 +53,7 @@ function scard.chop1(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function scard.chop2(e,tp,eg,ep,ev,re,r,rp)
-	local rc=re:GetHandler()
-	if rp==1-tp and rc:IsBrokenShield() and rc:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER) then
+	if rp==1-tp and re:IsHasCategory(DM_CATEGORY_SHIELD_TRIGGER) and re:GetHandler():IsBrokenShield() then
 		e:GetLabelObject():SetLabel(1)
 	end
 end

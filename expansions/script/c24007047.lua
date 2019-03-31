@@ -10,6 +10,5 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.actval(e,re,tp)
-	local rc=re:GetHandler()
-	return rc:IsBrokenShield() and rc:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER)
+	return re:IsHasCategory(DM_CATEGORY_SHIELD_TRIGGER) and re:GetHandler():IsBrokenShield()
 end
