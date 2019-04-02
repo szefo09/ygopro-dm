@@ -2679,8 +2679,16 @@ function Auxiliary.TargetSendtoBattleTarget(p,f,s,o,min,max,ex,...)
 				end
 			end
 end
-function Auxiliary.TargetSendtoBattleOperation(sumplayer,target_player,pos)
+function Auxiliary.TargetSendtoBattleOperation(sump,tgp,pos)
+	--sump: PLAYER_SELF/tp for you to put a creature into the battle zone or PLAYER_OPPO/1-tp for your opponent to
+	--tgp: PLAYER_SELF/tp to put a creature into your battle zone or PLAYER_OPPO/1-tp to put into your opponent's
 	return	function(e,tp,eg,ep,ev,re,r,rp)
+				local sumplayer=nil
+				if sump==PLAYER_SELF or sump==tp then sumplayer=tp
+				elseif sump==PLAYER_OPPO or sump==1-tp then sumplayer=1-tp end
+				local target_player=nil
+				if tgp==PLAYER_SELF or tgp==tp then sumplayer=tp
+				elseif tgp==PLAYER_OPPO or tgp==1-tp then sumplayer=1-tp end
 				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
 				if g:GetCount()>0 then
 					Duel.SendtoBattle(g,0,sumplayer,target_player,false,false,pos)
