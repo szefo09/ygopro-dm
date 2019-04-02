@@ -26,7 +26,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	e3:SetDescription(aux.Stringid(sid,1))
 	e3:SetType(EFFECT_TYPE_SINGLE)
 	e3:SetProperty(EFFECT_FLAG_CLIENT_HINT)
-	local e4=e3:Clone()
+	local e4=e2:Clone()
 	e4:SetLabelObject(e3)
 	Duel.RegisterEffect(e4,tp)
 end

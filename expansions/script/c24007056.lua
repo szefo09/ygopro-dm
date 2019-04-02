@@ -10,6 +10,5 @@ function scard.initial_effect(c)
 	dm.AddEffectDescription(c,1,dm.NoShieldsCondition(PLAYER_SELF))
 	--untap
 	dm.EnableTurnEndSelfUntap(c,0,dm.NoShieldsCondition(PLAYER_SELF))
-	dm.AddEffectDescription(c,2,dm.NoShieldsCondition(PLAYER_SELF))
 end
 scard.duel_masters_card=true

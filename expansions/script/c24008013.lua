@@ -12,6 +12,6 @@ scard.duel_masters_card=true
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
-	--powe up
+	--power up
 	dm.RegisterEffectUpdatePower(c,c,1,3000)
 end
