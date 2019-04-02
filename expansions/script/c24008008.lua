@@ -16,7 +16,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	for tc in aux.Next(g) do
 		--untap
 		local e1=Effect.CreateEffect(e:GetHandler())
-		e1:SetDescription(aux.Stringid(sid,0))
+		e1:SetDescription(aux.Stringid(sid,1))
 		e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 		e1:SetCode(EVENT_PHASE+PHASE_END)
 		e1:SetRange(DM_LOCATION_BATTLE)
@@ -28,7 +28,8 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
-	if not Duel.SelectYesNo(tp,DM_QHINTMSG_UNTAP) then return end
 	Duel.Hint(HINT_CARD,0,sid)
-	Duel.ChangePosition(e:GetHandler(),POS_FACEUP_UNTAPPED)
+	if Duel.SelectYesNo(tp,DM_QHINTMSG_UNTAP) then
+		Duel.ChangePosition(e:GetHandler(),POS_FACEUP_UNTAPPED)
+	end
 end
