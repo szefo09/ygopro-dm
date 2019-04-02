@@ -4,6 +4,6 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--attack if able
-	dm.EnableAttackIfAble(c)
+	dm.EnableEffectCustom(c,EFFECT_MUST_ATTACK)
 end
 scard.duel_masters_card=true
