@@ -19,7 +19,7 @@ function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e1,tp)
 end
 function scard.thcon(e)
-	return Duel.GetFieldGroupCount(e:GetHandlerPlayer(),LOCATION_DECK,0)==0
+	return Duel.GetFieldGroupCount(e:GetHandlerPlayer(),LOCATION_DECK,0)>0
 end
 function scard.thfilter(c)
 	return c:IsCreature() and c:IsAbleToHand()
