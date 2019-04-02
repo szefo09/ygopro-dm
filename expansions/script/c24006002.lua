@@ -6,9 +6,8 @@ function scard.initial_effect(c)
 	--blocker
 	dm.EnableBlocker(c)
 	--enter tapped
-	dm.EnableEffectCustom(c,DM_EFFECT_ENTER_TAPPED,nil,DM_LOCATION_BATTLE,LOCATION_ALL,LOCATION_ALL,scard.abtg)
+	dm.EnableEffectCustom(c,DM_EFFECT_ENTER_TAPPED,nil,LOCATION_ALL,LOCATION_ALL,aux.TargetBoolFunction(Card.IsEvolution))
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 end
 scard.duel_masters_card=true
-scard.abtg=aux.TargetBoolFunction(Card.IsEvolution)

@@ -1036,11 +1036,12 @@ end
 
 --function for a static ability that grants a card an ability
 --e.g. "Dia Nork, Moonlight Guardian" (DM-01 2/110), "Brawler Zyler" (DM-01 70/110), "Holy Awe" (DM-01 6/110)
-function Auxiliary.EnableEffectCustom(c,code,con_func,range,s_range,o_range,targ_func)
+function Auxiliary.EnableEffectCustom(c,code,con_func,s_range,o_range,targ_func)
 	--code: DM_EFFECT_BLOCKER, DM_EFFECT_POWER_ATTACKER, DM_EFFECT_SHIELD_TRIGGER, etc.
 	local e1=Effect.CreateEffect(c)
 	if s_range or o_range then
 		e1:SetType(EFFECT_TYPE_FIELD)
+		e1:SetRange(DM_LOCATION_BATTLE)
 		e1:SetTargetRange(s_range,o_range)
 		if targ_func then e1:SetTarget(targ_func) end
 	else
@@ -1048,7 +1049,6 @@ function Auxiliary.EnableEffectCustom(c,code,con_func,range,s_range,o_range,targ
 	end
 	e1:SetCode(code)
 	e1:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
-	if range then e1:SetRange(range) end
 	if con_func then e1:SetCondition(con_func) end
 	c:RegisterEffect(e1)
 end
@@ -1177,7 +1177,7 @@ function Auxiliary.AddStaticEffectBlocker(c,s_range,o_range,targ_func)
 	e2:SetTarget(targ_func)
 	e2:SetLabelObject(e1)
 	c:RegisterEffect(e2)
-	Auxiliary.EnableEffectCustom(c,DM_EFFECT_BLOCKER,nil,DM_LOCATION_BATTLE,s_range,o_range,targ_func)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_BLOCKER,nil,s_range,o_range,targ_func)
 end
 --function for a granted "Blocker" ability
 --e.g. "Full Defensor" (DM-04 9/55)
@@ -1325,7 +1325,7 @@ function Auxiliary.AddStaticEffectPowerAttacker(c,val,s_range,o_range,targ_func)
 	e2:SetTarget(targ_func)
 	e2:SetLabelObject(e1)
 	c:RegisterEffect(e2)
-	Auxiliary.EnableEffectCustom(c,DM_EFFECT_POWER_ATTACKER,nil,DM_LOCATION_BATTLE,s_range,o_range,targ_func)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_POWER_ATTACKER,nil,s_range,o_range,targ_func)
 end
 --function for a granted "Power attacker +N000" ability
 --e.g. "Burning Power" (DM-01 71/110)
@@ -1389,7 +1389,7 @@ function Auxiliary.AddStaticEffectSlayer(c,s_range,o_range,targ_func)
 	e2:SetTarget(targ_func)
 	e2:SetLabelObject(e1)
 	c:RegisterEffect(e2)
-	Auxiliary.EnableEffectCustom(c,DM_EFFECT_SLAYER,nil,DM_LOCATION_BATTLE,s_range,o_range,targ_func)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_SLAYER,nil,s_range,o_range,targ_func)
 end
 --function for a granted "Slayer" ability
 --e.g. "Creeping Plague" (DM-01 49/110)
@@ -1417,8 +1417,8 @@ end
 function Auxiliary.EnableBreaker(c,code,con_func,s_range,o_range,targ_func)
 	--code: DM_EFFECT_DOUBLE_BREAKER, DM_EFFECT_TRIPLE_BREAKER, DM_EFFECT_QUATTRO_BREAKER, etc.
 	local con_func=con_func or aux.TRUE
-	Auxiliary.EnableEffectCustom(c,DM_EFFECT_BREAKER,con_func,DM_LOCATION_BATTLE,s_range,o_range,targ_func)
-	Auxiliary.EnableEffectCustom(c,code,con_func,DM_LOCATION_BATTLE,s_range,o_range,targ_func)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_BREAKER,con_func,s_range,o_range,targ_func)
+	Auxiliary.EnableEffectCustom(c,code,con_func,s_range,o_range,targ_func)
 end
 --function for a granted "Breaker" ability
 --e.g. "Magma Gazer" (DM-01 81/110)
@@ -2173,7 +2173,7 @@ function Auxiliary.AddStaticEffectCannotBeBlocked(c,s_range,o_range,targ_func)
 	e2:SetTarget(targ_func)
 	e2:SetLabelObject(e1)
 	c:RegisterEffect(e2)
-	Auxiliary.EnableEffectCustom(c,DM_EFFECT_UNBLOCKABLE,nil,DM_LOCATION_BATTLE,s_range,o_range,targ_func)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_UNBLOCKABLE,nil,s_range,o_range,targ_func)
 end
 --function for a granted "This creature can't be blocked" ability
 --e.g. "Laser Wing" (DM-01 11/110)
@@ -2215,7 +2215,7 @@ function Auxiliary.EnableCannotAttack(c,con_func,s_range,o_range,tg)
 	local con_func=con_func or aux.TRUE
 	local targ_func=aux.AND(Auxiliary.CannotAttackTarget,tg)
 	if s_range and o_range then
-		Auxiliary.EnableEffectCustom(c,EFFECT_CANNOT_ATTACK,con_func,DM_LOCATION_BATTLE,s_range,o_range,targ_func)
+		Auxiliary.EnableEffectCustom(c,EFFECT_CANNOT_ATTACK,con_func,s_range,o_range,targ_func)
 	else
 		Auxiliary.EnableEffectCustom(c,EFFECT_CANNOT_ATTACK,aux.AND(Auxiliary.SelfCannotAttackCondition,con_func))
 	end
