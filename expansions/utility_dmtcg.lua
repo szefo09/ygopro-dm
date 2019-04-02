@@ -1494,9 +1494,9 @@ function Auxiliary.StealthCondition(civ)
 end
 --"Turbo rush (If any of your other creatures broke any shields this turn, this creature gets its Turborush ability until the end of the turn.)"
 --e.g. "Magmadragon Jagalzor" (DM-08 4/55)
-function Auxiliary.EnableTurboRush(c,desc_id,op_func)
+function Auxiliary.EnableTurboRush(c,op_func)
 	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	e1:SetDescription(DM_DESC_TURBO_RUSH)
 	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetRange(DM_LOCATION_BATTLE)
 	e1:SetCondition(Auxiliary.TurboRushCondition)

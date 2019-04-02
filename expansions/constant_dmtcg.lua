@@ -249,7 +249,8 @@ DM_DESC_SLAYER						=1662	--"Slayer (Whenever this creature battles, destroy the
 DM_DESC_SHIELD_TRIGGER_CREATURE		=1663	--"Shield Trigger (When this creature is put into your hand from your shield zone, you may summon it immediately for no cost.)"
 DM_DESC_FIRE_NATURE_BLOCKER			=1664	--"Fire and nature blocker (Whenever an opponent's fire or nature creature attacks, you may tap this creature to stop the attack. Then the 2 creatures battle.)"
 DM_DESC_NATURE_LIGHT_SLAYER			=1665	--"Nature and light slayer (Whenever this creature battles a nature or light creature, destroy the other creature after the battle.)"
-DM_DESC_DRAGON_BLOCKER				=1666	--"Dragon blocker (Whenever an opponent's creature that has Dragon in its race attacks, you may tap this creature to stop the attack. Then the 2 creatures battle.)"
+DM_DESC_TURBO_RUSH					=1666	--"Turbo rush (If any of your other creatures broke any shields this turn, this creature gets its Turborush ability until the end of the turn.)"
+DM_DESC_DRAGON_BLOCKER				=1667	--"Dragon blocker (Whenever an opponent's creature that has Dragon in its race attacks, you may tap this creature to stop the attack. Then the 2 creatures battle.)"
 --↑"Breaker" Keyword (for Effect.Description)
 DM_DESC_NON_BREAKER					=1800	--"This creature breaks 1 shield."
 DM_DESC_DOUBLE_BREAKER				=1801	--"Double Breaker (This creature breaks 2 shields.)"

@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--turbo rush
-	dm.EnableTurboRush(c,0,scard.abop)
+	dm.EnableTurboRush(c,scard.abop)
 end
 scard.duel_masters_card=true
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
