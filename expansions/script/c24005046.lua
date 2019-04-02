@@ -13,4 +13,4 @@ function scard.tbfilter(c)
 	return c:IsCode(CARD_AMBUSH_SCORPION)
 end
 scard.tbtg=dm.TargetSendtoBattleTarget(PLAYER_SELF,dm.ManaZoneFilter(scard.tbfilter),DM_LOCATION_MANA,0,1)
-scard.tbop=dm.TargetSendtoBattleOperation()
+scard.tbop=dm.TargetSendtoBattleOperation(PLAYER_SELF,PLAYER_SELF,POS_FACEUP_UNTAPPED)

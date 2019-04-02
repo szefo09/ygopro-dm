@@ -218,6 +218,20 @@ end
 function Card.DMIsEvolutionRace(c,race)
 	return c:DMIsRace(race) or c:IsHasEffect(DM_EFFECT_EVOLUTION_ANY_RACE)
 end
+--reserved
+--[[
+--check if a card has a particular name category to put the appropriate evolution creature on it
+function Card.DMIsEvolutionNameCategory(c,setname)
+	return c:IsNameCategory(setname) or c:IsHasEffect(DM_EFFECT_EVOLUTION_ANY_CODE)
+end
+]]
+--reserved
+--[[
+--check if a card has a particular civilization to put the appropriate evolution creature on it
+function Card.DMIsEvolutionCivilization(c,civ)
+	return c:IsCivilization(civ) or c:IsHasEffect(DM_EFFECT_EVOLUTION_ANY_CIVILIZATION)
+end
+]]
 --Renamed Card functions
 --check if a card has a particular race
 Card.DMIsRace=Card.IsSetCard
@@ -1035,9 +1049,9 @@ end
 --prop: include EFFECT_FLAG_CARD_TARGET for a targeting ability
 
 --function for a static ability that grants a card an ability
---e.g. "Dia Nork, Moonlight Guardian" (DM-01 2/110), "Brawler Zyler" (DM-01 70/110), "Holy Awe" (DM-01 6/110)
+--e.g. "Dia Nork, Moonlight Guardian" (DM-01 2/110), "Brawler Zyler" (DM-01 70/110), "Deadly Fighter Braid Claw" (DM-01 74/110)
 function Auxiliary.EnableEffectCustom(c,code,con_func,s_range,o_range,targ_func)
-	--code: DM_EFFECT_BLOCKER, DM_EFFECT_POWER_ATTACKER, DM_EFFECT_SHIELD_TRIGGER, etc.
+	--code: DM_EFFECT_BLOCKER, DM_EFFECT_POWER_ATTACKER, EFFECT_MUST_ATTACK, etc.
 	local e1=Effect.CreateEffect(c)
 	if s_range or o_range then
 		e1:SetType(EFFECT_TYPE_FIELD)
@@ -2251,11 +2265,6 @@ function Auxiliary.SelfDestroyOperation(ram)
 				end
 			end
 end
---"This creature attacks each turn if able."
---e.g. "Deadly Fighter Braid Claw" (DM-01 74/110)
-function Auxiliary.EnableAttackIfAble(c)
-	Auxiliary.EnableEffectCustom(c,EFFECT_MUST_ATTACK)
-end
 --"This creature can attack untapped creatures."
 --"This creature can attack untapped CIVILIZATION creatures."
 --e.g. "Gatling Skyterror" (DM-01 79/110), "Aeris, Flight Elemental" (DM-04 6/55), "Storm Javelin Wyvern" (Game Original)
@@ -2670,12 +2679,11 @@ function Auxiliary.TargetSendtoBattleTarget(p,f,s,o,min,max,ex,...)
 				end
 			end
 end
-function Auxiliary.TargetSendtoBattleOperation(pos)
+function Auxiliary.TargetSendtoBattleOperation(sumplayer,target_player,pos)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
-				local pos=pos or POS_FACEUP_UNTAPPED
 				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
 				if g:GetCount()>0 then
-					Duel.SendtoBattle(g,0,tp,tp,false,false,pos)
+					Duel.SendtoBattle(g,0,sumplayer,target_player,false,false,pos)
 				end
 			end
 end
