@@ -14,6 +14,7 @@ CARD_DUEL_MASTERS_RULES				=24000000	--Duel Masters Rules (Unofficial card)
 --↑Support
 CARD_OBSIDIAN_SCARAB				=24005005	--"Obsidian Scarab" (DM-05 5/55)
 CARD_AMBUSH_SCORPION				=24005046	--"Ambush Scorpion" (DM-05 46/55)
+CARD_SOLAR_GRASS					=24008014	--"Solar Grass" (DM-08 14/55)
 --↑EVENT_CUSTOM
 CARD_CREEPING_PLAGUE				=24001049	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_BECOMES_BLOCKED,e,0,0,0,0)
 CARD_SPIRAL_GRASS					=24002010	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_BLOCK,e,0,0,0,0)
@@ -178,6 +179,7 @@ DM_EFFECT_ATTACK_PLAYER				=EFFECT_DIRECT_ATTACK			--Attack player
 DM_EFFECT_CANNOT_CHANGE_POS_ABILITY	=EFFECT_CANNOT_CHANGE_POS_E		--Cannot untap or tap a card by an ability 
 DM_EFFECT_UPDATE_POWER				=EFFECT_UPDATE_ATTACK			--Increase or decrease a creature's power
 DM_EFFECT_UPDATE_MANA_COST			=EFFECT_UPDATE_LEVEL			--Increase or decrease a card's mana cost
+DM_EFFECT_ADD_RACE 					=EFFECT_ADD_SETCODE				--A creature is a particular race in addition to its other races
 DM_EFFECT_MUST_ATTACK_CREATURE		=EFFECT_MUST_ATTACK_MONSTER		--A creature attacks a creature if able
 DM_EFFECT_BROKEN_SHIELD				=CARD_DUEL_MASTERS_RULES		--Register a broken shield
 DM_EFFECT_BLOCKED					=CARD_DIA_NORK_MOONLIGHT_GUARDIAN	--Register a creature that has become blocked
@@ -247,6 +249,7 @@ DM_DESC_SLAYER						=1662	--"Slayer (Whenever this creature battles, destroy the
 DM_DESC_SHIELD_TRIGGER_CREATURE		=1663	--"Shield Trigger (When this creature is put into your hand from your shield zone, you may summon it immediately for no cost.)"
 DM_DESC_FIRE_NATURE_BLOCKER			=1664	--"Fire and nature blocker (Whenever an opponent's fire or nature creature attacks, you may tap this creature to stop the attack. Then the 2 creatures battle.)"
 DM_DESC_NATURE_LIGHT_SLAYER			=1665	--"Nature and light slayer (Whenever this creature battles a nature or light creature, destroy the other creature after the battle.)"
+DM_DESC_DRAGON_BLOCKER				=1666	--"Dragon blocker (Whenever an opponent's creature that has Dragon in its race attacks, you may tap this creature to stop the attack. Then the 2 creatures battle.)"
 --↑"Breaker" Keyword (for Effect.Description)
 DM_DESC_NON_BREAKER					=1800	--"This creature breaks 1 shield."
 DM_DESC_DOUBLE_BREAKER				=1801	--"Double Breaker (This creature breaks 2 shields.)"

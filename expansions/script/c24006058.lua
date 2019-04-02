@@ -5,7 +5,7 @@ function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--survivor (return)
 	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.rettg1,scard.retop)
-	dm.AddStaticEffectComeIntoPlay(c,0,true,scard.rettg1,scard.retop,LOCATION_ALL,0,scard.rettg2)
+	dm.AddStaticEffectSingleComeIntoPlay(c,0,true,scard.rettg1,scard.retop,LOCATION_ALL,0,scard.rettg2)
 end
 scard.duel_masters_card=true
 function scard.retfilter(c)

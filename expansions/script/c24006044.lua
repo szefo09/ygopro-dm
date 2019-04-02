@@ -5,7 +5,7 @@ function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--survivor (tap)
 	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.postg1,scard.posop,EFFECT_FLAG_CARD_TARGET)
-	dm.AddStaticEffectComeIntoPlay(c,0,true,scard.postg1,scard.posop,LOCATION_ALL,0,scard.postg2,EFFECT_FLAG_CARD_TARGET)
+	dm.AddStaticEffectSingleComeIntoPlay(c,0,true,scard.postg1,scard.posop,LOCATION_ALL,0,scard.postg2,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 function scard.posfilter(c)

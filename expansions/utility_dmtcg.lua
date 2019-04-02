@@ -377,8 +377,8 @@ function Duel.SpecialSummon(targets,sumtype,sumplayer,target_player,nocheck,noli
 	return ct
 end
 Duel.SendtoBattle=Duel.SpecialSummon
---Duel.SendtoBattleStep=Duel.SpecialSummonStep --reserved
---Duel.SendtoBattleComplete=Duel.SpecialSummonComplete --reserved
+Duel.SendtoBattleStep=Duel.SpecialSummonStep
+Duel.SendtoBattleComplete=Duel.SpecialSummonComplete
 --untap/tap a card in the battle/mana zone
 local duel_change_position=Duel.ChangePosition
 function Duel.ChangePosition(targets,pos)
@@ -1090,10 +1090,10 @@ function Auxiliary.RegisterEffectCustom(c,tc,desc_id,code,reset_flag,reset_count
 end
 --"Blocker (Whenever an opponent's creature attacks, you may tap this creature to stop the attack. Then the 2 creatures battle.)"
 --"Whenever an opponent's CIVILIZATION1 or CIVILIZATION2 creature attacks, you may tap this creature to stop the attack. Then the 2 creatures battle."
---e.g. "Dia Nork, Moonlight Guardian" (DM-01 2/110), "Lurking Eel" (DM-05 18/55)
+--e.g. "Dia Nork, Moonlight Guardian" (DM-01 2/110), "Lurking Eel" (DM-05 18/55), "Sasha, Channeler of Suns" (DM-08 12/55)
 function Auxiliary.EnableBlocker(c,con_func,desc,f)
-	--desc: DM_DESC_FN_BLOCKER for "Fire and nature blocker", etc.
-	--f: include function for "CIVILIZATION blocker"
+	--desc: DM_DESC_FN_BLOCKER for "Fire and nature blocker", DM_DESC_DRAGON_BLOCKER for "Dragon blocker", etc.
+	--f: include function for "CIVILIZATION blocker" or "RACE blocker"
 	local con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	if desc then
@@ -1551,7 +1551,7 @@ end
 
 --"When this creature would be destroyed, ABILITY."
 --e.g. "Chilias, the Oracle" (DM-01 1/110), "Coiling Vines" (DM-01 92/110), "Aless, the Oracle" (DM-03 2/55)
-function Auxiliary.AddSingleDestroyReplaceEffect(c,desc_id,targ_func,op_func)
+function Auxiliary.AddSingleDestroyReplaceEffect(c,desc_id,targ_func,op_func,con_func)
 	--targ_func: targ_func or Auxiliary.SingleDestroyReplaceTarget
 	--op_func: op_func or Auxiliary.SingleDestroyReplaceOperation
 	local e1=Effect.CreateEffect(c)
@@ -1560,6 +1560,7 @@ function Auxiliary.AddSingleDestroyReplaceEffect(c,desc_id,targ_func,op_func)
 	e1:SetCode(EFFECT_DESTROY_REPLACE)
 	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
 	e1:SetRange(DM_LOCATION_BATTLE)
+	if con_func then e1:SetCondition(con_func) end
 	e1:SetTarget(targ_func)
 	if op_func then e1:SetOperation(op_func) end
 	c:RegisterEffect(e1)
@@ -1677,7 +1678,7 @@ function Auxiliary.AddComeIntoPlayEffect(c,desc_id,optional,targ_func,op_func,pr
 end
 --"Each of your creatures has "When you put this creature into the battle zone, ABILITY"."
 --e.g. "Forbos, Sanctum Guardian Q" (DM-06 19/110) 
-function Auxiliary.AddStaticEffectComeIntoPlay(c,desc_id,optional,targ_func1,op_func,s_range,o_range,targ_func2,prop)
+function Auxiliary.AddStaticEffectSingleComeIntoPlay(c,desc_id,optional,targ_func1,op_func,s_range,o_range,targ_func2,prop)
 	--targ_func1: include Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
 	local desc_id=desc_id or 0
 	local typ=EFFECT_TYPE_TRIGGER_F
@@ -1723,7 +1724,7 @@ function Auxiliary.AddSingleAttackTriggerEffect(c,desc_id,optional,targ_func,op_
 end
 --"Each of your creatures has "Whenever this creature attacks, ABILITY"."
 --e.g. "Split-Head Hydroturtle Q" (DM-05 24/55)
-function Auxiliary.AddStaticEffectAttackTrigger(c,desc_id,optional,targ_func1,op_func,s_range,o_range,targ_func2,prop)
+function Auxiliary.AddStaticEffectSingleAttackTrigger(c,desc_id,optional,targ_func1,op_func,s_range,o_range,targ_func2,prop)
 	--targ_func1: include Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
 	local desc_id=desc_id or 0
 	local typ=EFFECT_TYPE_TRIGGER_F
@@ -1749,6 +1750,29 @@ function Auxiliary.AddStaticEffectAttackTrigger(c,desc_id,optional,targ_func1,op
 	e2:SetTarget(targ_func2)
 	e2:SetLabelObject(e1)
 	c:RegisterEffect(e2)
+end
+--"Whenever any of your creatures attacks, ABILITY."
+--e.g. "Thrumiss, Zephyr Guardian" (DM-08 15/55)
+function Auxiliary.AddAttackTriggerEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,range,cate)
+	local typ=EFFECT_TYPE_TRIGGER_F
+	if optional then typ=EFFECT_TYPE_TRIGGER_O end
+	local range=range or DM_LOCATION_BATTLE
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	if cate then e1:SetCategory(cate) end
+	e1:SetType(EFFECT_TYPE_FIELD+typ)
+	e1:SetCode(EVENT_ATTACK_ANNOUNCE)
+	if prop then
+		e1:SetProperty(DM_EFFECT_FLAG_CHAIN_LIMIT+prop)
+	else
+		e1:SetProperty(DM_EFFECT_FLAG_CHAIN_LIMIT)
+	end
+	e1:SetRange(range)
+	if con_func then e1:SetCondition(con_func) end
+	if cost_func then e1:SetCost(cost_func) end
+	if targ_func then e1:SetTarget(targ_func) end
+	e1:SetOperation(op_func)
+	c:RegisterEffect(e1)
 end
 --"Whenever this creature blocks, ABILITY."
 --e.g. "Spiral Grass" (DM-02 10/55)
@@ -2185,13 +2209,22 @@ function Auxiliary.RegisterEffectCannotBeBlocked(c,tc,desc_id,con_func,reset_fla
 	tc:RegisterEffect(e2)
 end
 --"This creature can't attack."
---e.g. "Hunter Fish" (DM-01 31/110)
-function Auxiliary.EnableCannotAttack(c,con_func)
+--"Creatures can't attack."
+--e.g. "Hunter Fish" (DM-01 31/110), "Nariel, the Oracle" (DM-08 11/55)
+function Auxiliary.EnableCannotAttack(c,con_func,s_range,o_range,tg)
 	local con_func=con_func or aux.TRUE
-	Auxiliary.EnableEffectCustom(c,EFFECT_CANNOT_ATTACK,aux.AND(Auxiliary.SelfCannotAttackCondition,con_func))
+	local targ_func=aux.AND(Auxiliary.CannotAttackTarget,tg)
+	if s_range and o_range then
+		Auxiliary.EnableEffectCustom(c,EFFECT_CANNOT_ATTACK,con_func,DM_LOCATION_BATTLE,s_range,o_range,targ_func)
+	else
+		Auxiliary.EnableEffectCustom(c,EFFECT_CANNOT_ATTACK,aux.AND(Auxiliary.SelfCannotAttackCondition,con_func))
+	end
 end
 function Auxiliary.SelfCannotAttackCondition(e)
 	return not e:GetHandler():IsHasEffect(DM_EFFECT_IGNORE_CANNOT_ATTACK)
+end
+function Auxiliary.CannotAttackTarget(e,c)
+	return not c:IsHasEffect(DM_EFFECT_IGNORE_CANNOT_ATTACK)
 end
 --"When this creature wins a battle, destroy it."
 --"When this creature wins a battle, it is destroyed at random."
@@ -3016,6 +3049,16 @@ function Auxiliary.SelfAttackerCondition(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetAttacker()==e:GetHandler()
 end
 Auxiliary.satcon=Auxiliary.SelfAttackerCondition
+--condition for "While this creature is battling"
+--e.g. "Sasha, Channeler of Suns" (DM-08 12/55)
+function Auxiliary.SelfBattlingCondition(f)
+	return	function(e,tp,eg,ep,ev,re,r,rp)
+				local c=e:GetHandler()
+				local d=Duel.GetAttackTarget()
+				return (Duel.GetAttacker()==c or d==c) and c:IsRelateToBattle() and (not f or f(d))
+			end
+end
+Auxiliary.sbatcon=Auxiliary.SelfBattlingCondition
 --condition for "Whenever this creature wins a battle" + EVENT_BATTLE_DESTROYING
 --e.g. "Bloody Squito" (DM-01 46/110), "Hanakage, Shadow of Transience" (Game Original)
 function Auxiliary.SelfBattleWinCondition(e,tp,eg,ep,ev,re,r,rp)

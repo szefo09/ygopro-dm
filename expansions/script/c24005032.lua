@@ -5,7 +5,7 @@ function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--survivor (discard)
 	dm.AddSingleAttackTriggerEffect(c,0,nil,scard.dhtg1,scard.dhop,EFFECT_FLAG_CARD_TARGET)
-	dm.AddStaticEffectAttackTrigger(c,0,nil,scard.dhtg1,scard.dhop,LOCATION_ALL,0,scard.dhtg2,EFFECT_FLAG_CARD_TARGET)
+	dm.AddStaticEffectSingleAttackTrigger(c,0,nil,scard.dhtg1,scard.dhop,LOCATION_ALL,0,scard.dhtg2,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 function scard.dhtg1(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
