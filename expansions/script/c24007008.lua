@@ -25,9 +25,6 @@ function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 		table.insert(t,2)
 	end
 	local opt=t[Duel.SelectOption(tp,table.unpack(ops))+1]
-	if opt==1 then
-		Duel.ChangePosition(g1,POS_FACEUP_TAPPED)
-	elseif opt==2 then
-		Duel.ChangePosition(g2,POS_FACEUP_TAPPED)
-	end
+	local g=(opt==1 and g1) or (opt==2 and g2)
+	Duel.ChangePosition(g,POS_FACEUP_TAPPED)
 end
