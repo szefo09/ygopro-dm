@@ -740,7 +740,7 @@ function Duel.RandomDiscardHand(player,count,reason,ex)
 	end
 	if rep_count>0 then
 		return 0
-	else return Duel.Remove(g,POS_FACEUP,reason+REASON_DISCARD) end
+	else return Duel.Remove(sg,POS_FACEUP,reason+REASON_DISCARD) end
 end
 --check if a player can trigger a creature's "blocker" ability
 function Duel.IsPlayerCanBlock(player)
