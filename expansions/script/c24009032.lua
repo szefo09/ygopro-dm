@@ -26,8 +26,6 @@ function scard.tgop(e,tp,eg,ep,ev,re,r,rp)
 	local opt=t[Duel.SelectOption(tp,table.unpack(ops))+1]
 	local g=(opt==1 and g1) or (opt==2 and g2)
 	local p=(opt==1 and tp) or (opt==2 and 1-tp)
-	if opt==1 then g=g1 elseif opt==2 then g=g2 end
-	if opt==1 then p=tp elseif opt==2 then p=1-tp end
 	Duel.ConfirmCards(tp,g)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOGRAVE)
 	local sg=g:Select(tp,0,1,nil)

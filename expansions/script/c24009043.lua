@@ -15,4 +15,15 @@ function scard.tgcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(scard.cfilter,1,nil)
 end
 scard.tgtg=dm.TargetCardFunction(PLAYER_OPPO,dm.ManaZoneFilter(Card.DMIsAbleToGrave),0,DM_LOCATION_MANA,1,1,DM_HINTMSG_TOGRAVE)
-scard.tgop=dm.TargetSendtoGraveOperation
+function scard.tgop(e,tp,eg,ep,ev,re,r,rp)
+	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
+	local tc=Duel.GetFirstTarget()
+	if tc and tc:IsRelateToEffect(e) then
+		Duel.DMSendtoGrave(tc,REASON_EFFECT)
+	end
+end
+--[[
+	References
+		1. Performapal Sellshell Crab
+		https://github.com/Fluorohydride/ygopro-scripts/blob/2c4f0cad97c65971f2a2a813f93b11db9e3ac88f/c23377694.lua#L68
+]]

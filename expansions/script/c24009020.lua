@@ -20,6 +20,5 @@ function scard.thop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.DisableShuffleCheck()
 	Duel.SendtoHand(sg,PLAYER_OWNER,REASON_EFFECT)
 	Duel.ShuffleHand(tp)
-	g:Sub(sg)
 	dm.SortDeck(tp,tp,3,DECK_SEQUENCE_BOTTOM)
 end

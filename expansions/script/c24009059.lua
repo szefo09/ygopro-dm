@@ -22,6 +22,6 @@ function scard.dbcon(e)
 	return e:GetHandler():IsPowerAbove(6000)
 end
 --triple breaker
-function scard.dbcon(e)
+function scard.tbcon(e)
 	return e:GetHandler():IsPowerAbove(15000)
 end

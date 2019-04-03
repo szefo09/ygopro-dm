@@ -3,6 +3,10 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
+	--blocker
+	dm.EnableBlocker(c)
+	--cannot attack player
+	dm.EnableCannotAttackPlayer(c)
 	--tap
 	dm.AddSingleDestroyedEffect(c,0,nil,scard.postg,scard.posop,EFFECT_FLAG_CARD_TARGET)
 end

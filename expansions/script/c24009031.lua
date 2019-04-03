@@ -11,11 +11,8 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 --power up
-function scard.cfilter(c)
-	return c:IsFaceup() and c:IsCivilization(DM_CIVILIZATION_DARKNESS)
-end
 function scard.powval(e,c)
-	return Duel.GetMatchingGroupCount(dm.DMGraveFilter(scard.cfilter),c:GetControler(),DM_LOCATION_GRAVE,0,nil)*2000
+	return Duel.GetMatchingGroupCount(dm.DMGraveFilter(Card.IsCivilization),c:GetControler(),DM_LOCATION_GRAVE,0,nil,DM_CIVILIZATION_DARKNESS)*2000
 end
 --double breaker
 function scard.dbcon(e)
