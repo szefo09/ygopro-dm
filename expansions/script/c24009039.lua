@@ -12,7 +12,7 @@ function scard.abfilter(c,race)
 end
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_RACE)
-	local race=Duel.DMChooseRace(tp)
+	local race=Duel.DMAnnounceRace(tp)
 	local g=Duel.GetMatchingGroup(scard.abfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,race)
 	if g:GetCount()==0 then return end
 	for tc in aux.Next(g) do

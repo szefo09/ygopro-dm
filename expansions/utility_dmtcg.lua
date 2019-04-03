@@ -751,7 +751,7 @@ function Duel.GetBrokenShieldCount(player)
 	return Duel.GetFlagEffect(player,DM_EFFECT_BREAK_SHIELD)
 end
 --choose a race
-function Duel.DMChooseRace(player)
+function Duel.DMAnnounceRace(player)
 	local opt=Duel.SelectOption(player,table.unpack(Auxiliary.race_desc_list))+1
 	return Auxiliary.race_value_list[opt]
 end
@@ -2388,7 +2388,7 @@ function Auxiliary.RegisterEffectCannotBeBlocked(c,tc,desc_id,val,con_func,reset
 	e1:SetRange(DM_LOCATION_BATTLE)
 	e1:SetTargetRange(1,1)
 	e1:SetCondition(aux.AND(Auxiliary.SelfAttackerCondition,con_func))
-	e1:SetValue(Auxiliary.CannotBeBlockedValue())
+	e1:SetValue(Auxiliary.CannotBeBlockedValue(val))
 	if tc==c then
 		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_DISABLE+reset_flag,reset_count)
 	else

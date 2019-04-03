@@ -9,7 +9,7 @@ end
 scard.duel_masters_card=true
 function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_RACE)
-	local race=Duel.DMChooseRace(tp)
+	local race=Duel.DMAnnounceRace(tp)
 	local e1=Effect.CreateEffect(e:GetHandler())
 	e1:SetDescription(aux.Stringid(sid,1))
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
