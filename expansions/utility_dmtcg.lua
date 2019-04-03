@@ -1157,10 +1157,10 @@ function Auxiliary.BlockerCondition(f)
 end
 function Auxiliary.BlockerCost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return c:IsFaceup() and c:IsUntapped() and c:GetFlagEffect(DM_EFFECT_BLOCKER)==0 end
+	if chk==0 then return c:IsFaceup() and c:IsUntapped() and Duel.GetFlagEffect(tp,DM_EFFECT_BLOCKER)==0 end
 	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
 	Duel.ChangePosition(c,POS_FACEUP_TAPPED)
-	c:RegisterFlagEffect(DM_EFFECT_BLOCKER,RESET_CHAIN,0,1)
+	Duel.RegisterFlagEffect(tp,DM_EFFECT_BLOCKER,RESET_CHAIN,0,1)
 end
 function Auxiliary.BlockerTarget(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsCanBlock() and Duel.IsPlayerCanBlock(tp) end
