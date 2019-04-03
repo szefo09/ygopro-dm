@@ -17,11 +17,16 @@ function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
 	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil)
 	if g:GetCount()==0 then return end
-	local tg=g:GetMinGroup(Card.GetPower)
-	if tg:GetCount()>1 then
+	local dg=g:GetMinGroup(Card.GetPower)
+	if dg:GetCount()>1 then
 		Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_DESTROY)
-		local sg=tg:Select(tp,1,1,nil)
+		local sg=dg:Select(tp,1,1,nil)
 		Duel.HintSelection(sg)
 		Duel.Destroy(sg,REASON_EFFECT)
-	else Duel.Destroy(tg,REASON_EFFECT) end
+	else Duel.Destroy(dg,REASON_EFFECT) end
 end
+--[[
+	References
+		1. Chthonian Blast
+		https://github.com/Fluorohydride/ygopro-scripts/blob/13bb48afcf3edcf161be98b09c55fec6befcc4df/c18271561.lua#L28
+]]
