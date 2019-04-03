@@ -239,8 +239,11 @@ Card.DMIsRace=Card.IsSetCard
 --[[
 --check if a card originally had a particular race
 Card.DMIsOriginalRace=Card.IsOriginalSetCard
+]]
 --check if a card had a particular race when it was in the battle zone
 Card.DMIsPreviousRace=Card.IsPreviousSetCard
+--reserved
+--[[
 --check if a card is included in a particular name category
 Card.IsNameCategory=Card.IsSetCard
 --check if a card was originally included in a particular name category
@@ -788,6 +791,23 @@ function Auxiliary.RemoveEffectDescOperation(desc_id)
 					c:ResetFlagEffect(10+desc_id)
 				end
 			end
+end
+--sort cards from the top or bottom of a player's deck
+--sort_player: the player to sort the cards
+--target_player: the player whose deck to sort
+--ct: the number of cards to sort
+--seq: DECK_SEQUENCE_TOP to sort the top cards or DECK_SEQUENCE_BOTTOM to sort the bottom cards
+function Auxiliary.SortDeck(sort_player,target_player,ct,seq)
+	local ft=Duel.GetFieldGroupCount(target_player,LOCATION_DECK,0)
+	if ft<ct then ct=ft end
+	if ct>1 then Duel.SortDecktop(sort_player,target_player,ct) end
+	if seq~=DECK_SEQUENCE_BOTTOM or ct<=0 then return end
+	local g=Duel.GetDecktopGroup(target_player,1)
+	if ct>1 then
+		for i=1,ct do
+			Duel.MoveSequence(g:GetFirst(),seq)
+		end
+	else Duel.MoveSequence(g:GetFirst(),seq) end
 end
 
 --add procedure and rules to creature
@@ -2397,6 +2417,39 @@ function Auxiliary.SelfBattleEndOperation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Destroy(c,REASON_EFFECT)
 	end
 end
+--"Whenever another creature would be destroyed, it stays in the battle zone instead."
+--e.g. "Mihail, Celestial Elemental" (DM-09 12/55)
+function Auxiliary.EnableCannotBeDestroyed(c,s_range,o_range,targ_func)
+	local e1=Effect.CreateEffect(c)
+	if s_range or o_range then
+		e1:SetType(EFFECT_TYPE_FIELD)
+		e1:SetRange(DM_LOCATION_BATTLE)
+		e1:SetTargetRange(s_range,o_range)
+		if targ_func then e1:SetTarget(targ_func) end
+	else
+		e1:SetType(EFFECT_TYPE_SINGLE)
+	end
+	e1:SetCode(EFFECT_INDESTRUCTIBLE)
+	e1:SetValue(1)
+	c:RegisterEffect(e1)
+	local e2=e1:Clone()
+	e2:SetCode(EFFECT_INDESTRUCTIBLE_BATTLE)
+	c:RegisterEffect(e2)
+	local e3=e1:Clone()
+	e3:SetCode(EFFECT_INDESTRUCTIBLE_ABILITY)
+	c:RegisterEffect(e3)
+end
+--"Whenever your opponent would choose a creature in the battle zone, he can't choose this one."
+--e.g. "Petrova, Channeler of Suns" (DM-09 S1/S5)
+function Auxiliary.EnableCannotBeTargeted(c)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
+	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e1:SetRange(DM_LOCATION_BATTLE)
+	e1:SetValue(aux.tgoval)
+	c:RegisterEffect(e1)
+end
 --"At the end of your turn, [you may] return this creature to your hand."
 --e.g. "Ganzo, Flame Fisherman" (Game Original)
 function Auxiliary.EnableTurnEndSelfReturn(c,desc_id,con_func,optional)
@@ -2470,11 +2523,17 @@ function Auxiliary.ConfirmOperation(p,f,s,o,min,max,ex,...)
 			end
 end
 --operation function for abilities that target cards that are not public knowledge that let a player look at them
-function Auxiliary.TargetConfirmOperation(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
-	if g:GetCount()>0 then
-		Duel.ConfirmCards(tp,g)
-	end
+function Auxiliary.TargetConfirmOperation(turn_faceup)
+	--turn_faceup: true to turn a shield face up
+	return	function(e,tp,eg,ep,ev,re,r,rp)
+				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
+				if g:GetCount()==0 then return end
+				if turn_faceup then
+					Duel.ChangePosition(g,POS_FACEUP)
+				else
+					Duel.ConfirmCards(tp,g)
+				end
+			end
 end
 --========== Destroy ==========
 --operation function for abilities that destroy cards
@@ -2930,20 +2989,10 @@ function Auxiliary.TargetSendtoShieldOperation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.ConfirmCards(1-tp,sg)
 end
 ]]
---target and operation functions for abilities that put cards from the top of a player's deck into the shield zone
---reserved
---[[
-function Auxiliary.DecktopSendtoShieldTarget(p)
-	--p: PLAYER_SELF/tp for the top of your deck or PLAYER_OPPO/1-tp for your opponent's
-	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
-				local player=nil
-				if p==PLAYER_SELF or p==tp then player=tp
-				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
-				if chk==0 then return Duel.GetFieldGroupCount(player,LOCATION_DECK,0)>0 end
-			end
-end
-]]
+--operation function for abilities that put cards from the top of a player's deck into the shield zone
+--use Auxiliary.CheckDeckFunction for the target function, if needed
 function Auxiliary.DecktopSendtoShieldOperation(p,ct)
+	--p: PLAYER_SELF/tp for the top of your deck or PLAYER_OPPO/1-tp for your opponent's
 	--ct: the number of cards to put into the shield zone
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player1=nil
