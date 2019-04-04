@@ -3352,6 +3352,7 @@ Auxiliary.tgcon=Auxiliary.EnterGraveCondition
 --e.g. "Gigazoul" (DM-05 28/55)
 function Auxiliary.NoShieldsCondition(p)
 	return	function(e)
+				local tp=e:GetHandlerPlayer()
 				local player=nil
 				if p==PLAYER_SELF or p==tp then player=tp
 				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
@@ -3363,6 +3364,7 @@ Auxiliary.nszcon=Auxiliary.NoShieldsCondition
 --e.g. "Headlong Giant" (DM-07 S5/S5)
 function Auxiliary.NoHandCondition(p)
 	return	function(e)
+				local tp=e:GetHandlerPlayer()
 				local player=nil
 				if p==PLAYER_SELF or p==tp then player=tp
 				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
