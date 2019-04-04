@@ -14,4 +14,4 @@ scard.duel_masters_card=true
 function scard.dhcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetAttacker():IsControler(tp)
 end
-scard.dhop=dm.DiscardOperation(PLAYER_OPPO,aux.TRUE,LOCATION_HAND,0,1,1,true)
+scard.dhop=dm.DiscardOperation(PLAYER_OPPO,aux.TRUE,0,LOCATION_HAND,1,1,true)

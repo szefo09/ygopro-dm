@@ -2768,12 +2768,15 @@ function Auxiliary.DiscardOperation(p,f,s,o,min,max,ram,ex,...)
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
+				local sg=nil
 				if min and max then
 					if ram then
-						Duel.RandomDiscardHand(player,min,REASON_EFFECT,ex)
+						sg=g:RandomSelect(player,min)
 					else
-						Duel.DiscardHand(player,f,min,max,REASON_EFFECT,ex,table.unpack(funs))
+						Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_DISCARD)
+						sg=g:Select(player,min,max,ex,table.unpack(funs))
 					end
+					Duel.DMSendtoGrave(sg,REASON_EFFECT+REASON_DISCARD)
 				else
 					Duel.DMSendtoGrave(g,REASON_EFFECT+REASON_DISCARD)
 				end
