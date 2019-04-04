@@ -2446,9 +2446,8 @@ function Auxiliary.SelfDestroyOperation(ram)
 				if Duel.GetAttacker()==c then Duel.ChangePosition(c,POS_FACEUP_TAPPED) end --fix attack cost position
 				if not c:IsRelateToEffect(e) then return end
 				local ct=math.random(4) --either 2 or 3: 50% chance to destroy
-				if ram and ct==2 then
-					Duel.Destroy(c,REASON_EFFECT)
-				end
+				if ram and ct~=2 then return end
+				Duel.Destroy(c,REASON_EFFECT)
 			end
 end
 --"This creature can attack untapped creatures."
