@@ -8,4 +8,4 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 scard.dhtg=dm.CheckCardFunction(aux.TRUE,0,LOCATION_HAND)
-scard.dhop=dm.DiscardOperation(PLAYER_OPPO,aux.TRUE,0,LOCATION_HAND,2,2,true)
+scard.dhop=dm.DiscardOperation(PLAYER_OPPO,aux.TRUE,LOCATION_HAND,0,2,2,true)

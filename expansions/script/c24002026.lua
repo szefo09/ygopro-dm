@@ -4,7 +4,6 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--discard
-	dm.AddSingleAttackTriggerEffect(c,0,nil,nil,scard.dhop)
+	dm.AddSingleAttackTriggerEffect(c,0,nil,nil,dm.DiscardOperation(PLAYER_OPPO,aux.TRUE,LOCATION_HAND,0,1,1,true))
 end
 scard.duel_masters_card=true
-scard.dhop=dm.DiscardOperation(PLAYER_OPPO,aux.TRUE,0,LOCATION_HAND,1,1,true)
