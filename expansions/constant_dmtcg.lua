@@ -215,6 +215,7 @@ DM_EFFECT_BREAK_SHIELD_REPLACE		=724	--When a creature would break a shield, do 
 DM_EFFECT_STEALTH					=725	--Stealth ("Kizar Basiku, the Outrageous" DM-07 9/55)
 DM_EFFECT_CHARGER					=726	--Charger ("Lightning Charger" DM-07 15/55)
 DM_EFFECT_DONOT_DISCARD_SHIELD_TRIGGER=727	--Do not discard a spell after using its "shield trigger" ability ("Super Terradragon Bailas Gale" DM-08 S5/S5)
+DM_EFFECT_MUST_BLOCK				=728	--RESERVED	--Creature must block another creature if able ("Storm Wrangler, the Furious" DM-09 51/55)
 DM_EFFECT_WINS_ALL_BATTLES			=799	--Wins All Battles ("Marshias, Spirit of the Sun" DM-14 S1/S10)		
 --Abilities that trigger or actions that occur at the appropriate event
 DM_EVENT_ATTACK_SHIELD				=EVENT_PRE_DAMAGE_CALCULATE		--Before an attacking creature breaks the opponent's shield
