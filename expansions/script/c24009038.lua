@@ -26,7 +26,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	e2:SetCode(EVENT_CUSTOM+DM_EVENT_WIN_BATTLE)
 	e2:SetOperation(scard.posop)
 	e2:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
-	c:RegisterEffect(e2)
+	tc:RegisterEffect(e2)
 end
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_CARD,0,sid)
