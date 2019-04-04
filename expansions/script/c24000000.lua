@@ -461,7 +461,8 @@ function scard.desop2(e,tp,eg,ep,ev,re,r,rp)
 		if not ab1 and a:IsRelateToBattle() then g:AddCard(a) end
 		if not ab2 and d:IsRelateToBattle() then g:AddCard(d) end
 	end
-	Duel.Destroy(g,REASON_RULE--[[+REASON_BATTLE]])
+	Duel.Destroy(g,REASON_RULE)
+	Duel.RaiseSingleEvent(d,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
 end
 --to grave redirect
 function scard.tgtg(e,c)

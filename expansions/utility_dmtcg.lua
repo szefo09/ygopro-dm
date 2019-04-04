@@ -2439,6 +2439,13 @@ function Auxiliary.EnableBattleWinSelfDestroy(c,desc_id,ram)
 	e1:SetCondition(Auxiliary.SelfBattleWinCondition)
 	e1:SetOperation(Auxiliary.SelfDestroyOperation(ram))
 	c:RegisterEffect(e1)
+	--fix for "When this creature wins a battle" abilities not triggering
+	local e2=Effect.CreateEffect(c)
+	e2:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
+	e2:SetCode(EVENT_CUSTOM+DM_EVENT_WIN_BATTLE)
+	e2:SetOperation(Auxiliary.SelfDestroyOperation(ram))
+	c:RegisterEffect(e2)
 end
 function Auxiliary.SelfDestroyOperation(ram)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
