@@ -746,6 +746,13 @@ end
 function Duel.IsPlayerCanBlock(player)
 	return true--not Duel.IsPlayerAffectedByEffect(player,DM_EFFECT_CANNOT_BLOCK) --reserved
 end
+--return the creature that is blocking
+function Duel.GetBlocker()
+	local f=function(c)
+		return c:GetFlagEffect(DM_EFFECT_BLOCKER)>0
+	end
+	return Duel.GetFirstMatchingCard(f,0,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil)
+end
 --return the number of shields a player's creatures broke during the current turn
 function Duel.GetBrokenShieldCount(player)
 	return Duel.GetFlagEffect(player,DM_EFFECT_BREAK_SHIELD)
@@ -1338,20 +1345,22 @@ function Auxiliary.BlockerOperation(e,tp,eg,ep,ev,re,r,rp)
 	if not a or a:IsImmuneToEffect(e) or c:IsImmuneToEffect(e) or a:IsStatus(STATUS_ATTACK_CANCELED) then return end
 	Duel.ChangePosition(a,POS_FACEUP_TAPPED) --fix attack cost position
 	Duel.NegateAttack()
-	--check for "Whenever this creature blocks/becomes blocked, no battle happens. (Both creatures stay tapped.)"
-	if not c:IsHasEffect(DM_EFFECT_NO_BLOCK_BATTLE) and not a:IsHasEffect(DM_EFFECT_NO_BE_BLOCKED_BATTLE) then
-		Duel.BreakEffect()
-		Duel.DoBattle(a,c)
-	end
 	--register flag effect for Card.IsBlocked
 	a:RegisterFlagEffect(DM_EFFECT_BLOCKED,RESET_EVENT+RESETS_STANDARD+RESET_CHAIN,0,1)
 	Duel.Hint(HINT_OPSELECTED,1-tp,DM_DESC_BLOCKED)
+	--register flag effect for Duel.GetBlocker
+	c:RegisterFlagEffect(DM_EFFECT_BLOCKER,RESET_EVENT+RESETS_STANDARD+RESET_CHAIN,0,1)
 	--raise event for "Whenever this creature blocks"
 	Duel.RaiseSingleEvent(c,EVENT_CUSTOM+DM_EVENT_BLOCK,e,0,0,0,0)
 	--raise event for "Whenever this creature becomes blocked"
 	Duel.RaiseSingleEvent(a,EVENT_CUSTOM+DM_EVENT_BECOMES_BLOCKED,e,0,0,0,0)
 	--raise event for "Whenever any of your creatures becomes blocked"
 	Duel.RaiseEvent(a,EVENT_CUSTOM+DM_EVENT_BECOMES_BLOCKED,e,0,0,0,0)
+	--check for "Whenever this creature blocks/becomes blocked, no battle happens. (Both creatures stay tapped.)"
+	if not c:IsHasEffect(DM_EFFECT_NO_BLOCK_BATTLE) and not a:IsHasEffect(DM_EFFECT_NO_BE_BLOCKED_BATTLE) then
+		Duel.BreakEffect()
+		Duel.DoBattle(a,c)
+	end
 end
 --"Each of your creatures has "Blocker"."
 --e.g. "Sieg Balicula, the Intense" (DM-03 8/55), "Gallia Zohl, Iron Guardian Q" (DM-05 8/55)
@@ -2759,12 +2768,15 @@ function Auxiliary.DiscardOperation(p,f,s,o,min,max,ram,ex,...)
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
+				local sg=nil
 				if min and max then
 					if ram then
-						Duel.RandomDiscardHand(player,min,REASON_EFFECT,ex)
+						sg=g:RandomSelect(player,min)
 					else
-						Duel.DiscardHand(player,f,min,max,REASON_EFFECT,ex,table.unpack(funs))
+						Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_DISCARD)
+						sg=g:Select(player,min,max,ex,table.unpack(funs))
 					end
+					Duel.DMSendtoGrave(sg,REASON_EFFECT+REASON_DISCARD)
 				else
 					Duel.DMSendtoGrave(g,REASON_EFFECT+REASON_DISCARD)
 				end
