@@ -621,9 +621,9 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason,ignore_br
 	--ignore_breaker: true to not break a number of shields according to the breaker abilities a creature may have
 	local reason=reason or 0
 	local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(),target_player,DM_LOCATION_SHIELD,0,nil)
-	if g:GetCount()==0 then return end
+	if g:GetCount()==0 then return 0 end
 	if rc and not ignore_breaker then
-		if not rc:IsCanBreakShield() then return end
+		if not rc:IsCanBreakShield() then return 0 end
 		local m=_G["c"..rc:GetCode()]
 		local db=rc:IsHasEffect(DM_EFFECT_DOUBLE_BREAKER)
 		local tb=rc:IsHasEffect(DM_EFFECT_TRIPLE_BREAKER)
@@ -786,7 +786,7 @@ function Duel.SendDecktoptoShieldUpTo(player,count)
 	for i=1,ct do t[i]=i end
 	Duel.Hint(HINT_SELECTMSG,player,DM_QHINTMSG_NUMBERTOSHIELD)
 	local an=Duel.AnnounceNumber(player,table.unpack(t))
-	return Duel.SendDecktoptoShield(player,an) 
+	return Duel.SendDecktoptoShield(player,an)
 end
 --check if a player can add a card from the top of their deck to their shields face down
 function Duel.IsPlayerCanSendDecktoptoShield(player,count)
@@ -796,13 +796,14 @@ end
 --draw up to a number of cards
 function Duel.DrawUpTo(player,count,reason)
 	local ct=Duel.GetFieldGroupCount(player,LOCATION_DECK,0)
-	if ct==0 or not Duel.IsPlayerCanDraw(player,1) or not Duel.SelectYesNo(player,DM_QHINTMSG_DRAW) then return end
-	if ct>count then ct=count end
-	local t={}
-	for i=1,ct do t[i]=i end
-	Duel.Hint(HINT_SELECTMSG,player,DM_QHINTMSG_NUMBERDRAW)
-	local an=Duel.AnnounceNumber(player,table.unpack(t))
-	return Duel.Draw(player,an,reason)
+	if ct>0 and Duel.IsPlayerCanDraw(player,1) and Duel.SelectYesNo(player,DM_QHINTMSG_DRAW) then
+		if ct>count then ct=count end
+		local t={}
+		for i=1,ct do t[i]=i end
+		Duel.Hint(HINT_SELECTMSG,player,DM_QHINTMSG_NUMBERDRAW)
+		local an=Duel.AnnounceNumber(player,table.unpack(t))
+		return Duel.Draw(player,an,reason)
+	else return 0 end
 end
 --discard a card at random
 function Duel.RandomDiscardHand(player,count,reason,ex)
@@ -1558,7 +1559,11 @@ function Auxiliary.AddShieldTriggerCastEffect(c,desc_id,targ_func,op_func,prop,c
 	local con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	if cate then e1:SetCategory(cate) end
+	if cate then
+		e1:SetCategory(DM_CATEGORY_SHIELD_TRIGGER+cate)
+	else
+		e1:SetCategory(DM_CATEGORY_SHIELD_TRIGGER)
+	end
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e1:SetCode(EVENT_TO_HAND)
 	if prop then
@@ -1572,6 +1577,7 @@ function Auxiliary.AddShieldTriggerCastEffect(c,desc_id,targ_func,op_func,prop,c
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
+	--prevent multiple "shield trigger" abilities from chaining
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e2:SetCode(EVENT_CHAIN_SOLVED)
@@ -1590,6 +1596,7 @@ function Auxiliary.AddShieldTriggerCastEffect(c,desc_id,targ_func,op_func,prop,c
 	e3:SetCondition(aux.AND(Auxiliary.ShieldTriggerCondition2,con_func))
 	c:RegisterEffect(e3)
 	e2:SetLabelObject(e3)
+	--temporary workaround for "Wolfis, Blue Divine Dragon"
 	local e4=Effect.CreateEffect(c)
 	e4:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then
@@ -1611,8 +1618,7 @@ function Auxiliary.AddShieldTriggerCastEffect(c,desc_id,targ_func,op_func,prop,c
 	c:RegisterEffect(e4)
 end
 function Auxiliary.ShieldTriggerOperation(e,tp,eg,ep,ev,re,r,rp)
-	local rc=re:GetHandler()
-	if rc:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER) and rc:IsBrokenShield() and rc:IsControler(tp) then
+	if re:IsHasCategory(DM_CATEGORY_SHIELD_TRIGGER) and re:GetHandler():IsControler(tp) then
 		e:GetLabelObject():SetLabel(1)
 	end
 end
@@ -3498,7 +3504,7 @@ function Auxiliary.TargetCardFunction(p,f,s,o,min,max,desc,ex,...)
 				local max=max or min
 				local desc=desc or DM_HINTMSG_TARGET
 				local c=e:GetHandler()
-				if c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
+				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				local extype=type(ex)
 				local exg=Group.CreateGroup()
 				if extype=="Card" then exg:AddCard(ex)
