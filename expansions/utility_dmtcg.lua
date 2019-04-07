@@ -397,14 +397,14 @@ Card.GetStackCount=Card.GetOverlayCount
 --select a specified card from a group
 local group_filter_select=Group.FilterSelect
 function Group.FilterSelect(g,player,f,min,max,ex,...)
-	--Note: Remove this when YGOPro forbids players to look at their face-down cards
+	--Note: Remove this when forbidding players to look at their face-down cards is implemented in YGOPro
 	local sg1=g:Filter(Auxiliary.ShieldZoneFilter(f),ex,...)
 	local sg2=Group.CreateGroup()
 	for c in aux.Next(sg1) do
 		if c:IsControler(player) then sg2:AddCard(c) end
 	end
-	if sg1:GetCount()>0 then
-		return sg1:RandomSelect(player,min,max)
+	if sg2:GetCount()>0 then
+		return sg2:RandomSelect(player,min,max)
 	else
 		if not g:IsExists(f,1,ex,...) then
 			Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
@@ -415,7 +415,7 @@ end
 --select a card from a group
 local group_select=Group.Select
 function Group.Select(g,player,min,max,ex)
-	--Note: Remove this when YGOPro forbids players to look at their face-down cards
+	--Note: Remove this when forbidding players to look at their face-down cards is implemented in YGOPro
 	local sg1=g:Filter(Auxiliary.ShieldZoneFilter(),ex)
 	local sg2=Group.CreateGroup()
 	for c in aux.Next(sg1) do
@@ -431,19 +431,23 @@ function Group.Select(g,player,min,max,ex)
 	end
 end
 --select a number of cards from a group at random
---Note: Remove max_count when YGOPro forbids players to look at their face-down cards
+--Note: Remove max_count when forbidding players to look at their face-down cards is implemented in YGOPro
 local group_random_select=Group.RandomSelect
 function Group.RandomSelect(g,player,count,max_count)
 	local ct=g:GetCount()
 	local max_count=max_count or count
-	if ct>0 and count==0 and max_count>0 and Duel.SelectYesNo(player,DM_QHINTMSG_CHOOSE) then
-		if ct>max_count then ct=max_count end
-		local t={}
-		for i=1,ct do t[i]=i end
-		Duel.Hint(HINT_SELECTMSG,player,DM_QHINTMSG_NUMBERCHOOSE)
-		count=Duel.AnnounceNumber(player,table.unpack(t))
-	end
-	if ct==0 then
+	if ct>0 then
+		if max_count>count then
+			if count==0 and not Duel.SelectYesNo(player,DM_QHINTMSG_CHOOSE) then
+				return group_random_select(g,player,count,max_count)
+			end
+			if ct>max_count then ct=max_count end
+			local t={}
+			for i=1,ct do t[i]=i end
+			Duel.Hint(HINT_SELECTMSG,player,DM_QHINTMSG_NUMBERCHOOSE)
+			count=Duel.AnnounceNumber(player,table.unpack(t))
+		end
+	else
 		Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
 	end
 	return group_random_select(g,player,count,max_count)
@@ -574,7 +578,7 @@ end
 local duel_select_matching_card=Duel.SelectMatchingCard
 function Duel.SelectMatchingCard(sel_player,f,player,s,o,min,max,ex,...)
 	if sel_player==player and s==DM_LOCATION_SHIELD then
-		--Note: Remove this when YGOPro forbids players to look at their face-down cards
+		--Note: Remove this when forbidding players to look at their face-down cards is implemented in YGOPro
 		local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(f),player,s,o,ex,...)
 		return g:RandomSelect(sel_player,min,max)
 	else
@@ -588,7 +592,7 @@ end
 local duel_select_target=Duel.SelectTarget
 function Duel.SelectTarget(sel_player,f,player,s,o,min,max,ex,...)
 	if sel_player==player and s==DM_LOCATION_SHIELD then
-		--Note: Remove this when YGOPro forbids players to look at their face-down cards
+		--Note: Remove this when forbidding players to look at their face-down cards is implemented in YGOPro
 		local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(f),player,s,o,ex,...)
 		local sg=g:RandomSelect(sel_player,min,max)
 		Duel.SetTargetCard(sg)
