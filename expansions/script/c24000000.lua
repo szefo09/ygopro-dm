@@ -94,6 +94,11 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetCode(EVENT_PREDRAW)
 	e1:SetOperation(scard.posop1)
 	Duel.RegisterEffect(e1,tp)
+	local e1b=e1:Clone()
+	e1b:SetCode(EVENT_ADJUST)
+	e1b:SetCondition(scard.poscon)
+	e1b:SetOperation(scard.posop2)
+	Duel.RegisterEffect(e1b,tp)
 	--charge
 	local e2=Effect.CreateEffect(c)
 	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
@@ -336,13 +341,9 @@ function scard.posop1(e,tp,eg,ep,ev,re,r,rp)
 	local g3=Duel.GetMatchingGroup(scard.ssfilter,turnp,DM_LOCATION_BATTLE,0,nil)
 	g1:Sub(g3)
 	Duel.ChangePosition(g1,POS_FACEUP_UNTAPPED)
-	local e1=Effect.CreateEffect(e:GetHandler())
-	e1:SetDescription(aux.Stringid(sid,0))
-	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e1:SetCode(EVENT_ADJUST)
-	e1:SetOperation(scard.posop2)
-	e1:SetReset(RESET_EVENT+EVENT_PREDRAW)
-	Duel.RegisterEffect(e1,turnp)
+end
+function scard.poscon(e)
+	return Duel.GetCurrentPhase()==PHASE_DRAW
 end
 function scard.posfilter2(c)
 	return scard.posfilter1(c) and c:GetFlagEffect(DM_EFFECT_SILENT_SKILL)==0
