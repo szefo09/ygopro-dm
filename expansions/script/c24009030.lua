@@ -15,7 +15,7 @@ function scard.dhop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.DMSendtoGrave(g1,REASON_EFFECT+REASON_DISCARD)
 	end
 	Duel.Hint(HINT_SELECTMSG,1-tp,DM_HINTMSG_TOGRAVE)
-	local g2=Duel.SelectMatchingCard(1-tp,dm.ManaZoneFilter(Card.IsCanBeEffectTarget),1-tp,LOCATION_MANA,0,1,1,nil,e)
+	local g2=Duel.SelectMatchingCard(1-tp,dm.ManaZoneFilter(Card.IsCanBeEffectTarget),1-tp,DM_LOCATION_MANA,0,1,1,nil,e)
 	if g2:GetCount()>0 then
 		Duel.DMSendtoGrave(g2,REASON_EFFECT)
 	end

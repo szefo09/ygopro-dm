@@ -45,6 +45,7 @@ If you do not build your deck according to the following rules, you will lose th
 - `0x3	Monster+Spell` = Spell
 	- `Attribute` = Civilization
 	- `Level` = Mana Cost
+- `0x800	Gemini` = Multi-civilization card
 </details>
 <details>
 <summary>Attribute</summary>

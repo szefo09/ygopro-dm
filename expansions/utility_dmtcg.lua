@@ -8,16 +8,6 @@
 
 local Auxiliary={}
 local DMTCG=require "expansions.constant_dmtcg"
-DM_CIVILIZATIONS_LW=DM_CIVILIZATIONS_LIGHT_WATER
-DM_CIVILIZATIONS_LD=DM_CIVILIZATIONS_LIGHT_DARKNESS
-DM_CIVILIZATIONS_LF=DM_CIVILIZATIONS_LIGHT_FIRE
-DM_CIVILIZATIONS_LN=DM_CIVILIZATIONS_LIGHT_NATURE
-DM_CIVILIZATIONS_WD=DM_CIVILIZATIONS_WATER_DARKNESS
-DM_CIVILIZATIONS_WF=DM_CIVILIZATIONS_WATER_FIRE
-DM_CIVILIZATIONS_WN=DM_CIVILIZATIONS_WATER_NATURE
-DM_CIVILIZATIONS_DF=DM_CIVILIZATIONS_DARKNESS_FIRE
-DM_CIVILIZATIONS_DN=DM_CIVILIZATIONS_DARKNESS_NATURE
-DM_CIVILIZATIONS_FN=DM_CIVILIZATIONS_FIRE_NATURE
 DM_DESC_FN_BLOCKER=DM_DESC_FIRE_NATURE_BLOCKER
 DM_DESC_NL_SLAYER=DM_DESC_NATURE_LIGHT_SLAYER
 EFFECT_INDESTRUCTIBLE=EFFECT_INDESTRUCTABLE
@@ -94,6 +84,10 @@ end
 --check if a card is a spell
 function Card.IsSpell(c)
 	return c:IsType(TYPE_SPELL)
+end
+--check if a card is a multicolored card
+function Card.IsMulticolored(c)
+	return c:IsType(DM_TYPE_MULTICOLORED)
 end
 --check if a card is a shield
 function Card.IsShield(c)
@@ -199,13 +193,6 @@ end
 function Card.IsCanBreakShield(c)
 	return not c:IsBlocked()
 end
---check if a creature has no abilities
---reserved
---[[
-function Card.IsHasNoAbility(c)
-	return c:IsType(DM_TYPE_NO_ABILITY)
-end
-]]
 --return the number of shields a creature broke during the current turn
 function Card.GetBrokenShieldCount(c)
 	return c:GetFlagEffect(DM_EFFECT_BREAK_SHIELD)
@@ -224,12 +211,107 @@ end
 function Card.DMIsEvolutionNameCategory(c,setname)
 	return c:IsNameCategory(setname) or c:IsHasEffect(DM_EFFECT_EVOLUTION_ANY_CODE)
 end
-]]
---reserved
---[[
 --check if a card has a particular civilization to put the appropriate evolution creature on it
 function Card.DMIsEvolutionCivilization(c,civ)
 	return c:IsCivilization(civ) or c:IsHasEffect(DM_EFFECT_EVOLUTION_ANY_CIVILIZATION)
+end
+]]
+--return the number of combined civilizations a card has
+function Card.GetCivilizationCount(c)
+	local civ=c:GetCivilization()
+	if civ==DM_CIVILIZATION_LIGHT or civ==DM_CIVILIZATION_WATER or civ==DM_CIVILIZATION_DARKNESS
+		or civ==DM_CIVILIZATION_FIRE or civ==DM_CIVILIZATION_NATURE then
+		return 1
+	elseif civ==DM_CIVILIZATIONS_LW or civ==DM_CIVILIZATIONS_LD or civ==DM_CIVILIZATIONS_WD
+		or civ==DM_CIVILIZATIONS_LF or civ==DM_CIVILIZATIONS_WF or civ==DM_CIVILIZATIONS_DF
+		or civ==DM_CIVILIZATIONS_LN or civ==DM_CIVILIZATIONS_WN or civ==DM_CIVILIZATIONS_DN
+		or civ==DM_CIVILIZATIONS_FN then
+		return 2
+	elseif civ==DM_CIVILIZATIONS_DFN or civ==DM_CIVILIZATIONS_LFN or civ==DM_CIVILIZATIONS_LWD
+		or civ==DM_CIVILIZATIONS_LWN or civ==DM_CIVILIZATIONS_WDF or civ==DM_CIVILIZATIONS_LDF
+		or civ==DM_CIVILIZATIONS_LDN or civ==DM_CIVILIZATIONS_LWF or civ==DM_CIVILIZATIONS_WDN
+		or civ==DM_CIVILIZATIONS_WFN then
+		return 3
+	elseif civ==DM_CIVILIZATIONS_LWDF then
+		return 4
+	elseif civ==DM_CIVILIZATIONS_LWDFN then
+		return 5
+	else return 0 end
+end
+--return the first or only civilization a card has
+function Card.GetFirstCivilization(c)
+	local civ=c:GetCivilization()
+	if civ==DM_CIVILIZATION_LIGHT or civ==DM_CIVILIZATIONS_LW or civ==DM_CIVILIZATIONS_LD
+		or civ==DM_CIVILIZATIONS_LF or civ==DM_CIVILIZATIONS_LN or civ==DM_CIVILIZATIONS_LFN
+		or civ==DM_CIVILIZATIONS_LWD or civ==DM_CIVILIZATIONS_LWN or civ==DM_CIVILIZATIONS_LDF
+		or civ==DM_CIVILIZATIONS_LDN or civ==DM_CIVILIZATIONS_LWF or civ==DM_CIVILIZATIONS_LWDF
+		or civ==DM_CIVILIZATIONS_LWDFN then
+		return DM_CIVILIZATION_LIGHT
+	elseif civ==DM_CIVILIZATION_WATER or civ==DM_CIVILIZATIONS_WD or civ==DM_CIVILIZATIONS_WF
+		or civ==DM_CIVILIZATIONS_WN or civ==DM_CIVILIZATIONS_WDF or civ==DM_CIVILIZATIONS_WDN
+		or civ==DM_CIVILIZATIONS_WFN then
+		return DM_CIVILIZATION_WATER
+	elseif civ==DM_CIVILIZATION_DARKNESS or civ==DM_CIVILIZATIONS_DF or civ==DM_CIVILIZATIONS_DN
+		or civ==DM_CIVILIZATIONS_DFN then
+		return DM_CIVILIZATION_DARKNESS
+	elseif civ==DM_CIVILIZATION_FIRE or civ==DM_CIVILIZATIONS_FN then
+		return DM_CIVILIZATION_FIRE
+	elseif civ==DM_CIVILIZATION_NATURE then
+		return DM_CIVILIZATION_NATURE
+	else return DM_CIVILIZATION_NONE end
+end
+--return the second civilization a multicolored card has
+function Card.GetSecondCivilization(c)
+	local civ=c:GetCivilization()
+	if civ==DM_CIVILIZATIONS_LW or civ==DM_CIVILIZATIONS_LWD or civ==DM_CIVILIZATIONS_LWN
+		or civ==DM_CIVILIZATIONS_LWF or civ==DM_CIVILIZATIONS_LWDF or civ==DM_CIVILIZATIONS_LWDFN then
+		return DM_CIVILIZATION_WATER
+	elseif civ==DM_CIVILIZATIONS_LD or civ==DM_CIVILIZATIONS_WD or civ==DM_CIVILIZATIONS_WDF
+		or civ==DM_CIVILIZATIONS_LDF or civ==DM_CIVILIZATIONS_LDN or civ==DM_CIVILIZATIONS_WDN then
+		return DM_CIVILIZATION_DARKNESS
+	elseif civ==DM_CIVILIZATIONS_LF or civ==DM_CIVILIZATIONS_WF or civ==DM_CIVILIZATIONS_DF
+		or civ==DM_CIVILIZATIONS_DFN or civ==DM_CIVILIZATIONS_LFN or civ==DM_CIVILIZATIONS_WFN then
+		return DM_CIVILIZATION_FIRE
+	elseif civ==DM_CIVILIZATIONS_LN or civ==DM_CIVILIZATIONS_WN or civ==DM_CIVILIZATIONS_DN
+		or civ==DM_CIVILIZATIONS_FN then
+		return DM_CIVILIZATION_NATURE
+	else return DM_CIVILIZATION_NONE end
+end
+--return the third civilization a multicolored card has
+function Card.GetThirdCivilization(c)
+	local civ=c:GetCivilization()
+	if civ==DM_CIVILIZATIONS_LWD or civ==DM_CIVILIZATIONS_LWDF or civ==DM_CIVILIZATIONS_LWDFN then
+		return DM_CIVILIZATION_DARKNESS
+	elseif civ==DM_CIVILIZATIONS_WDF or civ==DM_CIVILIZATIONS_LDF or civ==DM_CIVILIZATIONS_LWF then
+		return DM_CIVILIZATION_FIRE
+	elseif civ==DM_CIVILIZATIONS_DFN or civ==DM_CIVILIZATIONS_LFN or civ==DM_CIVILIZATIONS_LWN
+		or civ==DM_CIVILIZATIONS_LDN or civ==DM_CIVILIZATIONS_WDN or civ==DM_CIVILIZATIONS_WFN then
+		return DM_CIVILIZATION_NATURE
+	else return DM_CIVILIZATION_NONE end
+end
+--return the fourth civilization a multicolored card has
+function Card.GetFourthCivilization(c)
+	local civ=c:GetCivilization()
+	if civ==DM_CIVILIZATIONS_LWDF or civ==DM_CIVILIZATIONS_LWDFN then
+		return DM_CIVILIZATION_FIRE
+	else return DM_CIVILIZATION_NONE end
+end
+--return the fifth civilization a multicolored card has
+function Card.GetFifthCivilization(c)
+	local civ=c:GetCivilization()
+	if civ==DM_CIVILIZATIONS_LWDFN then
+		return DM_CIVILIZATION_NATURE
+	else return DM_CIVILIZATION_NONE end
+end
+--reserved
+--[[
+--check if a card has a civilization
+function Card.IsHasCivilization(c)
+	return c:GetCivilization()~=DM_CIVILIZATION_NONE
+end
+--check if a creature has no abilities
+function Card.IsHasNoAbility(c)
+	return c:IsType(DM_TYPE_NO_ABILITY)
 end
 ]]
 --Renamed Card functions
@@ -403,11 +485,11 @@ function Duel.ChangePosition(targets,pos)
 	for tc in aux.Next(targets) do
 		if pos==POS_FACEUP_UNTAPPED and tc:IsAbleToUntap() then
 			if tc:IsLocation(LOCATION_REMOVED) then
-				Duel.SendtoGrave(tc,REASON_EFFECT)
+				Duel.SendtoGrave(tc,0)
 			end
 		elseif pos==POS_FACEUP_TAPPED and tc:IsAbleToTap() then
 			if tc:IsLocation(LOCATION_GRAVE) then
-				Duel.Remove(tc,POS_FACEUP,REASON_EFFECT)
+				Duel.Remove(tc,POS_FACEUP,0)
 			end
 		end
 	end
@@ -584,46 +666,38 @@ Auxiliary.break_select_list={
 --put a card into the mana zone
 function Duel.SendtoMana(targets,pos,reason)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
+	--check for multicolored cards
+	local g=targets:Filter(Card.IsMulticolored,nil)
+	targets:Sub(g)
 	local ct=0
 	for tc in aux.Next(targets) do
 		if pos==POS_FACEUP_UNTAPPED then
 			ct=ct+Duel.SendtoGrave(tc,reason)
 		elseif pos==POS_FACEUP_TAPPED then
-			Duel.DisableShuffleCheck()
 			ct=ct+Duel.Remove(tc,POS_FACEDOWN,reason)
 		end
 	end
+	--put multicolored cards into the mana zone tapped
+	ct=ct+Duel.Remove(g,POS_FACEDOWN,REASON_RULE)
 	return ct
 end
 --put a card from the top of a player's deck into the mana zone
 function Duel.SendDecktoptoMana(player,count,pos,reason)
-	local ct=0
-	if pos==POS_FACEUP_UNTAPPED then
-		ct=ct+Duel.DiscardDeck(player,count,reason)
-	elseif pos==POS_FACEUP_TAPPED then
-		local g=Duel.GetDecktopGroup(player,count)
-		Duel.DisableShuffleCheck()
-		ct=ct+Duel.Remove(g,POS_FACEDOWN,reason)
-	end
-	return ct
+	local g=Duel.GetDecktopGroup(player,count)
+	Duel.DisableShuffleCheck()
+	return Duel.SendtoMana(g,pos,reason)
 end
 --put up to a number of cards from the top of a player's deck into the mana zone
 --reserved
 --[[
 function Duel.SendDecktoptoManaUpTo(player,count,pos,reason)
+local g=Duel.GetDecktopGroup(player,count)
 	local ct=0
-	if pos==POS_FACEUP_UNTAPPED then
-		repeat
-			ct=ct+Duel.DiscardDeck(player,1,reason)
-			count=count-1
-		until count==0 or not Duel.IsPlayerCanSendDecktoptoMana(player,1) or not Duel.SelectYesNo(player,DM_QHINTMSG_TOMANAEXTRA)
-	elseif pos==POS_FACEUP_TAPPED then
-		local tc=Duel.GetDecktopGroup(player,1):GetFirst()
-		repeat
-			ct=ct+Duel.Remove(tc,POS_FACEDOWN,reason)
-			count=count-1
-		until count==0 or not Duel.IsPlayerCanSendDecktoptoMana(player,1) or not Duel.SelectYesNo(player,DM_QHINTMSG_TOMANAEXTRA)
-	end
+	repeat
+		Duel.DisableShuffleCheck()
+		ct=Duel.SendDecktoptoMana(player,1,pos,reason)
+		count=count-ct
+	until count<=0 or not Duel.IsPlayerCanSendDecktoptoMana(player,1) or not Duel.SelectYesNo(player,DM_QHINTMSG_TOMANAEXTRA)
 	return ct
 end
 ]]
@@ -1007,30 +1081,67 @@ function Auxiliary.NonEvolutionSummonCondition(e,c)
 	local tp=c:GetControler()
 	local g=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MANA,0,nil)
 	if Duel.GetLocationCount(tp,DM_LOCATION_BATTLE)<=0 or g:GetCount()<c:GetManaCost() then return false end
-	return g:IsExists(Card.IsCivilization,1,nil,c:GetCivilization())
+	return Auxiliary.PayManaCondition(g,c,c:GetCivilizationCount())
 end
 function Auxiliary.NonEvolutionSummonTarget(e,tp,eg,ep,ev,re,r,rp,chk,c)
 	--check for "This creature enters the battle zone tapped."
 	if c:IsHasEffect(DM_EFFECT_ENTER_TAPPED) then e:SetTargetRange(POS_FACEUP_TAPPED,0) end
 	return true
 end
-function Auxiliary.NonEvolutionSummonOperation(e,tp,eg,ep,ev,re,r,rp,c)
-	local civ=c:GetCivilization()
-	local cost=c:GetManaCost()
-	local desc=DM_HINTMSG_TAP
-	if civ==DM_CIVILIZATION_LIGHT then desc=DM_HINTMSG_LTAP
-	elseif civ==DM_CIVILIZATION_WATER then desc=DM_HINTMSG_WTAP
-	elseif civ==DM_CIVILIZATION_DARKNESS then desc=DM_HINTMSG_DTAP
-	elseif civ==DM_CIVILIZATION_FIRE then desc=DM_HINTMSG_FTAP
-	elseif civ==DM_CIVILIZATION_NATURE then desc=DM_HINTMSG_NTAP end
-	local g=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MANA,0,nil)
-	Duel.Hint(HINT_SELECTMSG,tp,desc)
-	local sg1=g:FilterSelect(tp,Card.IsCivilization,1,1,nil,civ)
+function Auxiliary.PayManaCondition(g,c,civ_count)
+	local b1=g:IsExists(Card.IsCivilization,1,nil,c:GetFirstCivilization())
+	local b2=g:IsExists(Card.IsCivilization,1,nil,c:GetSecondCivilization())
+	local b3=g:IsExists(Card.IsCivilization,1,nil,c:GetThirdCivilization())
+	local b4=g:IsExists(Card.IsCivilization,1,nil,c:GetFourthCivilization())
+	local b5=g:IsExists(Card.IsCivilization,1,nil,c:GetFifthCivilization())
+	if civ_count==1 then
+		return b1
+	elseif civ_count==2 then
+		return b1 and b2
+	elseif civ_count==3 then
+		return b1 and b2 and b3
+	elseif civ_count==4 then
+		return b1 and b2 and b3 and b4
+	elseif civ_count==5 then
+		return b1 and b2 and b3 and b4 and b5
+	end
+end
+function Auxiliary.PayManaSelect(g,sel_player,c,mana_cost,civ_count)
+	Duel.Hint(HINT_SELECTMSG,sel_player,DM_HINTMSG_TAP)
+	local sg1=g:FilterSelect(sel_player,Card.IsCivilization,1,1,nil,c:GetFirstCivilization())
 	g:Sub(sg1)
-	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TAP)
-	local sg2=g:Select(tp,cost-1,cost-1,nil)
-	sg2:Merge(sg1)
-	Duel.PayManaCost(sg2)
+	if civ_count>=2 then
+		Duel.Hint(HINT_SELECTMSG,sel_player,DM_HINTMSG_TAP)
+		local sg2=g:FilterSelect(sel_player,Card.IsCivilization,1,1,nil,c:GetSecondCivilization())
+		g:Sub(sg2)
+		sg1:Merge(sg2)
+	end
+	if civ_count>=3 then
+		Duel.Hint(HINT_SELECTMSG,sel_player,DM_HINTMSG_TAP)
+		local sg3=g:FilterSelect(sel_player,Card.IsCivilization,1,1,nil,c:GetThirdCivilization())
+		g:Sub(sg3)
+		sg1:Merge(sg3)
+	end
+	if civ_count>=4 then
+		Duel.Hint(HINT_SELECTMSG,sel_player,DM_HINTMSG_TAP)
+		local sg4=g:FilterSelect(sel_player,Card.IsCivilization,1,1,nil,c:GetFourthCivilization())
+		g:Sub(sg4)
+		sg1:Merge(sg4)
+	end
+	if civ_count==5 then
+		Duel.Hint(HINT_SELECTMSG,sel_player,DM_HINTMSG_TAP)
+		local sg5=g:FilterSelect(sel_player,Card.IsCivilization,1,1,nil,c:GetFifthCivilization())
+		g:Sub(sg5)
+		sg1:Merge(sg5)
+	end
+	Duel.Hint(HINT_SELECTMSG,sel_player,DM_HINTMSG_TAP)
+	local sg6=g:Select(sel_player,mana_cost-civ_count,mana_cost-civ_count,nil)
+	sg1:Merge(sg6)
+	Duel.PayManaCost(sg1)
+end
+function Auxiliary.NonEvolutionSummonOperation(e,tp,eg,ep,ev,re,r,rp,c)
+	local g=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MANA,0,nil)
+	Auxiliary.PayManaSelect(g,tp,c,c:GetManaCost(),c:GetCivilizationCount())
 end
 function Auxiliary.EnableCreatureAttribute(c)
 	--summon procedure
@@ -1128,9 +1239,9 @@ function Auxiliary.SummonEvolutionCondition(f)
 				if not c:DMIsSummonable() then return false end
 				local tp=c:GetControler()
 				local g=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MANA,0,nil)
-				if Duel.GetLocationCount(tp,DM_LOCATION_BATTLE)<-1 or g:GetCount()<c:GetManaCost() then return false end
-				return Duel.IsExistingMatchingCard(Auxiliary.EvolutionFilter,tp,DM_LOCATION_BATTLE,0,1,nil,f)
-					and g:IsExists(Card.IsCivilization,1,nil,c:GetCivilization())
+				if Duel.GetLocationCount(tp,DM_LOCATION_BATTLE)<-1 or g:GetCount()<c:GetManaCost()
+					or not Duel.IsExistingMatchingCard(Auxiliary.EvolutionFilter,tp,DM_LOCATION_BATTLE,0,1,nil,f) then return false end
+				return Auxiliary.PayManaCondition(g,c,c:GetCivilizationCount())
 			end
 end
 function Auxiliary.SummonEvolutionTarget(f)
@@ -1151,26 +1262,12 @@ function Auxiliary.SummonEvolutionTarget(f)
 			end
 end
 function Auxiliary.SummonEvolutionOperation(e,tp,eg,ep,ev,re,r,rp,c)
-	local civ=c:GetCivilization()
-	local cost=c:GetManaCost()
-	local desc=DM_HINTMSG_TAP
-	if civ==DM_CIVILIZATION_LIGHT then desc=DM_HINTMSG_LTAP
-	elseif civ==DM_CIVILIZATION_WATER then desc=DM_HINTMSG_WTAP
-	elseif civ==DM_CIVILIZATION_DARKNESS then desc=DM_HINTMSG_DTAP
-	elseif civ==DM_CIVILIZATION_FIRE then desc=DM_HINTMSG_FTAP
-	elseif civ==DM_CIVILIZATION_NATURE then desc=DM_HINTMSG_NTAP end
 	local g1=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MANA,0,nil)
-	Duel.Hint(HINT_SELECTMSG,tp,desc)
-	local sg1=g1:FilterSelect(tp,Card.IsCivilization,1,1,nil,civ)
-	g1:Sub(sg1)
-	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TAP)
-	local sg2=g1:Select(tp,cost-1,cost-1,nil)
-	sg2:Merge(sg1)
-	Duel.PayManaCost(sg2)
+	Auxiliary.PayManaSelect(g,tp,c,c:GetManaCost(),c:GetCivilizationCount())
 	local g2=e:GetLabelObject()
-	local sg3=g2:GetFirst():GetStackGroup()
-	if sg3:GetCount()~=0 then
-		Duel.PutOnTop(c,sg3)
+	local sg=g2:GetFirst():GetStackGroup()
+	if sg:GetCount()~=0 then
+		Duel.PutOnTop(c,sg)
 	end
 	c:SetMaterial(g2)
 	Duel.PutOnTop(c,g2)
@@ -1219,21 +1316,26 @@ function Auxiliary.CastSpellCost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local cost=c:GetManaCost()
 	local g=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MANA,0,nil)
 	if g:GetCount()<cost then return false end
-	local civ=c:GetCivilization()
-	if chk==0 then return g:IsExists(Card.IsCivilization,1,nil,civ) end
-	local desc=DM_HINTMSG_TAP
-	if civ==DM_CIVILIZATION_LIGHT then desc=DM_HINTMSG_LTAP
-	elseif civ==DM_CIVILIZATION_WATER then desc=DM_HINTMSG_WTAP
-	elseif civ==DM_CIVILIZATION_DARKNESS then desc=DM_HINTMSG_DTAP
-	elseif civ==DM_CIVILIZATION_FIRE then desc=DM_HINTMSG_FTAP
-	elseif civ==DM_CIVILIZATION_NATURE then desc=DM_HINTMSG_NTAP end
-	Duel.Hint(HINT_SELECTMSG,tp,desc)
-	local sg1=g:FilterSelect(tp,Card.IsCivilization,1,1,nil,civ)
-	g:Sub(sg1)
-	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TAP)
-	local sg2=g:Select(tp,cost-1,cost-1,nil)
-	sg2:Merge(sg1)
-	Duel.PayManaCost(sg2)
+	local ct=c:GetCivilizationCount()
+	local b1=g:IsExists(Card.IsCivilization,1,nil,c:GetFirstCivilization())
+	local b2=g:IsExists(Card.IsCivilization,1,nil,c:GetSecondCivilization())
+	local b3=g:IsExists(Card.IsCivilization,1,nil,c:GetThirdCivilization())
+	local b4=g:IsExists(Card.IsCivilization,1,nil,c:GetFourthCivilization())
+	local b5=g:IsExists(Card.IsCivilization,1,nil,c:GetFifthCivilization())
+	if chk==0 then
+		if ct==1 then
+			return b1
+		elseif ct==2 then
+			return b1 and b2
+		elseif ct==3 then
+			return b1 and b2 and b3
+		elseif ct==4 then
+			return b1 and b2 and b3 and b4
+		elseif ct==5 then
+			return b1 and b2 and b3 and b4 and b5
+		end
+	end
+	Auxiliary.PayManaSelect(g,tp,c,cost,ct)
 end
 
 --c: the card that grants the ability
@@ -1716,6 +1818,26 @@ end
 function Auxiliary.TurboRushCondition(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():GetBrokenShieldCount()==0 and Duel.GetBrokenShieldCount(tp)>0
 end
+--"Silent skill (After your other creatures untap, if this creature is tapped, you may keep it tapped instead and use its Silentskill ability.)"
+--e.g. "Kejila, the Hidden Horror" (DM-10 5/110)
+function Auxiliary.EnableSilentSkill(c,desc_id,targ_func,op_func,prop)
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e1:SetCode(DM_EVENT_UNTAP_STEP)
+	if prop then e1:SetProperty(prop) end
+	e1:SetRange(DM_LOCATION_BATTLE)
+	e1:SetCost(Auxiliary.SilentSkillCost)
+	e1:SetCondition(Auxiliary.SelfTappedCondition)
+	if targ_func then e1:SetTarget(targ_func) end
+	e1:SetOperation(op_func)
+	c:RegisterEffect(e1)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_SILENT_SKILL)
+end
+function Auxiliary.SilentSkillCost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return true end
+	e:GetHandler():RegisterFlagEffect(DM_EFFECT_SILENT_SKILL,RESET_EVENT+RESETS_STANDARD+DM_EVENT_UNTAP_STEP,0,1)
+end
 --"RACE Hunter (This creature wins all battles against RACE.)"
 --e.g. "Pearl Carras, Barrier Guardian" (Game Original)
 function Auxiliary.EnableWinsAllBattles(c,desc_id,f)
@@ -1750,7 +1872,13 @@ function Auxiliary.WinsAllBattlesOperation(e,tp,eg,ep,ev,re,r,rp)
 		c:RegisterEffect(e1)
 		local e2=e1:Clone()
 		tc:RegisterEffect(e2)
-	else Duel.Destroy(tc,REASON_EFFECT+REASON_BATTLE) end
+	else
+		Duel.Destroy(tc,REASON_RULE)
+		--raise event for "When this creature wins a battle"
+		Duel.RaiseSingleEvent(c,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
+		--raise event for "Whenever one of your creatures wins a battle"
+		Duel.RaiseEvent(c,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
+	end
 end
 
 --desc_id: 0~15 the string id of the script's text
