@@ -4,6 +4,6 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
 	--search (to grave)
-	dm.AddSpellCastEffect(c,0,nil,dm.SendtoGraveOperation(PLAYER_SELF,Card.DMIsAbleToGrave,0,LOCATION_DECK,0,2))
+	dm.AddSpellCastEffect(c,0,nil,dm.SendtoGraveOperation(PLAYER_SELF,nil,0,LOCATION_DECK,0,2))
 end
 scard.duel_masters_card=true

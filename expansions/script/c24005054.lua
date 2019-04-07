@@ -4,9 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--search (to hand)
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,dm.SendtoHandOperation(PLAYER_SELF,scard.thfilter,LOCATION_DECK,0,0,1,true))
+	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.thop)
 end
 scard.duel_masters_card=true
-function scard.thfilter(c)
-	return c:DMIsRace(DM_RACE_GIANT_INSECT) and c:IsAbleToHand()
-end
+scard.thop=dm.SendtoHandOperation(PLAYER_SELF,Card.DMIsRace,LOCATION_DECK,0,0,1,true,DM_RACE_GIANT_INSECT)

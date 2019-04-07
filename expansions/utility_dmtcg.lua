@@ -535,6 +535,16 @@ function Duel.ChangePosition(targets,pos)
 	end
 	return duel_change_position(targets,pos)
 end
+--show a player a card
+--Note: Added parameter turn_faceup to keep a shield face up
+local duel_confirm_cards=Duel.ConfirmCards
+function Duel.ConfirmCards(player,targets,turn_faceup)
+	if turn_faceup then
+		Duel.ChangePosition(targets,POS_FACEUP)
+	else
+		return duel_confirm_cards(player,targets,turn_faceup)
+	end
+end
 --draw equal to or less than a number of cards
 local duel_draw=Duel.Draw
 function Duel.Draw(player,count,reason)
@@ -575,6 +585,7 @@ function Duel.DiscardHand(player,f,min,max,reason,ex,...)
 	else return Duel.Remove(g,POS_FACEUP,reason+REASON_DISCARD) end
 end
 --select a card
+--Note: Shields will be selected at random for abilities that select either player's shields
 local duel_select_matching_card=Duel.SelectMatchingCard
 function Duel.SelectMatchingCard(sel_player,f,player,s,o,min,max,ex,...)
 	if sel_player==player and s==DM_LOCATION_SHIELD then
@@ -589,6 +600,7 @@ function Duel.SelectMatchingCard(sel_player,f,player,s,o,min,max,ex,...)
 	end
 end
 --target a card
+--Note: Shields will be selected at random for abilities that select either player's shields
 local duel_select_target=Duel.SelectTarget
 function Duel.SelectTarget(sel_player,f,player,s,o,min,max,ex,...)
 	if sel_player==player and s==DM_LOCATION_SHIELD then
@@ -1852,7 +1864,7 @@ function Auxiliary.EnableSilentSkill(c,desc_id,targ_func,op_func,prop)
 end
 function Auxiliary.SilentSkillCost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
-	e:GetHandler():RegisterFlagEffect(DM_EFFECT_SILENT_SKILL,RESET_EVENT+RESETS_STANDARD+DM_EVENT_UNTAP_STEP,0,1)
+	e:GetHandler():RegisterFlagEffect(DM_EFFECT_SILENT_SKILL,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_DRAW,0,1)
 end
 --"RACE Hunter (This creature wins all battles against RACE.)"
 --e.g. "Pearl Carras, Barrier Guardian" (Game Original)
@@ -2470,7 +2482,7 @@ function Auxiliary.SelfTapUntapOperation(pos,ram)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local c=e:GetHandler()
 				if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
-				local ct=math.random(4) --either 2 or 3: 50% chance to tap/untap
+				local ct=math.random(4) --generate either 2 or 3 for 50% chance
 				if ram and ct==2 then
 					Duel.ChangePosition(c,pos)
 				end
@@ -2605,7 +2617,7 @@ function Auxiliary.SelfDestroyOperation(ram)
 				local c=e:GetHandler()
 				if Duel.GetAttacker()==c then Duel.ChangePosition(c,POS_FACEUP_TAPPED) end --fix attack cost position
 				if not c:IsRelateToEffect(e) then return end
-				local ct=math.random(4) --either 2 or 3: 50% chance to destroy
+				local ct=math.random(4) --generate either 2 or 3 for 50% chance
 				if ram and ct~=2 then return end
 				Duel.Destroy(c,REASON_EFFECT)
 			end
@@ -2840,23 +2852,21 @@ function Auxiliary.ConfirmOperation(p,f,s,o,min,max,ex,...)
 				if min and max then
 					Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_CONFIRM)
 					local sg=g:Select(player,min,max,ex,table.unpack(funs))
-					if s==DM_LOCATION_SHIELD or o==DM_LOCATION_SHIELD then Duel.HintSelection(sg) end
+					local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BATTLE+DM_LOCATION_SHIELD)
+					Duel.HintSelection(hg)
 					Duel.ConfirmCards(player,sg)
 				else
 					Duel.ConfirmCards(player,g)
 				end
 			end
 end
---operation function for abilities that target cards that are not public knowledge that let a player look at them
+--operation function for abilities that target cards that are not public knowledge to let a player look at them
 function Auxiliary.TargetConfirmOperation(turn_faceup)
 	--turn_faceup: true to turn a shield face up
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
-				if g:GetCount()==0 then return end
-				if turn_faceup then
-					Duel.ChangePosition(g,POS_FACEUP)
-				else
-					Duel.ConfirmCards(tp,g)
+				if g:GetCount()>0 then
+					Duel.ConfirmCards(tp,g,turn_faceup)
 				end
 			end
 end
@@ -2883,7 +2893,8 @@ function Auxiliary.DestroyOperation(p,f,s,o,min,max,ram,ex,...)
 						Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_DESTROY)
 						sg=g:Select(player,min,max,ex,table.unpack(funs))
 					end
-					if s==DM_LOCATION_BATTLE or o==DM_LOCATION_BATTLE then Duel.HintSelection(sg) end
+					local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BATTLE)
+					Duel.HintSelection(hg)
 					Duel.Destroy(sg,REASON_EFFECT)
 				else
 					Duel.Destroy(g,REASON_EFFECT)
@@ -2994,24 +3005,16 @@ function Auxiliary.SendtoBattleOperation(p,f,s,o,min,max,pos,ex,...)
 				if max>=0 and ft>max then ft=max end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(Auxiliary.SendtoBattleFilter,tp,s,o,ex,e,tp,f,table.unpack(funs))
-				if s==LOCATION_DECK or o==LOCATION_DECK then
-					local dg=Duel.GetFieldGroup(tp,s,o)
-					Duel.ConfirmCards(player,dg)
-				end
 				if g:GetCount()>0 then
 					if min and max then
 						Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOBATTLE)
 						local sg=g:Select(player,min,ft,ex,table.unpack(funs))
-						if sg:GetCount()==0 and s==LOCATION_DECK then Duel.ShuffleDeck(player) end
-						if sg:GetCount()==0 and o==LOCATION_DECK then Duel.ShuffleDeck(1-player) end
 						Duel.SendtoBattle(sg,0,player,player,false,false,pos)
 					else
 						Duel.SendtoBattle(g,0,player,player,false,false,pos)
 					end
 				else
 					Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
-					if s==LOCATION_DECK then Duel.ShuffleDeck(player) end
-					if o==LOCATION_DECK then Duel.ShuffleDeck(1-player) end
 				end
 			end
 end
@@ -3057,27 +3060,18 @@ function Auxiliary.SendtoGraveOperation(p,f,s,o,min,max,ex,...)
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(aux.AND(Card.DMIsAbleToGrave,f),tp,s,o,ex,table.unpack(funs))
-				if s==LOCATION_DECK or o==LOCATION_DECK then
-					local dg=Duel.GetFieldGroup(tp,s,o)
-					Duel.ConfirmCards(player,dg)
-				end
 				if g:GetCount()>0 then
 					if min and max then
 						Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOGRAVE)
 						local sg=g:Select(player,min,max,ex,table.unpack(funs))
-						if sg:GetCount()==0 and s==LOCATION_DECK then Duel.ShuffleDeck(player) end
-						if sg:GetCount()==0 and o==LOCATION_DECK then Duel.ShuffleDeck(1-player) end
-						if s==DM_LOCATION_BATTLE or o==DM_LOCATION_BATTLE or s==DM_LOCATION_SHIELD or o==DM_LOCATION_SHIELD then
-							Duel.HintSelection(sg)
-						end
+						local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BATTLE+DM_LOCATION_SHIELD)
+						Duel.HintSelection(hg)
 						Duel.DMSendtoGrave(sg,REASON_EFFECT)
 					else
 						Duel.DMSendtoGrave(g,REASON_EFFECT)
 					end
 				else
 					Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
-					if s==LOCATION_DECK then Duel.ShuffleDeck(player) end
-					if o==LOCATION_DECK then Duel.ShuffleDeck(1-player) end
 				end
 			end
 end
@@ -3102,20 +3096,13 @@ function Auxiliary.SendtoHandOperation(p,f,s,o,min,max,conf,ex,...)
 				local desc=DM_HINTMSG_RTOHAND
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToHand,f),tp,s,o,ex,table.unpack(funs))
-				if s==LOCATION_DECK or o==LOCATION_DECK then
-					local dg=Duel.GetFieldGroup(tp,s,o)
-					Duel.ConfirmCards(player,dg)
-				end
 				if g:GetCount()>0 then
 					if min and max then
 						if s==LOCATION_DECK or o==LOCATION_DECK then desc=DM_HINTMSG_ATOHAND end
 						Duel.Hint(HINT_SELECTMSG,player,desc)
 						local sg=g:Select(player,min,max,ex,table.unpack(funs))
-						if sg:GetCount()==0 and s==LOCATION_DECK then Duel.ShuffleDeck(player) end
-						if sg:GetCount()==0 and o==LOCATION_DECK then Duel.ShuffleDeck(1-player) end
-						if s==DM_LOCATION_BATTLE or o==DM_LOCATION_BATTLE or s==DM_LOCATION_SHIELD or o==DM_LOCATION_SHIELD then
-							Duel.HintSelection(sg)
-						end
+						local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BATTLE+DM_LOCATION_SHIELD)
+						Duel.HintSelection(hg)
 						Duel.SendtoHand(sg,PLAYER_OWNER,REASON_EFFECT)
 					else
 						Duel.SendtoHand(g,PLAYER_OWNER,REASON_EFFECT)
@@ -3128,8 +3115,6 @@ function Auxiliary.SendtoHandOperation(p,f,s,o,min,max,conf,ex,...)
 					if (conf and og2:GetCount()>0 and og3:GetCount()>0) or og4:GetCount()>0 then Duel.ConfirmCards(tp,og2) end
 				else
 					Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
-					if s==LOCATION_DECK then Duel.ShuffleDeck(player) end
-					if o==LOCATION_DECK then Duel.ShuffleDeck(1-player) end
 				end
 			end
 end
@@ -3144,7 +3129,7 @@ function Auxiliary.TargetSendtoHandOperation(conf)
 				local og1=Duel.GetOperatedGroup():Filter(Card.IsControler,nil,tp)
 				local og2=Duel.GetOperatedGroup():Filter(Card.IsControler,nil,1-tp)
 				local og3=Duel.GetOperatedGroup():Filter(Card.IsPreviousLocation,nil,LOCATION_DECK)
-				local og4=Duel.GetOperatedGroup():Filter(Card.IsPreviousLocation,nil,DM_LOCATION_MANA+DM_LOCATION_GRAVE)
+				local og4=Duel.GetOperatedGroup():Filter(Card.IsPreviousLocation,nil,LOCATION_GRAVE+LOCATION_REMOVED)
 				if (conf and og1:GetCount()>0 and og3:GetCount()>0) or og4:GetCount()>0 then Duel.ConfirmCards(1-tp,og1) end
 				if (conf and og2:GetCount()>0 and og3:GetCount()>0) or og4:GetCount()>0 then Duel.ConfirmCards(tp,og2) end
 			end
@@ -3163,27 +3148,18 @@ function Auxiliary.SendtoManaOperation(p,f,s,o,min,max,ex,...)
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToMana,f),tp,s,o,ex,table.unpack(funs))
-				if s==LOCATION_DECK or o==LOCATION_DECK then
-					local dg=Duel.GetFieldGroup(tp,s,o)
-					Duel.ConfirmCards(player,dg)
-				end
 				if g:GetCount()>0 then
 					if min and max then
 						Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOMANA)
 						local sg=g:Select(player,min,max,ex,table.unpack(funs))
-						if sg:GetCount()==0 and s==LOCATION_DECK then Duel.ShuffleDeck(player) end
-						if sg:GetCount()==0 and o==LOCATION_DECK then Duel.ShuffleDeck(1-player) end
-						if s==DM_LOCATION_BATTLE or o==DM_LOCATION_BATTLE or s==DM_LOCATION_SHIELD or o==DM_LOCATION_SHIELD then
-							Duel.HintSelection(sg)
-						end
+						local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BATTLE+DM_LOCATION_SHIELD)
+						Duel.HintSelection(hg)
 						Duel.SendtoMana(sg,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 					else
 						Duel.SendtoMana(g,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 					end
 				else
 					Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
-					if s==LOCATION_DECK then Duel.ShuffleDeck(player) end
-					if o==LOCATION_DECK then Duel.ShuffleDeck(1-player) end
 				end
 			end
 end
@@ -3229,16 +3205,13 @@ function Auxiliary.SendtoShieldOperation(p,f,s,o,min,max,ex,...)
 				local c=e:GetHandler()
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
-				local g=Duel.GetMatchingGroup(f,player,s,o,ex,table.unpack(funs))
-				if s==LOCATION_DECK or o==LOCATION_DECK then
-					local dg=Duel.GetFieldGroup(tp,s,o)
-					Duel.ConfirmCards(player,dg)
-				end
+				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToShield,f),player,s,o,ex,table.unpack(funs))
 				if g:GetCount()>0 then
 					if min and max then
 						Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOSHIELD)
 						local sg=g:Select(player,min,ft,ex,table.unpack(funs))
-						if s==DM_LOCATION_BATTLE or o==DM_LOCATION_BATTLE then Duel.HintSelection(sg) end
+						local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BATTLE)
+						Duel.HintSelection(hg)
 						Duel.SendtoShield(sg,player)
 					else
 						Duel.SendtoShield(g,player)
@@ -3249,8 +3222,6 @@ function Auxiliary.SendtoShieldOperation(p,f,s,o,min,max,ex,...)
 					if og2:GetCount()>0 then Duel.ConfirmCards(tp,og2) end
 				else
 					Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
-					if s==LOCATION_DECK then Duel.ShuffleDeck(player) end
-					if o==LOCATION_DECK then Duel.ShuffleDeck(1-player) end
 				end
 			end
 end
@@ -3339,7 +3310,8 @@ function Auxiliary.TapUntapOperation(p,f,s,o,min,max,pos,ram,ex,...)
 						Duel.Hint(HINT_SELECTMSG,player,desc)
 						sg=g:Select(player,min,max,ex,table.unpack(funs))
 					end
-					if s==DM_LOCATION_BATTLE or o==DM_LOCATION_BATTLE then Duel.HintSelection(sg) end
+					local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BATTLE)
+					Duel.HintSelection(hg)
 					Duel.ChangePosition(sg,pos)
 				else
 					Duel.ChangePosition(g,pos)

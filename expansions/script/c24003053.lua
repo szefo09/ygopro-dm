@@ -11,5 +11,5 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.retfilter(c)
-	return c:IsCreature() and c:IsManaCostAbove(6) and c:IsAbleToHand()
+	return c:IsCreature() and c:IsManaCostAbove(6)
 end

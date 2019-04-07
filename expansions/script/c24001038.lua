@@ -8,5 +8,5 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.retfilter(c)
-	return c:IsFaceup() and c:IsPowerBelow(2000) and c:IsAbleToHand()
+	return c:IsFaceup() and c:IsPowerBelow(2000)
 end

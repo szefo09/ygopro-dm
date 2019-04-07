@@ -11,7 +11,4 @@ function scard.initial_effect(c)
 	dm.EnableCannotAttackPlayer(c)
 end
 scard.duel_masters_card=true
-function scard.retfilter(c)
-	return c:IsSpell() and c:IsAbleToHand()
-end
-scard.retop=dm.SendtoHandOperation(PLAYER_SELF,dm.ManaZoneFilter(scard.retfilter),DM_LOCATION_MANA,0,1)
+scard.retop=dm.SendtoHandOperation(PLAYER_SELF,dm.ManaZoneFilter(Card.IsSpell),DM_LOCATION_MANA,0,1)

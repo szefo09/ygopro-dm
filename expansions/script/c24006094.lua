@@ -7,8 +7,5 @@ function scard.initial_effect(c)
 	dm.EnableTapAbility(c,0,scard.thtg,scard.thop)
 end
 scard.duel_masters_card=true
-function scard.thfilter(c)
-	return c:IsCreature() and c:IsAbleToHand()
-end
-scard.thtg=dm.CheckCardFunction(scard.thfilter,LOCATION_DECK,0)
-scard.thop=dm.SendtoHandOperation(PLAYER_SELF,scard.thfilter,LOCATION_DECK,0,0,1,true)
+scard.thtg=dm.CheckDeckFunction(PLAYER_SELF)
+scard.thop=dm.SendtoHandOperation(PLAYER_SELF,Card.IsCreature,LOCATION_DECK,0,0,1,true)
