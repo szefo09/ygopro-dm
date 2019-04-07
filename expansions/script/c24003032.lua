@@ -1,5 +1,4 @@
 --Snake Attack
---Not fully implemented: YGOPro allows players to view their face-down cards
 local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
@@ -20,7 +19,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 		end
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOGRAVE)
-	local g2=Duel.SelectMatchingShieldCard(tp,scard.tgfilter,tp,1,1,nil,e)
+	local g2=Duel.SelectMatchingCard(tp,dm.ShieldZoneFilter(scard.tgfilter),tp,DM_LOCATION_SHIELD,0,1,1,nil,e)
 	if g2:GetCount()==0 then return end
 	Duel.SetTargetCard(g2)
 	Duel.DMSendtoGrave(g2,REASON_EFFECT)

@@ -1,5 +1,4 @@
 --Ghastly Drain
---Not fully implemented: YGOPro allows players to view their face-down cards
 local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
@@ -16,9 +15,6 @@ function scard.thtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return true end
 	local ct=Duel.GetMatchingGroupCount(dm.ShieldZoneFilter(scard.thfilter),tp,DM_LOCATION_SHIELD,0,nil,e)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_ATOHAND)
-	local g=Duel.SelectMatchingShieldCard(tp,scard.thfilter,tp,0,ct,nil,e)
-	if g:GetCount()>0 then
-		Duel.SetTargetCard(g)
-	end
+	Duel.SelectTarget(tp,dm.ShieldZoneFilter(Card.IsAbleToHand),tp,DM_LOCATION_SHIELD,0,0,ct,nil)
 end
 scard.thop=dm.TargetSendtoHandOperation()
