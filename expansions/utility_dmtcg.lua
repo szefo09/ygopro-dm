@@ -397,20 +397,60 @@ Card.GetStackCount=Card.GetOverlayCount
 --select a specified card from a group
 local group_filter_select=Group.FilterSelect
 function Group.FilterSelect(g,player,f,min,max,ex,...)
-	if not g:IsExists(f,1,ex,...) then Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS) end
-	return group_filter_select(g,player,f,min,max,ex,...)
+	--Note: Remove this when forbidding players to look at their face-down cards is implemented in YGOPro
+	local sg1=g:Filter(Auxiliary.ShieldZoneFilter(f),ex,...)
+	local sg2=Group.CreateGroup()
+	for c in aux.Next(sg1) do
+		if c:IsControler(player) then sg2:AddCard(c) end
+	end
+	if sg2:GetCount()>0 then
+		return sg2:RandomSelect(player,min,max)
+	else
+		if not g:IsExists(f,1,ex,...) then
+			Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
+		end
+		return group_filter_select(g,player,f,min,max,ex,...)
+	end
 end
 --select a card from a group
 local group_select=Group.Select
 function Group.Select(g,player,min,max,ex)
-	if g:GetCount()==0 then Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS) end
-	return group_select(g,player,min,max,ex)
+	--Note: Remove this when forbidding players to look at their face-down cards is implemented in YGOPro
+	local sg1=g:Filter(Auxiliary.ShieldZoneFilter(),ex)
+	local sg2=Group.CreateGroup()
+	for c in aux.Next(sg1) do
+		if c:IsControler(player) then sg2:AddCard(c) end
+	end
+	if sg2:GetCount()>0 then
+		return sg2:RandomSelect(player,min,max)
+	else
+		if g:GetCount()==0 then
+			Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
+		end
+		return group_select(g,player,min,max,ex)
+	end
 end
 --select a number of cards from a group at random
+--Note: Remove max_count when forbidding players to look at their face-down cards is implemented in YGOPro
 local group_random_select=Group.RandomSelect
-function Group.RandomSelect(g,player,count)
-	if g:GetCount()==0 then Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS) end
-	return group_random_select(g,player,count)
+function Group.RandomSelect(g,player,count,max_count)
+	local ct=g:GetCount()
+	local max_count=max_count or count
+	if ct>0 then
+		if max_count>count then
+			if count==0 and not Duel.SelectYesNo(player,DM_QHINTMSG_CHOOSE) then
+				return group_random_select(g,player,count,max_count)
+			end
+			if ct>max_count then ct=max_count end
+			local t={}
+			for i=1,ct do t[i]=i end
+			Duel.Hint(HINT_SELECTMSG,player,DM_QHINTMSG_NUMBERCHOOSE)
+			count=Duel.AnnounceNumber(player,table.unpack(t))
+		end
+	else
+		Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
+	end
+	return group_random_select(g,player,count,max_count)
 end
 --========== Duel ==========
 --Overwritten Duel functions
@@ -537,65 +577,34 @@ end
 --select a card
 local duel_select_matching_card=Duel.SelectMatchingCard
 function Duel.SelectMatchingCard(sel_player,f,player,s,o,min,max,ex,...)
-	if not Duel.IsExistingMatchingCard(f,player,s,o,1,ex,...) then
-		Duel.Hint(HINT_MESSAGE,sel_player,DM_HINTMSG_NOTARGETS)
+	if sel_player==player and s==DM_LOCATION_SHIELD then
+		--Note: Remove this when forbidding players to look at their face-down cards is implemented in YGOPro
+		local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(f),player,s,o,ex,...)
+		return g:RandomSelect(sel_player,min,max)
+	else
+		if not Duel.IsExistingMatchingCard(f,player,s,o,1,ex,...) then
+			Duel.Hint(HINT_MESSAGE,sel_player,DM_HINTMSG_NOTARGETS)
+		end
+		return duel_select_matching_card(sel_player,f,player,s,o,min,max,ex,...)
 	end
-	return duel_select_matching_card(sel_player,f,player,s,o,min,max,ex,...)
 end
 --target a card
 local duel_select_target=Duel.SelectTarget
 function Duel.SelectTarget(sel_player,f,player,s,o,min,max,ex,...)
-	if not Duel.IsExistingTarget(f,player,s,o,1,ex,...) then
-		Duel.Hint(HINT_MESSAGE,sel_player,DM_HINTMSG_NOTARGETS)
+	if sel_player==player and s==DM_LOCATION_SHIELD then
+		--Note: Remove this when forbidding players to look at their face-down cards is implemented in YGOPro
+		local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(f),player,s,o,ex,...)
+		local sg=g:RandomSelect(sel_player,min,max)
+		Duel.SetTargetCard(sg)
+		return sg
+	else
+		if not Duel.IsExistingTarget(f,player,s,o,1,ex,...) then
+			Duel.Hint(HINT_MESSAGE,sel_player,DM_HINTMSG_NOTARGETS)
+		end
+		return duel_select_target(sel_player,f,player,s,o,min,max,ex,...)
 	end
-	return duel_select_target(sel_player,f,player,s,o,min,max,ex,...)
 end
 --New Duel functions
---select a shield (changed to random because face-down cards can be viewed)
---Note: Remove this function when YGOPro forbids players to look at their face-down cards
-function Duel.SelectMatchingShieldCard(sel_player,f,target_player,min,max,ex,...)
-	if not Duel.IsExistingMatchingCard(Auxiliary.ShieldZoneFilter(f),target_player,DM_LOCATION_SHIELD,0,1,ex,...) then
-		Duel.Hint(HINT_MESSAGE,sel_player,DM_HINTMSG_NOTARGETS)
-	end
-	local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(f),target_player,DM_LOCATION_SHIELD,0,ex,...)
-	local ct=g:GetCount()
-	local sg1=Group.CreateGroup()
-	if ct>0 then
-		if min==0 and max>0 and Duel.SelectYesNo(sel_player,DM_QHINTMSG_CHOOSE) then
-			if ct>max then ct=max end
-			local t={}
-			for i=1,ct do t[i]=i end
-			Duel.Hint(HINT_SELECTMSG,sel_player,DM_QHINTMSG_NUMBERCHOOSE)
-			min=Duel.AnnounceNumber(sel_player,table.unpack(t))
-		end
-		local sg2=g:RandomSelect(sel_player,min)
-		sg1:Merge(sg2)
-	end
-	return sg1
-end
---target a shield (changed to random because face-down cards can be viewed)
---Note: Remove this function when YGOPro forbids players to look at their face-down cards
-function Duel.SelectShieldTarget(sel_player,f,target_player,min,max,ex,e,...)
-	if not Duel.IsExistingTarget(Auxiliary.ShieldZoneFilter(f),target_player,DM_LOCATION_SHIELD,0,1,ex,...) then
-		Duel.Hint(HINT_MESSAGE,sel_player,DM_HINTMSG_NOTARGETS)
-	end
-	local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(Card.IsCanBeEffectTarget),target_player,DM_LOCATION_SHIELD,0,ex,e,f,...)
-	local ct=g:GetCount()
-	local sg1=Group.CreateGroup()
-	if ct>0 then
-		if min==0 and max>0 and Duel.SelectYesNo(sel_player,DM_QHINTMSG_CHOOSE) then
-			if ct>max then ct=max end
-			local t={}
-			for i=1,ct do t[i]=i end
-			Duel.Hint(HINT_SELECTMSG,sel_player,DM_QHINTMSG_NUMBERCHOOSE)
-			min=Duel.AnnounceNumber(sel_player,table.unpack(t))
-		end
-		local sg2=g:RandomSelect(sel_player,min)
-		sg1:Merge(sg2)
-		Duel.SetTargetCard(sg1)
-	end
-	return sg1
-end
 --tap a card in the mana zone to summon a creature or to cast a spell
 function Duel.PayManaCost(targets)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
@@ -691,7 +700,7 @@ end
 --reserved
 --[[
 function Duel.SendDecktoptoManaUpTo(player,count,pos,reason)
-local g=Duel.GetDecktopGroup(player,count)
+	local g=Duel.GetDecktopGroup(player,count)
 	local ct=0
 	repeat
 		Duel.DisableShuffleCheck()
@@ -799,8 +808,9 @@ end
 function Duel.RandomDiscardHand(player,count,reason,ex)
 	local reason=reason or REASON_EFFECT
 	local g=Duel.GetFieldGroup(player,LOCATION_HAND,0)
-	if type(ex)=="Card" then g:RemoveCard(ex)
-	elseif type(ex)=="Group" then g:Sub(ex) end
+	local extype=type(ex)
+	if extype=="Card" then g:RemoveCard(ex)
+	elseif extype=="Group" then g:Sub(ex) end
 	local sg=g:RandomSelect(player,count)
 	local rep_count=0
 	for c in aux.Next(sg) do
@@ -2979,7 +2989,7 @@ function Auxiliary.SendtoBattleOperation(p,f,s,o,min,max,pos,ex,...)
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(Auxiliary.SendtoBattleFilter,tp,s,o,ex,e,tp,f,table.unpack(funs))
 				if s==LOCATION_DECK or o==LOCATION_DECK then
-					local dg=Duel.GetFieldGroup(player,s,o)
+					local dg=Duel.GetFieldGroup(tp,s,o)
 					Duel.ConfirmCards(player,dg)
 				end
 				if g:GetCount()>0 then
@@ -2999,57 +3009,7 @@ function Auxiliary.SendtoBattleOperation(p,f,s,o,min,max,pos,ex,...)
 				end
 			end
 end
---target and operation functions for abilities that target creatures to put into the battle zone
-function Auxiliary.TargetSendtoBattleTarget(p,f,s,o,min,max,ex,...)
-	local funs={...}
-	return	function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-				local player=nil
-				if p==PLAYER_SELF or p==tp then player=tp
-				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
-				local f=f or aux.TRUE
-				local max=max or min
-				local location=s
-				local controler=tp
-				if s==0 and o~=0 then location=o end
-				if location==o then controler=1-tp end
-				if chkc then
-					if s==o then
-						return chkc:IsLocation(location) and Auxiliary.SendtoBattleFilter(chkc,e,tp,f,table.unpack(funs))
-					elseif type(ex)=="Card" then
-						return chkc:IsLocation(location) and chkc:IsControler(controler)
-							and Auxiliary.SendtoBattleFilter(chkc,e,tp,f,table.unpack(funs)) and chkc~=ex
-					else
-						return chkc:IsLocation(location) and chkc:IsControler(controler)
-							and Auxiliary.SendtoBattleFilter(chkc,e,tp,f,table.unpack(funs))
-					end
-				end
-				if chk==0 then
-					if e:IsHasType(EFFECT_TYPE_TRIGGER_F) or e:IsHasType(EFFECT_TYPE_QUICK_F) or e:GetHandler():IsSpell() then
-						return true
-					end
-					if s==LOCATION_DECK or o==LOCATION_DECK then
-						return Duel.GetFieldGroupCount(tp,s,o)>0
-					else
-						return Duel.IsExistingTarget(Auxiliary.SendtoBattleFilter,tp,s,o,1,ex,e,tp,f,table.unpack(funs))
-					end
-				end
-				if s==LOCATION_DECK or o==LOCATION_DECK then
-					local g=Duel.GetFieldGroup(player,s,o)
-					Duel.ConfirmCards(player,g)
-					if g:IsExists(f,1,ex,table.unpack(funs)) then
-						Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOBATTLE)
-						local sg=Duel.SelectTarget(player,f,tp,s,o,min,max,ex,table.unpack(funs))
-						if sg:GetCount()==0 then return Duel.ShuffleDeck(player) end
-					else
-						Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
-						Duel.ShuffleDeck(player)
-					end
-				else
-					Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOBATTLE)
-					Duel.SelectTarget(player,f,tp,s,o,min,max,ex,table.unpack(funs))
-				end
-			end
-end
+--operation function for abilities that target creatures to put into the battle zone
 function Auxiliary.TargetSendtoBattleOperation(sump,tgp,pos)
 	--sump: PLAYER_SELF/tp for you to put a creature into the battle zone or PLAYER_OPPO/1-tp for your opponent to
 	--tgp: PLAYER_SELF/tp to put a creature into your battle zone or PLAYER_OPPO/1-tp to put into your opponent's
@@ -3058,8 +3018,8 @@ function Auxiliary.TargetSendtoBattleOperation(sump,tgp,pos)
 				if sump==PLAYER_SELF or sump==tp then sumplayer=tp
 				elseif sump==PLAYER_OPPO or sump==1-tp then sumplayer=1-tp end
 				local target_player=nil
-				if tgp==PLAYER_SELF or tgp==tp then sumplayer=tp
-				elseif tgp==PLAYER_OPPO or tgp==1-tp then sumplayer=1-tp end
+				if tgp==PLAYER_SELF or tgp==tp then target_player=tp
+				elseif tgp==PLAYER_OPPO or tgp==1-tp then target_player=1-tp end
 				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
 				if g:GetCount()>0 then
 					Duel.SendtoBattle(g,0,sumplayer,target_player,false,false,pos)
@@ -3086,14 +3046,13 @@ function Auxiliary.SendtoGraveOperation(p,f,s,o,min,max,ex,...)
 				local player=nil
 				if p==PLAYER_SELF or p==tp then player=tp
 				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
-				local f=f or aux.TRUE
 				local max=max or min
 				local c=e:GetHandler()
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(aux.AND(Card.DMIsAbleToGrave,f),tp,s,o,ex,table.unpack(funs))
 				if s==LOCATION_DECK or o==LOCATION_DECK then
-					local dg=Duel.GetFieldGroup(player,s,o)
+					local dg=Duel.GetFieldGroup(tp,s,o)
 					Duel.ConfirmCards(player,dg)
 				end
 				if g:GetCount()>0 then
@@ -3133,13 +3092,12 @@ function Auxiliary.SendtoHandOperation(p,f,s,o,min,max,conf,ex,...)
 				local player=nil
 				if p==PLAYER_SELF or p==tp then player=tp
 				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
-				local f=f or aux.TRUE
 				local max=max or min
 				local desc=DM_HINTMSG_RTOHAND
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToHand,f),tp,s,o,ex,table.unpack(funs))
 				if s==LOCATION_DECK or o==LOCATION_DECK then
-					local dg=Duel.GetFieldGroup(player,s,o)
+					local dg=Duel.GetFieldGroup(tp,s,o)
 					Duel.ConfirmCards(player,dg)
 				end
 				if g:GetCount()>0 then
@@ -3194,14 +3152,13 @@ function Auxiliary.SendtoManaOperation(p,f,s,o,min,max,ex,...)
 				local player=nil
 				if p==PLAYER_SELF or p==tp then player=tp
 				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
-				local f=f or aux.TRUE
 				local max=max or min
 				local c=e:GetHandler()
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToMana,f),tp,s,o,ex,table.unpack(funs))
 				if s==LOCATION_DECK or o==LOCATION_DECK then
-					local dg=Duel.GetFieldGroup(player,s,o)
+					local dg=Duel.GetFieldGroup(tp,s,o)
 					Duel.ConfirmCards(player,dg)
 				end
 				if g:GetCount()>0 then
@@ -3268,7 +3225,7 @@ function Auxiliary.SendtoShieldOperation(p,f,s,o,min,max,ex,...)
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(f,player,s,o,ex,table.unpack(funs))
 				if s==LOCATION_DECK or o==LOCATION_DECK then
-					local dg=Duel.GetFieldGroup(player,s,o)
+					local dg=Duel.GetFieldGroup(tp,s,o)
 					Duel.ConfirmCards(player,dg)
 				end
 				if g:GetCount()>0 then
@@ -3541,84 +3498,33 @@ function Auxiliary.TargetCardFunction(p,f,s,o,min,max,desc,ex,...)
 				local max=max or min
 				local desc=desc or DM_HINTMSG_TARGET
 				local c=e:GetHandler()
-				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
-				local location=s
-				local controler=tp
-				if s==0 and o~=0 then location=o end
-				if location==o then controler=1-tp end
+				if c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
+				local extype=type(ex)
+				local exg=Group.CreateGroup()
+				if extype=="Card" then exg:AddCard(ex)
+				elseif extype=="Group" then exg:Merge(ex)
+				elseif extype=="function" then
+					exg=ex(e,tp,eg,ep,ev,re,r,rp)
+				end
 				if chkc then
-					if s==o then
-						return chkc:IsLocation(location) and f(chkc)
-					elseif type(ex)=="Card" then
-						return chkc:IsLocation(location) and chkc:IsControler(controler) and f(chkc) and chkc~=ex
-					else
-						return chkc:IsLocation(location) and chkc:IsControler(controler) and f(chkc)
-					end
+					if not chkc:IsLocation(location) then return false end
+					if s>0 and o==0 and chkc:IsControler(tp) then return false end
+					if o>0 and s==0 and chkc:IsControler(1-tp) then return false end
+					if exg:GetCount()>0 and exg:IsContains(chkc) then return false end
+					return true
 				end
 				if chk==0 then
 					if e:IsHasType(EFFECT_TYPE_TRIGGER_F) or e:IsHasType(EFFECT_TYPE_QUICK_F) or c:IsSpell() then
 						return true
-					elseif s==LOCATION_DECK or o==LOCATION_DECK then
-						return Duel.GetFieldGroupCount(tp,s,o)>0
 					else
 						return Duel.IsExistingTarget(f,tp,s,o,1,ex,table.unpack(funs))
 					end
 				end
-				if s==LOCATION_DECK or o==LOCATION_DECK then
-					local g1=Duel.GetFieldGroup(player,s,o)
-					Duel.ConfirmCards(player,g1)
-					if Duel.IsExistingTarget(f,tp,s,o,1,ex,table.unpack(funs)) then
-						Duel.Hint(HINT_SELECTMSG,player,desc)
-						local g2=Duel.SelectTarget(player,f,tp,s,o,min,max,ex,table.unpack(funs))
-						if g2:GetCount()==0 then return Duel.ShuffleDeck(player) end
-					else
-						Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
-						Duel.ShuffleDeck(player)
-					end
-				else
-					Duel.Hint(HINT_SELECTMSG,player,desc)
-					Duel.SelectTarget(player,f,tp,s,o,min,max,ex,table.unpack(funs))
-				end
+				Duel.Hint(HINT_SELECTMSG,player,desc)
+				Duel.SelectTarget(player,f,tp,s,o,min,max,ex,table.unpack(funs))
 			end
 end
 Auxiliary.targtg=Auxiliary.TargetCardFunction
---target function for abilities that target shields
-function Auxiliary.TargetShieldFunction(p,f,s,o,min,max,desc,ex,...)
-	--f: include dm.ShieldZoneFilter
-	--s,o: DM_LOCATION_SHIELD
-	local funs={...}
-	return	function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-				local sel_player=nil
-				if p==PLAYER_SELF or p==tp then sel_player=tp
-				elseif p==PLAYER_OPPO or p==1-tp then sel_player=1-tp end
-				local max=max or min
-				local desc=desc or DM_HINTMSG_TARGET
-				local c=e:GetHandler()
-				local location=s
-				local controler=tp
-				if s==0 and o~=0 then location=o end
-				if location==o then controler=1-tp end
-				if chkc then
-					if s==o then
-						return chkc:IsLocation(location) and f(chkc)
-					elseif type(ex)=="Card" then
-						return chkc:IsLocation(location) and chkc:IsControler(controler) and f(chkc) and chkc~=ex
-					else
-						return chkc:IsLocation(location) and chkc:IsControler(controler) and f(chkc)
-					end
-				end
-				if chk==0 then
-					if e:IsHasType(EFFECT_TYPE_TRIGGER_F) or e:IsHasType(EFFECT_TYPE_QUICK_F) or c:IsSpell() then
-						return true
-					else
-						return Duel.IsExistingTarget(f,tp,s,o,1,ex,table.unpack(funs))
-					end
-				end
-				Duel.Hint(HINT_SELECTMSG,sel_player,desc)
-				Duel.SelectShieldTarget(sel_player,f,controler,min,max,ex,e,table.unpack(funs))
-			end
-end
-Auxiliary.targtg2=Auxiliary.TargetShieldFunction
 --target function to check if a player has cards in their deck
 function Auxiliary.CheckDeckFunction(p)
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
