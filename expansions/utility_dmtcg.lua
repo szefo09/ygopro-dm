@@ -3431,8 +3431,8 @@ function Auxiliary.TargetCardFunction(p,f,s,o,min,max,desc,ex,...)
 				if chkc then
 					if min>1 then return false end
 					if not chkc:IsLocation(s+o) then return false end
-					if s>0 and o==0 and chkc:IsControler(tp) then return false end
-					if o>0 and s==0 and chkc:IsControler(1-tp) then return false end
+					if s==0 and o>0 and chkc:IsControler(tp) then return false end
+					if o==0 and s>0 and chkc:IsControler(1-tp) then return false end
 					if f and not f(chkc,e,tp,eg,ep,ev,re,r,rp) then return false end
 					if exg:GetCount()>0 and exg:IsContains(chkc) then return false end
 					return true
