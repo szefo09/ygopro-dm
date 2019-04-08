@@ -453,6 +453,13 @@ function Group.RandomSelect(g,player,count,max_count)
 	return group_random_select(g,player,count,max_count)
 end
 --========== Duel ==========
+--Fix missing Duel function errors
+local duel_attack_cost_paid=Duel.AttackCostPaid
+function Duel.AttackCostPaid()
+	if duel_attack_cost_paid then
+		return duel_attack_cost_paid()
+	else return nil end
+end
 --Overwritten Duel functions
 --put a card into a player's hand
 local duel_send_to_hand=Duel.SendtoHand
@@ -2483,9 +2490,8 @@ function Auxiliary.SelfTapUntapOperation(pos,ram)
 				local c=e:GetHandler()
 				if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
 				local ct=math.random(4) --generate either 2 or 3 for 50% chance
-				if ram and ct==2 then
-					Duel.ChangePosition(c,pos)
-				end
+				if ram and ct~=2 then return end
+				Duel.ChangePosition(c,pos)
 			end
 end
 --"This creature can't be blocked."
@@ -2846,7 +2852,9 @@ function Auxiliary.ConfirmOperation(p,f,s,o,min,max,ex,...)
 				if p==PLAYER_SELF or p==tp then player=tp
 				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
 				local max=max or min
-				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
+				local c=e:GetHandler()
+				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
+				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
 				if g:GetCount()==0 then return end
 				if min and max then
@@ -3470,9 +3478,9 @@ Auxiliary.chktg=Auxiliary.CheckCardFunction
 function Auxiliary.TargetCardFunction(p,f,s,o,min,max,desc,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-				local player=nil
-				if p==PLAYER_SELF or p==tp then player=tp
-				elseif p==PLAYER_OPPO or p==1-tp then player=1-tp end
+				local sel_player=nil
+				if p==PLAYER_SELF or p==tp then sel_player=tp
+				elseif p==PLAYER_OPPO or p==1-tp then sel_player=1-tp end
 				local max=max or min
 				local desc=desc or DM_HINTMSG_TARGET
 				local c=e:GetHandler()
@@ -3485,9 +3493,11 @@ function Auxiliary.TargetCardFunction(p,f,s,o,min,max,desc,ex,...)
 					exg=ex(e,tp,eg,ep,ev,re,r,rp)
 				end
 				if chkc then
-					if not chkc:IsLocation(location) then return false end
+					if min>1 then return false end
+					if not chkc:IsLocation(s+o) then return false end
 					if s>0 and o==0 and chkc:IsControler(tp) then return false end
 					if o>0 and s==0 and chkc:IsControler(1-tp) then return false end
+					if f and not f(chkc,e,tp,eg,ep,ev,re,r,rp) then return end
 					if exg:GetCount()>0 and exg:IsContains(chkc) then return false end
 					return true
 				end
@@ -3498,8 +3508,8 @@ function Auxiliary.TargetCardFunction(p,f,s,o,min,max,desc,ex,...)
 						return Duel.IsExistingTarget(f,tp,s,o,1,ex,table.unpack(funs))
 					end
 				end
-				Duel.Hint(HINT_SELECTMSG,player,desc)
-				Duel.SelectTarget(player,f,tp,s,o,min,max,ex,table.unpack(funs))
+				Duel.Hint(HINT_SELECTMSG,sel_player,desc)
+				Duel.SelectTarget(sel_player,f,tp,s,o,min,max,ex,table.unpack(funs))
 			end
 end
 Auxiliary.targtg=Auxiliary.TargetCardFunction
