@@ -52,25 +52,25 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.ShuffleDeck(1-tp)
 	end
 	--check deck size
-	local b1=Duel.GetFieldGroupCount(tp,LOCATION_DECK,0)~=40
-	local b2=Duel.GetFieldGroupCount(1-tp,LOCATION_DECK,0)~=40
+	local b1=Duel.GetFieldGroupCount(tp,LOCATION_DECK,0)<40
+	local b2=Duel.GetFieldGroupCount(1-tp,LOCATION_DECK,0)<40
 	--check for non-duel masters cards
 	local f=function(c)
 		return not c.duel_masters_card
 	end
 	local b3=Duel.GetMatchingGroupCount(f,tp,LOCATION_ALL,0,nil)>0
 	local b4=Duel.GetMatchingGroupCount(f,1-tp,LOCATION_ALL,0,nil)>0
-	-- if b1 then Duel.Hint(HINT_MESSAGE,tp,DM_DECKERROR_DECKCOUNT) end
-	-- if b2 then Duel.Hint(HINT_MESSAGE,1-tp,DM_DECKERROR_DECKCOUNT) end
+	if b1 then Duel.Hint(HINT_MESSAGE,tp,DM_DECKERROR_DECKCOUNT) end
+	if b2 then Duel.Hint(HINT_MESSAGE,1-tp,DM_DECKERROR_DECKCOUNT) end
 	if b3 then Duel.Hint(HINT_MESSAGE,tp,DM_DECKERROR_NONDM) end
 	if b4 then Duel.Hint(HINT_MESSAGE,1-tp,DM_DECKERROR_NONDM) end
-	if (b3 and b4) then
+	if (b1 and b2) or (b3 and b4) then
 		Duel.Win(PLAYER_NONE,DM_WIN_REASON_INVALID)
 		return
-	elseif b3 then
+	elseif b1 or b3 then
 		Duel.Win(1-tp,DM_WIN_REASON_INVALID)
 		return
-	elseif b4 then
+	elseif b2 or b4 then
 		Duel.Win(tp,DM_WIN_REASON_INVALID)
 		return
 	end
