@@ -1312,6 +1312,7 @@ function Auxiliary.AddSpellCastEffect(c,desc_id,targ_func,op_func,prop,cost_func
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
+	--get "shield trigger"
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e2:SetCategory(cate) end
@@ -1585,8 +1586,8 @@ function Auxiliary.AddShieldTriggerCastEffect(c,desc_id,targ_func,op_func,prop,c
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
 	local e2=e1:Clone()
+	e2:SetCode(EVENT_CUSTOM+DM_EVENT_TRIGGER_SHIELD_TRIGGER)
 	e2:SetCondition(con_func)
-	e2:SetCode(EVENT_CUSTOM+DM_EVENT_SHIELD_TO_HAND)
 	c:RegisterEffect(e2)
 	--prevent multiple "shield trigger" abilities from chaining
 	local e3=Effect.CreateEffect(c)
@@ -1600,33 +1601,13 @@ function Auxiliary.AddShieldTriggerCastEffect(c,desc_id,targ_func,op_func,prop,c
 	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e4:SetCode(EVENT_CHAIN_END)
 	if prop then
-		e4:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
+		e4:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY+prop)
 	else
-		e4:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
+		e4:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY)
 	end
 	e4:SetCondition(aux.AND(Auxiliary.ShieldTriggerCondition2,con_func))
 	c:RegisterEffect(e4)
 	e3:SetLabelObject(e4)
-	--temporary workaround for "Wolfis, Blue Divine Dragon"
-	local e5=Effect.CreateEffect(c)
-	e5:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	if cate then
-		e5:SetCategory(DM_CATEGORY_SHIELD_TRIGGER+cate)
-	else
-		e5:SetCategory(DM_CATEGORY_SHIELD_TRIGGER)
-	end
-	e5:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
-	e5:SetCode(EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER)
-	if prop then
-		e5:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
-	else
-		e5:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
-	end
-	e5:SetCondition(aux.AND(Auxiliary.ShieldTriggerCondition,con_func))
-	if cost_func then e5:SetCost(cost_func) end
-	if targ_func then e5:SetTarget(targ_func) end
-	e5:SetOperation(op_func)
-	c:RegisterEffect(e5)
 end
 function Auxiliary.ShieldTriggerOperation(e,tp,eg,ep,ev,re,r,rp)
 	if re:IsHasCategory(DM_CATEGORY_SHIELD_TRIGGER) and re:GetHandler():IsControler(tp) then
@@ -1634,7 +1615,7 @@ function Auxiliary.ShieldTriggerOperation(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function Auxiliary.ShieldTriggerCondition2(e,tp,eg,ep,ev,re,r,rp)
-	return Auxiliary.ShieldTriggerCondition(e,tp,eg,ep,ev,re,r,rp) and e:GetLabel()==1
+	return e:GetLabel()==1
 end
 --"Power attacker +N000 (While attacking, this creature gets +N000 power.)"
 --e.g. "Brawler Zyler" (DM-01 70/110)
@@ -3144,7 +3125,7 @@ function Auxiliary.TargetSendtoHandOperation(conf,use_shield_trigger)
 				for tc in aux.Next(g) do
 					if use_shield_trigger then
 						--raise event for "(You can use the "shield trigger" ability of that shield.)"
-						Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_SHIELD_TO_HAND,e,0,0,0,0)
+						Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_TRIGGER_SHIELD_TRIGGER,e,0,0,0,0)
 					end
 				end
 				local og1=Duel.GetOperatedGroup():Filter(Card.IsControler,nil,tp)
@@ -3229,25 +3210,30 @@ function Auxiliary.SendtoShieldOperation(p,f,s,o,min,max,ex,...)
 					else
 						Duel.SendtoShield(g,player)
 					end
-					local og1=Duel.GetOperatedGroup():Filter(Card.IsControler,nil,tp)
-					local og2=Duel.GetOperatedGroup():Filter(Card.IsControler,nil,1-tp)
-					if og1:GetCount()>0 then Duel.ConfirmCards(1-tp,og1) end
-					if og2:GetCount()>0 then Duel.ConfirmCards(tp,og2) end
+					local og=Duel.GetOperatedGroup()
+					if og:GetCount()==0 then return end
+					for oc in aux.Next(og) do
+						if oc:IsPreviousLocation(LOCATION_GRAVE+LOCATION_REMOVED) then
+							Duel.ConfirmCards(1-oc:GetControler(),oc)
+						end
+					end
 				else
 					Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
 				end
 			end
 end
---operation functions for abilities that target cards to put into the shield zone
---reserved
---[[
+--operation function for abilities that target cards to put into the shield zone
 function Auxiliary.TargetSendtoShieldOperation(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
 	if g:GetCount()==0 then return end
-	Duel.SendtoShield(sg,tp)
-	Duel.ConfirmCards(1-tp,sg)
+	for tc in aux.Next(g) do
+		local p=tc:GetControler()
+		Duel.SendtoShield(tc,p)
+		if tc:IsPreviousLocation(LOCATION_GRAVE+LOCATION_REMOVED) then
+			Duel.ConfirmCards(1-p,tc)
+		end
+	end
 end
-]]
 --operation function for abilities that put cards from the top of a player's deck into the shield zone
 --use Auxiliary.CheckDeckFunction for the target function, if needed
 function Auxiliary.DecktopSendtoShieldOperation(p,ct)
@@ -3535,3 +3521,8 @@ function Auxiliary.ShieldZoneFilter(f)
 end
 Auxiliary.szfilter=Auxiliary.ShieldZoneFilter
 return Auxiliary
+--[[
+	References
+		1. Voltanis the Adjudicator - prevent multiple "shield trigger" abilities from chaining
+		https://github.com/Fluorohydride/ygopro-scripts/blob/236842465886c87775f1f8fad02f512e39b06005/c20951752.lua#L12
+]]

@@ -246,8 +246,8 @@ DM_EVENT_BECOMES_BLOCKED			=CARD_CREEPING_PLAGUE			--When a creature becomes blo
 DM_EVENT_BLOCK						=CARD_SPIRAL_GRASS				--When a creature blocks
 DM_EVENT_ATTACK_PLAYER				=CARD_MARROW_OOZE_THE_TWISTER	--When a creature attacks a player
 DM_EVENT_BREAK_SHIELD				=CARD_BRUTAL_CHARGE				--When a creature finishes attacking the opponent and broke a shield
-DM_EVENT_SHIELD_TO_HAND				=CARD_BENZO_THE_HIDDEN_FURY		--When a shield is put into a player's hand, that player can use its "Shield Trigger" ability
-DM_EVENT_BECOME_SHIELD_TRIGGER		=CARD_WOLFIS_BLUE_DIVINE_DRAGON	--When a shield becomes broken, it may get "Shield Trigger"
+DM_EVENT_TRIGGER_SHIELD_TRIGGER		=CARD_BENZO_THE_HIDDEN_FURY		--Allow a player to use a card's "Shield Trigger" ability without it having being broken as a shield
+DM_EVENT_BECOME_SHIELD_TRIGGER		=CARD_WOLFIS_BLUE_DIVINE_DRAGON	--A card gets "Shield Trigger" (Can be summoned or cast for no cost)
 --Category (ability classification)
 DM_CATEGORY_BLOCKER					=CATEGORY_NEGATE	--"Blocker" ability, needed for unblockable abilities ("Laser Wing" DM-01 11/110)
 DM_CATEGORY_SHIELD_TRIGGER			=CATEGORY_FLIP		--"Shield Trigger" ability, needed for "Emperor Quazla" (DM-08 S2/S5)
