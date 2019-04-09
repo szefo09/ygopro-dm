@@ -579,19 +579,7 @@ function Duel.DiscardHand(player,f,min,max,reason,ex,...)
 	if g:GetCount()==0 then
 		return discard_hand(player,f,min,max,reason,ex,...)
 	end
-	local rep_count=0
-	for c in aux.Next(g) do
-		--check for discard replace abilities
-		local t={c:IsHasEffect(DM_EFFECT_DISCARD_REPLACE)}
-		for _,te in pairs(t) do
-			if te:GetValue()==DM_LOCATION_BATTLE then
-				rep_count=rep_count+Duel.SendtoBattle(c,0,c:GetControler(),c:GetControler(),false,false,POS_FACEUP_UNTAPPED)
-			end
-		end
-	end
-	if rep_count>0 then
-		return 0
-	else return Duel.Remove(g,POS_FACEUP,reason+REASON_DISCARD) end
+	return Duel.Remove(g,POS_FACEUP,reason+REASON_DISCARD)
 end
 --select a card
 --Note: Shields will be selected at random for abilities that select either player's shields
@@ -837,19 +825,7 @@ function Duel.RandomDiscardHand(player,count,reason,ex)
 	if extype=="Card" then g:RemoveCard(ex)
 	elseif extype=="Group" then g:Sub(ex) end
 	local sg=g:RandomSelect(player,count)
-	local rep_count=0
-	for c in aux.Next(sg) do
-		--check for discard replace abilities
-		local t={c:IsHasEffect(DM_EFFECT_DISCARD_REPLACE)}
-		for _,te in pairs(t) do
-			if te:GetValue()==DM_LOCATION_BATTLE then
-				rep_count=rep_count+Duel.SendtoBattle(c,0,c:GetControler(),c:GetControler(),false,false,POS_FACEUP_UNTAPPED)
-			end
-		end
-	end
-	if rep_count>0 then
-		return 0
-	else return Duel.Remove(sg,POS_FACEUP,reason+REASON_DISCARD) end
+	return Duel.Remove(sg,POS_FACEUP,reason+REASON_DISCARD)
 end
 --check if a player can trigger a creature's "blocker" ability
 function Duel.IsPlayerCanBlock(player)
