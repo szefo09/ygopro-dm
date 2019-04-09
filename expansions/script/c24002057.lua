@@ -10,5 +10,5 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.retfilter(c)
-	return c:IsFaceup() and c:IsHasEffect(DM_EFFECT_BLOCKER) and c:IsAbleToHand()
+	return c:IsFaceup() and c:IsHasEffect(DM_EFFECT_BLOCKER)
 end

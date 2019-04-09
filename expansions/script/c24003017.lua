@@ -8,5 +8,5 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.thfilter(c)
-	return c:IsCivilization(DM_CIVILIZATION_WATER) and c:IsAbleToHand()
+	return c:IsCivilization(DM_CIVILIZATION_WATER)
 end

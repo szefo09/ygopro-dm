@@ -8,5 +8,5 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.tmfilter(c)
-	return not c:IsCivilization(DM_CIVILIZATION_NATURE) and c:IsAbleToMana()
+	return not c:IsCivilization(DM_CIVILIZATION_NATURE)
 end

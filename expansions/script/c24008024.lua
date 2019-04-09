@@ -16,7 +16,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
 	e1:SetCode(EVENT_ATTACK_ANNOUNCE)
 	e1:SetProperty(DM_EFFECT_FLAG_CHAIN_LIMIT)
-	e1:SetOperation(dm.SendtoHandOperation(tp,Card.IsAbleToHand,LOCATION_DECK,0,0,1))
+	e1:SetOperation(dm.SendtoHandOperation(tp,nil,LOCATION_DECK,0,0,1))
 	e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
 	c:RegisterEffect(e1)
 end

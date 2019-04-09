@@ -4,9 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--search (to hand)
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,dm.SendtoHandOperation(PLAYER_SELF,scard.thfilter,LOCATION_DECK,0,0,1,true))
+	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.thop)
 end
 scard.duel_masters_card=true
-function scard.thfilter(c)
-	return c:IsCode(CARD_WHISPERING_TOTEM) and c:IsAbleToHand()
-end
+scard.thop=dm.SendtoHandOperation(PLAYER_SELF,Card.IsCode,LOCATION_DECK,0,0,1,true,CARD_WHISPERING_TOTEM)
