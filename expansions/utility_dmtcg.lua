@@ -511,12 +511,14 @@ function Duel.SpecialSummon(targets,sumtype,sumplayer,target_player,nocheck,noli
 	local zone=zone or ZONE_ANY
 	local ct=0
 	for tc in aux.Next(targets) do
-		if Duel.GetLocationCount(target_player,DM_LOCATION_BATTLE)<=0 then
+		if Duel.GetLocationCount(target_player,DM_LOCATION_BATTLE)>0 then
+			if Duel.SpecialSummonStep(tc,sumtype,sumplayer,target_player,nocheck,nolimit,pos,zone) then
+				ct=ct+1
+			end
+		else
 			Duel.Hint(HINT_MESSAGE,sumplayer,DM_HINTMSG_NOBZONES)
 			Duel.DMSendtoGrave(tc,REASON_RULE) --put into the graveyard if all zones are occupied
-		end
-		if Duel.SpecialSummonStep(tc,sumtype,sumplayer,target_player,nocheck,nolimit,pos,zone) then
-			ct=ct+1
+			ct=ct+1 --count the summon that would have happened because YGOPro's limitations prevented it
 		end
 	end
 	Duel.SpecialSummonComplete()
@@ -770,21 +772,24 @@ function Duel.SendtoShield(targets,player)
 	for tc1 in aux.Next(targets) do
 		local g=tc1:GetStackGroup()
 		for tc2 in aux.Next(g) do
-			if Duel.GetLocationCount(player,DM_LOCATION_SHIELD)<=0 then
-				Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOSZONES)
-				Duel.DMSendtoGrave(tc2,REASON_RULE) --put into the graveyard if all zones are occupied
-			else
-				if tc2:IsAbleToShield() then
+			if tc2:IsAbleToShield() then
+				if Duel.GetLocationCount(player,DM_LOCATION_SHIELD)>0 then
 					b=Duel.MoveToField(tc2,player,player,DM_LOCATION_SHIELD,POS_FACEDOWN,true)
+				else
+					Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOSZONES)
+					Duel.DMSendtoGrave(tc2,REASON_RULE) --put into the graveyard if all zones are occupied
+					b=true --return true because YGOPro's limitations prevented there from being a new shield
 				end
 			end
 		end
-		if Duel.GetLocationCount(player,DM_LOCATION_SHIELD)<=0 then
-			Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOSZONES)
-			Duel.DMSendtoGrave(tc1,REASON_RULE) --put into the graveyard if all zones are occupied
-		end
 		if tc1:IsAbleToShield() then
-			b=Duel.MoveToField(tc1,player,player,DM_LOCATION_SHIELD,POS_FACEDOWN,true)
+			if Duel.GetLocationCount(player,DM_LOCATION_SHIELD)>0 then
+				b=Duel.MoveToField(tc1,player,player,DM_LOCATION_SHIELD,POS_FACEDOWN,true)
+			else
+				Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOSZONES)
+				Duel.DMSendtoGrave(tc1,REASON_RULE) --put into the graveyard if all zones are occupied
+				b=true --return true because YGOPro's limitations prevented there from being a new shield
+			end
 		end
 	end
 	return b
@@ -1293,7 +1298,7 @@ function Auxiliary.SummonEvolutionTarget(f)
 end
 function Auxiliary.SummonEvolutionOperation(e,tp,eg,ep,ev,re,r,rp,c)
 	local g1=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MANA,0,nil)
-	Auxiliary.PayManaSelect(g,tp,c,c:GetManaCost(),c:GetCivilizationCount())
+	Auxiliary.PayManaSelect(g1,tp,c,c:GetManaCost(),c:GetCivilizationCount())
 	local g2=e:GetLabelObject()
 	local sg=g2:GetFirst():GetStackGroup()
 	if sg:GetCount()~=0 then
