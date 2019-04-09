@@ -1293,7 +1293,7 @@ function Auxiliary.SummonEvolutionTarget(f)
 end
 function Auxiliary.SummonEvolutionOperation(e,tp,eg,ep,ev,re,r,rp,c)
 	local g1=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MANA,0,nil)
-	Auxiliary.PayManaSelect(g,tp,c,c:GetManaCost(),c:GetCivilizationCount())
+	Auxiliary.PayManaSelect(g2,tp,c,c:GetManaCost(),c:GetCivilizationCount())
 	local g2=e:GetLabelObject()
 	local sg=g2:GetFirst():GetStackGroup()
 	if sg:GetCount()~=0 then
