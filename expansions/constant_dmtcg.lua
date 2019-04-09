@@ -233,6 +233,7 @@ DM_EFFECT_MUST_BLOCK				=727	--RESERVED	--Creature must block another creature i
 DM_EFFECT_SILENT_SKILL				=728	--Keep creature tapped during untap step to use its "Silent Skill" ability ("Kejila, the Hidden Horror" DM-10 5/110)
 DM_EFFECT_WINS_ALL_BATTLES			=799	--Wins All Battles ("Marshias, Spirit of the Sun" DM-14 S1/S10)		
 --Abilities that trigger or actions that occur at the appropriate event
+DM_EVENT_UNTAP_STEP					=EVENT_PREDRAW					--Start of Turn Step (Untap Step)
 DM_EVENT_ATTACK_SHIELD				=EVENT_PRE_DAMAGE_CALCULATE		--Before an attacking creature breaks the opponent's shield
 DM_EVENT_TO_GRAVE					=EVENT_REMOVE					--When a card is put into the graveyard
 DM_EVENT_TO_MANA					=EVENT_TO_GRAVE					--When a card is put into the mana zone
