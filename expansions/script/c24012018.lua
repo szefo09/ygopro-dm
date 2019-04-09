@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	--power up
 	dm.EnableUpdatePower(c,2000,nil,DM_LOCATION_BATTLE,0,scard.powtg)
 	--get ability (double breaker)
-	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER,nil,LOCATION_ALL,0,scard.dbtg)
+	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER,nil,DM_LOCATION_BATTLE,0,scard.dbtg)
 end
 scard.duel_masters_card=true
 --evolution
