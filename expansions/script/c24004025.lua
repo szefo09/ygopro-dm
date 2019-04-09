@@ -17,7 +17,7 @@ function scard.confop(e,tp,eg,ep,ev,re,r,rp)
 	local sg=g:Filter(scard.thfilter,nil)
 	Duel.DisableShuffleCheck()
 	if sg:GetCount()>0 then
-		if Duel.SendtoHand(sg,PLAYER_OWNER,REASON_EFFECT)~=0 then
+		if Duel.SendtoHand(sg,PLAYER_OWNER,REASON_EFFECT)>0 then
 			Duel.ConfirmCards(1-tp,sg)
 			Duel.ShuffleHand(tp)
 			g:Sub(sg)

@@ -30,7 +30,7 @@ function scard.tgop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.MoveToField(tc2,tp,1-tp,DM_LOCATION_BATTLE,pos,true)
 	g:RemoveCard(tc2)
 	Duel.MoveSequence(tc2,seq)
-	if g:GetCount()~=0 then
+	if g:GetCount()>0 then
 		Duel.PutOnTop(tc2,g)
 	end
 end

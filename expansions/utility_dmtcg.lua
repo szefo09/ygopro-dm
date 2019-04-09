@@ -730,7 +730,7 @@ function Duel.DMSendtoGrave(targets,reason)
 		end
 		if tc1:IsLocation(LOCATION_REMOVED) and tc1:IsFacedown() then
 			--workaround to banish a banished card
-			if Duel.SendtoHand(tc1,PLAYER_OWNER,REASON_RULE)~=0 then Duel.ConfirmCards(1-tc1:GetControler(),tc1) end
+			if Duel.SendtoHand(tc1,PLAYER_OWNER,REASON_RULE)>0 then Duel.ConfirmCards(1-tc1:GetControler(),tc1) end
 		end
 		ct=ct+Duel.Remove(tc1,POS_FACEUP,reason)
 	end
@@ -827,7 +827,7 @@ function Duel.RandomDiscardHand(player,count,reason,ex)
 	local sg=g:RandomSelect(player,count)
 	return Duel.Remove(sg,POS_FACEUP,reason+REASON_DISCARD)
 end
---check if a player can trigger a creature's "blocker" ability
+--check if a player can use the "blocker" ability of their creatures
 function Duel.IsPlayerCanBlock(player)
 	return true--not Duel.IsPlayerAffectedByEffect(player,DM_EFFECT_CANNOT_BLOCK) --reserved
 end
@@ -841,6 +841,10 @@ end
 --return the number of shields a player's creatures broke during the current turn
 function Duel.GetBrokenShieldCount(player)
 	return Duel.GetFlagEffect(player,DM_EFFECT_BREAK_SHIELD)
+end
+--check if a player can use the tap ability of their creatures
+function Duel.IsPlayerCanUseTapAbility(player)
+	return not Duel.IsPlayerAffectedByEffect(player,DM_EFFECT_CANNOT_USE_TAP_ABILITY)
 end
 --choose a race
 function Duel.DMAnnounceRace(player)
@@ -1281,7 +1285,7 @@ function Auxiliary.EvolutionOperation(e,tp,eg,ep,ev,re,r,rp,c)
 	Auxiliary.PayManaSelect(g1,tp,c,c:GetManaCost(),c:GetCivilizationCount())
 	local g2=e:GetLabelObject()
 	local sg=g2:GetFirst():GetStackGroup()
-	if sg:GetCount()~=0 then
+	if sg:GetCount()>0 then
 		Duel.PutOnTop(c,sg)
 	end
 	c:SetMaterial(g2)
@@ -1765,8 +1769,8 @@ function Auxiliary.EnableTapAbility(c,desc_id,targ_func,op_func,prop)
 end
 function Auxiliary.TapAbilityCondition(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return Auxiliary.BattlePhaseCondition() and Duel.GetAttacker()==nil and Duel.GetCurrentChain()==0
-		and c:GetAttackAnnouncedCount()==0 and c:IsCanAttack()
+	return Auxiliary.BattlePhaseCondition() and Duel.IsPlayerCanUseTapAbility(tp) and Duel.GetCurrentChain()==0
+		and Duel.GetAttacker()==nil and c:GetAttackAnnouncedCount()==0 and c:IsCanAttack()
 end
 --"Each of your creatures may tap instead of attacking to use this Tap ability."
 --e.g. "Arc Bine, the Astounding" (DM-06 12/110)
@@ -2886,6 +2890,24 @@ function Auxiliary.TargetConfirmOperation(turn_faceup)
 				end
 			end
 end
+--operation function for abilities that let a player look at cards from the top of a player's deck
+function Auxiliary.DecktopConfirmOperation(p,ct)
+	--p: PLAYER_SELF/tp for the top of your deck or PLAYER_OPPO/1-tp for your opponent's
+	--ct: the number of cards to look at
+	return	function(e,tp,eg,ep,ev,re,r,rp)
+				local player1=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp) or (p==PLAYER_ALL and tp)
+				local player2=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp) or (p==PLAYER_ALL and 1-tp)
+				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
+				local g1=Duel.GetDecktopGroup(player1,ct)
+				local g2=Duel.GetDecktopGroup(player2,ct)
+				if g1:GetCount()>0 then
+					Duel.ConfirmCards(player1,g1)
+				end
+				if g2:GetCount()>0 and p==PLAYER_ALL then
+					Duel.ConfirmCards(player2,g2)
+				end
+			end
+end
 --========== Destroy ==========
 --operation function for abilities that destroy cards
 function Auxiliary.DestroyOperation(p,f,s,o,min,max,ram,ex,...)
@@ -3073,7 +3095,7 @@ function Auxiliary.SendtoGraveOperation(p,f,s,o,min,max,ex,...)
 				end
 			end
 end
---operation functions for abilities that target cards to put into the graveyard
+--operation function for abilities that target cards to put into the graveyard
 function Auxiliary.TargetSendtoGraveOperation(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
 	if g:GetCount()>0 then
@@ -3524,5 +3546,5 @@ return Auxiliary
 --[[
 	References
 		1. Voltanis the Adjudicator - prevent multiple "shield trigger" abilities from chaining
-		https://github.com/Fluorohydride/ygopro-scripts/blob/236842465886c87775f1f8fad02f512e39b06005/c20951752.lua#L12
+		https://github.com/Fluorohydride/ygopro-scripts/blob/967a2fe/c20951752.lua#L12
 ]]

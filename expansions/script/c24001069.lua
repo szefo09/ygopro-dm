@@ -12,3 +12,10 @@ scard.duel_masters_card=true
 function scard.powval(e,c)
 	return Duel.GetMatchingGroupCount(dm.DMGraveFilter(Card.IsCivilization),c:GetControler(),DM_LOCATION_GRAVE,0,nil,DM_CIVILIZATION_FIRE)*1000
 end
+--[[
+	References
+		1. Worm Solid
+		https://github.com/Fluorohydride/ygopro-scripts/blob/b81455f/c3204467.lua#L22
+		2. Pilgrim Reaper
+		https://github.com/Fluorohydride/ygopro-scripts/blob/2f8b6d0/c45742626.lua#L30
+]]

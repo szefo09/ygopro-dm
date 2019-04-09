@@ -231,6 +231,7 @@ DM_EFFECT_CHARGER					=725	--Charger ("Lightning Charger" DM-07 15/55)
 DM_EFFECT_DONOT_DISCARD_SHIELD_TRIGGER=726	--Do not discard a spell after using its "Shield Trigger" ability ("Super Terradragon Bailas Gale" DM-08 S5/S5)
 DM_EFFECT_MUST_BLOCK				=727	--RESERVED	--Creature must block another creature if able ("Storm Wrangler, the Furious" DM-09 51/55)
 DM_EFFECT_SILENT_SKILL				=728	--Keep creature tapped during untap step to use its "Silent Skill" ability ("Kejila, the Hidden Horror" DM-10 5/110)
+DM_EFFECT_CANNOT_USE_TAP_ABILITY	=798	--Player cannot use the Tap ability of their creatures ("Lockdown Lizard" DM-11 39/55)
 DM_EFFECT_WINS_ALL_BATTLES			=799	--Wins All Battles ("Marshias, Spirit of the Sun" DM-14 S1/S10)		
 --Abilities that trigger or actions that occur at the appropriate event
 DM_EVENT_UNTAP_STEP					=EVENT_PREDRAW					--Start of Turn Step (Untap Step)

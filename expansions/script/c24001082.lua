@@ -12,3 +12,7 @@ function scard.desfilter(c)
 end
 scard.destg=dm.CheckCardFunction(scard.desfilter,0,DM_LOCATION_BATTLE)
 scard.desop=dm.DestroyOperation(PLAYER_SELF,scard.desfilter,0,DM_LOCATION_BATTLE,1)
+--[[
+	Notes
+		1. Script is based on the Japanese rules text
+]]

@@ -30,5 +30,5 @@ end
 --[[
 	References
 		1. Performapal Dramatic Theater
-		https://github.com/Fluorohydride/ygopro-scripts/blob/d35f4628e0e72dfe78e839d9d889d3c12c8e0362/c55553602.lua#L30
+		https://github.com/Fluorohydride/ygopro-scripts/blob/d35f462/c55553602.lua#L32
 ]]

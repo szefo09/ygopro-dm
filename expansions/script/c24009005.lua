@@ -21,10 +21,12 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
 	local g=Duel.GetMatchingGroup(scard.abfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil)
 	if g:GetCount()==0 then return end
-	for tc in aux.Next(g) do
-		--power up
-		dm.RegisterEffectUpdatePower(c,tc,1,2000)
-		--double breaker
-		dm.RegisterEffectBreaker(c,tc,2,DM_EFFECT_DOUBLE_BREAKER)
+	for ec in aux.Next(eg) do
+		for tc in aux.Next(g) do
+			--power up
+			dm.RegisterEffectUpdatePower(c,tc,1,2000)
+			--double breaker
+			dm.RegisterEffectBreaker(c,tc,2,DM_EFFECT_DOUBLE_BREAKER)
+		end
 	end
 end

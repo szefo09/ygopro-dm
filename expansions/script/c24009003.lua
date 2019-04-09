@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_DARK_LORD))
 	--destroy
-	dm.AddComeIntoPlayEffect(c,0,true,scard.destg,scard.desop,nil,scard.descon)
+	dm.AddComeIntoPlayEffect(c,0,true,scard.destg,scard.desop,EFFECT_FLAG_CARD_TARGET,scard.descon)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end
@@ -20,12 +20,14 @@ end
 function scard.desfilter(c)
 	return c:IsFaceup() and c:IsUntapped()
 end
-scard.destg=dm.CheckCardFunction(scard.desfilter,0,DM_LOCATION_BATTLE)
+scard.destg=dm.TargetCardFunction(PLAYER_SELF,scard.desfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_DESTROY)
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
-	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_DESTROY)
-	local g=Duel.SelectMatchingCard(tp,scard.desfilter,tp,0,DM_LOCATION_BATTLE,1,1,nil)
-	if g:GetCount()==0 then return end
-	Duel.HintSelection(g)
-	Duel.Destroy(g,REASON_EFFECT)
+	local tc=Duel.GetFirstTarget()
+	if not tc or not tc:IsRelateToEffect(e) then return end
+	Duel.Destroy(tc,REASON_EFFECT)
 end
+--[[
+	Notes
+		1. Script is based on the Japanese rules text
+]]

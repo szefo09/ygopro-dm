@@ -26,17 +26,10 @@ function scard.thfilter(c)
 end
 function scard.thop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_CARD,0,sid)
-	local g=Duel.GetFieldGroup(tp,LOCATION_DECK,0)
-	Duel.ConfirmCards(tp,g)
-	if g:IsExists(scard.thfilter,1,nil) then
-		local ct=Duel.GetBrokenShieldCount(tp)
-		Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_ATOHAND)
-		local sg=g:FilterSelect(tp,scard.thfilter,0,ct,nil)
-		if sg:GetCount()==0 then return Duel.ShuffleDeck(tp) end
-		Duel.SendtoHand(sg,PLAYER_OWNER,REASON_EFFECT)
-		Duel.ConfirmCards(1-tp,sg)
-	else
-		Duel.Hint(HINT_MESSAGE,tp,DM_HINTMSG_NOTARGETS)
-		Duel.ShuffleDeck(tp)
-	end
+	local ct=Duel.GetBrokenShieldCount(tp)
+	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_ATOHAND)
+	local g=Duel.SelectMatchingCard(tp,scard.thfilter,tp,LOCATION_DECK,0,0,ct,nil)
+	if g:GetCount()==0 then return end
+	Duel.SendtoHand(g,PLAYER_OWNER,REASON_EFFECT)
+	Duel.ConfirmCards(1-tp,g)
 end

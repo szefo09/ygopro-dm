@@ -28,5 +28,5 @@ end
 --[[
 	References
 		1. Chthonian Blast
-		https://github.com/Fluorohydride/ygopro-scripts/blob/13bb48afcf3edcf161be98b09c55fec6befcc4df/c18271561.lua#L28
+		https://github.com/Fluorohydride/ygopro-scripts/blob/13bb48a/c18271561.lua#L31
 ]]

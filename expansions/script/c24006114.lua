@@ -16,7 +16,7 @@ function scard.cfilter(c)
 end
 function scard.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,1)
-		and Duel.GetMatchingGroupCount(scard.cfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil)>0 end
+		and Duel.IsExistingMatchingCard(scard.cfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,1,nil) end
 end
 function scard.drop(e,tp,eg,ep,ev,re,r,rp)
 	local ct=Duel.GetMatchingGroupCount(scard.cfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil)

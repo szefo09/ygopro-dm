@@ -14,5 +14,5 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
 	--power up
-	dm.RegisterEffectUpdatePower(c,c,1,3000)
+	dm.RegisterEffectUpdatePower(c,c,1,3000*eg:GetCount())
 end
