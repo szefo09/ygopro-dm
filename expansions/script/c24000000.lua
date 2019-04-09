@@ -52,8 +52,8 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.ShuffleDeck(1-tp)
 	end
 	--check deck size
-	local b1=Duel.GetFieldGroupCount(tp,LOCATION_DECK,0)~=40
-	local b2=Duel.GetFieldGroupCount(1-tp,LOCATION_DECK,0)~=40
+	local b1=Duel.GetFieldGroupCount(tp,LOCATION_DECK,0)<40
+	local b2=Duel.GetFieldGroupCount(1-tp,LOCATION_DECK,0)<40
 	--check for non-duel masters cards
 	local f=function(c)
 		return not c.duel_masters_card
