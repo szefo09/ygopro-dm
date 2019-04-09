@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--to shield
-	dm.AddPlayerUseShieldTriggerEffect(c,0,PLAYER_SELF,true,scard.tstg,scard.tsop)
+	dm.AddPlayerUseShieldTriggerEffect(c,0,PLAYER_OPPO,true,scard.tstg,scard.tsop)
 end
 scard.duel_masters_card=true
 scard.tstg=dm.CheckDeckFunction(PLAYER_SELF)
