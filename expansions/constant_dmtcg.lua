@@ -24,6 +24,7 @@ CARD_CREEPING_PLAGUE				=24001049	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_
 CARD_SPIRAL_GRASS					=24002010	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_BLOCK,e,0,0,0,0)
 CARD_MARROW_OOZE_THE_TWISTER		=24002032	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_ATTACK_PLAYER,e,0,0,0,0)
 CARD_BRUTAL_CHARGE					=24005049	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD,e,0,0,0,0)
+CARD_BENZO_THE_HIDDEN_FURY			=24010045	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_SHIELD_TO_HAND,e,0,0,0,0)
 CARD_WOLFIS_BLUE_DIVINE_DRAGON		=24027		--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER,e,0,0,0,0)
 --↑RegisterFlagEffect
 CARD_DIA_NORK_MOONLIGHT_GUARDIAN	=24001002	--c:RegisterFlagEffect(DM_EFFECT_BLOCKED,RESET_EVENT+RESETS_STANDARD+RESET_CHAIN,0,1)
@@ -245,6 +246,7 @@ DM_EVENT_BECOMES_BLOCKED			=CARD_CREEPING_PLAGUE			--When a creature becomes blo
 DM_EVENT_BLOCK						=CARD_SPIRAL_GRASS				--When a creature blocks
 DM_EVENT_ATTACK_PLAYER				=CARD_MARROW_OOZE_THE_TWISTER	--When a creature attacks a player
 DM_EVENT_BREAK_SHIELD				=CARD_BRUTAL_CHARGE				--When a creature finishes attacking the opponent and broke a shield
+DM_EVENT_SHIELD_TO_HAND				=CARD_BENZO_THE_HIDDEN_FURY		--When a shield is put into a player's hand, that player can use its "Shield Trigger" ability
 DM_EVENT_BECOME_SHIELD_TRIGGER		=CARD_WOLFIS_BLUE_DIVINE_DRAGON	--When a shield becomes broken, it may get "Shield Trigger"
 --Category (ability classification)
 DM_CATEGORY_BLOCKER					=CATEGORY_NEGATE	--"Blocker" ability, needed for unblockable abilities ("Laser Wing" DM-01 11/110)

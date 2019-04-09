@@ -1581,6 +1581,7 @@ function Auxiliary.ShieldTriggerSummonOperation(e,tp,eg,ep,ev,re,r,rp)
 end
 function Auxiliary.AddShieldTriggerCastEffect(c,desc_id,targ_func,op_func,prop,cost_func,con_func,cate)
 	local con_func=con_func or aux.TRUE
+	--trigger "shield trigger" ability
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then
@@ -1601,45 +1602,49 @@ function Auxiliary.AddShieldTriggerCastEffect(c,desc_id,targ_func,op_func,prop,c
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
-	--prevent multiple "shield trigger" abilities from chaining
-	local e2=Effect.CreateEffect(c)
-	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e2:SetCode(EVENT_CHAIN_SOLVED)
-	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
-	e2:SetRange(LOCATION_HAND)
-	e2:SetOperation(Auxiliary.ShieldTriggerOperation)
+	local e2=e1:Clone()
+	e2:SetCondition(con_func)
+	e2:SetCode(EVENT_CUSTOM+DM_EVENT_SHIELD_TO_HAND)
 	c:RegisterEffect(e2)
-	local e3=e1:Clone()
-	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
-	e3:SetCode(EVENT_CHAIN_END)
-	if prop then
-		e3:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
-	else
-		e3:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
-	end
-	e3:SetCondition(aux.AND(Auxiliary.ShieldTriggerCondition2,con_func))
+	--prevent multiple "shield trigger" abilities from chaining
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e3:SetCode(EVENT_CHAIN_SOLVED)
+	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+	e3:SetRange(LOCATION_HAND)
+	e3:SetOperation(Auxiliary.ShieldTriggerOperation)
 	c:RegisterEffect(e3)
-	e2:SetLabelObject(e3)
-	--temporary workaround for "Wolfis, Blue Divine Dragon"
-	local e4=Effect.CreateEffect(c)
-	e4:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	if cate then
-		e4:SetCategory(DM_CATEGORY_SHIELD_TRIGGER+cate)
-	else
-		e4:SetCategory(DM_CATEGORY_SHIELD_TRIGGER)
-	end
-	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
-	e4:SetCode(EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER)
+	local e4=e1:Clone()
+	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e4:SetCode(EVENT_CHAIN_END)
 	if prop then
 		e4:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
 	else
 		e4:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
 	end
-	e4:SetCondition(aux.AND(Auxiliary.ShieldTriggerCondition,con_func))
-	if cost_func then e4:SetCost(cost_func) end
-	if targ_func then e4:SetTarget(targ_func) end
-	e4:SetOperation(op_func)
+	e4:SetCondition(aux.AND(Auxiliary.ShieldTriggerCondition2,con_func))
 	c:RegisterEffect(e4)
+	e3:SetLabelObject(e4)
+	--temporary workaround for "Wolfis, Blue Divine Dragon"
+	local e5=Effect.CreateEffect(c)
+	e5:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	if cate then
+		e5:SetCategory(DM_CATEGORY_SHIELD_TRIGGER+cate)
+	else
+		e5:SetCategory(DM_CATEGORY_SHIELD_TRIGGER)
+	end
+	e5:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
+	e5:SetCode(EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER)
+	if prop then
+		e5:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
+	else
+		e5:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
+	end
+	e5:SetCondition(aux.AND(Auxiliary.ShieldTriggerCondition,con_func))
+	if cost_func then e5:SetCost(cost_func) end
+	if targ_func then e5:SetTarget(targ_func) end
+	e5:SetOperation(op_func)
+	c:RegisterEffect(e5)
 end
 function Auxiliary.ShieldTriggerOperation(e,tp,eg,ep,ev,re,r,rp)
 	if re:IsHasCategory(DM_CATEGORY_SHIELD_TRIGGER) and re:GetHandler():IsControler(tp) then
@@ -3102,12 +3107,18 @@ function Auxiliary.SendtoHandOperation(p,f,s,o,min,max,conf,ex,...)
 			end
 end
 --operation function for abilities that target cards to put into a player's hand
-function Auxiliary.TargetSendtoHandOperation(conf)
+function Auxiliary.TargetSendtoHandOperation(conf,use_shield_trigger)
 	--conf: true to show cards added from the deck to the opponent
+	--use_shield_trigger: true if the player can use the "shield trigger" ability of the returned shield
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
-				if g:GetCount()>0 then
-					Duel.SendtoHand(g,PLAYER_OWNER,REASON_EFFECT)
+				if g:GetCount()==0 then return end
+				Duel.SendtoHand(g,PLAYER_OWNER,REASON_EFFECT)
+				for tc in aux.Next(g) do
+					if use_shield_trigger then
+						--raise event for "(You can use the "shield trigger" ability of that shield.)"
+						Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_SHIELD_TO_HAND,e,0,0,0,0)
+					end
 				end
 				local og1=Duel.GetOperatedGroup():Filter(Card.IsControler,nil,tp)
 				local og2=Duel.GetOperatedGroup():Filter(Card.IsControler,nil,1-tp)
