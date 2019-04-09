@@ -7,4 +7,4 @@ function scard.initial_effect(c)
 	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.thop)
 end
 scard.duel_masters_card=true
-scard.thop=dm.SendtoHandOperation(PLAYER_SELF,Card.IsCode,LOCATION_DECK,0,0,1,true,CARD_WHISPERING_TOTEM)
+scard.thop=dm.SendtoHandOperation(PLAYER_SELF,Card.IsCode,LOCATION_DECK,0,0,1,true,nil,CARD_WHISPERING_TOTEM)
