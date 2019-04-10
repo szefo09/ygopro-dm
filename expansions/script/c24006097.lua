@@ -8,14 +8,7 @@ function scard.initial_effect(c)
 	dm.AddStaticEffectSingleComeIntoPlay(c,0,nil,dm.HintTarget,scard.thop,LOCATION_ALL,0,scard.thtg)
 end
 scard.duel_masters_card=true
-function scard.thop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_ATOHAND)
-	local g=Duel.SelectMatchingCard(tp,aux.AND(Card.IsAbleToHand,Card.DMIsRace),tp,LOCATION_DECK,0,0,1,nil,DM_RACE_SURVIVOR)
-	if g:GetCount()>0 then
-		Duel.SendtoHand(g,nil,REASON_EFFECT)
-		Duel.ConfirmCards(1-tp,g)
-	end
-end
+scard.thop=dm.SendtoHandOperation(PLAYER_SELF,Card.DMIsRace,LOCATION_DECK,0,0,1,true,nil,DM_RACE_SURVIVOR)
 function scard.thtg(e,c)
 	return c~=e:GetHandler() and c:DMIsRace(DM_RACE_SURVIVOR)
 end
