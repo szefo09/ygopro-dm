@@ -8,4 +8,4 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 scard.thtg=dm.TargetCardFunction(PLAYER_SELF,dm.ShieldZoneFilter(Card.IsAbleToHand),DM_LOCATION_SHIELD,0,1,1,DM_HINTMSG_ATOHAND)
-scard.thop=dm.TargetSendtoHandOperation()
+scard.thop=dm.TargetSendtoHandOperation(nil,true)

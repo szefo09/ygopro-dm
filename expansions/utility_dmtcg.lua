@@ -1581,6 +1581,7 @@ function Auxiliary.ShieldTriggerSummonOperation(e,tp,eg,ep,ev,re,r,rp)
 end
 function Auxiliary.AddShieldTriggerCastEffect(c,desc_id,targ_func,op_func,prop,cost_func,con_func,cate)
 	local con_func=con_func or aux.TRUE
+	--trigger "shield trigger" ability
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then
@@ -1601,45 +1602,49 @@ function Auxiliary.AddShieldTriggerCastEffect(c,desc_id,targ_func,op_func,prop,c
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
-	--prevent multiple "shield trigger" abilities from chaining
-	local e2=Effect.CreateEffect(c)
-	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e2:SetCode(EVENT_CHAIN_SOLVED)
-	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
-	e2:SetRange(LOCATION_HAND)
-	e2:SetOperation(Auxiliary.ShieldTriggerOperation)
+	local e2=e1:Clone()
+	e2:SetCondition(con_func)
+	e2:SetCode(EVENT_CUSTOM+DM_EVENT_SHIELD_TO_HAND)
 	c:RegisterEffect(e2)
-	local e3=e1:Clone()
-	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
-	e3:SetCode(EVENT_CHAIN_END)
-	if prop then
-		e3:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
-	else
-		e3:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
-	end
-	e3:SetCondition(aux.AND(Auxiliary.ShieldTriggerCondition2,con_func))
+	--prevent multiple "shield trigger" abilities from chaining
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e3:SetCode(EVENT_CHAIN_SOLVED)
+	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+	e3:SetRange(LOCATION_HAND)
+	e3:SetOperation(Auxiliary.ShieldTriggerOperation)
 	c:RegisterEffect(e3)
-	e2:SetLabelObject(e3)
-	--temporary workaround for "Wolfis, Blue Divine Dragon"
-	local e4=Effect.CreateEffect(c)
-	e4:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	if cate then
-		e4:SetCategory(DM_CATEGORY_SHIELD_TRIGGER+cate)
-	else
-		e4:SetCategory(DM_CATEGORY_SHIELD_TRIGGER)
-	end
-	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
-	e4:SetCode(EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER)
+	local e4=e1:Clone()
+	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e4:SetCode(EVENT_CHAIN_END)
 	if prop then
 		e4:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
 	else
 		e4:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
 	end
-	e4:SetCondition(aux.AND(Auxiliary.ShieldTriggerCondition,con_func))
-	if cost_func then e4:SetCost(cost_func) end
-	if targ_func then e4:SetTarget(targ_func) end
-	e4:SetOperation(op_func)
+	e4:SetCondition(aux.AND(Auxiliary.ShieldTriggerCondition2,con_func))
 	c:RegisterEffect(e4)
+	e3:SetLabelObject(e4)
+	--temporary workaround for "Wolfis, Blue Divine Dragon"
+	local e5=Effect.CreateEffect(c)
+	e5:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	if cate then
+		e5:SetCategory(DM_CATEGORY_SHIELD_TRIGGER+cate)
+	else
+		e5:SetCategory(DM_CATEGORY_SHIELD_TRIGGER)
+	end
+	e5:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
+	e5:SetCode(EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER)
+	if prop then
+		e5:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
+	else
+		e5:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
+	end
+	e5:SetCondition(aux.AND(Auxiliary.ShieldTriggerCondition,con_func))
+	if cost_func then e5:SetCost(cost_func) end
+	if targ_func then e5:SetTarget(targ_func) end
+	e5:SetOperation(op_func)
+	c:RegisterEffect(e5)
 end
 function Auxiliary.ShieldTriggerOperation(e,tp,eg,ep,ev,re,r,rp)
 	if re:IsHasCategory(DM_CATEGORY_SHIELD_TRIGGER) and re:GetHandler():IsControler(tp) then
@@ -1989,7 +1994,7 @@ end
 --"At the end of the turn, ABILITY."
 --e.g. "Frei, Vizier of Air" (DM-01 4/110)
 function Auxiliary.AddTurnEndEffect(c,desc_id,p,optional,targ_func,op_func,con_func,prop)
-	--p: PLAYER_SELF/tp for your turn, PLAYER_OPPO/1-tp for your opponent's, or nil for either player's
+	--p: PLAYER_SELF for your turn, PLAYER_OPPO for your opponent's, or nil for either player's
 	local typ=EFFECT_TYPE_TRIGGER_F
 	if optional then typ=EFFECT_TYPE_TRIGGER_O end
 	local con_func=con_func or aux.TRUE
@@ -2225,7 +2230,7 @@ end
 --"Whenever a card is put into your graveyard, ABILITY."
 --e.g. "Snork La, Shrine Guardian" (DM-05 13/55)
 function Auxiliary.AddEnterGraveEffect(c,desc_id,p,optional,targ_func,op_func,prop,con_func,cost_func,range,lmct,lmcd,cate)
-	--p: PLAYER_SELF/tp for your graveyard, PLAYER_OPPO/1-tp for your opponent's, or nil for either player's
+	--p: PLAYER_SELF for your graveyard, PLAYER_OPPO for your opponent's, or nil for either player's
 	local typ=EFFECT_TYPE_TRIGGER_F
 	if optional then typ=EFFECT_TYPE_TRIGGER_O end
 	local con_func=con_func or aux.TRUE
@@ -2273,26 +2278,73 @@ function Auxiliary.AddSingleBecomeBlockedEffect(c,desc_id,optional,targ_func,op_
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
 end
---"Whenever a player casts a spell, ABILITY."
---e.g. "Natalia, Channeler of Suns" (Game Original)
-function Auxiliary.AddPlayerCastSpellEffect(c,desc_id,p,optional,targ_func,op_func,con_func,prop)
-	--p: PLAYER_SELF/tp if you cast a spell, PLAYER_OPPO/1-tp if your opponent does, or nil if either player does
+--"Whenever a player uses the "shield trigger" ability of one of their shields, ABILITY."
+--e.g. "Emperor Quazla" (DM-08 S2/S5), "Glena Vuele, the Hypnotic" (DM-09 1/55)
+function Auxiliary.AddPlayerUseShieldTriggerEffect(c,desc_id,p,optional,targ_func,op_func)
+	--p: PLAYER_SELF if you use "shield trigger", PLAYER_OPPO if your opponent does, or nil if either player does
 	local typ=EFFECT_TYPE_TRIGGER_F
 	if optional then typ=EFFECT_TYPE_TRIGGER_O end
-	local con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EVENT_CHAINING)
 	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	e1:SetRange(DM_LOCATION_BATTLE)
-	e1:SetOperation(Auxiliary.EventChainingOperation)
+	e1:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+		e:GetLabelObject():SetLabel(0)
+	end)
 	c:RegisterEffect(e1)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e2:SetCode(EVENT_CHAIN_SOLVED)
 	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	e2:SetRange(DM_LOCATION_BATTLE)
-	e2:SetOperation(Auxiliary.EventChainSolvedOperation(p))
+	e2:SetOperation(Auxiliary.STChainSolvedOperation(p))
+	c:RegisterEffect(e2)
+	local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	e3:SetType(EFFECT_TYPE_FIELD+typ)
+	e3:SetCode(EVENT_CHAIN_END)
+	e3:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
+	e3:SetRange(DM_LOCATION_BATTLE)
+	e3:SetCondition(function(e,tp,eg,ep,ev,re,r,rp)
+		return e:GetLabel()==1
+	end)
+	if targ_func then e3:SetTarget(targ_func) end
+	e3:SetOperation(op_func)
+	c:RegisterEffect(e3)
+	e1:SetLabelObject(e3)
+	e2:SetLabelObject(e3)
+end
+function Auxiliary.STChainSolvedOperation(p)
+	return	function(e,tp,eg,ep,ev,re,r,rp)
+				local reason_player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
+				if reason_player and rp==reason_player
+					and re:IsHasCategory(DM_CATEGORY_SHIELD_TRIGGER) and re:GetHandler():IsBrokenShield() then
+					e:GetLabelObject():SetLabel(1)
+				end
+			end
+end
+--"Whenever a player casts a spell, ABILITY."
+--e.g. "Natalia, Channeler of Suns" (Game Original)
+function Auxiliary.AddPlayerCastSpellEffect(c,desc_id,p,optional,targ_func,op_func,prop)
+	--p: PLAYER_SELF if you cast a spell, PLAYER_OPPO if your opponent does, or nil if either player does
+	local typ=EFFECT_TYPE_TRIGGER_F
+	if optional then typ=EFFECT_TYPE_TRIGGER_O end
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e1:SetCode(EVENT_CHAINING)
+	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+	e1:SetRange(DM_LOCATION_BATTLE)
+	e1:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+		e:GetLabelObject():SetLabel(0)
+	end)
+	c:RegisterEffect(e1)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e2:SetCode(EVENT_CHAIN_SOLVED)
+	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+	e2:SetRange(DM_LOCATION_BATTLE)
+	e2:SetOperation(Auxiliary.SpellChainSolvedOperation(p))
 	c:RegisterEffect(e2)
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
@@ -2304,26 +2356,22 @@ function Auxiliary.AddPlayerCastSpellEffect(c,desc_id,p,optional,targ_func,op_fu
 		e3:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
 	end
 	e3:SetRange(DM_LOCATION_BATTLE)
-	e3:SetCondition(aux.AND(Auxiliary.EventChainEndCondition,con_func))
+	e3:SetCondition(function(e,tp,eg,ep,ev,re,r,rp)
+		return e:GetLabel()==1
+	end)
 	if targ_func then e3:SetTarget(targ_func) end
 	e3:SetOperation(op_func)
 	c:RegisterEffect(e3)
 	e1:SetLabelObject(e3)
 	e2:SetLabelObject(e3)
 end
-function Auxiliary.EventChainingOperation(e,tp,eg,ep,ev,re,r,rp)
-	e:GetLabelObject():SetLabel(0)
-end
-function Auxiliary.EventChainSolvedOperation(p)
+function Auxiliary.SpellChainSolvedOperation(p)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local reason_player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
 				if reason_player and rp==reason_player and re:GetHandler():IsSpell() then
 					e:GetLabelObject():SetLabel(1)
 				end
 			end
-end
-function Auxiliary.EventChainEndCondition(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetLabel()==1
 end
 --"When this creature leaves the battle zone, ABILITY."
 --e.g. "Altimeth, Holy Divine Dragon" (Game Original)
@@ -2376,7 +2424,7 @@ end
 --"At the start of the turn, ABILITY."
 --e.g. "Altimeth, Holy Divine Dragon" (Game Original)
 function Auxiliary.AddTurnStartEffect(c,desc_id,p,optional,targ_func,op_func,con_func,prop)
-	--p: PLAYER_SELF/tp for your turn, PLAYER_OPPO/1-tp for your opponent's, or nil for either player's
+	--p: PLAYER_SELF for your turn, PLAYER_OPPO for your opponent's, or nil for either player's
 	local typ=EFFECT_TYPE_TRIGGER_F
 	if optional then typ=EFFECT_TYPE_TRIGGER_O end
 	local con_func=con_func or aux.TRUE
@@ -2692,7 +2740,7 @@ end
 --"Whenever a player summons a creature, ABILITY."
 --e.g. "Aqua Rider" (DM-06 31/110)
 function Auxiliary.AddPlayerSummonCreatureEffect(c,desc_id,p,optional,targ_func,op_func,prop)
-	--p: PLAYER_SELF/tp if you summon, PLAYER_OPPO/1-tp if your opponent does, or nil if either player does
+	--p: PLAYER_SELF if you summon, PLAYER_OPPO if your opponent does, or nil if either player does
 	local typ=EFFECT_TYPE_TRIGGER_F
 	if optional then typ=EFFECT_TYPE_TRIGGER_O end
 	local e1=Effect.CreateEffect(c)
@@ -3102,12 +3150,18 @@ function Auxiliary.SendtoHandOperation(p,f,s,o,min,max,conf,ex,...)
 			end
 end
 --operation function for abilities that target cards to put into a player's hand
-function Auxiliary.TargetSendtoHandOperation(conf)
+function Auxiliary.TargetSendtoHandOperation(conf,use_shield_trigger)
 	--conf: true to show cards added from the deck to the opponent
+	--use_shield_trigger: true if the player can use the "shield trigger" ability of the returned shield
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
-				if g:GetCount()>0 then
-					Duel.SendtoHand(g,PLAYER_OWNER,REASON_EFFECT)
+				if g:GetCount()==0 then return end
+				Duel.SendtoHand(g,PLAYER_OWNER,REASON_EFFECT)
+				for tc in aux.Next(g) do
+					if use_shield_trigger then
+						--raise event for "(You can use the "shield trigger" ability of that shield.)"
+						Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_SHIELD_TO_HAND,e,0,0,0,0)
+					end
 				end
 				local og1=Duel.GetOperatedGroup():Filter(Card.IsControler,nil,tp)
 				local og2=Duel.GetOperatedGroup():Filter(Card.IsControler,nil,1-tp)
