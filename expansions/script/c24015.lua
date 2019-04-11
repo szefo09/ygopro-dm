@@ -5,7 +5,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--tap
-	dm.AddPlayerCastSpellEffect(c,0,nil,nil,nil,scard.posop)
+	dm.AddPlayerCastSpellEffect(c,0,nil,nil,nil,nil,scard.posop)
 end
 scard.duel_masters_card=true
 function scard.posfilter(c)

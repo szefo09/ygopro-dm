@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--blocker
 	dm.EnableBlocker(c)
 	--get ability
-	dm.AddPlayerCastSpellEffect(c,0,nil,nil,nil,scard.abop)
+	dm.AddPlayerCastSpellEffect(c,0,nil,nil,nil,nil,scard.abop)
 end
 scard.duel_masters_card=true
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
