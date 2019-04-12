@@ -1441,20 +1441,10 @@ function Auxiliary.EnableBlocker(c,con_func,desc,f)
 	e1:SetOperation(Auxiliary.BlockerOperation)
 	c:RegisterEffect(e1)
 	--block if able
-	local e2=Effect.CreateEffect(c)
-	if desc then
-		e2:SetDescription(desc)
-	else
-		e2:SetDescription(DM_DESC_BLOCKER)
-	end
-	e2:SetCategory(DM_CATEGORY_BLOCKER)
+	local e2=e1:Clone()
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_QUICK_F)
-	e2:SetCode(EVENT_ATTACK_ANNOUNCE)
-	e2:SetRange(DM_LOCATION_BATTLE)
+	e2:SetProperty(0)
 	e2:SetCondition(aux.AND(Auxiliary.BlockerCondition1(f),Auxiliary.BlockerCondition2,con_func))
-	e2:SetCost(Auxiliary.BlockerCost)
-	e2:SetTarget(Auxiliary.BlockerTarget)
-	e2:SetOperation(Auxiliary.BlockerOperation)
 	c:RegisterEffect(e2)
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_BLOCKER,con_func)
 end
@@ -1487,18 +1477,10 @@ function Auxiliary.BlockerOperation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.ChangePosition(a,POS_FACEUP_TAPPED) --fix attack cost position
 	Duel.NegateAttack()
 	--register flag effect for Card.IsBlocked
-	a:RegisterFlagEffect(DM_EFFECT_BLOCKED,RESET_EVENT+RESETS_STANDARD+RESET_CHAIN,0,1)
+	a:RegisterFlagEffect(DM_EFFECT_BLOCKED,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_DAMAGE,0,1)
 	Duel.Hint(HINT_OPSELECTED,1-tp,DM_DESC_BLOCKED)
 	--register flag effect for Duel.GetBlocker
-	c:RegisterFlagEffect(DM_EFFECT_BLOCKER,RESET_EVENT+RESETS_STANDARD+RESET_CHAIN,0,1)
-	--raise event for "Whenever this creature blocks"
-	Duel.RaiseSingleEvent(c,EVENT_CUSTOM+DM_EVENT_BLOCK,e,0,0,0,0)
-	--raise event for "Whenever one of your creatures blocks"
-	Duel.RaiseEvent(c,EVENT_CUSTOM+DM_EVENT_BLOCK,e,0,0,0,0)
-	--raise event for "Whenever this creature becomes blocked"
-	Duel.RaiseSingleEvent(a,EVENT_CUSTOM+DM_EVENT_BECOMES_BLOCKED,e,0,0,0,0)
-	--raise event for "Whenever any of your creatures becomes blocked"
-	Duel.RaiseEvent(a,EVENT_CUSTOM+DM_EVENT_BECOMES_BLOCKED,e,0,0,0,0)
+	c:RegisterFlagEffect(DM_EFFECT_BLOCKER,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_DAMAGE,0,1)
 	--check for "Whenever this creature blocks/becomes blocked, no battle happens. (Both creatures stay tapped.)"
 	if not c:IsHasEffect(DM_EFFECT_NO_BLOCK_BATTLE) and not a:IsHasEffect(DM_EFFECT_NO_BE_BLOCKED_BATTLE) then
 		Duel.BreakEffect()
@@ -1518,7 +1500,7 @@ function Auxiliary.AddStaticEffectBlocker(c,s_range,o_range,targ_func)
 	e1:SetCode(EVENT_ATTACK_ANNOUNCE)
 	e1:SetProperty(EFFECT_FLAG_DELAY)
 	e1:SetRange(DM_LOCATION_BATTLE)
-	e1:SetCondition(Auxiliary.BlockerCondition())
+	e1:SetCondition(aux.AND(Auxiliary.BlockerCondition1(),aux.NOT(Auxiliary.BlockerCondition2)))
 	e1:SetCost(Auxiliary.BlockerCost)
 	e1:SetTarget(Auxiliary.BlockerTarget)
 	e1:SetOperation(Auxiliary.BlockerOperation)
@@ -1529,6 +1511,13 @@ function Auxiliary.AddStaticEffectBlocker(c,s_range,o_range,targ_func)
 	e2:SetTarget(targ_func)
 	e2:SetLabelObject(e1)
 	c:RegisterEffect(e2)
+	local e3=e1:Clone()
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_QUICK_F)
+	e3:SetProperty(0)
+	e3:SetCondition(aux.AND(Auxiliary.BlockerCondition1(),Auxiliary.BlockerCondition2))
+	local e4=e2:Clone()
+	e4:SetLabelObject(e3)
+	c:RegisterEffect(e4)
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_BLOCKER,nil,s_range,o_range,targ_func)
 end
 --function for a granted "Blocker" ability
@@ -1543,7 +1532,7 @@ function Auxiliary.RegisterEffectBlocker(c,tc,desc_id,reset_flag,reset_count)
 	e1:SetCode(EVENT_ATTACK_ANNOUNCE)
 	e1:SetProperty(EFFECT_FLAG_DELAY)
 	e1:SetRange(DM_LOCATION_BATTLE)
-	e1:SetCondition(Auxiliary.BlockerCondition())
+	e1:SetCondition(aux.AND(Auxiliary.BlockerCondition1(),aux.NOT(Auxiliary.BlockerCondition2)))
 	e1:SetTarget(Auxiliary.BlockerTarget)
 	e1:SetOperation(Auxiliary.BlockerOperation)
 	if tc==c then
@@ -1552,6 +1541,11 @@ function Auxiliary.RegisterEffectBlocker(c,tc,desc_id,reset_flag,reset_count)
 		e1:SetReset(RESET_EVENT+RESETS_STANDARD+reset_flag,reset_count)
 	end
 	tc:RegisterEffect(e1)
+	local e2=e1:Clone()
+	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_QUICK_F)
+	e2:SetProperty(0)
+	e2:SetCondition(aux.AND(Auxiliary.BlockerCondition1(),Auxiliary.BlockerCondition2))
+	tc:RegisterEffect(e2)
 	Auxiliary.RegisterEffectCustom(c,tc,desc_id,DM_EFFECT_BLOCKER,reset_flag,reset_count)
 end
 --"Shield trigger (When this spell is put into your hand from your shield zone, you may cast it immediately for no cost.)"
@@ -2140,11 +2134,12 @@ end
 --e.g. "Spiral Grass" (DM-02 10/55)
 function Auxiliary.AddSingleBlockEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
 	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e1:SetCategory(cate) end
 	e1:SetType(EFFECT_TYPE_SINGLE+typ)
-	e1:SetCode(EVENT_CUSTOM+DM_EVENT_BLOCK)
+	e1:SetCode(DM_EVENT_BATTLE_END)
 	if typ==EFFECT_TYPE_TRIGGER_O and prop then
 		e1:SetProperty(EFFECT_FLAG_DELAY+prop)
 	elseif typ==EFFECT_TYPE_TRIGGER_O then
@@ -2152,7 +2147,7 @@ function Auxiliary.AddSingleBlockEffect(c,desc_id,optional,targ_func,op_func,pro
 	elseif prop then
 		e1:SetProperty(prop)
 	end
-	if con_func then e1:SetCondition(con_func) end
+	e1:SetCondition(aux.AND(Auxiliary.SelfBlockedCondition,con_func))
 	if cost_func then e1:SetCost(cost_func) end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
@@ -2162,11 +2157,12 @@ end
 --e.g. "Agira, the Warlord Crawler" (DM-12 16/55)
 function Auxiliary.AddBlockEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
 	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e1:SetCategory(cate) end
 	e1:SetType(EFFECT_TYPE_FIELD+typ)
-	e1:SetCode(EVENT_CUSTOM+DM_EVENT_BLOCK)
+	e1:SetCode(DM_EVENT_BATTLE_END)
 	if typ==EFFECT_TYPE_TRIGGER_O and prop then
 		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY+prop)
 	elseif typ==EFFECT_TYPE_TRIGGER_O then
@@ -2175,7 +2171,7 @@ function Auxiliary.AddBlockEffect(c,desc_id,optional,targ_func,op_func,prop,con_
 		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
 	end
 	e1:SetRange(DM_LOCATION_BATTLE)
-	if con_func then e1:SetCondition(con_func) end
+	e1:SetCondition(aux.AND(Auxiliary.BlockedCondition,con_func))
 	if cost_func then e1:SetCost(cost_func) end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
@@ -3400,6 +3396,16 @@ function Auxiliary.SelfBattleWinCondition(e,tp,eg,ep,ev,re,r,rp)
 	return c:IsRelateToBattle() and c:IsOnField()
 end
 Auxiliary.sbwcon=Auxiliary.SelfBattleWinCondition
+--condition for "Whenever this creature blocks" + DM_EVENT_BATTLE_END
+--e.g. "Spiral Grass" (DM-02 10/55)
+function Auxiliary.SelfBlockedCondition(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.GetBlocker()==e:GetHandler()
+end
+--condition for "Whenever one of your creatures blocks" + DM_EVENT_BATTLE_END
+--e.g. "Agira, the Warlord Crawler" (DM-12 16/55)
+function Auxiliary.BlockedCondition(e,tp,eg,ep,ev,re,r,rp)
+	return eg:IsContains(Duel.GetBlocker())
+end
 --condition to check what a card's previous location was
 --e.g. "Bombersaur" (DM-02 36/55), "Altimeth, Holy Divine Dragon" (Game Original)
 function Auxiliary.PreviousLocationCondition(loc)
