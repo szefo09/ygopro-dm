@@ -170,7 +170,7 @@ function Card.IsCanBlock(c)
 end
 --check if a creature can break a shield
 function Card.IsCanBreakShield(c)
-	return not c:IsBlocked()
+	return true--and not c:IsHasEffect(DM_EFFECT_CANNOT_BREAK_SHIELD) --reserved
 end
 --return the number of shields a creature broke during the current turn
 function Card.GetBrokenShieldCount(c)
@@ -1450,6 +1450,10 @@ function Auxiliary.BlockerOperation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_OPSELECTED,1-tp,DM_DESC_BLOCKED)
 	--register flag effect for Duel.GetBlocker
 	c:RegisterFlagEffect(DM_EFFECT_BLOCKER,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_DAMAGE,0,1)
+	--raise event for "Whenever this creature becomes blocked"
+	Duel.RaiseSingleEvent(a,EVENT_CUSTOM+DM_EVENT_BECOMES_BLOCKED,e,0,0,0,0)
+	--raise event for "Whenever any of your creatures becomes blocked"
+	Duel.RaiseEvent(a,EVENT_CUSTOM+DM_EVENT_BECOMES_BLOCKED,e,0,0,0,0)
 	--check for "Whenever this creature blocks/becomes blocked, no battle happens. (Both creatures stay tapped.)"
 	if not c:IsHasEffect(DM_EFFECT_NO_BLOCK_BATTLE) and not a:IsHasEffect(DM_EFFECT_NO_BE_BLOCKED_BATTLE) then
 		Duel.BreakEffect()
@@ -1743,7 +1747,7 @@ function Auxiliary.EnableTapAbility(c,desc_id,targ_func,op_func,prop)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	if prop then e1:SetProperty(prop) end
 	e1:SetRange(DM_LOCATION_BATTLE)
-	e1:SetHintTiming(DM_TIMING_TAP_ABILITY,0)
+	e1:SetHintTiming(DM_TIMING_BATTLE,0)
 	e1:SetCondition(Auxiliary.TapAbilityCondition)
 	e1:SetCost(Auxiliary.SelfTapCost)
 	if targ_func then e1:SetTarget(targ_func) end
@@ -1769,7 +1773,7 @@ function Auxiliary.AddStaticEffectTapAbility(c,desc_id,targ_func1,op_func,s_rang
 	e1:SetCode(EVENT_FREE_CHAIN)
 	if prop then e1:SetProperty(prop) end
 	e1:SetRange(DM_LOCATION_BATTLE)
-	e1:SetHintTiming(DM_TIMING_TAP_ABILITY,0)
+	e1:SetHintTiming(DM_TIMING_BATTLE,0)
 	e1:SetCondition(Auxiliary.TapAbilityCondition)
 	e1:SetCost(Auxiliary.SelfTapCost)
 	if targ_func1 then e1:SetTarget(targ_func1) end
@@ -1803,8 +1807,12 @@ end
 function Auxiliary.EnableTurboRush(c,op_func)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(DM_DESC_TURBO_RUSH)
-	e1:SetType(EFFECT_TYPE_IGNITION)
+	e1:SetType(EFFECT_TYPE_QUICK_O)
+	e1:SetCode(EVENT_FREE_CHAIN)
+	e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
 	e1:SetRange(DM_LOCATION_BATTLE)
+	e1:SetCountLimit(1)
+	e1:SetHintTiming(DM_TIMING_BATTLE,0)
 	e1:SetCondition(Auxiliary.TurboRushCondition)
 	e1:SetTarget(Auxiliary.HintTarget)
 	e1:SetOperation(op_func)
@@ -1812,6 +1820,7 @@ function Auxiliary.EnableTurboRush(c,op_func)
 end
 function Auxiliary.TurboRushCondition(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():GetBrokenShieldCount()==0 and Duel.GetBrokenShieldCount(tp)>0
+		and Duel.GetCurrentChain()==0 and Duel.GetAttacker()==nil
 end
 --"Silent skill (After your other creatures untap, if this creature is tapped, you may keep it tapped instead and use its Silentskill ability.)"
 --e.g. "Kejila, the Hidden Horror" (DM-10 5/110)
@@ -3371,11 +3380,13 @@ Auxiliary.sbwcon=Auxiliary.SelfBattleWinCondition
 function Auxiliary.SelfBlockCondition(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetBlocker()==e:GetHandler()
 end
+Auxiliary.sblcon=Auxiliary.SelfBlockCondition
 --condition for "Whenever one of your creatures blocks" + DM_EVENT_BATTLE_END
 --e.g. "Agira, the Warlord Crawler" (DM-12 16/55)
 function Auxiliary.BlockCondition(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsContains(Duel.GetBlocker())
 end
+Auxiliary.blcon=Auxiliary.BlockCondition
 --condition to check what a card's previous location was
 --e.g. "Bombersaur" (DM-02 36/55), "Altimeth, Holy Divine Dragon" (Game Original)
 function Auxiliary.PreviousLocationCondition(loc)
