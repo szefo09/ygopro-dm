@@ -491,6 +491,8 @@ function Duel.SpecialSummon(targets,sumtype,sumplayer,target_player,nocheck,noli
 	local ct=0
 	for tc in aux.Next(targets) do
 		if Duel.GetLocationCount(target_player,DM_LOCATION_BATTLE)>0 then
+			--check for "This creature enters the battle zone tapped."
+			if tc:IsHasEffect(DM_EFFECT_ENTER_BZONE_TAPPED) then pos=POS_FACEUP_TAPPED end
 			if Duel.SpecialSummonStep(tc,sumtype,sumplayer,target_player,nocheck,nolimit,pos,zone) then
 				ct=ct+1
 			end
@@ -1061,7 +1063,6 @@ function Auxiliary.AddSummonProcedure(c)
 	e1:SetRange(LOCATION_HAND)
 	e1:SetTargetRange(POS_FACEUP_UNTAPPED,0)
 	e1:SetCondition(Auxiliary.NonEvolutionSummonCondition)
-	e1:SetTarget(Auxiliary.NonEvolutionSummonTarget)
 	e1:SetOperation(Auxiliary.NonEvolutionSummonOperation)
 	e1:SetValue(DM_SUMMON_TYPE_NORMAL)
 	c:RegisterEffect(e1)
@@ -1078,11 +1079,6 @@ function Auxiliary.NonEvolutionSummonCondition(e,c)
 	local g=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MANA,0,nil)
 	if Duel.GetLocationCount(tp,DM_LOCATION_BATTLE)<=0 or g:GetCount()<cost or civ_count>cost then return false end
 	return Auxiliary.PayManaCondition(g,c,civ_count)
-end
-function Auxiliary.NonEvolutionSummonTarget(e,tp,eg,ep,ev,re,r,rp,chk,c)
-	--check for "This creature enters the battle zone tapped."
-	if c:IsHasEffect(DM_EFFECT_ENTER_TAPPED) then e:SetTargetRange(POS_FACEUP_TAPPED,0) end
-	return true
 end
 function Auxiliary.PayManaCondition(g,c,civ_count)
 	local b1=g:IsExists(Card.IsCivilization,1,nil,c:GetFirstCivilization())
@@ -1251,10 +1247,7 @@ function Auxiliary.EvolutionTarget(f)
 					Duel.HintSelection(g)
 					g:KeepAlive()
 					e:SetLabelObject(g)
-					--check for "This creature enters the battle zone tapped."
-					if c:IsHasEffect(DM_EFFECT_ENTER_TAPPED) then
-						e:SetTargetRange(POS_FACEUP_TAPPED,0)
-					else e:SetTargetRange(pos,0) end
+					e:SetTargetRange(pos,0)
 					return true
 				else return false end
 			end
