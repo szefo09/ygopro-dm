@@ -9,8 +9,8 @@ end
 scard.duel_masters_card=true
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	local g1=Duel.GetMatchingGroup(Card.IsAbleToMana,tp,LOCATION_HAND,0,nil)
-	if g1:GetCount()==0 or Duel.SendtoMana(g1,POS_FACEUP_UNTAPPED,REASON_EFFECT)==0 then return end
-	local ct=g1:FilterCount(dm.ManaZoneFilter(),nil)
+	if g1:GetCount()==0 then return end
+	local ct=Duel.SendtoMana(g1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_RTOHAND)
 	local g2=Duel.SelectMatchingCard(tp,dm.ManaZoneFilter(Card.IsAbleToHand),tp,DM_LOCATION_MANA,0,ct,ct,nil)
 	if g2:GetCount()==0 then return end

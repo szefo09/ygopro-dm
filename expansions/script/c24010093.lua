@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--power attacker
 	dm.EnablePowerAttacker(c,4000)
 	--double breaker
-	dm.EnableBreaker(c)
+	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--cannot untap
 	dm.EnableEffectCustom(c,DM_EFFECT_CANNOT_CHANGE_POS_ABILITY,scard.abcon,DM_LOCATION_MANA,0,scard.abtg)
 end
