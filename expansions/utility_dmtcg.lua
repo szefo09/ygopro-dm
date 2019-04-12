@@ -111,7 +111,7 @@ function Card.IsTapped(c)
 end
 --check if a card can be untapped
 function Card.IsAbleToUntap(c)
-	if c:IsHasEffect(DM_EFFECT_CANNOT_CHANGE_POS_ABILITY) or not c:IsTapped() then return false end
+	if c:IsHasEffect(DM_EFFECT_CANNOT_CHANGE_POS_ABILITY) then return false end
 	if c:IsLocation(LOCATION_REMOVED) then
 		return c:IsAbleToGrave()
 	elseif c:IsLocation(LOCATION_MZONE) then
@@ -120,30 +120,9 @@ function Card.IsAbleToUntap(c)
 end
 --check if a card can be tapped
 function Card.IsAbleToTap(c)
-	if c:IsHasEffect(DM_EFFECT_CANNOT_CHANGE_POS_ABILITY) or not c:IsUntapped() then return false end
+	if c:IsHasEffect(DM_EFFECT_CANNOT_CHANGE_POS_ABILITY) then return false end
 	if c:IsLocation(LOCATION_GRAVE) then
 		return c:IsAbleToRemove()
-	elseif c:IsLocation(LOCATION_MZONE) then
-		return c:IsAttackPos()
-	else return false end
-end
---check if a card can be untapped as a cost
---reserved
---[[
-function Card.IsAbleToUntapAsCost(c)
-	if not c:IsTapped() then return false end
-	if c:IsLocation(LOCATION_REMOVED) then
-		return c:IsAbleToGraveAsCost()
-	elseif c:IsLocation(LOCATION_MZONE) then
-		return c:IsDefensePos()
-	else return false end
-end
-]]
---check if a card can be tapped as a cost
-function Card.IsAbleToTapAsCost(c)
-	if not c:IsUntapped() then return false end
-	if c:IsLocation(LOCATION_GRAVE) then
-		return c:IsAbleToRemoveAsCost()
 	elseif c:IsLocation(LOCATION_MZONE) then
 		return c:IsAttackPos()
 	else return false end
@@ -1088,7 +1067,7 @@ function Auxiliary.AddSummonProcedure(c)
 	c:RegisterEffect(e1)
 end
 function Auxiliary.PayManaFilter(c)
-	return c:IsUntapped() and c:IsAbleToTapAsCost()
+	return c:IsUntapped()
 end
 function Auxiliary.NonEvolutionSummonCondition(e,c)
 	if c==nil then return true end
@@ -2147,7 +2126,7 @@ function Auxiliary.AddSingleBlockEffect(c,desc_id,optional,targ_func,op_func,pro
 	elseif prop then
 		e1:SetProperty(prop)
 	end
-	e1:SetCondition(aux.AND(Auxiliary.SelfBlockedCondition,con_func))
+	e1:SetCondition(aux.AND(Auxiliary.SelfBlockCondition,con_func))
 	if cost_func then e1:SetCost(cost_func) end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
@@ -2171,7 +2150,7 @@ function Auxiliary.AddBlockEffect(c,desc_id,optional,targ_func,op_func,prop,con_
 		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
 	end
 	e1:SetRange(DM_LOCATION_BATTLE)
-	e1:SetCondition(aux.AND(Auxiliary.BlockedCondition,con_func))
+	e1:SetCondition(aux.AND(Auxiliary.BlockCondition,con_func))
 	if cost_func then e1:SetCost(cost_func) end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
@@ -3398,12 +3377,12 @@ end
 Auxiliary.sbwcon=Auxiliary.SelfBattleWinCondition
 --condition for "Whenever this creature blocks" + DM_EVENT_BATTLE_END
 --e.g. "Spiral Grass" (DM-02 10/55)
-function Auxiliary.SelfBlockedCondition(e,tp,eg,ep,ev,re,r,rp)
+function Auxiliary.SelfBlockCondition(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetBlocker()==e:GetHandler()
 end
 --condition for "Whenever one of your creatures blocks" + DM_EVENT_BATTLE_END
 --e.g. "Agira, the Warlord Crawler" (DM-12 16/55)
-function Auxiliary.BlockedCondition(e,tp,eg,ep,ev,re,r,rp)
+function Auxiliary.BlockCondition(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsContains(Duel.GetBlocker())
 end
 --condition to check what a card's previous location was
