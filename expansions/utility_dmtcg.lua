@@ -1451,9 +1451,9 @@ function Auxiliary.BlockerOperation(e,tp,eg,ep,ev,re,r,rp)
 	--register flag effect for Duel.GetBlocker
 	c:RegisterFlagEffect(DM_EFFECT_BLOCKER,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_DAMAGE,0,1)
 	--raise event for "Whenever this creature becomes blocked"
-	Duel.RaiseSingleEvent(a,EVENT_CUSTOM+DM_EVENT_BECOMES_BLOCKED,e,0,0,0,0)
+	Duel.RaiseSingleEvent(a,EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED,e,0,0,0,0)
 	--raise event for "Whenever any of your creatures becomes blocked"
-	Duel.RaiseEvent(a,EVENT_CUSTOM+DM_EVENT_BECOMES_BLOCKED,e,0,0,0,0)
+	Duel.RaiseEvent(a,EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED,e,0,0,0,0)
 	--check for "Whenever this creature blocks/becomes blocked, no battle happens. (Both creatures stay tapped.)"
 	if not c:IsHasEffect(DM_EFFECT_NO_BLOCK_BATTLE) and not a:IsHasEffect(DM_EFFECT_NO_BE_BLOCKED_BATTLE) then
 		Duel.BreakEffect()
@@ -2234,7 +2234,7 @@ function Auxiliary.AddSingleBecomeBlockedEffect(c,desc_id,optional,targ_func,op_
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e1:SetCategory(cate) end
 	e1:SetType(EFFECT_TYPE_SINGLE+typ)
-	e1:SetCode(EVENT_CUSTOM+DM_EVENT_BECOMES_BLOCKED)
+	e1:SetCode(EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED)
 	if typ==EFFECT_TYPE_TRIGGER_O and prop then
 		e1:SetProperty(EFFECT_FLAG_DELAY+prop)
 	elseif typ==EFFECT_TYPE_TRIGGER_O then
