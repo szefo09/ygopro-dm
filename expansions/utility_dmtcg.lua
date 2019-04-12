@@ -491,7 +491,7 @@ function Duel.SpecialSummon(targets,sumtype,sumplayer,target_player,nocheck,noli
 	local ct=0
 	for tc in aux.Next(targets) do
 		if Duel.GetLocationCount(target_player,DM_LOCATION_BATTLE)>0 then
-			--check for "This creature enters the battle zone tapped."
+			--check for "This creature is put into the battle zone tapped."
 			if tc:IsHasEffect(DM_EFFECT_ENTER_BZONE_TAPPED) then pos=POS_FACEUP_TAPPED end
 			if Duel.SpecialSummonStep(tc,sumtype,sumplayer,target_player,nocheck,nolimit,pos,zone) then
 				ct=ct+1
@@ -718,14 +718,11 @@ function Duel.DMSendtoGrave(targets,reason)
 	return ct
 end
 --put a card from the top of a player's deck into the graveyard
---reserved
---[[
 function Duel.DMSendDecktoptoGrave(player,count,reason)
 	local g=Duel.GetDecktopGroup(player,count)
 	Duel.DisableShuffleCheck()
 	return Duel.DMSendtoGrave(g,reason)
 end
-]]
 --check if a player can put a card from the top of their deck into the graveyard
 --reserved
 --[[
@@ -1615,7 +1612,7 @@ function Auxiliary.EnablePowerAttacker(c,val,con_func)
 end
 --"Each of your creatures has "Power attacker +N000"."
 --e.g. "Überdragon Jabaha" (DM-03 43/55), "Terradragon Hulcoon Berga" (Game Original)
-function Auxiliary.AddStaticEffectPowerAttacker(c,val,s_range,o_range,targ_func)
+function Auxiliary.AddStaticEffectPowerAttacker(c,val,s_range,o_range,targ_func,con_func)
 	local s_range=s_range or LOCATION_ALL
 	local o_range=o_range or 0
 	local targ_func=targ_func or aux.TRUE
@@ -1630,6 +1627,7 @@ function Auxiliary.AddStaticEffectPowerAttacker(c,val,s_range,o_range,targ_func)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
 	e2:SetRange(DM_LOCATION_BATTLE)
 	e2:SetTargetRange(s_range,o_range)
+	if con_func then e2:SetCondition(con_func) end
 	e2:SetTarget(targ_func)
 	e2:SetLabelObject(e1)
 	c:RegisterEffect(e2)
@@ -2390,7 +2388,7 @@ function Auxiliary.AddTurnStartEffect(c,desc_id,p,optional,targ_func,op_func,con
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_FIELD+typ)
-	e1:SetCode(EVENT_PHASE+PHASE_DRAW)
+	e1:SetCode(DM_EVENT_UNTAP_STEP)
 	if prop then e1:SetProperty(prop) end
 	e1:SetRange(DM_LOCATION_BATTLE)
 	e1:SetCountLimit(1)
