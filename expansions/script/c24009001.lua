@@ -12,4 +12,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 scard.tstg=dm.CheckDeckFunction(PLAYER_SELF)
-scard.tsop=dm.DecktopSendtoShieldOperation(PLAYER_SELF,1)
+function scard.tsop(e,tp,eg,ep,ev,re,r,rp)
+	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
+	Duel.SendDecktoptoShield(tp,1)
+end
