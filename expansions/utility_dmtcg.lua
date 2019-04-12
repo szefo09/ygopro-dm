@@ -1435,20 +1435,39 @@ function Auxiliary.EnableBlocker(c,con_func,desc,f)
 	e1:SetCode(EVENT_ATTACK_ANNOUNCE)
 	e1:SetProperty(EFFECT_FLAG_DELAY)
 	e1:SetRange(DM_LOCATION_BATTLE)
-	e1:SetCondition(aux.AND(Auxiliary.BlockerCondition(f),con_func))
+	e1:SetCondition(aux.AND(Auxiliary.BlockerCondition1(f),aux.NOT(Auxiliary.BlockerCondition2),con_func))
 	e1:SetCost(Auxiliary.BlockerCost)
 	e1:SetTarget(Auxiliary.BlockerTarget)
 	e1:SetOperation(Auxiliary.BlockerOperation)
 	c:RegisterEffect(e1)
+	--block if able
+	local e2=Effect.CreateEffect(c)
+	if desc then
+		e2:SetDescription(desc)
+	else
+		e2:SetDescription(DM_DESC_BLOCKER)
+	end
+	e2:SetCategory(DM_CATEGORY_BLOCKER)
+	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_QUICK_F)
+	e2:SetCode(EVENT_ATTACK_ANNOUNCE)
+	e2:SetRange(DM_LOCATION_BATTLE)
+	e2:SetCondition(aux.AND(Auxiliary.BlockerCondition1(f),Auxiliary.BlockerCondition2,con_func))
+	e2:SetCost(Auxiliary.BlockerCost)
+	e2:SetTarget(Auxiliary.BlockerTarget)
+	e2:SetOperation(Auxiliary.BlockerOperation)
+	c:RegisterEffect(e2)
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_BLOCKER,con_func)
 end
-function Auxiliary.BlockerCondition(f)
+function Auxiliary.BlockerCondition1(f)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local d=Duel.GetAttackTarget()
 				if d and d==e:GetHandler() then return false end
 				local a=Duel.GetAttacker()
 				return a:GetControler()~=tp and (not f or f(a))
 			end
+end
+function Auxiliary.BlockerCondition2(e,tp,eg,ep,ev,re,r,rp)
+	return e:GetHandler():IsHasEffect(DM_EFFECT_MUST_BLOCK)
 end
 function Auxiliary.BlockerCost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
@@ -3545,6 +3564,7 @@ Auxiliary.szfilter=Auxiliary.ShieldZoneFilter
 return Auxiliary
 --[[
 	References
-		1. Voltanis the Adjudicator - prevent multiple "shield trigger" abilities from chaining
-		https://github.com/Fluorohydride/ygopro-scripts/blob/967a2fe/c20951752.lua#L12
+		1. Prevent multiple "shield trigger" abilities from chaining
+			1.1. Voltanis the Adjudicator
+			https://github.com/Fluorohydride/ygopro-scripts/blob/967a2fe/c20951752.lua#L12
 ]]
