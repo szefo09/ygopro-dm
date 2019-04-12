@@ -14,10 +14,10 @@ end
 function scard.tsop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOSHIELD)
 	local g1=Duel.SelectMatchingCard(tp,Card.IsAbleToShield,tp,LOCATION_HAND,0,1,1,nil)
-	if g1:GetCount()==0 or not Duel.SendtoShield(g1,tp) then return end
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_ATOHAND)
 	local g2=Duel.SelectMatchingCard(tp,dm.ShieldZoneFilter(scard.thfilter),tp,DM_LOCATION_SHIELD,0,1,1,nil,e)
 	if g2:GetCount()==0 then return end
 	Duel.SetTargetCard(g2)
 	Duel.SendtoHand(g2,PLAYER_OWNER,REASON_EFFECT)
+	if g1:GetCount()==0 or not Duel.SendtoShield(g1,tp) then return end
 end
