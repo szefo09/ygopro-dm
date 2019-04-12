@@ -28,7 +28,6 @@ end
 	References
 		1. Dark Magical Circle
 		https://github.com/Fluorohydride/ygopro-scripts/blob/cb54f7a/c47222536.lua#L38
-		
 		2. World Legacy Survivor
 		https://github.com/Fluorohydride/ygopro-scripts/blob/97e53fe/c31706048.lua#L24
 ]]

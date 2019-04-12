@@ -29,7 +29,6 @@ end
 	References
 		1. Ma'at
 		https://github.com/Fluorohydride/ygopro-scripts/blob/2c4f0ca/c18631392.lua#L71
-		
 		2. Spellbook Library of the Heliosphere
 		https://github.com/Fluorohydride/ygopro-scripts/blob/6324c1c/c20822520.lua#L65
 ]]
