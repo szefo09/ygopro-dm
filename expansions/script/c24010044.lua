@@ -15,7 +15,7 @@ function scard.dhcon(e,tp,eg,ep,ev,re,r,rp)
 end
 scard.dhtg=dm.CheckCardFunction(aux.TRUE,LOCATION_HAND,0)
 function scard.retfilter(c,e)
-	return c:IsFaceup() and c:IsCanBeEffectTarget(e)
+	return c:IsFaceup() and c:IsAbleToHand() and c:IsCanBeEffectTarget(e)
 end
 function scard.dhop(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end

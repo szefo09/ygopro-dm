@@ -11,7 +11,7 @@ end
 scard.duel_masters_card=true
 function scard.abcon(e,tp,eg,ep,ev,re,r,rp)
 	local d=Duel.GetAttackTarget()
-	return d and d:IsCreature() and d:IsPowerAbove(6000)
+	return d and d:IsFaceup() and d:IsPowerAbove(6000)
 end
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

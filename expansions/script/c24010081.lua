@@ -16,13 +16,12 @@ end
 scard.duel_masters_card=true
 function scard.dhcon(e,tp,eg,ep,ev,re,r,rp)
 	local d=Duel.GetAttackTarget()
-	return d and d:IsControler(tp) and d:IsFaceup()
+	return d and d:IsFaceup() and d:IsControler(tp)
 end
 function scard.dhop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
-	local ct=Duel.DiscardHand(tp,aux.TRUE,0,1,REASON_EFFECT)
-	if ct==0 then return end
+	if Duel.DiscardHand(tp,aux.TRUE,0,1,REASON_EFFECT)==0 then return end
 	--power up
 	dm.RegisterEffectUpdatePower(c,Duel.GetAttackTarget(),1,3000)
 end

@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.retfilter1(c)
-	return c:IsFaceup() and c:IsCivilization(DM_CIVILIZATION_NATURE) and c:IsAbleToHand()
+	return c:IsFaceup() and c:IsAbleToHand()
 end
 function scard.chkcfilter(c)
 	return scard.retfilter1(c)

@@ -15,7 +15,7 @@ function scard.tmfilter(c)
 end
 scard.tmtg=dm.TargetCardFunction(PLAYER_SELF,scard.tmfilter,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,0,1,DM_HINTMSG_TOMANA)
 function scard.tbfilter(c,e,tp,cost)
-	return c:IsCreature() and c:IsManaCostBelow(cost)
+	return c:IsCreature() and not c:IsEvolution() and c:IsManaCostBelow(cost)
 		and c:IsCanSendtoBattle(e,0,tp,false,false) and c:IsCanBeEffectTarget(e)
 end
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
