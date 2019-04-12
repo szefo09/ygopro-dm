@@ -32,6 +32,7 @@ CARD_MIRACLE_QUEST					=24005019	--c:RegisterFlagEffect(DM_EFFECT_BREAK_SHIELD,R
 --Win Reason
 DM_WIN_REASON_INVALID				=0x4d		--"Deck was invalid."
 DM_WIN_REASON_DECKOUT				=0x4e		--"Ran out of cards in the deck."
+DM_WIN_REASON_BOMBAZAR				=0x4f		--"Won due to the ability of [Bombazar, Dragon of Destiny]."
 --Setname
 --↑Race
 DM_RACE_LIGHT_BRINGER				=0x1		--"Chilias, the Oracle" (DM-01 1/110)
@@ -229,8 +230,9 @@ DM_EFFECT_BREAK_SHIELD_REPLACE		=723	--When a creature would break a shield, do 
 DM_EFFECT_STEALTH					=724	--Stealth ("Kizar Basiku, the Outrageous" DM-07 9/55)
 DM_EFFECT_CHARGER					=725	--Charger ("Lightning Charger" DM-07 15/55)
 DM_EFFECT_DONOT_DISCARD_SHIELD_TRIGGER=726	--Do not discard a spell after using its "Shield Trigger" ability ("Super Terradragon Bailas Gale" DM-08 S5/S5)
-DM_EFFECT_MUST_BLOCK				=727	--RESERVED	--Creature must block another creature if able ("Storm Wrangler, the Furious" DM-09 51/55)
+DM_EFFECT_MUST_BLOCK				=727	--Creature must block another creature if able ("Storm Wrangler, the Furious" DM-09 51/55)
 DM_EFFECT_SILENT_SKILL				=728	--Keep creature tapped during untap step to use its "Silent Skill" ability ("Kejila, the Hidden Horror" DM-10 5/110)
+DM_EFFECT_CANNOT_USE_TAP_ABILITY	=798	--Player cannot use the Tap ability of their creatures ("Lockdown Lizard" DM-11 39/55)
 DM_EFFECT_WINS_ALL_BATTLES			=799	--Wins All Battles ("Marshias, Spirit of the Sun" DM-14 S1/S10)		
 --Abilities that trigger or actions that occur at the appropriate event
 DM_EVENT_UNTAP_STEP					=EVENT_PREDRAW					--Start of Turn Step (Untap Step)
@@ -246,8 +248,8 @@ DM_EVENT_BECOMES_BLOCKED			=CARD_CREEPING_PLAGUE			--When a creature becomes blo
 DM_EVENT_BLOCK						=CARD_SPIRAL_GRASS				--When a creature blocks
 DM_EVENT_ATTACK_PLAYER				=CARD_MARROW_OOZE_THE_TWISTER	--When a creature attacks a player
 DM_EVENT_BREAK_SHIELD				=CARD_BRUTAL_CHARGE				--When a creature finishes attacking the opponent and broke a shield
-DM_EVENT_SHIELD_TO_HAND				=CARD_BENZO_THE_HIDDEN_FURY		--When a shield is put into a player's hand, that player can use its "Shield Trigger" ability
-DM_EVENT_BECOME_SHIELD_TRIGGER		=CARD_WOLFIS_BLUE_DIVINE_DRAGON	--When a shield becomes broken, it may get "Shield Trigger"
+DM_EVENT_TRIGGER_SHIELD_TRIGGER		=CARD_BENZO_THE_HIDDEN_FURY		--Allow a player to use a card's "Shield Trigger" ability without it having being broken as a shield
+DM_EVENT_BECOME_SHIELD_TRIGGER		=CARD_WOLFIS_BLUE_DIVINE_DRAGON	--A card gets "Shield Trigger" (Can be summoned or cast for no cost)
 --Category (ability classification)
 DM_CATEGORY_BLOCKER					=CATEGORY_NEGATE	--"Blocker" ability, needed for unblockable abilities ("Laser Wing" DM-01 11/110)
 DM_CATEGORY_SHIELD_TRIGGER			=CATEGORY_FLIP		--"Shield Trigger" ability, needed for "Emperor Quazla" (DM-08 S2/S5)
@@ -364,7 +366,7 @@ DM_HINTMSG_CREATURE					=610	--"Choose a creature."
 DM_HINTMSG_EVOLVE					=611	--"Choose a creature to evolve."
 DM_HINTMSG_CONFIRM					=612	--"Choose a card to look at it."
 DM_HINTMSG_TODECK					=613	--"Choose a card to return to its owner's deck."
-DM_HINTMSG_TOSHIELD					=614	--"Choose a card to add to your shields face-down."
+DM_HINTMSG_TOSHIELD					=614	--"Choose a card to add to its owner's shields face-down."
 DM_HINTMSG_TOBATTLE					=615	--"Choose a creature to put into the battle zone."
 --Question Hint Message
 DM_QHINTMSG_DRAW					=700	--"Draw a card?"

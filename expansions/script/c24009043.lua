@@ -25,5 +25,5 @@ end
 --[[
 	References
 		1. Performapal Sellshell Crab
-		https://github.com/Fluorohydride/ygopro-scripts/blob/2c4f0cad97c65971f2a2a813f93b11db9e3ac88f/c23377694.lua#L68
+		https://github.com/Fluorohydride/ygopro-scripts/blob/2c4f0ca/c23377694.lua#L68
 ]]

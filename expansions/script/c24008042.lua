@@ -18,9 +18,13 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetDescription(aux.Stringid(sid,0))
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e1:SetCode(EVENT_ATTACK_ANNOUNCE)
-	e1:SetProperty(DM_EFFECT_FLAG_CHAIN_LIMIT)
-	e1:SetTarget(dm.CheckCardFunction(scard.desfilter,0,DM_LOCATION_BATTLE))
-	e1:SetOperation(dm.DestroyOperation(tp,scard.desfilter,0,DM_LOCATION_BATTLE,1))
+	e1:SetProperty(DM_EFFECT_FLAG_CHAIN_LIMIT+EFFECT_FLAG_CARD_TARGET)
+	e1:SetTarget(dm.TargetCardFunction(tp,scard.desfilter,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_DESTROY))
+	e1:SetOperation(dm.TargetDestroyOperation)
 	e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
 	c:RegisterEffect(e1)
 end
+--[[
+	Notes
+		1. Script is based on the Japanese rules text
+]]

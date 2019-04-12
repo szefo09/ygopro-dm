@@ -12,11 +12,9 @@ function scard.tbfilter(c,e,tp)
 	return c:DMIsRace(DM_RACE_DRAGON) and c:IsCanSendtoBattle(e,0,tp,false,false)
 end
 function scard.tbop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetFieldGroup(tp,LOCATION_DECK,0)
-	Duel.ConfirmCards(tp,g)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOBATTLE)
-	local tc=g:FilterSelect(tp,scard.tbfilter,0,1,nil,e,tp):GetFirst()
-	if not tc or not Duel.SendtoBattleStep(tc,0,tp,tp,false,false,POS_FACEUP_UNTAPPED) then return Duel.ShuffleDeck(tp) end
+	local tc=Duel.SelectMatchingCard(tp,scard.tbfilter,tp,LOCATION_DECK,0,0,1,nil,e,tp):GetFirst()
+	if not tc or not Duel.SendtoBattleStep(tc,0,tp,tp,false,false,POS_FACEUP_UNTAPPED) then return end
 	local c=e:GetHandler()
 	--speed attacker
 	dm.RegisterEffectCustom(c,tc,2,DM_EFFECT_SPEED_ATTACKER)
