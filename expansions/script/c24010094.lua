@@ -3,8 +3,6 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
-	--shield trigger
-	dm.EnableShieldTrigger(c)
 	--get ability
 	dm.AddSpellCastEffect(c,0,nil,scard.abop)
 end
