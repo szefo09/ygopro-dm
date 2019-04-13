@@ -9,12 +9,12 @@ function scard.initial_effect(c)
 	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.drop)
 end
 scard.duel_masters_card=true
-function scard.draw(player,count)
+function scard.draw(player)
 	if Duel.IsPlayerCanDraw(player,1) and Duel.SelectYesNo(player,DM_QHINTMSG_DRAW) then
-		Duel.Draw(player,count,REASON_EFFECT)
+		Duel.Draw(player,1,REASON_EFFECT)
 	end
 end
 function scard.drop(e,tp,eg,ep,ev,re,r,rp)
-	scard.draw(tp,1)
-	scard.draw(1-tp,1)
+	scard.draw(tp)
+	scard.draw(1-tp)
 end

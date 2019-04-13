@@ -7,6 +7,5 @@ function scard.initial_effect(c)
 	dm.EnableWaveStriker(c)
 	dm.AddEffectDescription(c,0,dm.WaveStrikerCondition)
 	dm.EnableUpdatePower(c,1000,dm.WaveStrikerCondition,DM_LOCATION_BATTLE,0)
-	dm.AddEffectDescription(c,1,dm.WaveStrikerCondition)
 end
 scard.duel_masters_card=true

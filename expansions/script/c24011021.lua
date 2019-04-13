@@ -8,4 +8,4 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 scard.rettg=dm.CheckCardFunction(dm.ManaZoneFilter(Card.IsAbleToHand),DM_LOCATION_MANA,0)
-scard.retop=dm.SendtoHandOperation(PLAYER_SELF,dm.ManaZoneFilter(Card.IsAbleToHand),DM_LOCATION_MANA,0,1,3)
+scard.retop=dm.SendtoHandOperation(PLAYER_SELF,dm.ManaZoneFilter(),DM_LOCATION_MANA,0,1,3)
