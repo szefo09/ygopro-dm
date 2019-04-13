@@ -179,7 +179,7 @@ DM_CIVILIZATIONS_LWDFN				=DM_CIVILIZATIONS_LW+DM_CIVILIZATIONS_DF+DM_CIVILIZATI
 DM_REASON_BREAK						=0x20000000		--Reason for breaking a player's shield
 --Summon Type
 DM_SUMMON_TYPE_NORMAL				=0x49000000		--Summon a creature by paying its mana cost(SUMMON_TYPE_XYZ)
-DM_SUMMON_TYPE_EVOLUTION			=0x49000100		--Summon a creature by evolving a creature in the battle zone(SUMMON_TYPE_XYZ+0x100000)
+DM_SUMMON_TYPE_EVOLUTION			=0x49000100		--Summon a creature by evolving a creature in the battle zone(SUMMON_TYPE_XYZ+0x100)
 --Player
 PLAYER_OWNER						=nil	--player=PLAYER_OWNER in Duel.Sendto..(targets, player, reason)
 PLAYER_SELF							=0		--player=PLAYER_SELF in Effect.SetCondition(Auxiliary.Function(player)), etc.

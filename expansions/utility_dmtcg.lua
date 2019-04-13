@@ -509,26 +509,30 @@ Duel.SendtoBattle=Duel.SpecialSummon
 Duel.SendtoBattleStep=Duel.SpecialSummonStep
 Duel.SendtoBattleComplete=Duel.SpecialSummonComplete
 --untap/tap a card in the battle/mana zone
---Note: Added parameter reason for abilities that check if a card was untapped at the start of the turn
 local duel_change_position=Duel.ChangePosition
-function Duel.ChangePosition(targets,pos,reason)
+function Duel.ChangePosition(targets,pos)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
-	local reason=reason or 0
-	local ct1=0
+	local g=Group.CreateGroup()
+	local ct=0
 	for tc in aux.Next(targets) do
 		if pos==POS_FACEUP_UNTAPPED and tc:IsAbleToUntap() then
 			if tc:IsLocation(LOCATION_REMOVED) then
-				ct1=ct1+Duel.SendtoGrave(tc,reason)
+				ct=ct+Duel.SendtoGrave(tc,0)
+				Duel.RaiseSingleEvent(tc,EVENT_CHANGE_POS,tc:GetReasonEffect(),0,0,0,0)
+				g:AddCard(tc)
 			end
 		elseif pos==POS_FACEUP_TAPPED and tc:IsAbleToTap() then
 			if tc:IsLocation(LOCATION_GRAVE) then
-				ct1=ct1+Duel.Remove(tc,POS_FACEDOWN,reason)
+				ct=ct+Duel.Remove(tc,POS_FACEDOWN,0)
+				Duel.RaiseSingleEvent(tc,EVENT_CHANGE_POS,tc:GetReasonEffect(),0,0,0,0)
+				g:AddCard(tc)
 			end
 		end
 	end
-	if ct1>0 then Duel.RaiseEvent(targets,EVENT_CHANGE_POS,Effect.GlobalEffect(),0,0,0,0) end
-	local ct2=duel_change_position(targets,pos,reason)
-	return ct1+ct2
+	if g:GetCount()>0 then
+		Duel.RaiseEvent(g,EVENT_CHANGE_POS,Effect.GlobalEffect(),0,0,0,0)
+	end
+	return ct+duel_change_position(targets,pos)
 end
 --show a player a card
 --Note: Added parameter turn_faceup to keep a shield face up
@@ -1003,7 +1007,7 @@ function Duel.CastFree(targets)
 	for tc in aux.Next(targets) do
 		Duel.DisableShuffleCheck(true)
 		Duel.SendtoHand(tc,PLAYER_OWNER,REASON_RULE)
-		Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_CAST_FREE,Effect.CreateEffect(tc),0,0,0,0)
+		Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_CAST_FREE,tc:GetReasonEffect(),0,0,0,0)
 		Duel.DisableShuffleCheck(false)
 	end
 end

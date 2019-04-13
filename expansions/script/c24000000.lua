@@ -342,7 +342,7 @@ function scard.posop1(e,tp,eg,ep,ev,re,r,rp)
 	local g1=Duel.GetMatchingGroup(scard.posfilter1,turnp,DM_LOCATION_BATTLE,0,nil)
 	local g2=Duel.GetMatchingGroup(Card.IsTapped,turnp,DM_LOCATION_MANA,0,nil)
 	g1:Merge(g2)
-	Duel.ChangePosition(g1,POS_FACEUP_UNTAPPED,REASON_RULE)
+	Duel.ChangePosition(g1,POS_FACEUP_UNTAPPED)
 end
 --check for creatures that did not use "silent skill"
 function scard.posfilter2(c)
@@ -354,7 +354,7 @@ function scard.poscon2(e)
 end
 function scard.posop2(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(scard.posfilter2,Duel.GetTurnPlayer(),DM_LOCATION_BATTLE,0,nil)
-	Duel.ChangePosition(g,POS_FACEUP_UNTAPPED,REASON_RULE)
+	Duel.ChangePosition(g,POS_FACEUP_UNTAPPED)
 end
 --charge
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
