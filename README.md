@@ -79,12 +79,10 @@ If you do not build your deck according to the following rules, you will lose th
 <details>
 <summary>OT</summary>
 
-- `0x5` = OCG only card (`0x1` OCG + `0x4` Anime/DIY)
-- `0x6` = TCG only card (`0x2` TCG + `0x4` Anime/DIY)
-- `0x7` = OCG + TCG card (`0x1` OCG + `0x2` TCG + `0x4` Anime/DIY)
-- `0x21` = OCG only + game original card (`0x1` OCG + `0x4` Anime/DIY + `0x16` Video Game)
-- `0x22` = TCG only + game original card (`0x2` TCG + `0x4` Anime/DIY + `0x16` Video Game)
-- `0x23` = OCG + TCG + game original card (`0x1` OCG + `0x2` TCG + `0x4` Anime/DIY + `0x16` Video Game)
+- `0x1` = OCG only card
+- `0x2` = TCG only card
+- `0x3` = OCG + TCG card
+- `0x4` = Game Original/Custom card
 </details>
 <details>
 <summary>Category</summary>
