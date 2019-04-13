@@ -24,7 +24,7 @@ function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 		for mc in aux.Next(mg) do
 			g2:AddCard(mc)
 		end
-		Duel.DMSendtoGrave(tc1,REASON_EFFECT)
+		Duel.SendtoMana(tc1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 		--workaround to keep stacked pile
 		local tc2=g2:GetFirst()
 		Duel.MoveToField(tc2,tp,tc1:GetControler(),DM_LOCATION_BATTLE,pos,true)
