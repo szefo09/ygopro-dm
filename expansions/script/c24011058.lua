@@ -31,6 +31,7 @@ function scard.retop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TARGET)
 	local g3=Duel.SelectMatchingCard(tp,dm.ManaZoneFilter(Card.IsCanBeEffectTarget),tp,0,DM_LOCATION_MANA,2,2,nil,e)
 	if g3:GetCount()>0 then
+		Duel.BreakEffect()
 		Duel.SetTargetCard(g3)
 		Duel.Hint(HINT_SELECTMSG,1-tp,DM_HINTMSG_RTOHAND)
 		local g4=g3:FilterSelect(1-tp,scard.retfilter2,1,1,nil,e)

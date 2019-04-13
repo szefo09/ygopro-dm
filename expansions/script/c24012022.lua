@@ -3,8 +3,11 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
+	--shield trigger
+	dm.EnableShieldTrigger(c)
 	--tap
 	dm.AddSpellCastEffect(c,0,scard.postg,scard.posop,EFFECT_FLAG_CARD_TARGET)
+	dm.AddShieldTriggerCastEffect(c,0,scard.postg,scard.posop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 function scard.posfilter(c)
