@@ -137,7 +137,7 @@ DM_TYPE_NO_ABILITY					=TYPE_TUNER				--Creature that has no abilities
 DM_TYPE_EVOLUTION					=TYPE_SPSUMMON			--Evolution creature
 --Civilization
 DM_CIVILIZATION_NONE				=0x0				--No civilization (including Zero and Jokers)
-DM_CIVILIZATION_ANY					=0xff				--Any of the 5 civilizations
+DM_CIVILIZATION_ALL					=ATTRIBUTE_LIGHT+ATTRIBUTE_WATER+ATTRIBUTE_DARK+ATTRIBUTE_FIRE+ATTRIBUTE_EARTH	--Include all 5 civilizations
 DM_CIVILIZATION_LIGHT				=ATTRIBUTE_LIGHT	--Light
 DM_CIVILIZATION_WATER				=ATTRIBUTE_WATER	--Water
 DM_CIVILIZATION_DARKNESS			=ATTRIBUTE_DARK		--Darkness
@@ -173,7 +173,7 @@ DM_CIVILIZATIONS_LWDFN				=DM_CIVILIZATIONS_LW+DM_CIVILIZATIONS_DF+DM_CIVILIZATI
 DM_REASON_BREAK						=0x20000000		--Reason for breaking a player's shield
 --Summon Type
 DM_SUMMON_TYPE_NORMAL				=0x49000000		--Summon a creature by paying its mana cost(SUMMON_TYPE_XYZ)
-DM_SUMMON_TYPE_EVOLUTION			=0x49100000		--Summon a creature by evolving a creature in the battle zone(SUMMON_TYPE_XYZ+0x100000)
+DM_SUMMON_TYPE_EVOLUTION			=0x49000100		--Summon a creature by evolving a creature in the battle zone(SUMMON_TYPE_XYZ+0x100000)
 --Player
 PLAYER_OWNER						=nil	--player=PLAYER_OWNER in Duel.Sendto..(targets, player, reason)
 PLAYER_SELF							=0		--player=PLAYER_SELF in Effect.SetCondition(Auxiliary.Function(player)), etc.
@@ -231,7 +231,9 @@ DM_EFFECT_CHARGER					=725	--Charger ("Lightning Charger" DM-07 15/55)
 DM_EFFECT_DONOT_DISCARD_SHIELD_TRIGGER=726	--Do not discard a spell after using its "Shield Trigger" ability ("Super Terradragon Bailas Gale" DM-08 S5/S5)
 DM_EFFECT_MUST_BLOCK				=727	--Creature must block another creature if able ("Storm Wrangler, the Furious" DM-09 51/55)
 DM_EFFECT_SILENT_SKILL				=728	--Keep creature tapped during untap step to use its "Silent Skill" ability ("Kejila, the Hidden Horror" DM-10 5/110)
-DM_EFFECT_CANNOT_USE_TAP_ABILITY	=798	--Player cannot use the Tap ability of their creatures ("Lockdown Lizard" DM-11 39/55)
+DM_EFFECT_WAVE_STRIKER				=729	--Wave Striker ("Asra, Vizier of Safety" DM-11 6/55)
+DM_EFFECT_CANNOT_USE_TAP_ABILITY	=730	--Player cannot use the Tap ability of their creatures ("Lockdown Lizard" DM-11 39/55)
+DM_EFFECT_VORTEX_EVOLUTION			=731	--Vortex Evolution ("Soul Phoenix, Avatar of Unity" DM-12 5/55)
 DM_EFFECT_WINS_ALL_BATTLES			=799	--Wins All Battles ("Marshias, Spirit of the Sun" DM-14 S1/S10)		
 --Abilities that trigger or actions that occur at the appropriate event
 DM_EVENT_UNTAP_STEP					=EVENT_PREDRAW					--Start of Turn Step (Untap Step)
@@ -349,7 +351,9 @@ DM_SELECT_RACE_ZOMBIE_DRAGON		=aux.Stringid(24000002,7)	--"Zombie Dragon"
 --Hint Message
 DM_HINTMSG_ATTACKTARGET				=549	--"Choose a creature to attack."
 DM_HINTMSG_APPLYABILITY				=556	--"Choose an ability to apply."
+DM_HINTMSG_CIVILIZATION				=562	--"Choose a civilization(s)."
 DM_HINTMSG_RACE						=563	--"Choose a race."
+DM_HINTMSG_NUMBER					=565	--"Choose a number."
 DM_HINTMSG_TOMANA					=600	--"Choose a card to put into the mana zone."
 DM_HINTMSG_TAP						=601	--"Choose a card to tap."
 DM_HINTMSG_UNTAP					=602	--"Choose a card to untap."

@@ -320,12 +320,12 @@ Card.GetManaCost=Card.GetLevel
 Card.GetOriginalManaCost=Card.GetOriginalLevel
 --return the mana cost a card had when it was in the battle zone
 Card.GetPreviousManaCostOnField=Card.GetPreviousLevelOnField
+]]
 --check if a card's mana cost is n
 function Card.IsLevel(c,lv)
 	return c:GetLevel()==lv
 end
 Card.IsManaCost=Card.IsLevel
-]]
 --check if a card's mana cost is n or less
 Card.IsManaCostBelow=Card.IsLevelBelow
 --check if a card's mana cost is n or more
@@ -990,11 +990,17 @@ Auxiliary.race_value_list={
 	DM_RACE_WORLD_COMMAND,
 	]]
 }
+--list of all existing mana costs for Duel.AnnounceNumber
+Auxiliary.mana_cost_list={
+	1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,20,24,25,30,39,40,50,71,99,999,
+}
 --Renamed Duel functions
 --let 2 creatures do battle with each other
 Duel.DoBattle=Duel.CalculateDamage
 --put a card on top of another card
 Duel.PutOnTop=Duel.Overlay
+--choose a civilization
+Duel.AnnounceCivilization=Duel.AnnounceAttribute
 --check if a player can put a card from the top of their deck into the mana zone
 Duel.IsPlayerCanSendDecktoptoMana=Duel.IsPlayerCanDiscardDeck
 --check if a player can put a card from the top of their deck into the mana zone as a cost
@@ -1205,7 +1211,7 @@ function Auxiliary.AttackShieldOperation(e,tp,eg,ep,ev,re,r,rp)
 end
 
 --add procedure to evolution creature
-function Auxiliary.AddEvolutionProcedure(c,f)
+function Auxiliary.AddEvolutionProcedure(c,f1,f2)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(DM_DESC_EVOLUTION)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -1213,38 +1219,52 @@ function Auxiliary.AddEvolutionProcedure(c,f)
 	e1:SetProperty(DM_EFFECT_FLAG_SUMMON_PARAM+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	e1:SetRange(LOCATION_HAND)
 	e1:SetTargetRange(POS_FACEUP_UNTAPPED,0)
-	e1:SetCondition(Auxiliary.EvolutionCondition(f))
-	e1:SetTarget(Auxiliary.EvolutionTarget(f))
+	e1:SetCondition(Auxiliary.EvolutionCondition(f1,f2))
+	e1:SetTarget(Auxiliary.EvolutionTarget(f1,f2))
 	e1:SetOperation(Auxiliary.EvolutionOperation)
 	e1:SetValue(DM_SUMMON_TYPE_EVOLUTION)
 	c:RegisterEffect(e1)
 end
-function Auxiliary.EvolutionFilter(c,f)
+function Auxiliary.EvolutionFilter1(c,g,f1,f2)
+	return c:IsFaceup() and (not f1 or f1(c)) and (not f2 or g:IsExists(Auxiliary.EvolutionFilter2,1,c,f2))
+end
+function Auxiliary.EvolutionFilter2(c,f)
 	return c:IsFaceup() and (not f or f(c))
 end
-function Auxiliary.EvolutionCondition(f)
+function Auxiliary.EvolutionCondition(f1,f2)
 	return	function(e,c)
 				if c==nil then return true end
 				if not c:DMIsSummonable() then return false end
 				local tp=c:GetControler()
+				local g1=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MANA,0,nil)
+				local g2=Duel.GetFieldGroup(tp,DM_LOCATION_BATTLE,0)
 				local cost=c:GetManaCost()
 				local civ_count=c:GetCivilizationCount()
-				local g=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MANA,0,nil)
-				if Duel.GetLocationCount(tp,DM_LOCATION_BATTLE)<-1 or g:GetCount()<cost or civ_count>cost
-					or not Duel.IsExistingMatchingCard(Auxiliary.EvolutionFilter,tp,DM_LOCATION_BATTLE,0,1,nil,f) then return false end
-				return Auxiliary.PayManaCondition(g,c,civ_count)
+				local field_count=-1
+				if f2 then field_count=-2 end
+				if Duel.GetLocationCount(tp,DM_LOCATION_BATTLE)<field_count or g1:GetCount()<cost or civ_count>cost
+					or not g2:IsExists(Auxiliary.EvolutionFilter1,1,nil,g2,f1,f2) then return false end
+				return Auxiliary.PayManaCondition(g1,c,civ_count)
 			end
 end
-function Auxiliary.EvolutionTarget(f)
+function Auxiliary.EvolutionTarget(f1,f2)
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk,c)
+				local g=Duel.GetFieldGroup(tp,DM_LOCATION_BATTLE,0)
 				Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_EVOLVE)
-				local g=Duel.SelectMatchingCard(tp,Auxiliary.EvolutionFilter,tp,DM_LOCATION_BATTLE,0,1,1,nil,f)
-				local pos=g:GetFirst():GetPosition()
-				if g then
-					Duel.HintSelection(g)
-					g:KeepAlive()
-					e:SetLabelObject(g)
-					e:SetTargetRange(pos,0)
+				local sg1=g:FilterSelect(tp,Auxiliary.EvolutionFilter1,1,1,nil,g,f1,f2)
+				Duel.HintSelection(sg1)
+				local tc=sg1:GetFirst()
+				local pos=tc:GetPosition()
+				if f2 then
+					Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_EVOLVE)
+					local sg2=g:FilterSelect(tp,Auxiliary.EvolutionFilter2,1,1,tc,f2)
+					Duel.HintSelection(sg2)
+					sg1:Merge(sg2)
+				end
+				if sg1 then
+					sg1:KeepAlive()
+					e:SetLabelObject(sg1)
+					if not f2 then e:SetTargetRange(pos,0) end
 					return true
 				else return false end
 			end
@@ -1253,9 +1273,11 @@ function Auxiliary.EvolutionOperation(e,tp,eg,ep,ev,re,r,rp,c)
 	local g1=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MANA,0,nil)
 	Auxiliary.PayManaSelect(g1,tp,c,c:GetManaCost(),c:GetCivilizationCount())
 	local g2=e:GetLabelObject()
-	local sg=g2:GetFirst():GetStackGroup()
-	if sg:GetCount()>0 then
-		Duel.PutOnTop(c,sg)
+	for tc in aux.Next(g2) do
+		local sg=tc:GetStackGroup()
+		if sg:GetCount()>0 then
+			Duel.PutOnTop(c,sg)
+		end
 	end
 	c:SetMaterial(g2)
 	Duel.PutOnTop(c,g2)
@@ -1462,7 +1484,7 @@ function Auxiliary.BlockerOperation(e,tp,eg,ep,ev,re,r,rp)
 end
 --"Each of your creatures has "Blocker"."
 --e.g. "Sieg Balicula, the Intense" (DM-03 8/55), "Gallia Zohl, Iron Guardian Q" (DM-05 8/55)
-function Auxiliary.AddStaticEffectBlocker(c,s_range,o_range,targ_func)
+function Auxiliary.AddStaticEffectBlocker(c,s_range,o_range,targ_func,con_func)
 	local s_range=s_range or LOCATION_ALL
 	local o_range=o_range or 0
 	local targ_func=targ_func or aux.TRUE
@@ -1481,6 +1503,7 @@ function Auxiliary.AddStaticEffectBlocker(c,s_range,o_range,targ_func)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
 	e2:SetRange(DM_LOCATION_BATTLE)
 	e2:SetTargetRange(s_range,o_range)
+	if con_func then e2:SetCondition(con_func) end
 	e2:SetTarget(targ_func)
 	e2:SetLabelObject(e1)
 	c:RegisterEffect(e2)
@@ -1788,10 +1811,11 @@ function Auxiliary.AddStaticEffectTapAbility(c,desc_id,targ_func1,op_func,s_rang
 end
 --"CIVILIZATION stealth (This creature can't be blocked while your opponent has any CIVILIZATION cards in his mana zone.)"
 --e.g. "Kizar Basiku, the Outrageous" (DM-07 9/55)
-function Auxiliary.EnableStealth(c,civ)
+function Auxiliary.EnableStealth(c,civ,con_func)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(DM_EFFECT_STEALTH)
+	if con_func then e1:SetCondition(con_func) end
 	e1:SetValue(civ)
 	c:RegisterEffect(e1)
 	Auxiliary.EnableCannotBeBlocked(c,nil,Auxiliary.StealthCondition(civ))
@@ -1845,6 +1869,20 @@ function Auxiliary.SilentSkillCost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	e:GetHandler():RegisterFlagEffect(DM_EFFECT_SILENT_SKILL,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_DRAW,0,1)
 end
+--"Wave striker (While 2 or more other creatures in the battle zone have "wave striker," this creature has its Wavestriker ability.)"
+--e.g. "Asra, Vizier of Safety" DM-11 6/55)
+function Auxiliary.EnableWaveStriker(c)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_WAVE_STRIKER)
+end
+--condition function for "Wave Striker"
+--Note: Always include in this function
+function Auxiliary.WaveStrikerCondition(e)
+	local f=function(c)
+		return c:IsFaceup() and c:IsHasEffect(DM_EFFECT_WAVE_STRIKER)
+	end
+	return Duel.IsExistingMatchingCard(f,e:GetHandlerPlayer(),DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,2,e:GetHandler())
+end
+Auxiliary.wscon=Auxiliary.WaveStrikerCondition
 --"RACE Hunter (This creature wins all battles against RACE.)"
 --e.g. "Pearl Carras, Barrier Guardian" (Game Original)
 function Auxiliary.EnableWinsAllBattles(c,desc_id,f)
@@ -1966,7 +2004,11 @@ function Auxiliary.AddTurnEndEffect(c,desc_id,p,optional,targ_func,op_func,con_f
 	if prop then e1:SetProperty(prop) end
 	e1:SetRange(DM_LOCATION_BATTLE)
 	e1:SetCountLimit(1)
-	e1:SetCondition(aux.AND(Auxiliary.TurnPlayerCondition(p),con_func))
+	if p then
+		e1:SetCondition(aux.AND(Auxiliary.TurnPlayerCondition(p),con_func))
+	else
+		e1:SetCondition(con_func)
+	end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
@@ -2343,7 +2385,7 @@ function Auxiliary.SpellChainSolvedOperation(p,f)
 			end
 end
 --"When this creature leaves the battle zone, ABILITY."
---e.g. "Altimeth, Holy Divine Dragon" (Game Original)
+--e.g. "Wise Starnoid, Avatar of Hope" (DM-12 S2/S5)
 function Auxiliary.AddSingleLeaveBattleEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
 	local con_func=con_func or aux.TRUE
 	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
@@ -2401,7 +2443,11 @@ function Auxiliary.AddTurnStartEffect(c,desc_id,p,optional,targ_func,op_func,con
 	if prop then e1:SetProperty(prop) end
 	e1:SetRange(DM_LOCATION_BATTLE)
 	e1:SetCountLimit(1)
-	e1:SetCondition(aux.AND(Auxiliary.TurnPlayerCondition(p),con_func))
+	if p then
+		e1:SetCondition(aux.AND(Auxiliary.TurnPlayerCondition(p),con_func))
+	else
+		e1:SetCondition(con_func)
+	end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
@@ -2409,7 +2455,10 @@ end
 --"This creature can't attack players."
 --e.g. "Dia Nork, Moonlight Guardian" (DM-01 2/110)
 function Auxiliary.EnableCannotAttackPlayer(c)
-	Auxiliary.EnableEffectCustom(c,DM_EFFECT_CANNOT_ATTACK_PLAYER)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_CANNOT_ATTACK_PLAYER,Auxiliary.CannotAttackPlayerCondition)
+end
+function Auxiliary.CannotAttackPlayerCondition(e)
+	return not e:GetHandler():IsHasEffect(DM_EFFECT_IGNORE_CANNOT_ATTACK_PLAYER)
 end
 --"This creature gets +/-N000 power."
 --"Each of your/your opponent's creatures gets +/-N000 power."
@@ -2728,7 +2777,7 @@ function Auxiliary.PlayerSummonCreatureCondition(p)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local sumplayer=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
 				local f=function(c,sp)
-					if c:GetSummonType()~=DM_SUMMON_TYPE_NORMAL then return false end
+					if not c:IsSummonType(DM_SUMMON_TYPE_NORMAL) then return false end
 					return sp and c:GetSummonPlayer()==sp
 				end
 				return eg:IsExists(f,1,nil,sumplayer)
@@ -3554,4 +3603,6 @@ return Auxiliary
 		1. Prevent multiple "shield trigger" abilities from chaining
 			1.1. Voltanis the Adjudicator
 			https://github.com/Fluorohydride/ygopro-scripts/blob/967a2fe/c20951752.lua#L12
+		2. Auxiliary.mana_cost_list
+		https://duelmasters.fandom.com/wiki/Category:Cards_by_Mana_Cost
 ]]
