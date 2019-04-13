@@ -27,8 +27,9 @@ CARD_BLOODY_SQUITO					=24001046	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_E
 CARD_CREEPING_PLAGUE				=24001049	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED,e,0,0,0,0)
 CARD_MARROW_OOZE_THE_TWISTER		=24002032	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_ATTACK_PLAYER,e,0,0,0,0)
 CARD_BRUTAL_CHARGE					=24005049	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD,e,0,0,0,0)
+CARD_STORM_WRANGLER_THE_FURIOUS		=24009051	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_TRIGGER_BLOCKER,e,0,0,0,0)
 CARD_BENZO_THE_HIDDEN_FURY			=24010045	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_SHIELD_TO_HAND,e,0,0,0,0)
-CARD_COSMIC_DARTS					=24012007	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_CAST_FREE,e,0,0,0,0)
+CARD_BLUUM_ERKIS_FLARE_GUARDIAN		=24010119	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_CAST_FREE,e,0,0,0,0)
 CARD_WOLFIS_BLUE_DIVINE_DRAGON		=24027		--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER,e,0,0,0,0)
 --↑RegisterFlagEffect
 CARD_DIA_NORK_MOONLIGHT_GUARDIAN	=24001002	--c:RegisterFlagEffect(DM_EFFECT_BLOCKED,RESET_EVENT+RESETS_STANDARD+RESET_CHAIN,0,1)
@@ -253,8 +254,9 @@ DM_EVENT_WIN_BATTLE					=CARD_BLOODY_SQUITO				--When a creature wins a battle +
 DM_EVENT_BECOME_BLOCKED				=CARD_CREEPING_PLAGUE			--When a creature becomes blocked
 DM_EVENT_ATTACK_PLAYER				=CARD_MARROW_OOZE_THE_TWISTER	--When a creature attacks a player
 DM_EVENT_BREAK_SHIELD				=CARD_BRUTAL_CHARGE				--When a creature finishes attacking the opponent and broke a shield
+DM_EVENT_TRIGGER_BLOCKER			=CARD_STORM_WRANGLER_THE_FURIOUS--Trigger a creature's "Blocker" ability
 DM_EVENT_TRIGGER_SHIELD_TRIGGER		=CARD_BENZO_THE_HIDDEN_FURY		--Allow a player to use a card's "Shield Trigger" ability without it having being broken as a shield
-DM_EVENT_CAST_FREE					=CARD_COSMIC_DARTS				--Allow a player to cast a spell immediately for no cost
+DM_EVENT_CAST_FREE					=CARD_BLUUM_ERKIS_FLARE_GUARDIAN--Allow a player to cast a spell immediately for no cost
 DM_EVENT_BECOME_SHIELD_TRIGGER		=CARD_WOLFIS_BLUE_DIVINE_DRAGON	--A card gets "Shield Trigger" (Can be summoned or cast for no cost)
 --Category (ability classification)
 DM_CATEGORY_BLOCKER					=CATEGORY_NEGATE	--"Blocker" ability, needed for unblockable abilities ("Laser Wing" DM-01 11/110)

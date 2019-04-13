@@ -342,7 +342,7 @@ function scard.posop1(e,tp,eg,ep,ev,re,r,rp)
 	local g1=Duel.GetMatchingGroup(scard.posfilter1,turnp,DM_LOCATION_BATTLE,0,nil)
 	local g2=Duel.GetMatchingGroup(Card.IsTapped,turnp,DM_LOCATION_MANA,0,nil)
 	g1:Merge(g2)
-	Duel.ChangePosition(g1,POS_FACEUP_UNTAPPED)
+	Duel.ChangePosition(g1,POS_FACEUP_UNTAPPED,REASON_RULE)
 end
 --check for creatures that did not use "silent skill"
 function scard.posfilter2(c)
@@ -354,7 +354,7 @@ function scard.poscon2(e)
 end
 function scard.posop2(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(scard.posfilter2,Duel.GetTurnPlayer(),DM_LOCATION_BATTLE,0,nil)
-	Duel.ChangePosition(g,POS_FACEUP_UNTAPPED)
+	Duel.ChangePosition(g,POS_FACEUP_UNTAPPED,REASON_RULE)
 end
 --charge
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
@@ -403,11 +403,8 @@ end
 --chain limit
 function scard.chop(e,tp,eg,ep,ev,re,r,rp)
 	if re:IsHasProperty(DM_EFFECT_FLAG_CHAIN_LIMIT) then
-		Duel.SetChainLimit(scard.chlimit)
+		Duel.SetChainLimit(aux.FALSE)
 	end
-end
-function scard.chlimit(e,rp,tp)
-	return not e:IsHasProperty(DM_EFFECT_FLAG_CHAIN_LIMIT)
 end
 --attack cost workaround
 function scard.posop3(e,tp,eg,ep,ev,re,r,rp)
