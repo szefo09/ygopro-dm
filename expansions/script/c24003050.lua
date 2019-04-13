@@ -1,4 +1,5 @@
 --Pouch Shell
+--Not fully implemented: YGOPro makes the evolution creature's entire stack leave the battle zone
 local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
