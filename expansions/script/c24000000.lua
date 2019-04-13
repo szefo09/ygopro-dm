@@ -91,12 +91,14 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	e1:SetDescription(aux.Stringid(sid,0))
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e1:SetCode(EVENT_PREDRAW)
+	e1:SetCode(DM_EVENT_UNTAP_STEP)
+	e1:SetCondition(scard.poscon1)
 	e1:SetOperation(scard.posop1)
 	Duel.RegisterEffect(e1,tp)
+	--check for creatures that did not use "silent skill"
 	local e1b=e1:Clone()
-	e1b:SetCode(EVENT_ADJUST)
-	e1b:SetCondition(scard.poscon)
+	e1b:SetCode(EVENT_PHASE+PHASE_DRAW)
+	e1b:SetCondition(scard.poscon2)
 	e1b:SetOperation(scard.posop2)
 	Duel.RegisterEffect(e1b,tp)
 	--charge
@@ -328,38 +330,40 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 end
 --untap
 function scard.posfilter1(c)
-	return c:IsFaceup() and c:IsAbleToUntap()
+	return c:IsFaceup() and c:IsTapped() and not c:IsHasEffect(DM_EFFECT_SILENT_SKILL)
 end
-function scard.ssfilter(c)
-	return c:IsFaceup() and c:IsTapped() and c:IsHasEffect(DM_EFFECT_SILENT_SKILL)
+function scard.poscon1(e)
+	local turnp=Duel.GetTurnPlayer()
+	return Duel.IsExistingMatchingCard(scard.posfilter1,turnp,DM_LOCATION_BATTLE,0,1,nil)
+		or Duel.IsExistingMatchingCard(Card.IsTapped,turnp,DM_LOCATION_MANA,0,1,nil)
 end
 function scard.posop1(e,tp,eg,ep,ev,re,r,rp)
 	local turnp=Duel.GetTurnPlayer()
 	local g1=Duel.GetMatchingGroup(scard.posfilter1,turnp,DM_LOCATION_BATTLE,0,nil)
-	local g2=Duel.GetMatchingGroup(Card.IsAbleToUntap,turnp,DM_LOCATION_MANA,0,nil)
+	local g2=Duel.GetMatchingGroup(Card.IsTapped,turnp,DM_LOCATION_MANA,0,nil)
 	g1:Merge(g2)
-	local g3=Duel.GetMatchingGroup(scard.ssfilter,turnp,DM_LOCATION_BATTLE,0,nil)
-	g1:Sub(g3)
 	Duel.ChangePosition(g1,POS_FACEUP_UNTAPPED)
 end
-function scard.poscon(e)
-	return Duel.GetCurrentPhase()==PHASE_DRAW
-end
+--check for creatures that did not use "silent skill"
 function scard.posfilter2(c)
-	return scard.posfilter1(c) and c:GetFlagEffect(DM_EFFECT_SILENT_SKILL)==0
+	return c:IsFaceup() and c:IsTapped() and c:IsHasEffect(DM_EFFECT_SILENT_SKILL)
+		and c:GetFlagEffect(DM_EFFECT_SILENT_SKILL)==0
+end
+function scard.poscon2(e)
+	return Duel.IsExistingMatchingCard(scard.posfilter2,Duel.GetTurnPlayer(),DM_LOCATION_BATTLE,0,1,nil)
 end
 function scard.posop2(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(scard.posfilter2,Duel.GetTurnPlayer(),DM_LOCATION_BATTLE,0,nil)
-	if g:GetCount()>0 then
-		Duel.ChangePosition(g,POS_FACEUP_UNTAPPED)
-	end
+	Duel.ChangePosition(g,POS_FACEUP_UNTAPPED)
 end
 --charge
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	local turnp=Duel.GetTurnPlayer()
+	local g=Duel.GetMatchingGroup(Card.IsAbleToMana,turnp,LOCATION_HAND,0,nil)
+	if g:GetCount()==0 then return end
 	Duel.Hint(HINT_SELECTMSG,turnp,DM_HINTMSG_TOMANA)
-	local g=Duel.SelectMatchingCard(turnp,Card.IsAbleToMana,turnp,LOCATION_HAND,0,0,1,nil)
-	Duel.SendtoMana(g,POS_FACEUP_UNTAPPED,REASON_RULE)
+	local sg=g:Select(turnp,0,1,nil)
+	Duel.SendtoMana(sg,POS_FACEUP_UNTAPPED,REASON_RULE)
 end
 --summoning sickness
 function scard.cfilter1(c,tp)

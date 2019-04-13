@@ -111,7 +111,7 @@ function Card.IsTapped(c)
 end
 --check if a card can be untapped
 function Card.IsAbleToUntap(c)
-	if c:IsHasEffect(DM_EFFECT_CANNOT_CHANGE_POS_ABILITY) or not c:IsTapped() then return false end
+	if c:IsHasEffect(DM_EFFECT_CANNOT_CHANGE_POS_ABILITY) then return false end
 	if c:IsLocation(LOCATION_REMOVED) then
 		return c:IsAbleToGrave()
 	elseif c:IsLocation(LOCATION_MZONE) then
@@ -120,30 +120,9 @@ function Card.IsAbleToUntap(c)
 end
 --check if a card can be tapped
 function Card.IsAbleToTap(c)
-	if c:IsHasEffect(DM_EFFECT_CANNOT_CHANGE_POS_ABILITY) or not c:IsUntapped() then return false end
+	if c:IsHasEffect(DM_EFFECT_CANNOT_CHANGE_POS_ABILITY) then return false end
 	if c:IsLocation(LOCATION_GRAVE) then
 		return c:IsAbleToRemove()
-	elseif c:IsLocation(LOCATION_MZONE) then
-		return c:IsAttackPos()
-	else return false end
-end
---check if a card can be untapped as a cost
---reserved
---[[
-function Card.IsAbleToUntapAsCost(c)
-	if not c:IsTapped() then return false end
-	if c:IsLocation(LOCATION_REMOVED) then
-		return c:IsAbleToGraveAsCost()
-	elseif c:IsLocation(LOCATION_MZONE) then
-		return c:IsDefensePos()
-	else return false end
-end
-]]
---check if a card can be tapped as a cost
-function Card.IsAbleToTapAsCost(c)
-	if not c:IsUntapped() then return false end
-	if c:IsLocation(LOCATION_GRAVE) then
-		return c:IsAbleToRemoveAsCost()
 	elseif c:IsLocation(LOCATION_MZONE) then
 		return c:IsAttackPos()
 	else return false end
@@ -512,6 +491,8 @@ function Duel.SpecialSummon(targets,sumtype,sumplayer,target_player,nocheck,noli
 	local ct=0
 	for tc in aux.Next(targets) do
 		if Duel.GetLocationCount(target_player,DM_LOCATION_BATTLE)>0 then
+			--check for "This creature is put into the battle zone tapped."
+			if tc:IsHasEffect(DM_EFFECT_ENTER_BZONE_TAPPED) then pos=POS_FACEUP_TAPPED end
 			if Duel.SpecialSummonStep(tc,sumtype,sumplayer,target_player,nocheck,nolimit,pos,zone) then
 				ct=ct+1
 			end
@@ -737,14 +718,11 @@ function Duel.DMSendtoGrave(targets,reason)
 	return ct
 end
 --put a card from the top of a player's deck into the graveyard
---reserved
---[[
 function Duel.DMSendDecktoptoGrave(player,count,reason)
 	local g=Duel.GetDecktopGroup(player,count)
 	Duel.DisableShuffleCheck()
 	return Duel.DMSendtoGrave(g,reason)
 end
-]]
 --check if a player can put a card from the top of their deck into the graveyard
 --reserved
 --[[
@@ -1082,13 +1060,12 @@ function Auxiliary.AddSummonProcedure(c)
 	e1:SetRange(LOCATION_HAND)
 	e1:SetTargetRange(POS_FACEUP_UNTAPPED,0)
 	e1:SetCondition(Auxiliary.NonEvolutionSummonCondition)
-	e1:SetTarget(Auxiliary.NonEvolutionSummonTarget)
 	e1:SetOperation(Auxiliary.NonEvolutionSummonOperation)
 	e1:SetValue(DM_SUMMON_TYPE_NORMAL)
 	c:RegisterEffect(e1)
 end
 function Auxiliary.PayManaFilter(c)
-	return c:IsUntapped() and c:IsAbleToTapAsCost()
+	return c:IsUntapped()
 end
 function Auxiliary.NonEvolutionSummonCondition(e,c)
 	if c==nil then return true end
@@ -1099,11 +1076,6 @@ function Auxiliary.NonEvolutionSummonCondition(e,c)
 	local g=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MANA,0,nil)
 	if Duel.GetLocationCount(tp,DM_LOCATION_BATTLE)<=0 or g:GetCount()<cost or civ_count>cost then return false end
 	return Auxiliary.PayManaCondition(g,c,civ_count)
-end
-function Auxiliary.NonEvolutionSummonTarget(e,tp,eg,ep,ev,re,r,rp,chk,c)
-	--check for "This creature enters the battle zone tapped."
-	if c:IsHasEffect(DM_EFFECT_ENTER_TAPPED) then e:SetTargetRange(POS_FACEUP_TAPPED,0) end
-	return true
 end
 function Auxiliary.PayManaCondition(g,c,civ_count)
 	local b1=g:IsExists(Card.IsCivilization,1,nil,c:GetFirstCivilization())
@@ -1272,10 +1244,7 @@ function Auxiliary.EvolutionTarget(f)
 					Duel.HintSelection(g)
 					g:KeepAlive()
 					e:SetLabelObject(g)
-					--check for "This creature enters the battle zone tapped."
-					if c:IsHasEffect(DM_EFFECT_ENTER_TAPPED) then
-						e:SetTargetRange(POS_FACEUP_TAPPED,0)
-					else e:SetTargetRange(pos,0) end
+					e:SetTargetRange(pos,0)
 					return true
 				else return false end
 			end
@@ -1643,7 +1612,7 @@ function Auxiliary.EnablePowerAttacker(c,val,con_func)
 end
 --"Each of your creatures has "Power attacker +N000"."
 --e.g. "Überdragon Jabaha" (DM-03 43/55), "Terradragon Hulcoon Berga" (Game Original)
-function Auxiliary.AddStaticEffectPowerAttacker(c,val,s_range,o_range,targ_func)
+function Auxiliary.AddStaticEffectPowerAttacker(c,val,s_range,o_range,targ_func,con_func)
 	local s_range=s_range or LOCATION_ALL
 	local o_range=o_range or 0
 	local targ_func=targ_func or aux.TRUE
@@ -1658,6 +1627,7 @@ function Auxiliary.AddStaticEffectPowerAttacker(c,val,s_range,o_range,targ_func)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
 	e2:SetRange(DM_LOCATION_BATTLE)
 	e2:SetTargetRange(s_range,o_range)
+	if con_func then e2:SetCondition(con_func) end
 	e2:SetTarget(targ_func)
 	e2:SetLabelObject(e1)
 	c:RegisterEffect(e2)
@@ -2147,7 +2117,7 @@ function Auxiliary.AddSingleBlockEffect(c,desc_id,optional,targ_func,op_func,pro
 	elseif prop then
 		e1:SetProperty(prop)
 	end
-	e1:SetCondition(aux.AND(Auxiliary.SelfBlockedCondition,con_func))
+	e1:SetCondition(aux.AND(Auxiliary.SelfBlockCondition,con_func))
 	if cost_func then e1:SetCost(cost_func) end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
@@ -2171,7 +2141,7 @@ function Auxiliary.AddBlockEffect(c,desc_id,optional,targ_func,op_func,prop,con_
 		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
 	end
 	e1:SetRange(DM_LOCATION_BATTLE)
-	e1:SetCondition(aux.AND(Auxiliary.BlockedCondition,con_func))
+	e1:SetCondition(aux.AND(Auxiliary.BlockCondition,con_func))
 	if cost_func then e1:SetCost(cost_func) end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
@@ -2418,7 +2388,7 @@ function Auxiliary.AddTurnStartEffect(c,desc_id,p,optional,targ_func,op_func,con
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_FIELD+typ)
-	e1:SetCode(EVENT_PHASE+PHASE_DRAW)
+	e1:SetCode(DM_EVENT_UNTAP_STEP)
 	if prop then e1:SetProperty(prop) end
 	e1:SetRange(DM_LOCATION_BATTLE)
 	e1:SetCountLimit(1)
@@ -3398,12 +3368,12 @@ end
 Auxiliary.sbwcon=Auxiliary.SelfBattleWinCondition
 --condition for "Whenever this creature blocks" + DM_EVENT_BATTLE_END
 --e.g. "Spiral Grass" (DM-02 10/55)
-function Auxiliary.SelfBlockedCondition(e,tp,eg,ep,ev,re,r,rp)
+function Auxiliary.SelfBlockCondition(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetBlocker()==e:GetHandler()
 end
 --condition for "Whenever one of your creatures blocks" + DM_EVENT_BATTLE_END
 --e.g. "Agira, the Warlord Crawler" (DM-12 16/55)
-function Auxiliary.BlockedCondition(e,tp,eg,ep,ev,re,r,rp)
+function Auxiliary.BlockCondition(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsContains(Duel.GetBlocker())
 end
 --condition to check what a card's previous location was
