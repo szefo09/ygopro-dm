@@ -12,7 +12,7 @@ function scard.initial_effect(c)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(sid,1))
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
-	e1:SetCode(EVENT_CUSTOM+DM_EVENT_BECOMES_BLOCKED)
+	e1:SetCode(EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED)
 	e1:SetOperation(scard.retop2)
 	c:RegisterEffect(e1)
 end
