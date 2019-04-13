@@ -9,9 +9,11 @@ function scard.initial_effect(c)
 	dm.AddDestroyedEffect(c,0,true,dm.DrawTarget(PLAYER_SELF),scard.drop,nil,scard.drcon)
 end
 scard.duel_masters_card=true
+function scard.cfilter(c,tp)
+	return c:GetPreviousControler()==tp and c:IsPreviousLocation(DM_LOCATION_BATTLE)
+end
 function scard.drcon(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(aux.FilterEqualFunction(Card.GetPreviousControler,tp),1,nil)
-		and dm.WaveStrikerCondition(e) and Duel.GetTurnPlayer()~=tp
+	return eg:IsExists(scard.cfilter,1,nil,tp) and dm.WaveStrikerCondition(e) and Duel.GetTurnPlayer()~=tp
 end
 function scard.drop(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end

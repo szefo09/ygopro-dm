@@ -20,7 +20,7 @@ function scard.posfilter(c)
 end
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 	local g1=Duel.GetMatchingGroup(scard.posfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil)
-	local g2=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
+	local g2=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
 	g1:Sub(g2)
 	Duel.ChangePosition(g1,POS_FACEUP_TAPPED)
 end
