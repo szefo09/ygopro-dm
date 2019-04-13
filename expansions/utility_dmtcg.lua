@@ -991,9 +991,15 @@ Auxiliary.race_value_list={
 	]]
 }
 --list of all existing mana costs for Duel.AnnounceNumber
-Auxiliary.mana_cost_list={
-	1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,20,24,25,30,39,40,50,71,99,999,
-}
+Auxiliary.mana_cost_list={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,20,24,25,30,39,40,50,71,99,999,}
+--cast a spell immediately for no cost
+function Duel.CastFree(targets)
+	if type(targets)=="Card" then targets=Group.FromCards(targets) end
+	for tc in aux.Next(targets) do
+		Duel.SendtoHand(tc,PLAYER_OWNER,REASON_RULE)
+		Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_CAST_FREE,Effect.CreateEffect(tc),0,0,0,0)
+	end
+end
 --Renamed Duel functions
 --let 2 creatures do battle with each other
 Duel.DoBattle=Duel.CalculateDamage
@@ -1319,6 +1325,10 @@ function Auxiliary.AddSpellCastEffect(c,desc_id,targ_func,op_func,prop,cost_func
 	if targ_func then e2:SetTarget(targ_func) end
 	e2:SetOperation(op_func)
 	c:RegisterEffect(e2)
+	--cast immediately for no cost
+	local e3=e2:Clone()
+	e3:SetCode(EVENT_CUSTOM+DM_EVENT_CAST_FREE)
+	c:RegisterEffect(e3)
 end
 --cost function for casting spells
 function Auxiliary.CastSpellCost(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -1870,12 +1880,12 @@ function Auxiliary.SilentSkillCost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e:GetHandler():RegisterFlagEffect(DM_EFFECT_SILENT_SKILL,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_DRAW,0,1)
 end
 --"Wave striker (While 2 or more other creatures in the battle zone have "wave striker," this creature has its Wavestriker ability.)"
---e.g. "Asra, Vizier of Safety" DM-11 6/55)
+--e.g. "Asra, Vizier of Safety" (DM-11 6/55)
 function Auxiliary.EnableWaveStriker(c)
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_WAVE_STRIKER)
 end
 --condition function for "Wave Striker"
---Note: Always include in this function
+--Note: Always include in this function for the specified "Wave Striker" ability
 function Auxiliary.WaveStrikerCondition(e)
 	local f=function(c)
 		return c:IsFaceup() and c:IsHasEffect(DM_EFFECT_WAVE_STRIKER)
