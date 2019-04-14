@@ -3,9 +3,6 @@
 ## Booster Packs
 
 ### Not Yet Scripted
-- **Apr., 2006** : DM-10 Shockwaves of the Shattered Rainbow : `24010001-24010120`
-- **July, 2006** : DM-11 Blast-O-Splosion of Gigantic Rage : `24011001-24011060`
-- **Nov., 2006** : DM-12 Thrash of the Hybrid Megacreatures : `24012001-24012060`
 
 ### Archived
 - ~**Mar., 2004** : DM-01 Base Set : `24001001-24001120`~
@@ -17,6 +14,9 @@
 - ~**July, 2005** : DM-07 Thundercharge of Ultra Destruction : `24007001-24007060`~
 - ~**Oct., 2005** : DM-08 Epic Dragons of Hyperchaos : `24008001-24008060`~
 - ~**Jan., 2006** : DM-09 Fatal Brood of Infinite Ruin : `24009001-24009060`~
+- ~**Apr., 2006** : DM-10 Shockwaves of the Shattered Rainbow : `24010001-24010120`~
+- ~**July, 2006** : DM-11 Blast-O-Splosion of Gigantic Rage : `24011001-24011060`~
+- ~**Nov., 2006** : DM-12 Thrash of the Hybrid Megacreatures : `24012001-24012060`~
 
 ## English Promotional Cards
 
