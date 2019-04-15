@@ -403,11 +403,8 @@ end
 --chain limit
 function scard.chop(e,tp,eg,ep,ev,re,r,rp)
 	if re:IsHasProperty(DM_EFFECT_FLAG_CHAIN_LIMIT) then
-		Duel.SetChainLimit(scard.chlimit)
+		Duel.SetChainLimit(aux.FALSE)
 	end
-end
-function scard.chlimit(e,rp,tp)
-	return not e:IsHasProperty(DM_EFFECT_FLAG_CHAIN_LIMIT)
 end
 --attack cost workaround
 function scard.posop3(e,tp,eg,ep,ev,re,r,rp)

@@ -512,18 +512,27 @@ Duel.SendtoBattleComplete=Duel.SpecialSummonComplete
 local duel_change_position=Duel.ChangePosition
 function Duel.ChangePosition(targets,pos)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
+	local g=Group.CreateGroup()
+	local ct=0
 	for tc in aux.Next(targets) do
 		if pos==POS_FACEUP_UNTAPPED and tc:IsAbleToUntap() then
 			if tc:IsLocation(LOCATION_REMOVED) then
-				Duel.SendtoGrave(tc,0)
+				ct=ct+Duel.SendtoGrave(tc,0)
+				Duel.RaiseSingleEvent(tc,EVENT_CHANGE_POS,tc:GetReasonEffect(),0,0,0,0)
+				g:AddCard(tc)
 			end
 		elseif pos==POS_FACEUP_TAPPED and tc:IsAbleToTap() then
 			if tc:IsLocation(LOCATION_GRAVE) then
-				Duel.Remove(tc,POS_FACEUP,0)
+				ct=ct+Duel.Remove(tc,POS_FACEDOWN,0)
+				Duel.RaiseSingleEvent(tc,EVENT_CHANGE_POS,tc:GetReasonEffect(),0,0,0,0)
+				g:AddCard(tc)
 			end
 		end
 	end
-	return duel_change_position(targets,pos)
+	if g:GetCount()>0 then
+		Duel.RaiseEvent(g,EVENT_CHANGE_POS,Effect.GlobalEffect(),0,0,0,0)
+	end
+	return ct+duel_change_position(targets,pos)
 end
 --show a player a card
 --Note: Added parameter turn_faceup to keep a shield face up
@@ -996,8 +1005,10 @@ Auxiliary.mana_cost_list={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,20,24,25,30,
 function Duel.CastFree(targets)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
 	for tc in aux.Next(targets) do
+		Duel.DisableShuffleCheck(true)
 		Duel.SendtoHand(tc,PLAYER_OWNER,REASON_RULE)
-		Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_CAST_FREE,Effect.CreateEffect(tc),0,0,0,0)
+		Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_CAST_FREE,tc:GetReasonEffect(),0,0,0,0)
+		Duel.DisableShuffleCheck(false)
 	end
 end
 --Renamed Duel functions
@@ -1447,6 +1458,10 @@ function Auxiliary.EnableBlocker(c,con_func,desc,f)
 	e2:SetProperty(0)
 	e2:SetCondition(aux.AND(Auxiliary.BlockerCondition1(f),Auxiliary.BlockerCondition2,con_func))
 	c:RegisterEffect(e2)
+	--trigger "blocker" ability
+	local e3=e2:Clone()
+	e3:SetCode(EVENT_CUSTOM+DM_EVENT_TRIGGER_BLOCKER)
+	c:RegisterEffect(e3)
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_BLOCKER,con_func)
 end
 function Auxiliary.BlockerCondition1(f)
@@ -1885,7 +1900,7 @@ function Auxiliary.EnableWaveStriker(c)
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_WAVE_STRIKER)
 end
 --condition function for "Wave Striker"
---Note: Always include in this function for the specified "Wave Striker" ability
+--Note: Always include this function for the specified "Wave Striker" ability
 function Auxiliary.WaveStrikerCondition(e)
 	local f=function(c)
 		return c:IsFaceup() and c:IsHasEffect(DM_EFFECT_WAVE_STRIKER)
