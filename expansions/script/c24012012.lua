@@ -14,6 +14,6 @@ end
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsRelateToEffect(e) and c:IsFaceup() and c:IsUntapped() then
-		Duel.ChangePosition(c,POS_FACEUP_TAPPED)
+		Duel.Tap(c,REASON_EFFECT)
 	end
 end

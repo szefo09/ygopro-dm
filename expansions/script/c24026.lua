@@ -30,4 +30,4 @@ function scard.posfilter(c)
 	return c:IsFaceup() and c:IsUntapped()
 end
 scard.postg=dm.CheckCardFunction(scard.posfilter,0,DM_LOCATION_BATTLE)
-scard.posop=dm.TapUntapOperation(nil,scard.posfilter,0,DM_LOCATION_BATTLE,nil,nil,POS_FACEUP_TAPPED)
+scard.posop=dm.TapOperation(nil,scard.posfilter,0,DM_LOCATION_BATTLE)

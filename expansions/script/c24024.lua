@@ -11,7 +11,7 @@ function scard.initial_effect(c)
 	e1:SetDescription(aux.Stringid(sid,0))
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
 	e1:SetCode(DM_EVENT_ATTACK_END)
-	e1:SetOperation(dm.SelfTapUntapOperation(POS_FACEUP_UNTAPPED,true))
+	e1:SetOperation(dm.SelfUntapOperation(true))
 	c:RegisterEffect(e1)
 end
 scard.duel_masters_card=true

@@ -15,4 +15,4 @@ function scard.posfilter(c)
 	return c:IsFaceup() and c:IsUntapped()
 end
 scard.postg=dm.TargetCardFunction(PLAYER_SELF,scard.posfilter,0,DM_LOCATION_BATTLE,0,2,DM_HINTMSG_TAP)
-scard.posop=dm.TargetTapUntapOperation(POS_FACEUP_TAPPED)
+scard.posop=dm.TargetTapOperation

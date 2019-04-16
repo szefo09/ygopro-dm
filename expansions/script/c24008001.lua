@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_MECHA_THUNDER))
 	--untap
-	dm.AddSingleBlockEffect(c,0,nil,nil,dm.SelfTapUntapOperation(POS_FACEUP_UNTAPPED))
+	dm.AddSingleBlockEffect(c,0,nil,nil,dm.SelfUntapOperation())
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 end
