@@ -10,5 +10,6 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.actcon(e)
-	return Duel.GetAttackTarget():IsCreature()
+	local d=Duel.GetAttackTarget()
+	return d and d:IsFaceup()
 end
