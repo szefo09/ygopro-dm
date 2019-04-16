@@ -590,11 +590,12 @@ function Duel.Tap(targets,reason)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
 	local ct=0
 	for tc in aux.Next(targets) do
-		if not tc:IsAbleToTap() then break end
-		if tc:IsLocation(LOCATION_MZONE) then
-			ct=ct+Duel.ChangePosition(tc,POS_FACEUP_TAPPED,reason)
-		elseif tc:IsLocation(LOCATION_GRAVE) then
-			ct=ct+Duel.Remove(tc,POS_FACEDOWN,reason)
+		if tc:IsAbleToTap() then
+			if tc:IsLocation(LOCATION_MZONE) then
+				ct=ct+Duel.ChangePosition(tc,POS_FACEUP_TAPPED,reason)
+			elseif tc:IsLocation(LOCATION_GRAVE) then
+				ct=ct+Duel.Remove(tc,POS_FACEDOWN,reason)
+			end
 		end
 	end
 	return ct
@@ -605,11 +606,12 @@ function Duel.Untap(targets,reason)
 	local g=Group.CreateGroup()
 	local ct=0
 	for tc in aux.Next(targets) do
-		if not tc:IsAbleToUntap() then break end
-		if tc:IsLocation(LOCATION_MZONE) then
-			ct=ct+Duel.ChangePosition(tc,POS_FACEUP_UNTAPPED,reason)
-		elseif tc:IsLocation(LOCATION_REMOVED) then
-			ct=ct+Duel.SendtoGrave(tc,reason)
+		if tc:IsAbleToUntap() then
+			if tc:IsLocation(LOCATION_MZONE) then
+				ct=ct+Duel.ChangePosition(tc,POS_FACEUP_UNTAPPED,reason)
+			elseif tc:IsLocation(LOCATION_REMOVED) then
+				ct=ct+Duel.SendtoGrave(tc,reason)
+			end
 		end
 	end
 	return ct
