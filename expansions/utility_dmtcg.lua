@@ -1235,6 +1235,7 @@ function Auxiliary.EnableCreatureAttribute(c)
 	e1:SetCode(EVENT_TO_HAND)
 	e1:SetProperty(EFFECT_FLAG_DELAY)
 	e1:SetRange(LOCATION_HAND)
+	e1:SetCondition(Auxiliary.ShieldTriggerCondition)
 	e1:SetTarget(Auxiliary.ShieldTriggerSummonTarget)
 	e1:SetOperation(Auxiliary.ShieldTriggerSummonOperation)
 	c:RegisterEffect(e1)
@@ -1425,9 +1426,7 @@ function Auxiliary.AddSpellCastEffect(c,desc_id,targ_func,op_func,prop,cost_func
 	end
 	e2:SetRange(LOCATION_HAND)
 	e2:SetCondition(aux.AND(Auxiliary.ShieldTriggerCondition,con_func))
-	if cost_func then
-		e2:SetCost(cost_func)
-	end
+	if cost_func then e2:SetCost(cost_func) end
 	if targ_func then e2:SetTarget(targ_func) end
 	e2:SetOperation(op_func)
 	c:RegisterEffect(e2)
@@ -1439,21 +1438,21 @@ function Auxiliary.AddSpellCastEffect(c,desc_id,targ_func,op_func,prop,cost_func
 	--prevent multiple "shield trigger" abilities from chaining
 	Auxiliary.AddShieldTriggerChainLimit(c,e2,con_func,prop)
 	--cast for no cost without using "shield trigger"
-	local e7=Effect.CreateEffect(c)
-	e7:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	if cate then e7:SetCategory(cate) end
-	e7:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
-	e7:SetCode(EVENT_CUSTOM+DM_EVENT_CAST_FREE)
-	if prop then e7:SetProperty(prop) end
-	e7:SetCondition(con_func)
-	if cost_func then e7:SetCost(cost_func) end
-	if targ_func then e7:SetTarget(targ_func) end
-	e7:SetOperation(op_func)
-	c:RegisterEffect(e7)
+	local e4=Effect.CreateEffect(c)
+	e4:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	if cate then e4:SetCategory(cate) end
+	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
+	e4:SetCode(EVENT_CUSTOM+DM_EVENT_CAST_FREE)
+	if prop then e4:SetProperty(prop) end
+	e4:SetCondition(con_func)
+	if cost_func then e4:SetCost(cost_func) end
+	if targ_func then e4:SetTarget(targ_func) end
+	e4:SetOperation(op_func)
+	c:RegisterEffect(e4)
 	--get "shield trigger"
-	local e8=e7:Clone()
-	e8:SetCode(EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER)
-	c:RegisterEffect(e8)
+	local e5=e4:Clone()
+	e5:SetCode(EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER)
+	c:RegisterEffect(e5)
 end
 --cost function for casting spells
 function Auxiliary.CastSpellCost(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -1699,9 +1698,6 @@ end
 function Auxiliary.ShieldTriggerOperation(e,tp,eg,ep,ev,re,r,rp)
 	if rp==1-tp or not re:IsHasCategory(DM_CATEGORY_SHIELD_TRIGGER) then return end
 	e:GetLabelObject():SetLabel(1)
-end
-function Auxiliary.ShieldTriggerSummonCondition(e,tp,eg,ep,ev,re,r,rp)
-	return Auxiliary.ShieldTriggerCondition(e,tp,eg,ep,ev,re,r,rp) and e:GetHandler():IsCreature()
 end
 function Auxiliary.ShieldTriggerSummonTarget(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():DMIsSummonable() end
