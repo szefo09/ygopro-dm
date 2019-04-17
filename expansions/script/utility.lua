@@ -136,7 +136,7 @@ function Auxiliary.EnableDualAttribute(c)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
 	e2:SetCode(EFFECT_ADD_TYPE)
-	e2:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e2:SetProperty(EFFECT_FLAG_SINGLE_RANGE+EFFECT_FLAG_IGNORE_IMMUNE)
 	e2:SetRange(LOCATION_MZONE+LOCATION_GRAVE)
 	e2:SetCondition(aux.DualNormalCondition)
 	e2:SetValue(TYPE_NORMAL)
@@ -2404,4 +2404,161 @@ function Auxiliary.FilterFaceupFunction(f,...)
 	return 	function(target)
 				return target:IsFaceup() and f(target,table.unpack(params))
 			end
+end
+
+function Auxiliary.RelCheckRecursive(c,tp,sg,mg,exg,mustg,ct,minc,specialchk,...)
+	sg:AddCard(c)
+	ct=ct+1
+	local res=Auxiliary.RelCheckGoal(tp,sg,exg,mustg,ct,minc,specialchk,table.unpack({...})) 
+		or (ct<minc and mg:IsExists(Auxiliary.RelCheckRecursive,1,sg,tp,sg,mg,exg,mustg,ct,minc,specialchk,table.unpack({...})))
+	sg:RemoveCard(c)
+	ct=ct-1
+	return res
+end
+
+function Auxiliary.RelCheckGoal(tp,sg,exg,mustg,ct,minc,specialchk,...)
+	return ct>=minc and (not specialchk or specialchk(sg,tp,exg,table.unpack({...}))) and sg:Includes(mustg)
+end
+function Duel.CheckReleaseGroupCost(tp,f,ct,use_hand,specialchk,ex,...)
+	local params={...}
+	if not ex then ex=Group.CreateGroup() end
+	if not specialchk then specialchk=Auxiliary.ReleaseCheckSingleUse else specialchk=Auxiliary.AND(specialchk,Auxiliary.ReleaseCheckSingleUse) end
+	local g=Duel.GetReleaseGroup(tp,use_hand)
+	if f then
+		g=g:Filter(f,ex,table.unpack(params))
+	else
+		g=g-ex
+	end
+	local exg=Duel.GetMatchingGroup(Auxiliary.ReleaseCostFilter,tp,0,LOCATION_MZONE,g+ex,f,table.unpack(params))
+	local mustg=g:Filter(function(c,tp)return c:IsHasEffect(EFFECT_EXTRA_RELEASE) and c:IsControler(1-tp)end,nil,tp)
+	local mg=g+exg
+	local sg=Group.CreateGroup()
+	return mg:Includes(mustg) and mg:IsExists(Auxiliary.RelCheckRecursive,1,nil,tp,sg,mg,exg,mustg,0,ct,specialchk,table.unpack({...}))
+end
+function Duel.SelectReleaseGroupCost(tp,f,minc,maxc,use_hand,specialchk,ex,...)
+	local params={...}
+	if not ex then ex=Group.CreateGroup() end
+	if not specialchk then specialchk=Auxiliary.ReleaseCheckSingleUse else specialchk=Auxiliary.AND(specialchk,Auxiliary.ReleaseCheckSingleUse) end
+	local g=Duel.GetReleaseGroup(tp,use_hand)
+	if f then
+		g=g:Filter(f,ex,table.unpack(params))
+	else
+		g=g-ex
+	end
+	local exg=Duel.GetMatchingGroup(Auxiliary.ReleaseCostFilter,tp,0,LOCATION_MZONE,g+ex,f,table.unpack(params))
+	local mg=g+exg
+	local mustg=g:Filter(function(c,tp)return c:IsHasEffect(EFFECT_EXTRA_RELEASE) and c:IsControler(1-tp)end,nil,tp)
+	local sg=Group.CreateGroup()
+	local cancel=false
+	sg:Merge(mustg)
+	while #sg<maxc do
+		local cg=mg:Filter(Auxiliary.RelCheckRecursive,sg,tp,sg,mg,exg,mustg,#sg,minc,specialchk,table.unpack({...}))
+		if #cg==0 then break end
+		cancel=#sg>=minc and #sg<=maxc and Auxiliary.RelCheckGoal(tp,sg,exg,mustg,#sg,minc,specialchk,table.unpack({...}))
+		local tc=Group.SelectUnselect(cg,sg,tp,cancel,cancel,1,1)
+		if not tc then break end
+		if #mustg==0 or not mustg:IsContains(tc) then
+			if not sg:IsContains(tc) then
+				sg=sg+tc
+			else
+				sg=sg-tc
+			end
+		end
+	end
+	if #sg==0 then return sg end
+	if #sg~=#(sg-exg) then
+		--LoD is reset for the rest of the turn
+		local fc=Duel.GetFieldCard(tp,LOCATION_SZONE,5)
+		Duel.Hint(HINT_CARD,0,fc:GetCode())
+		fc:RegisterFlagEffect(59160188,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,0,0)
+	end
+	return sg
+end
+
+--add procedure to equip spells equipping by rule
+function Auxiliary.AddEquipProcedure(c,p,f,eqlimit,cost,tg,op,con)
+	--Note: p==0 is check equip spell controler, p==1 for opponent's, PLAYER_ALL for both player's monsters
+	--Activate
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(1068)
+	e1:SetCategory(CATEGORY_EQUIP)
+	e1:SetType(EFFECT_TYPE_ACTIVATE)
+	e1:SetCode(EVENT_FREE_CHAIN)
+	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	if con then
+		e1:SetCondition(con)
+	end
+	if cost~=nil then
+		e1:SetCost(cost)
+	end
+	e1:SetTarget(Auxiliary.EquipTarget(tg,p,f))
+	e1:SetOperation(op)
+	c:RegisterEffect(e1)
+	--Equip limit
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_SINGLE)
+	e2:SetCode(EFFECT_EQUIP_LIMIT)
+	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+	if eqlimit~=nil then
+		e2:SetValue(eqlimit)
+	else
+		e2:SetValue(Auxiliary.EquipLimit(f))
+	end
+	c:RegisterEffect(e2)
+end
+function Auxiliary.EquipLimit(f)
+	return function(e,c)
+				return not f or f(c,e,e:GetHandlerPlayer())
+			end
+end
+function Auxiliary.EquipFilter(c,p,f,e,tp)
+	return (p==PLAYER_ALL or c:IsControler(p)) and c:IsFaceup() and (not f or f(c,e,tp))
+end
+function Auxiliary.EquipTarget(tg,p,f)
+	return	function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+				local player=nil
+				if p==0 then
+					player=tp
+				elseif p==1 then
+					player=1-tp
+				elseif p==PLAYER_ALL or p==nil then
+					player=PLAYER_ALL
+				end
+				if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsFaceup() and Auxiliary.EquipFilter(chkc,player,f,e,tp) end
+				if chk==0 then return player~=nil and Duel.IsExistingTarget(Auxiliary.EquipFilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil,player,f,e,tp) end
+				Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_EQUIP)
+				local g=Duel.SelectTarget(tp,Auxiliary.EquipFilter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil,player,f,e,tp)
+				if tg then tg(e,tp,eg,ep,ev,re,r,rp,g:GetFirst()) end
+				local e1=Effect.CreateEffect(e:GetHandler())
+				e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+				e1:SetCode(EVENT_CHAIN_SOLVING)
+				e1:SetReset(RESET_CHAIN)
+				e1:SetLabel(Duel.GetCurrentChain())
+				e1:SetLabelObject(e)
+				e1:SetOperation(Auxiliary.EquipEquip)
+				Duel.RegisterEffect(e1,tp)
+				Duel.SetOperationInfo(0,CATEGORY_EQUIP,e:GetHandler(),1,0,0)
+			end
+end
+function Auxiliary.EquipEquip(e,tp,eg,ep,ev,re,r,rp)
+	if re~=e:GetLabelObject() then return end
+	local c=e:GetHandler()
+	local tc=Duel.GetChainInfo(Duel.GetCurrentChain(),CHAININFO_TARGET_CARDS):GetFirst()
+	if tc and c:IsRelateToEffect(re) and tc:IsRelateToEffect(re) and tc:IsFaceup() then
+		Duel.Equip(tp,c,tc)
+	end
+end
+
+function Auxiliary.NonTuner(f,a,b,c)
+	return	function(target,scard,sumtype,tp)
+				return target:IsNotTuner(scard,tp) and (not f or f(target,a,b,c))
+			end
+end
+function Auxiliary.NonTunerEx(f,val)
+	return	function(target,scard,sumtype,tp)
+				return target:IsNotTuner(scard,tp) and f(target,val,scard,sumtype,tp)
+			end
+end
+function Duel.GetTargetCards(e)
+	return Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
 end
