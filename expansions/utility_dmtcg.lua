@@ -1690,6 +1690,7 @@ function Auxiliary.EnableShieldTrigger(c)
 end
 function Auxiliary.ShieldTriggerCondition(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
+	if not c:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER) then return false end
 	return c:IsPreviousLocation(DM_LOCATION_SHIELD) and c:IsReason(DM_REASON_BREAK)
 end
 function Auxiliary.ShieldTriggerCondition2(e,tp,eg,ep,ev,re,r,rp)
