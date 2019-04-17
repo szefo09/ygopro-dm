@@ -115,8 +115,8 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
-	e3:SetCondition(scard.regcon1)
-	e3:SetOperation(scard.regop1)
+	e3:SetCondition(scard.regcon)
+	e3:SetOperation(scard.regop)
 	Duel.RegisterEffect(e3,tp)
 	--attack cost workaround
 	local e4=Effect.CreateEffect(c)
@@ -153,22 +153,14 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	e8:SetCode(EVENT_CHAIN_SOLVED)
 	e8:SetOperation(scard.tgop1)
 	Duel.RegisterEffect(e8,tp)
-	--register broken shield
-	local e9=Effect.CreateEffect(c)
-	e9:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_DELAY)
-	e9:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e9:SetCode(EVENT_TO_HAND)
-	e9:SetCondition(scard.regcon2)
-	e9:SetOperation(scard.regop2)
-	Duel.RegisterEffect(e9,tp)
 	--win game
-	local e10=Effect.CreateEffect(c)
-	e10:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
-	e10:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e10:SetCode(EVENT_ADJUST)
-	e10:SetCondition(scard.wincon)
-	e10:SetOperation(scard.winop)
-	Duel.RegisterEffect(e10,tp)
+	local e9=Effect.CreateEffect(c)
+	e9:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+	e9:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e9:SetCode(EVENT_ADJUST)
+	e9:SetCondition(scard.wincon)
+	e9:SetOperation(scard.winop)
+	Duel.RegisterEffect(e9,tp)
 	--ignore yugioh rules
 	--attack first turn
 	if EFFECT_BP_FIRST_TURN then
@@ -369,10 +361,10 @@ end
 function scard.cfilter1(c,tp)
 	return not c:IsCanAttackTurn() and c:IsControler(tp)
 end
-function scard.regcon1(e,tp,eg,ep,ev,re,r,rp)
+function scard.regcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(scard.cfilter1,1,nil,Duel.GetTurnPlayer())
 end
-function scard.regop1(e,tp,eg,ep,ev,re,r,rp)
+function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	for ec in aux.Next(eg) do
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetDescription(DM_DESC_SUMMONSICKNESS)
@@ -433,25 +425,6 @@ function scard.tgop1(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SendtoMana(rc,POS_FACEUP_UNTAPPED,REASON_RULE)
 	else
 		Duel.DMSendtoGrave(rc,REASON_RULE+REASON_DISCARD)
-	end
-end
---register broken shield
-function scard.cfilter2(c)
-	return c:IsPreviousLocation(DM_LOCATION_SHIELD) and c:GetPreviousSequence()<5 and c:IsReason(DM_REASON_BREAK)
-end
-function scard.regcon2(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(scard.cfilter2,1,nil)
-end
-function scard.regop2(e,tp,eg,ep,ev,re,r,rp)
-	local rc=re:GetHandler()
-	for ec in aux.Next(eg) do
-		if not ec:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER) then Duel.Hint(HINT_MESSAGE,ec:GetControler(),DM_HINTMSG_NOSTRIGGER) end
-		--register broken shield for Card.IsBrokenShield
-		ec:RegisterFlagEffect(DM_EFFECT_BROKEN_SHIELD,RESET_EVENT+RESETS_STANDARD,EFFECT_FLAG_CLIENT_HINT,1,0,DM_DESC_BROKEN)
-		--register broken shield for Card.GetShieldBreakCount
-		rc:RegisterFlagEffect(DM_EFFECT_BREAK_SHIELD,RESET_PHASE+PHASE_END,0,1)
-		--register broken shield for Duel.GetShieldBreakCount
-		Duel.RegisterFlagEffect(rc:GetControler(),DM_EFFECT_BREAK_SHIELD,RESET_PHASE+PHASE_END,0,1)
 	end
 end
 --win game

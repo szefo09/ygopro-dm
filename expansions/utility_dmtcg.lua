@@ -603,7 +603,6 @@ end
 --untap a creature in the battle zone or a card in the mana zone
 function Duel.Untap(targets,reason)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
-	local g=Group.CreateGroup()
 	local ct=0
 	for tc in aux.Next(targets) do
 		if tc:IsAbleToUntap() then
@@ -638,12 +637,12 @@ end
 --Note: Update this function each time new "breaker" abilities are introduced
 --not yet implemented: quattro, world, galaxy, infinity, civilization, age, master
 function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason,ignore_breaker)
+	--rc: the creature that breaks the shield
 	--ignore_breaker: true to not break a number of shields according to the breaker abilities a creature may have
 	local reason=reason or 0
 	local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(),target_player,DM_LOCATION_SHIELD,0,nil)
-	if g:GetCount()==0 then return 0 end
+	if g:GetCount()==0 or not rc:IsCanBreakShield() then return 0 end
 	if rc and not ignore_breaker then
-		if not rc:IsCanBreakShield() then return 0 end
 		local m=_G["c"..rc:GetCode()]
 		local db=rc:IsHasEffect(DM_EFFECT_DOUBLE_BREAKER)
 		local tb=rc:IsHasEffect(DM_EFFECT_TRIPLE_BREAKER)
@@ -681,7 +680,21 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason,ignore_br
 		end
 		if to_grave then Duel.DMSendtoGrave(sg,reason) end
 	else
+		--register broken shields
+		for sc in aux.Next(sg) do
+			--add description
+			sc:RegisterFlagEffect(0,RESET_EVENT+RESETS_STANDARD-RESET_TOHAND-RESET_LEAVE,EFFECT_FLAG_CLIENT_HINT,1,0,DM_DESC_BROKEN)
+			--register broken shield for Card.IsBrokenShield
+			sc:RegisterFlagEffect(DM_EFFECT_BROKEN_SHIELD,RESET_EVENT+RESETS_STANDARD,0,1)
+			--register broken shield for Card.GetBrokenShieldCount
+			rc:RegisterFlagEffect(DM_EFFECT_BREAK_SHIELD,RESET_PHASE+PHASE_END,0,1)
+			--register broken shield for Duel.GetBrokenShieldCount
+			Duel.RegisterFlagEffect(rc:GetControler(),DM_EFFECT_BREAK_SHIELD,RESET_PHASE+PHASE_END,0,1)
+		end
 		ct=ct+Duel.SendtoHand(sg,PLAYER_OWNER,reason+DM_REASON_BREAK)
+		for oc in aux.Next(Duel.GetOperatedGroup()) do
+			if not oc:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER) then Duel.Hint(HINT_MESSAGE,target_player,DM_HINTMSG_NOSTRIGGER) end
+		end
 		--raise event for "Whenever this creature breaks a shield" + re:GetHandler()==e:GetHandler()
 		Duel.RaiseEvent(sg,EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD,e,0,0,0,0)
 	end
@@ -2692,7 +2705,7 @@ end
 function Auxiliary.EnableCannotAttack(c,con_func,s_range,o_range,tg)
 	local con_func=con_func or aux.TRUE
 	local targ_func=aux.AND(Auxiliary.CannotAttackTarget,tg)
-	if s_range and o_range then
+	if s_range or o_range then
 		Auxiliary.EnableEffectCustom(c,EFFECT_CANNOT_ATTACK,con_func,s_range,o_range,targ_func)
 	else
 		Auxiliary.EnableEffectCustom(c,EFFECT_CANNOT_ATTACK,aux.AND(Auxiliary.SelfCannotAttackCondition,con_func))
