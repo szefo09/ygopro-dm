@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.descon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetMatchingGroup(dm.ShieldZoneFilter(),tp,0,DM_LOCATION_SHIELD,nil)<=2
+	return Duel.GetShieldCount(1-tp)<=2
 end
 function scard.desfilter(c)
 	return c:IsFaceup() and c:IsPowerBelow(3000)

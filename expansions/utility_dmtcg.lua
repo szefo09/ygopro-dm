@@ -876,6 +876,10 @@ function Duel.GetBlocker()
 	end
 	return Duel.GetFirstMatchingCard(f,0,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil)
 end
+--return the number of shields a player has
+function Duel.GetShieldCount(player)
+	return Duel.GetMatchingGroupCount(Auxiliary.ShieldZoneFilter(),player,DM_LOCATION_SHIELD,0,nil)
+end
 --return the number of shields a player's creatures broke during the current turn
 function Duel.GetBrokenShieldCount(player)
 	return Duel.GetFlagEffect(player,DM_EFFECT_BREAK_SHIELD)
@@ -3586,7 +3590,7 @@ function Auxiliary.NoShieldsCondition(p)
 	return	function(e)
 				local tp=e:GetHandlerPlayer()
 				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
-				return Duel.GetMatchingGroupCount(Auxiliary.ShieldZoneFilter(),player,DM_LOCATION_SHIELD,0,nil)==0
+				return Duel.GetShieldCount(player)==0
 			end
 end
 Auxiliary.nszcon=Auxiliary.NoShieldsCondition
