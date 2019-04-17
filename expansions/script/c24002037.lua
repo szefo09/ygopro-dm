@@ -7,7 +7,6 @@ function scard.initial_effect(c)
 	dm.EnableShieldTrigger(c)
 	--destroy
 	dm.AddSpellCastEffect(c,0,nil,dm.DestroyOperation(nil,scard.desfilter,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE))
-	dm.AddShieldTriggerCastEffect(c,0,nil,dm.DestroyOperation(nil,scard.desfilter,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE))
 end
 scard.duel_masters_card=true
 function scard.desfilter(c)

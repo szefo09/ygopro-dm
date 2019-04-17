@@ -7,6 +7,5 @@ function scard.initial_effect(c)
 	dm.EnableShieldTrigger(c)
 	--discard
 	dm.AddSpellCastEffect(c,0,nil,dm.DiscardOperation(PLAYER_OPPO,aux.TRUE,0,LOCATION_HAND,1,1,true))
-	dm.AddShieldTriggerCastEffect(c,0,nil,dm.DiscardOperation(PLAYER_OPPO,aux.TRUE,0,LOCATION_HAND,1,1,true))
 end
 scard.duel_masters_card=true

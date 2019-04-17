@@ -207,6 +207,7 @@ DM_EFFECT_UPDATE_MANA_COST			=EFFECT_UPDATE_LEVEL			--Increase or decrease a car
 DM_EFFECT_ADD_RACE 					=EFFECT_ADD_SETCODE				--Creature is a particular race in addition to its other races
 DM_EFFECT_MUST_ATTACK_CREATURE		=EFFECT_MUST_ATTACK_MONSTER		--Creature attacks a creature if able
 DM_EFFECT_BROKEN_SHIELD				=CARD_DUEL_MASTERS_RULES		--Register a broken shield
+DM_EFFECT_IGNORE_TAP				=CARD_DUEL_MASTERS_RULES+1		--Workaround to not tap a creature at the end of the damage step
 DM_EFFECT_BLOCKED					=CARD_DIA_NORK_MOONLIGHT_GUARDIAN	--Register a creature that has become blocked
 DM_EFFECT_BREAK_SHIELD				=CARD_MIRACLE_QUEST				--Register number of broken shields ("Miracle Quest" DM-05 19/55)
 DM_EFFECT_BLOCKER					=701	--Blocker ("Dia Nork, Moonlight Guardian" DM-01 2/110)

@@ -7,7 +7,6 @@ function scard.initial_effect(c)
 	dm.EnableShieldTrigger(c)
 	--draw & discard
 	dm.AddSpellCastEffect(c,0,nil,scard.drop)
-	dm.AddShieldTriggerCastEffect(c,0,nil,scard.drop)
 end
 scard.duel_masters_card=true
 function scard.drop(e,tp,eg,ep,ev,re,r,rp)

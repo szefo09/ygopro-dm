@@ -7,7 +7,6 @@ function scard.initial_effect(c)
 	dm.EnableShieldTrigger(c)
 	--destroy & draw
 	dm.AddSpellCastEffect(c,0,nil,scard.desop)
-	dm.AddShieldTriggerCastEffect(c,0,nil,scard.desop)
 end
 scard.duel_masters_card=true
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
