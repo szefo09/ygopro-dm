@@ -23,12 +23,12 @@ CARD_CLONED_NIGHTMARE				=24012026	--"Cloned Nightmare" (DM-12 26/55)
 CARD_CLONED_BLADE					=24012028	--"Cloned Blade" (DM-12 28/55)
 CARD_CLONED_SPIKEHORN				=24012030	--"Cloned Spike-Horn" (DM-12 30/55)
 --↑EVENT_CUSTOM
+CARD_HOLY_AWE						=24001006	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_TRIGGER_SHIELD_TRIGGER,e,0,0,0,0)
 CARD_BLOODY_SQUITO					=24001046	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
 CARD_CREEPING_PLAGUE				=24001049	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED,e,0,0,0,0)
 CARD_MARROW_OOZE_THE_TWISTER		=24002032	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_ATTACK_PLAYER,e,0,0,0,0)
 CARD_BRUTAL_CHARGE					=24005049	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD,e,0,0,0,0)
 CARD_STORM_WRANGLER_THE_FURIOUS		=24009051	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_TRIGGER_BLOCKER,e,0,0,0,0)
-CARD_BENZO_THE_HIDDEN_FURY			=24010045	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_SHIELD_TO_HAND,e,0,0,0,0)
 CARD_BLUUM_ERKIS_FLARE_GUARDIAN		=24010119	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_CAST_FREE,e,0,0,0,0)
 CARD_WOLFIS_BLUE_DIVINE_DRAGON		=24027		--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER,e,0,0,0,0)
 --↑RegisterFlagEffect
@@ -251,14 +251,14 @@ DM_EVENT_COME_INTO_PLAY_SUCCESS		=EVENT_SPSUMMON_SUCCESS			--When a creature is 
 DM_EVENT_SUMMON_SUCCESS				=EVENT_SPSUMMON_SUCCESS			--When a player summons a creature
 DM_EVENT_ATTACK_END					=EVENT_DAMAGE_STEP_END			--When a creature finishes its attack
 DM_EVENT_BATTLE_END					=EVENT_DAMAGE_STEP_END			--After a battle happens
+DM_EVENT_TRIGGER_SHIELD_TRIGGER		=CARD_HOLY_AWE					--Trigger a card's "Shield Trigger" ability
 DM_EVENT_WIN_BATTLE					=CARD_BLOODY_SQUITO				--When a creature wins a battle + EVENT_BATTLE_DESTROYING
 DM_EVENT_BECOME_BLOCKED				=CARD_CREEPING_PLAGUE			--When a creature becomes blocked
 DM_EVENT_ATTACK_PLAYER				=CARD_MARROW_OOZE_THE_TWISTER	--When a creature attacks a player
 DM_EVENT_BREAK_SHIELD				=CARD_BRUTAL_CHARGE				--When a creature finishes attacking the opponent and broke a shield
 DM_EVENT_TRIGGER_BLOCKER			=CARD_STORM_WRANGLER_THE_FURIOUS--Trigger a creature's "Blocker" ability
-DM_EVENT_TRIGGER_SHIELD_TRIGGER		=CARD_BENZO_THE_HIDDEN_FURY		--Allow a player to use a card's "Shield Trigger" ability without it having being broken as a shield
-DM_EVENT_CAST_FREE					=CARD_BLUUM_ERKIS_FLARE_GUARDIAN--Allow a player to cast a spell immediately for no cost
-DM_EVENT_BECOME_SHIELD_TRIGGER		=CARD_WOLFIS_BLUE_DIVINE_DRAGON	--A card gets "Shield Trigger" (Can be summoned or cast for no cost)
+DM_EVENT_CAST_FREE					=CARD_BLUUM_ERKIS_FLARE_GUARDIAN--Cast a spell immediately for no cost
+DM_EVENT_BECOME_SHIELD_TRIGGER		=CARD_WOLFIS_BLUE_DIVINE_DRAGON	--Card gets "Shield Trigger" (Can be summoned or cast for no cost)
 --Category (ability classification)
 DM_CATEGORY_BLOCKER					=CATEGORY_NEGATE	--"Blocker" ability, needed for unblockable abilities ("Laser Wing" DM-01 11/110)
 DM_CATEGORY_SHIELD_TRIGGER			=CATEGORY_FLIP		--"Shield Trigger" ability, needed for "Emperor Quazla" (DM-08 S2/S5)

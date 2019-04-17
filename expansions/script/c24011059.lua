@@ -23,9 +23,5 @@ function scard.thop(e,tp,eg,ep,ev,re,r,rp)
 	local g1=Duel.GetMatchingGroup(dm.ShieldZoneFilter(Card.IsAbleToHand),tp,0,DM_LOCATION_SHIELD,nil)
 	local g2=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
 	if g2:GetCount()>0 then g1:Sub(g2) end
-	Duel.SendtoHand(g1,PLAYER_OWNER,REASON_EFFECT)
-	--raise event for "(Your opponent can use the "shield trigger" ability of that shield.)"
-	for tc in aux.Next(g2) do
-		Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_TRIGGER_SHIELD_TRIGGER,e,0,0,0,0)
-	end
+	Duel.SendtoHand(g1,PLAYER_OWNER,REASON_EFFECT,true)
 end

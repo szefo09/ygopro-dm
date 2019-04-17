@@ -444,13 +444,18 @@ end
 --Overwritten Duel functions
 --put a card into a player's hand
 local duel_send_to_hand=Duel.SendtoHand
-function Duel.SendtoHand(targets,player,reason)
+function Duel.SendtoHand(targets,player,reason,use_shield_trigger)
+	--use_shield_trigger: true if the player can use the "shield trigger" ability of the returned shield
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
+	local ct=duel_send_to_hand(targets,player,reason,use_shield_trigger)
 	for tc in aux.Next(targets) do
+		if use_shield_trigger then
+			Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_TRIGGER_SHIELD_TRIGGER,Effect.GlobalEffect(),0,0,0,0)
+		end
 		local g=tc:GetStackGroup()
 		targets:Merge(g)
 	end
-	return duel_send_to_hand(targets,player,reason)
+	return ct
 end
 --put a card into a player's deck
 local duel_send_to_deck=Duel.SendtoDeck
@@ -699,6 +704,8 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason,ignore_br
 		for oc in aux.Next(og) do
 			--add message
 			if not oc:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER) then Duel.Hint(HINT_MESSAGE,target_player,DM_HINTMSG_NOSTRIGGER) end
+			--raise event for "Shield Trigger"
+			Duel.RaiseSingleEvent(oc,EVENT_CUSTOM+DM_EVENT_TRIGGER_SHIELD_TRIGGER,Effect.GlobalEffect(),0,0,0,0)
 		end
 		local hg=Duel.GetFieldGroup(0,LOCATION_HAND,LOCATION_HAND)
 		for hc in aux.Next(hg) do
@@ -1216,7 +1223,10 @@ function Auxiliary.AddShieldTriggerChainLimit(c,effect,con_func,prop)
 	e2:SetCode(EVENT_CHAIN_SOLVED)
 	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	e2:SetRange(LOCATION_HAND)
-	e2:SetOperation(Auxiliary.ShieldTriggerOperation)
+	e2:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+		if rp==1-tp or not re:IsHasCategory(DM_CATEGORY_SHIELD_TRIGGER) then return end
+		e:GetLabelObject():SetLabel(1)
+	end)
 	c:RegisterEffect(e2)
 	local e3=effect:Clone()
 	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
@@ -1239,8 +1249,8 @@ function Auxiliary.EnableCreatureAttribute(c)
 	e1:SetDescription(DM_DESC_SHIELD_TRIGGER_CREATURE)
 	e1:SetCategory(DM_CATEGORY_SHIELD_TRIGGER)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-	e1:SetCode(EVENT_TO_HAND)
-	e1:SetProperty(EFFECT_FLAG_DELAY)
+	e1:SetCode(EVENT_CUSTOM+DM_EVENT_TRIGGER_SHIELD_TRIGGER)
+	e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY)
 	e1:SetRange(LOCATION_HAND)
 	e1:SetCondition(Auxiliary.ShieldTriggerCondition)
 	e1:SetTarget(Auxiliary.ShieldTriggerSummonTarget)
@@ -1425,11 +1435,11 @@ function Auxiliary.AddSpellCastEffect(c,desc_id,targ_func,op_func,prop,cost_func
 		e2:SetCategory(DM_CATEGORY_SHIELD_TRIGGER)
 	end
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-	e2:SetCode(EVENT_TO_HAND)
+	e2:SetCode(EVENT_CUSTOM+DM_EVENT_TRIGGER_SHIELD_TRIGGER)
 	if prop then
-		e2:SetProperty(EFFECT_FLAG_DELAY+prop)
+		e2:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY+prop)
 	else
-		e2:SetProperty(EFFECT_FLAG_DELAY)
+		e2:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY)
 	end
 	e2:SetRange(LOCATION_HAND)
 	e2:SetCondition(aux.AND(Auxiliary.ShieldTriggerCondition,con_func))
@@ -1437,29 +1447,24 @@ function Auxiliary.AddSpellCastEffect(c,desc_id,targ_func,op_func,prop,cost_func
 	if targ_func then e2:SetTarget(targ_func) end
 	e2:SetOperation(op_func)
 	c:RegisterEffect(e2)
-	--use "shield trigger" without being broken
-	local e3=e2:Clone()
-	e3:SetCode(EVENT_CUSTOM+DM_EVENT_TRIGGER_SHIELD_TRIGGER)
-	e3:SetCondition(con_func)
-	c:RegisterEffect(e3)
 	--prevent multiple "shield trigger" abilities from chaining
 	Auxiliary.AddShieldTriggerChainLimit(c,e2,con_func,prop)
 	--cast for no cost without using "shield trigger"
-	local e4=Effect.CreateEffect(c)
-	e4:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	if cate then e4:SetCategory(cate) end
-	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
-	e4:SetCode(EVENT_CUSTOM+DM_EVENT_CAST_FREE)
-	if prop then e4:SetProperty(prop) end
-	e4:SetCondition(con_func)
-	if cost_func then e4:SetCost(cost_func) end
-	if targ_func then e4:SetTarget(targ_func) end
-	e4:SetOperation(op_func)
-	c:RegisterEffect(e4)
+	local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	if cate then e3:SetCategory(cate) end
+	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
+	e3:SetCode(EVENT_CUSTOM+DM_EVENT_CAST_FREE)
+	if prop then e3:SetProperty(prop) end
+	e3:SetCondition(con_func)
+	if cost_func then e3:SetCost(cost_func) end
+	if targ_func then e3:SetTarget(targ_func) end
+	e3:SetOperation(op_func)
+	c:RegisterEffect(e3)
 	--get "shield trigger"
-	local e5=e4:Clone()
-	e5:SetCode(EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER)
-	c:RegisterEffect(e5)
+	local e4=e3:Clone()
+	e4:SetCode(EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER)
+	c:RegisterEffect(e4)
 end
 --cost function for casting spells
 function Auxiliary.CastSpellCost(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -1696,16 +1701,10 @@ function Auxiliary.EnableShieldTrigger(c)
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_SHIELD_TRIGGER)
 end
 function Auxiliary.ShieldTriggerCondition(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	if not c:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER) then return false end
-	return c:IsPreviousLocation(DM_LOCATION_SHIELD) and c:IsReason(DM_REASON_BREAK)
+	return e:GetHandler():IsHasEffect(DM_EFFECT_SHIELD_TRIGGER)
 end
 function Auxiliary.ShieldTriggerCondition2(e,tp,eg,ep,ev,re,r,rp)
 	return Auxiliary.ShieldTriggerCondition(e,tp,eg,ep,ev,re,r,rp) and e:GetLabel()==1 and e:GetHandler():IsBrokenShield()
-end
-function Auxiliary.ShieldTriggerOperation(e,tp,eg,ep,ev,re,r,rp)
-	if rp==1-tp or not re:IsHasCategory(DM_CATEGORY_SHIELD_TRIGGER) then return end
-	e:GetLabelObject():SetLabel(1)
 end
 function Auxiliary.ShieldTriggerSummonTarget(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():DMIsSummonable() end
@@ -3266,13 +3265,7 @@ function Auxiliary.TargetSendtoHandOperation(conf,use_shield_trigger)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
 				if g:GetCount()==0 then return end
-				Duel.SendtoHand(g,PLAYER_OWNER,REASON_EFFECT)
-				for tc in aux.Next(g) do
-					if use_shield_trigger then
-						--raise event for "(You can use the "shield trigger" ability of that shield.)"
-						Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_TRIGGER_SHIELD_TRIGGER,e,0,0,0,0)
-					end
-				end
+				Duel.SendtoHand(g,PLAYER_OWNER,REASON_EFFECT,use_shield_trigger)
 				local og1=Duel.GetOperatedGroup():Filter(Card.IsControler,nil,tp)
 				local og2=Duel.GetOperatedGroup():Filter(Card.IsControler,nil,1-tp)
 				local og3=Duel.GetOperatedGroup():Filter(Card.IsPreviousLocation,nil,LOCATION_DECK)
