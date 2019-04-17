@@ -404,6 +404,9 @@ function scard.posop3(e,tp,eg,ep,ev,re,r,rp)
 	if a:IsRelateToBattle() then
 		Duel.Tap(a,REASON_RULE)
 	end
+	--part of workaround to not tap a creature that untaps itself with an ability
+	--Note: Remove this if YGOPro allows a creature to tap itself for EFFECT_ATTACK_COST
+	a:ResetFlagEffect(DM_EFFECT_IGNORE_TAP)
 end
 --destroy 0 power
 function scard.desfilter(c)
