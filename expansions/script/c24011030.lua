@@ -13,7 +13,7 @@ function scard.dhfilter(c,cost)
 	return c:IsManaCost(cost)
 end
 function scard.dhop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_NUMBER)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_NUMBER)
 	local cost=Duel.AnnounceNumber(tp,table.unpack(dm.mana_cost_list))
 	local g1=Duel.GetFieldGroup(tp,LOCATION_HAND,0)
 	g1:RemoveCard(e:GetHandler())
