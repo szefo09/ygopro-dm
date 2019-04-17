@@ -13,6 +13,7 @@ DM_DESC_NL_SLAYER=DM_DESC_NATURE_LIGHT_SLAYER
 EFFECT_INDESTRUCTIBLE=EFFECT_INDESTRUCTABLE
 EFFECT_INDESTRUCTIBLE_EFFECT=EFFECT_INDESTRUCTABLE_EFFECT
 EFFECT_INDESTRUCTIBLE_BATTLE=EFFECT_INDESTRUCTABLE_BATTLE
+HINTMSG_NUMBER=HINGMSG_NUMBER
 
 --return a card script's name and id
 --include in each script: local scard,sid=dm.GetID()
@@ -138,7 +139,7 @@ function Card.IsBrokenShield(c)
 end
 --check if a spell can be cast for no cost
 function Card.IsCanCastFree(c)
-	return c:GetLevel()<=0 or (c:IsBrokenShield() and c:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER))
+	return c:GetLevel()<=0
 end
 --check if a creature has become blocked
 function Card.IsBlocked(c)
@@ -687,7 +688,7 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason,ignore_br
 			--add description
 			sc:RegisterFlagEffect(0,RESET_EVENT+RESETS_STANDARD-RESET_TOHAND-RESET_LEAVE,EFFECT_FLAG_CLIENT_HINT,1,0,DM_DESC_BROKEN)
 			--register broken shield for Card.IsBrokenShield
-			sc:RegisterFlagEffect(DM_EFFECT_BROKEN_SHIELD,RESET_EVENT+RESETS_STANDARD,0,1)
+			sc:RegisterFlagEffect(DM_EFFECT_BROKEN_SHIELD,RESET_EVENT+RESETS_STANDARD-RESET_TOHAND-RESET_LEAVE,0,1)
 			--register broken shield for Card.GetBrokenShieldCount
 			rc:RegisterFlagEffect(DM_EFFECT_BREAK_SHIELD,RESET_PHASE+PHASE_END,0,1)
 			--register broken shield for Duel.GetBrokenShieldCount
@@ -696,7 +697,13 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason,ignore_br
 		ct=ct+Duel.SendtoHand(sg,PLAYER_OWNER,reason+DM_REASON_BREAK)
 		local og=Duel.GetOperatedGroup()
 		for oc in aux.Next(og) do
+			--add message
 			if not oc:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER) then Duel.Hint(HINT_MESSAGE,target_player,DM_HINTMSG_NOSTRIGGER) end
+		end
+		local hg=Duel.GetFieldGroup(0,LOCATION_HAND,LOCATION_HAND)
+		for hc in aux.Next(hg) do
+			--reset broken shield for Card.IsBrokenShield
+			if not og:IsContains(hc) then hc:ResetFlagEffect(DM_EFFECT_BROKEN_SHIELD) end
 		end
 		--raise event for "Whenever this creature breaks a shield" + re:GetHandler()==e:GetHandler()
 		Duel.RaiseEvent(og,EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD,e,0,0,0,0)
@@ -1694,7 +1701,7 @@ function Auxiliary.ShieldTriggerCondition(e,tp,eg,ep,ev,re,r,rp)
 	return c:IsPreviousLocation(DM_LOCATION_SHIELD) and c:IsReason(DM_REASON_BREAK)
 end
 function Auxiliary.ShieldTriggerCondition2(e,tp,eg,ep,ev,re,r,rp)
-	return Auxiliary.ShieldTriggerCondition(e,tp,eg,ep,ev,re,r,rp) and e:GetLabel()==1
+	return Auxiliary.ShieldTriggerCondition(e,tp,eg,ep,ev,re,r,rp) and e:GetLabel()==1 and e:GetHandler():IsBrokenShield()
 end
 function Auxiliary.ShieldTriggerOperation(e,tp,eg,ep,ev,re,r,rp)
 	if rp==1-tp or not re:IsHasCategory(DM_CATEGORY_SHIELD_TRIGGER) then return end
