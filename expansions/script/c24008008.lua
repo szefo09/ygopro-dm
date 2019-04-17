@@ -30,6 +30,6 @@ end
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_CARD,0,sid)
 	if Duel.SelectYesNo(tp,DM_QHINTMSG_UNTAP) then
-		Duel.ChangePosition(e:GetHandler(),POS_FACEUP_UNTAPPED)
+		Duel.Untap(e:GetHandler(),REASON_EFFECT)
 	end
 end

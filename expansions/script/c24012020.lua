@@ -31,5 +31,5 @@ function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.SelectMatchingCard(tp,scard.posfilter,tp,DM_LOCATION_BATTLE,0,1,ct,nil)
 	if g:GetCount()==0 then return end
 	Duel.HintSelection(g)
-	Duel.ChangePosition(g,POS_FACEUP_UNTAPPED)
+	Duel.Untap(g,REASON_EFFECT)
 end

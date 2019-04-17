@@ -19,5 +19,5 @@ function scard.postg1(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TAP)
 	Duel.SelectTarget(tp,scard.posfilter,tp,0,DM_LOCATION_BATTLE,1,1,nil)
 end
-scard.posop=dm.TargetTapUntapOperation(POS_FACEUP_TAPPED)
+scard.posop=dm.TargetTapOperation
 scard.postg2=aux.TargetBoolFunction(Card.IsCivilization,DM_CIVILIZATION_LIGHT)

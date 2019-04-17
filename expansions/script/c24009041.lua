@@ -44,5 +44,6 @@ function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e6,tp)
 end
 function scard.actcon(e)
-	return Duel.GetAttackTarget():IsCreature()
+	local d=Duel.GetAttackTarget()
+	return d and d:IsFaceup()
 end

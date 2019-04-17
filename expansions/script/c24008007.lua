@@ -17,7 +17,7 @@ end
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if tc and tc:IsRelateToEffect(e) then
-		Duel.ChangePosition(tc,POS_FACEUP_TAPPED)
+		Duel.Tap(tc,REASON_EFFECT)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TARGET)
 	local g=Duel.SelectMatchingCard(tp,scard.abfilter,tp,DM_LOCATION_BATTLE,0,0,1,nil,e)

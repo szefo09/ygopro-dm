@@ -11,4 +11,4 @@ scard.duel_masters_card=true
 function scard.posfilter(c)
 	return c:IsFaceup() and c:IsUntapped()
 end
-scard.posop=dm.TapUntapOperation(PLAYER_SELF,scard.posfilter,0,DM_LOCATION_BATTLE,1,1,POS_FACEUP_TAPPED,true)
+scard.posop=dm.TapOperation(PLAYER_SELF,scard.posfilter,0,DM_LOCATION_BATTLE,1,1,true)

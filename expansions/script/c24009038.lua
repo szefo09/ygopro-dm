@@ -30,5 +30,5 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 end
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_CARD,0,sid)
-	Duel.ChangePosition(e:GetHandler(),POS_FACEUP_UNTAPPED)
+	Duel.Untap(e:GetHandler(),REASON_EFFECT)
 end

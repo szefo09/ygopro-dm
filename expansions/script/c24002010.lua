@@ -6,6 +6,6 @@ function scard.initial_effect(c)
 	--blocker
 	dm.EnableBlocker(c)
 	--untap
-	dm.AddSingleBlockEffect(c,0,nil,nil,dm.SelfTapUntapOperation(POS_FACEUP_UNTAPPED))
+	dm.AddSingleBlockEffect(c,0,nil,nil,dm.SelfUntapOperation())
 end
 scard.duel_masters_card=true

@@ -508,38 +508,19 @@ end
 Duel.SendtoBattle=Duel.SpecialSummon
 Duel.SendtoBattleStep=Duel.SpecialSummonStep
 Duel.SendtoBattleComplete=Duel.SpecialSummonComplete
---untap/tap a card in the battle/mana zone
+--change the position of a card
+--Note: Added reason parameter
 local duel_change_position=Duel.ChangePosition
-function Duel.ChangePosition(targets,pos)
-	if type(targets)=="Card" then targets=Group.FromCards(targets) end
-	local g=Group.CreateGroup()
-	local ct=0
-	for tc in aux.Next(targets) do
-		if pos==POS_FACEUP_UNTAPPED and tc:IsAbleToUntap() then
-			if tc:IsLocation(LOCATION_REMOVED) then
-				ct=ct+Duel.SendtoGrave(tc,0)
-				Duel.RaiseSingleEvent(tc,EVENT_CHANGE_POS,tc:GetReasonEffect(),0,0,0,0)
-				g:AddCard(tc)
-			end
-		elseif pos==POS_FACEUP_TAPPED and tc:IsAbleToTap() then
-			if tc:IsLocation(LOCATION_GRAVE) then
-				ct=ct+Duel.Remove(tc,POS_FACEDOWN,0)
-				Duel.RaiseSingleEvent(tc,EVENT_CHANGE_POS,tc:GetReasonEffect(),0,0,0,0)
-				g:AddCard(tc)
-			end
-		end
-	end
-	if g:GetCount()>0 then
-		Duel.RaiseEvent(g,EVENT_CHANGE_POS,Effect.GlobalEffect(),0,0,0,0)
-	end
-	return ct+duel_change_position(targets,pos)
+function Duel.ChangePosition(targets,pos,reason)
+	local reason=reason or 0
+	return duel_change_position(targets,pos,reason)
 end
 --show a player a card
 --Note: Added parameter turn_faceup to keep a shield face up
 local duel_confirm_cards=Duel.ConfirmCards
 function Duel.ConfirmCards(player,targets,turn_faceup)
 	if turn_faceup then
-		Duel.ChangePosition(targets,POS_FACEUP)
+		Duel.TurnShield(targets,POS_FACEUP)
 	else
 		return duel_confirm_cards(player,targets,turn_faceup)
 	end
@@ -604,12 +585,50 @@ function Duel.SelectTarget(sel_player,f,player,s,o,min,max,ex,...)
 	end
 end
 --New Duel functions
+--tap a creature in the battle zone or a card in the mana zone
+function Duel.Tap(targets,reason)
+	if type(targets)=="Card" then targets=Group.FromCards(targets) end
+	local ct=0
+	for tc in aux.Next(targets) do
+		if not tc:IsAbleToTap() then break end
+		if tc:IsLocation(LOCATION_MZONE) then
+			ct=ct+Duel.ChangePosition(tc,POS_FACEUP_TAPPED,reason)
+		elseif tc:IsLocation(LOCATION_GRAVE) then
+			ct=ct+Duel.Remove(tc,POS_FACEDOWN,reason)
+		end
+	end
+	return ct
+end
+--untap a creature in the battle zone or a card in the mana zone
+function Duel.Untap(targets,reason)
+	if type(targets)=="Card" then targets=Group.FromCards(targets) end
+	local g=Group.CreateGroup()
+	local ct=0
+	for tc in aux.Next(targets) do
+		if not tc:IsAbleToUntap() then break end
+		if tc:IsLocation(LOCATION_MZONE) then
+			ct=ct+Duel.ChangePosition(tc,POS_FACEUP_UNTAPPED,reason)
+		elseif tc:IsLocation(LOCATION_REMOVED) then
+			ct=ct+Duel.SendtoGrave(tc,reason)
+		end
+	end
+	return ct
+end
 --tap a card in the mana zone to summon a creature or to cast a spell
 function Duel.PayManaCost(targets)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
 	local ct=0
 	for tc in aux.Next(targets) do
-		ct=ct+Duel.Remove(tc,POS_FACEDOWN,REASON_COST)
+		ct=ct+Duel.Tap(targets,REASON_COST)
+	end
+	return ct
+end
+--turn a shield face up or down
+function Duel.TurnShield(targets,pos)
+	if type(targets)=="Card" then targets=Group.FromCards(targets) end
+	local ct=0
+	for tc in aux.Next(targets) do
+		ct=ct+Duel.ChangePosition(tc,pos)
 	end
 	return ct
 end
@@ -1206,7 +1225,6 @@ function Auxiliary.AttackShieldTarget(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function Auxiliary.AttackShieldOperation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	Duel.ChangePosition(c,POS_FACEUP_TAPPED) --fix attack cost position
 	--raise event for attacking a player
 	Duel.RaiseEvent(c,EVENT_CUSTOM+DM_EVENT_ATTACK_PLAYER,e,0,0,0,0)
 	--raise event for "Whenever this creature attacks a player"
@@ -1302,6 +1320,7 @@ function Auxiliary.EvolutionOperation(e,tp,eg,ep,ev,re,r,rp,c)
 end
 
 --add rules to spell
+--reserved
 function Auxiliary.EnableSpellAttribute(c)
 end
 --function for spell casting
@@ -1309,6 +1328,7 @@ end
 --prop: include EFFECT_FLAG_CARD_TARGET for a targeting ability
 function Auxiliary.AddSpellCastEffect(c,desc_id,targ_func,op_func,prop,cost_func,con_func,cate)
 	--cost_func: include dm.CastSpellCost
+	--cast for cost
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e1:SetCategory(cate) end
@@ -1324,21 +1344,21 @@ function Auxiliary.AddSpellCastEffect(c,desc_id,targ_func,op_func,prop,cost_func
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
-	--get "shield trigger"
+	--cast immediately for no cost
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e2:SetCategory(cate) end
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
-	e2:SetCode(EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER)
+	e2:SetCode(EVENT_CUSTOM+DM_EVENT_CAST_FREE)
 	if prop then e2:SetProperty(prop) end
 	if con_func then e2:SetCondition(con_func) end
 	if cost_func then e2:SetCost(cost_func) end
 	if targ_func then e2:SetTarget(targ_func) end
 	e2:SetOperation(op_func)
 	c:RegisterEffect(e2)
-	--cast immediately for no cost
+	--get "shield trigger"
 	local e3=e2:Clone()
-	e3:SetCode(EVENT_CUSTOM+DM_EVENT_CAST_FREE)
+	e3:SetCode(EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER)
 	c:RegisterEffect(e3)
 end
 --cost function for casting spells
@@ -1479,7 +1499,6 @@ function Auxiliary.BlockerCost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	if chk==0 then return c:IsFaceup() and c:IsUntapped() and Duel.GetFlagEffect(tp,DM_EFFECT_BLOCKER)==0 end
 	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
-	Duel.ChangePosition(c,POS_FACEUP_TAPPED)
 	Duel.RegisterFlagEffect(tp,DM_EFFECT_BLOCKER,RESET_CHAIN,0,1)
 end
 function Auxiliary.BlockerTarget(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -1488,9 +1507,10 @@ end
 function Auxiliary.BlockerOperation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) then return end
+	Duel.Tap(c,REASON_EFFECT)
 	local a=Duel.GetAttacker()
 	if not a or a:IsImmuneToEffect(e) or c:IsImmuneToEffect(e) or a:IsStatus(STATUS_ATTACK_CANCELED) then return end
-	Duel.ChangePosition(a,POS_FACEUP_TAPPED) --fix attack cost position
+	Duel.Tap(a,REASON_EFFECT) --fix attack cost position
 	Duel.NegateAttack()
 	--register flag effect for Card.IsBlocked
 	a:RegisterFlagEffect(DM_EFFECT_BLOCKED,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_DAMAGE,0,1)
@@ -1573,7 +1593,7 @@ end
 --"Shield trigger (When this creature is put into your hand from your shield zone, you may summon it immediately for no cost.)"
 --e.g. "Holy Awe" (DM-01 6/110), "Amber Grass" (DM-04 7/55)
 function Auxiliary.EnableShieldTrigger(c)
-	Auxiliary.EnableEffectCustom(c,DM_EFFECT_SHIELD_TRIGGER)
+	--summon for no cost
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(DM_DESC_SHIELD_TRIGGER_CREATURE)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
@@ -1583,6 +1603,7 @@ function Auxiliary.EnableShieldTrigger(c)
 	e1:SetTarget(Auxiliary.ShieldTriggerSummonTarget)
 	e1:SetOperation(Auxiliary.ShieldTriggerSummonOperation)
 	c:RegisterEffect(e1)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_SHIELD_TRIGGER)
 end
 function Auxiliary.ShieldTriggerCondition(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
@@ -2560,28 +2581,22 @@ function Auxiliary.EnableTurnEndSelfUntap(c,desc_id,con_func,forced)
 		e1:SetCondition(Auxiliary.TurnPlayerCondition(PLAYER_SELF))
 	end
 	if typ==EFFECT_TYPE_TRIGGER_O then
-		e1:SetTarget(Auxiliary.SelfTapUntapTarget(POS_FACEUP_UNTAPPED))
+		e1:SetTarget(Auxiliary.SelfUntapTarget)
 	end
-	e1:SetOperation(Auxiliary.SelfTapUntapOperation(POS_FACEUP_UNTAPPED))
+	e1:SetOperation(Auxiliary.SelfUntapOperation())
 	c:RegisterEffect(e1)
 end
---pos: POS_FACEUP_TAPPED for "tap this creature" or POS_FACEUP_UNTAPPED for "untap this creature"
-function Auxiliary.SelfTapUntapTarget(pos)
-	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
-				local c=e:GetHandler()
-				local b=c:IsFaceup() and c:IsUntapped()
-				if pos==POS_FACEUP_UNTAPPED then b=c:IsFaceup() and c:IsTapped() end
-				if chk==0 then return b end
-			end
+function Auxiliary.SelfUntapTarget(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return e:GetHandler():IsFaceup() and e:GetHandler():IsTapped() end
 end
-function Auxiliary.SelfTapUntapOperation(pos,ram)
-	--ram: true for "tap/untap this creature at random"
+function Auxiliary.SelfUntapOperation(ram)
+	--ram: true for "untap this creature at random"
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local c=e:GetHandler()
 				if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
 				local ct=math.random(4) --generate either 2 or 3 for 50% chance
 				if ram and ct~=2 then return end
-				Duel.ChangePosition(c,pos)
+				Duel.Untap(c,REASON_EFFECT)
 			end
 end
 --"This creature can't be blocked."
@@ -2711,7 +2726,7 @@ end
 function Auxiliary.SelfDestroyOperation(ram)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local c=e:GetHandler()
-				if Duel.GetAttacker()==c then Duel.ChangePosition(c,POS_FACEUP_TAPPED) end --fix attack cost position
+				if Duel.GetAttacker()==c then Duel.Tap(c,REASON_RULE) end --fix attack cost position
 				if not c:IsRelateToEffect(e) then return end
 				local ct=math.random(4) --generate either 2 or 3 for 50% chance
 				if ram and ct~=2 then return end
@@ -3363,45 +3378,73 @@ function Auxiliary.SortDecktopOperation(sortp,tgp,ct)
 			end
 end
 --========== TapUntap ==========
---operation function for abilities that tap/untap cards
-function Auxiliary.TapUntapOperation(p,f,s,o,min,max,pos,ram,ex,...)
-	--p,min,max: nil to tap/untap all cards
-	--pos: POS_FACEUP_TAPPED to tap or POS_FACEUP_UNTAPPED to untap
-	--ram: true to tap/untap cards at random
+--operation function for abilities that tap cards
+function Auxiliary.TapOperation(p,f,s,o,min,max,ram,ex,...)
+	--p,min,max: nil to tap all cards
+	--ram: true to tap cards at random
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
-				local desc=DM_HINTMSG_TAP
-				if pos==POS_FACEUP_UNTAPPED then desc=DM_HINTMSG_UNTAP end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
-				--the attacker is excluded because it's supposed to be tapped according to the attack rule
-				if Duel.GetAttacker() then g:RemoveCard(Duel.GetAttacker()) end
+				local a=Duel.GetAttacker()
+				if a and a:IsUntapped() then Duel.Tap(a,REASON_RULE) end --fix attack cost position
 				local sg=nil
 				if min and max then
 					if ram then
 						sg=g:RandomSelect(player,min)
 					else
-						Duel.Hint(HINT_SELECTMSG,player,desc)
+						Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TAP)
 						sg=g:Select(player,min,max,ex,table.unpack(funs))
 					end
 					local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BATTLE)
 					Duel.HintSelection(hg)
-					Duel.ChangePosition(sg,pos)
+					Duel.Tap(sg,REASON_EFFECT)
 				else
-					Duel.ChangePosition(g,pos)
+					Duel.Tap(g,REASON_EFFECT)
 				end
 			end
 end
---operation function for abilities that target cards to tap/untap
-function Auxiliary.TargetTapUntapOperation(pos)
-	--pos: POS_FACEUP_TAPPED to tap or POS_FACEUP_UNTAPPED to untap
+--operation function for abilities untap cards
+function Auxiliary.UntapOperation(p,f,s,o,min,max,ram,ex,...)
+	--p,min,max: nil to untap all cards
+	--ram: true to untap cards at random
+	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
-				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
-				if g:GetCount()>0 then
-					Duel.ChangePosition(g,pos)
+				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
+				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
+				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
+				local a=Duel.GetAttacker()
+				if a and a:IsUntapped() then Duel.Tap(a,REASON_RULE) end --fix attack cost position
+				local sg=nil
+				if min and max then
+					if ram then
+						sg=g:RandomSelect(player,min)
+					else
+						Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_UNTAP)
+						sg=g:Select(player,min,max,ex,table.unpack(funs))
+					end
+					local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BATTLE)
+					Duel.HintSelection(hg)
+					Duel.Untap(sg,REASON_EFFECT)
+				else
+					Duel.Untap(g,REASON_EFFECT)
 				end
 			end
+end
+--operation function for abilities that target cards to tap
+function Auxiliary.TargetTapOperation(e,tp,eg,ep,ev,re,r,rp)
+	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
+	if g:GetCount()>0 then
+		Duel.Tap(g,REASON_EFFECT)
+	end
+end
+--operation function for abilities that target cards to untap
+function Auxiliary.TargetUntapOperation(e,tp,eg,ep,ev,re,r,rp)
+	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
+	if g:GetCount()>0 then
+		Duel.Untap(g,REASON_EFFECT)
+	end
 end
 
 --condition to check who the turn player is
@@ -3529,7 +3572,7 @@ Auxiliary.nhcon=Auxiliary.NoHandCondition
 function Auxiliary.SelfTapCost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	if chk==0 then return c:IsFaceup() and c:IsUntapped() end
-	Duel.ChangePosition(c,POS_FACEUP_TAPPED)
+	Duel.Tap(c,REASON_COST)
 end
 Auxiliary.stapcost=Auxiliary.SelfTapCost
 --target function for optional abilities that do not target cards

@@ -17,7 +17,7 @@ scard.postg=dm.TargetCardFunction(PLAYER_SELF,scard.posfilter,0,DM_LOCATION_BATT
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if not tc or not tc:IsRelateToEffect(e) then return end
-	Duel.ChangePosition(tc,POS_FACEUP_TAPPED)
+	Duel.Tap(tc,REASON_EFFECT)
 	if tc:DMIsRace(DM_RACE_DRAGON) then
 		Duel.SendDecktoptoShield(tp,1)
 	end
