@@ -1,4 +1,5 @@
 --Pokolul
+--Not fully implemented: Other tapped Pokolul can trigger even though they didn't break the current broken shield
 local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
@@ -8,6 +9,7 @@ function scard.initial_effect(c)
 	e0:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e0:SetCode(EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD)
 	e0:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
+	e0:SetRange(DM_LOCATION_BATTLE)
 	e0:SetCondition(scard.regcon)
 	e0:SetOperation(scard.regop)
 	c:RegisterEffect(e0)
@@ -33,7 +35,7 @@ function scard.initial_effect(c)
 	e3:SetRange(DM_LOCATION_BATTLE)
 	e3:SetCondition(scard.poscon)
 	e3:SetTarget(dm.SelfUntapTarget)
-	e3:SetOperation(dm.SelfUntapOperation())
+	e3:SetOperation(scard.posop)
 	c:RegisterEffect(e3)
 	e1:SetLabelObject(e3)
 	e2:SetLabelObject(e3)
@@ -43,20 +45,25 @@ function scard.regcon(e,tp,eg,ep,ev,re,r,rp)
 	return re:GetHandler()==e:GetHandler()
 end
 function scard.regop(e,tp,eg,ep,ev,re,r,rp)
-	for tc in aux.Next(eg) do
-		tc:RegisterFlagEffect(sid,RESET_EVENT+RESETS_STANDARD-RESET_LEAVE-RESET_TOHAND,0,1)
+	for ec in aux.Next(eg) do
+		ec:RegisterFlagEffect(sid,RESET_EVENT+RESETS_STANDARD,0,1)
 	end
 end
 function scard.chop1(e,tp,eg,ep,ev,re,r,rp)
-	if re:GetHandler():GetFlagEffect(sid)>0 then
-		e:GetLabelObject():SetLabel(0)
-	end
+	e:GetLabelObject():SetLabel(0)
 end
 function scard.chop2(e,tp,eg,ep,ev,re,r,rp)
-	if rp==1-tp and re:IsHasCategory(DM_CATEGORY_SHIELD_TRIGGER) and re:GetHandler():IsBrokenShield() then
-		e:GetLabelObject():SetLabel(1)
-	end
+	if rp==tp or not re:IsHasCategory(DM_CATEGORY_SHIELD_TRIGGER) or re:GetHandler():GetFlagEffect(sid)==0 then return end
+	e:GetLabelObject():SetLabel(1)
 end
 function scard.poscon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetLabel()==1
+end
+function scard.posop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
+	Duel.Untap(c,REASON_EFFECT)
+	--part of workaround to not tap a creature that untaps itself with an ability
+	--Note: Remove this if YGOPro allows a creature to tap itself for EFFECT_ATTACK_COST
+	c:RegisterFlagEffect(DM_EFFECT_IGNORE_TAP,RESET_EVENT+RESETS_STANDARD,0,1)
 end
