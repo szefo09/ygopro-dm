@@ -190,7 +190,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	ye4:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	ye4:SetType(EFFECT_TYPE_FIELD)
 	ye4:SetCode(EFFECT_EXTRA_ATTACK)
-	ye4:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
+	ye4:SetTargetRange(DM_LOCATION_BATTLE,DM_LOCATION_BATTLE)
 	ye4:SetValue(MAX_NUMBER)
 	Duel.RegisterEffect(ye4,tp)
 	--cannot change position
@@ -198,7 +198,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	ye5:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE)
 	ye5:SetType(EFFECT_TYPE_FIELD)
 	ye5:SetCode(EFFECT_CANNOT_CHANGE_POSITION)
-	ye5:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
+	ye5:SetTargetRange(DM_LOCATION_BATTLE,DM_LOCATION_BATTLE)
 	Duel.RegisterEffect(ye5,tp)
 	--no battle damage
 	local ye6=Effect.CreateEffect(c)
@@ -474,17 +474,19 @@ function scard.desop2(e,tp,eg,ep,ev,re,r,rp)
 	local ab1=a:IsHasEffect(EFFECT_INDESTRUCTIBLE) and a:IsHasEffect(EFFECT_INDESTRUCTIBLE_BATTLE)
 	local ab2=d:IsHasEffect(EFFECT_INDESTRUCTIBLE) and d:IsHasEffect(EFFECT_INDESTRUCTIBLE_BATTLE)
 	local g=Group.CreateGroup()
+	local ec=nil
 	if a:GetAttack()<d:GetDefense() then
-		if not ab1 and a:IsRelateToBattle() then g:AddCard(a) end
+		if not ab1 and a:IsRelateToBattle() then g:AddCard(a) ec=d end
 	elseif a:GetAttack()==d:GetDefense() then
 		if not ab1 and a:IsRelateToBattle() then g:AddCard(a) end
 		if not ab2 and d:IsRelateToBattle() then g:AddCard(d) end
 	end
 	Duel.Destroy(g,REASON_RULE)
+	if not ec then return end
 	--raise event for "When this creature wins a battle"
-	Duel.RaiseSingleEvent(d,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
+	Duel.RaiseSingleEvent(ec,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
 	--raise event for "Whenever one of your creatures wins a battle"
-	Duel.RaiseEvent(d,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
+	Duel.RaiseEvent(ec,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
 end
 --to grave redirect
 function scard.tgtg(e,c)
