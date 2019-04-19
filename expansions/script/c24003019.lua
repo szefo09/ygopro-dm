@@ -7,7 +7,6 @@ function scard.initial_effect(c)
 	dm.EnableShieldTrigger(c)
 	--confirm
 	dm.AddSpellCastEffect(c,0,nil,scard.confop)
-	dm.AddShieldTriggerCastEffect(c,0,nil,scard.confop)
 end
 scard.duel_masters_card=true
 function scard.conffilter(c)

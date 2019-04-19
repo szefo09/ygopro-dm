@@ -7,7 +7,6 @@ function scard.initial_effect(c)
 	dm.EnableShieldTrigger(c)
 	--get ability
 	dm.AddSpellCastEffect(c,0,nil,scard.regop)
-	dm.AddShieldTriggerCastEffect(c,0,nil,scard.regop)
 end
 scard.duel_masters_card=true
 function scard.regop(e,tp,eg,ep,ev,re,r,rp)

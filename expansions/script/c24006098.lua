@@ -7,6 +7,5 @@ function scard.initial_effect(c)
 	dm.EnableShieldTrigger(c)
 	--to mana
 	dm.AddSpellCastEffect(c,0,nil,dm.DecktopSendtoManaOperation(PLAYER_SELF,1))
-	dm.AddShieldTriggerCastEffect(c,0,nil,dm.DecktopSendtoManaOperation(PLAYER_SELF,1))
 end
 scard.duel_masters_card=true

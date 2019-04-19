@@ -7,7 +7,6 @@ function scard.initial_effect(c)
 	dm.EnableShieldTrigger(c)
 	--get ability
 	dm.AddSpellCastEffect(c,0,scard.abtg,scard.abop,EFFECT_FLAG_CARD_TARGET)
-	dm.AddShieldTriggerCastEffect(c,0,scard.abtg,scard.abop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 scard.abtg=dm.TargetCardFunction(PLAYER_SELF,Card.IsFaceup,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TARGET)
