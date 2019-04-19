@@ -8,9 +8,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.tsop(e,tp,eg,ep,ev,re,r,rp)
-	local ct1=Duel.GetMatchingGroupCount(dm.ShieldZoneFilter(),tp,DM_LOCATION_SHIELD,0,nil)
-	local ct2=Duel.GetMatchingGroupCount(dm.ShieldZoneFilter(),tp,0,DM_LOCATION_SHIELD,nil)
-	if ct2>ct1 then
+	if Duel.GetShieldCount(1-tp)>Duel.GetShieldCount(tp) then
 		Duel.SendDecktoptoShield(tp,1)
 	end
 end

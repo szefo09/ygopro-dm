@@ -8,9 +8,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.thcon(e,tp,eg,ep,ev,re,r,rp)
-	local ct1=Duel.GetMatchingGroupCount(dm.ShieldZoneFilter(),tp,DM_LOCATION_SHIELD,0,nil)
-	local ct2=Duel.GetMatchingGroupCount(dm.ShieldZoneFilter(),tp,0,DM_LOCATION_SHIELD,nil)
-	return ct2>ct1
+	return Duel.GetShieldCount(1-tp)>Duel.GetShieldCount(tp)
 end
 function scard.thtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(DM_LOCATION_SHIELD) and chkc:IsControler(1-tp) and dm.ShieldZoneFilter()(chkc) end

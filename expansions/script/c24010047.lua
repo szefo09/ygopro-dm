@@ -8,6 +8,6 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.dhcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetMatchingGroup(dm.ShieldZoneFilter(),tp,0,DM_LOCATION_SHIELD,nil)<=3
+	return Duel.GetShieldCount(1-tp)<=3
 end
 scard.dhop=dm.DiscardOperation(PLAYER_OPPO,aux.TRUE,0,LOCATION_HAND,1,1,true)

@@ -15,9 +15,8 @@ end
 scard.duel_masters_card=true
 --power up
 function scard.powval(e,c)
-	local ct1=Duel.GetMatchingGroupCount(dm.ShieldZoneFilter(),c:GetControler(),DM_LOCATION_SHIELD,0,nil)
-	local ct2=Duel.GetMatchingGroupCount(dm.ShieldZoneFilter(),c:GetControler(),0,DM_LOCATION_SHIELD,nil)
-	return (ct1+ct2)*2000
+	local p=c:GetControler()
+	return (Duel.GetShieldCount(p)+Duel.GetShieldCount(1-p))*2000
 end
 --double breaker
 function scard.dbcon(e)

@@ -8,6 +8,6 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.poscon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetMatchingGroupCount(dm.ShieldZoneFilter(),tp,DM_LOCATION_SHIELD,0,nil)>=5
+	return Duel.GetShieldCount(tp)>=5
 end
 scard.posop=dm.UntapOperation(nil,dm.ManaZoneFilter(Card.IsTapped),0,DM_LOCATION_MANA)
