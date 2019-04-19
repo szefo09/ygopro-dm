@@ -197,7 +197,7 @@ function Card.DMIsEvolutionCivilization(c,civ)
 	return c:IsCivilization(civ) or c:IsHasEffect(DM_EFFECT_EVOLUTION_ANY_CIVILIZATION)
 end
 ]]
---return the number of combined civilizations a card has
+--return the amount of civilizations a card has
 function Card.GetCivilizationCount(c)
 	local civ=c:GetCivilization()
 	if civ==DM_CIVILIZATION_LIGHT or civ==DM_CIVILIZATION_WATER or civ==DM_CIVILIZATION_DARKNESS
@@ -2842,7 +2842,6 @@ end
 --"Each creature costs N more/less to summon and each spell costs N more/less to cast."
 --e.g. "Elf-X" (DM-02 46/55), "Milieus, the Daystretcher" (DM-04 12/55)
 function Auxiliary.EnableUpdateManaCost(c,val,s_range,o_range,targ_func)
-	--s_range,o_range: LOCATION_HAND (mostly)
 	local e1=Effect.CreateEffect(c)
 	if s_range or o_range then
 		e1:SetType(EFFECT_TYPE_FIELD)
@@ -2851,6 +2850,7 @@ function Auxiliary.EnableUpdateManaCost(c,val,s_range,o_range,targ_func)
 	else
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+		e1:SetRange(LOCATION_HAND)
 	end
 	e1:SetCode(DM_EFFECT_UPDATE_MANA_COST)
 	e1:SetRange(DM_LOCATION_BATTLE)

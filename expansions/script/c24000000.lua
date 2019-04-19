@@ -300,15 +300,36 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	ye18:SetCode(EVENT_CHAINING)
 	ye18:SetOperation(scard.chop)
 	Duel.RegisterEffect(ye18,tp)
-	--no replay
+	--set mana cost equal to civilization sum
 	local ye19=Effect.CreateEffect(c)
 	ye19:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	ye19:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	ye19:SetCode(EVENT_LEAVE_FIELD)
-	ye19:SetCondition(function(e,tp,eg,ep,ev,re,r,rp)
+	ye19:SetCode(EVENT_ADJUST)
+	ye19:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+		local f=function(c)
+			return c:GetManaCost()<c:GetCivilizationCount()
+		end
+		local g=Duel.GetMatchingGroup(f,0,LOCATION_ALL,LOCATION_ALL,nil)
+		if g:GetCount()==0 then return end
+		for tc in aux.Next(g) do
+			local e1=Effect.CreateEffect(e:GetHandler())
+			e1:SetType(EFFECT_TYPE_SINGLE)
+			e1:SetCode(DM_EFFECT_UPDATE_MANA_COST)
+			e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+			e1:SetValue(tc:GetCivilizationCount()-tc:GetManaCost())
+			tc:RegisterEffect(e1)
+		end
+	end)
+	Duel.RegisterEffect(ye19,tp)
+	--no replay
+	local ye20=Effect.CreateEffect(c)
+	ye20:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+	ye20:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	ye20:SetCode(EVENT_LEAVE_FIELD)
+	ye20:SetCondition(function(e,tp,eg,ep,ev,re,r,rp)
 		return eg:IsExists(Card.IsPreviousLocation,1,nil,LOCATION_ONFIELD) and Duel.CheckEvent(EVENT_ATTACK_ANNOUNCE)
 	end)
-	ye19:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+	ye20:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
 		local a=Duel.GetAttacker()
 		local d=Duel.GetAttackTarget()
 		--[[if not d or not d:IsOnField() then
@@ -317,7 +338,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 		end]]
 		Duel.ChangeAttackTarget(d)
 	end)
-	Duel.RegisterEffect(ye19,tp)
+	Duel.RegisterEffect(ye20,tp)
 end
 --untap
 function scard.posfilter1(c)

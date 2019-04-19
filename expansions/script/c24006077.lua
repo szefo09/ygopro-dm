@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--mana cost down
-	dm.EnableUpdateManaCost(c,scard.mcval,LOCATION_HAND,0,aux.TargetBoolFunction(Card.DMIsRace(DM_RACE_DRAGON)))
+	dm.EnableUpdateManaCost(c,scard.mcval,LOCATION_ALL,0,aux.TargetBoolFunction(Card.DMIsRace(DM_RACE_DRAGON)))
 end
 scard.duel_masters_card=true
 function scard.mcval(e,c)

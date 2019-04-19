@@ -6,8 +6,8 @@ function scard.initial_effect(c)
 	--blocker
 	dm.EnableBlocker(c)
 	--mana cost up
-	dm.EnableUpdateManaCost(c,2,LOCATION_HAND,0,scard.mctg1)
-	dm.EnableUpdateManaCost(c,2,LOCATION_HAND,0,scard.mctg2)
+	dm.EnableUpdateManaCost(c,2,LOCATION_ALL,0,scard.mctg1)
+	dm.EnableUpdateManaCost(c,2,LOCATION_ALL,0,scard.mctg2)
 end
 scard.duel_masters_card=true
 function scard.mctg1(e,c)
