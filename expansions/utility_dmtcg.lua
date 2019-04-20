@@ -2271,6 +2271,30 @@ function Auxiliary.AddAttackTriggerEffect(c,desc_id,optional,targ_func,op_func,p
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
 end
+--"Whenever this creature is attacked, ABILITY."
+--e.g. "Scalpel Spider" (DM-07 32/55)
+function Auxiliary.AddSingleBeAttackedEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
+	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local con_func=con_func or aux.TRUE
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	if cate then e1:SetCategory(cate) end
+	e1:SetType(EFFECT_TYPE_SINGLE+typ)
+	e1:SetCode(EVENT_BE_BATTLE_TARGET)
+	if typ==EFFECT_TYPE_TRIGGER_O and prop then
+		e1:SetProperty(EFFECT_FLAG_DELAY+prop)
+	elseif typ==EFFECT_TYPE_TRIGGER_O then
+		e1:SetProperty(EFFECT_FLAG_DELAY)
+	elseif prop then
+		e1:SetProperty(prop)
+	end
+	e1:SetRange(DM_LOCATION_BATTLE)
+	e1:SetCondition(aux.AND(Auxiliary.SelfAttackTargetCondition,con_func))
+	if cost_func then e1:SetCost(cost_func) end
+	if targ_func then e1:SetTarget(targ_func) end
+	e1:SetOperation(op_func)
+	c:RegisterEffect(e1)
+end
 --"Whenever this creature blocks, ABILITY."
 --e.g. "Spiral Grass" (DM-02 10/55)
 function Auxiliary.AddSingleBlockEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
