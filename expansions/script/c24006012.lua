@@ -9,6 +9,7 @@ function scard.initial_effect(c)
 	dm.AddStaticEffectTapAbility(c,0,scard.postg1,scard.posop,DM_LOCATION_BATTLE,0,scard.postg2,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_GUARDIAN}
 function scard.posfilter(c)
 	return c:IsFaceup() and c:IsUntapped()
 end

@@ -11,6 +11,7 @@ function scard.initial_effect(c)
 	dm.EnablePlayerEffectCustom(c,EFFECT_CANNOT_ACTIVATE,1,1,scard.actval)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_ANGEL_COMMAND,DM_RACE_COMMAND}
 function scard.actval(e,re,tp)
 	local rc=re:GetHandler()
 	return rc:IsSpell() and not rc:IsCivilization(DM_CIVILIZATION_LIGHT)

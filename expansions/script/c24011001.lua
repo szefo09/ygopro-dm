@@ -11,6 +11,7 @@ function scard.initial_effect(c)
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_DEVIL_MASK}
 --Note: Moved card targeting to the operation function in the event opponent also has Evil Incarnate in the battle zone
 --This prevents the turn player from choosing the same monster again to destroy
 --[[

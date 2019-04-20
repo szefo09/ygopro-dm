@@ -9,6 +9,7 @@ function scard.initial_effect(c)
 	dm.AddStaticEffectTapAbility(c,0,scard.tmtg1,scard.tmop,DM_LOCATION_BATTLE,0,scard.tmtg2)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_COLONY_BEETLE}
 function scard.tmtg1(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanSendDecktoptoMana(tp,1) end
 	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())

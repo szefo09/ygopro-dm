@@ -17,6 +17,7 @@ function scard.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_INITIATE}
 function scard.repfilter(c,tp)
 	return c:IsLocation(DM_LOCATION_SHIELD) and c:IsControler(tp)
 		and c:GetDestination()~=DM_LOCATION_SHIELD and not c:IsReason(REASON_REPLACE)

@@ -9,6 +9,7 @@ function scard.initial_effect(c)
 	dm.EnableUpdatePower(c,scard.powval,dm.SelfAttackerCondition)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_HUMAN}
 function scard.cfilter(c)
 	return c:IsFaceup() and c:DMIsRace(DM_RACE_HUMAN)
 end

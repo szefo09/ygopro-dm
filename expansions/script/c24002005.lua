@@ -9,6 +9,7 @@ function scard.initial_effect(c)
 	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.posop)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_GUARDIAN}
 function scard.posfilter(c)
 	return c:IsFaceup() and c:IsUntapped() and c:IsHasEffect(DM_EFFECT_BLOCKER)
 end

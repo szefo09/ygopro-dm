@@ -13,6 +13,7 @@ function scard.initial_effect(c)
 	dm.EnableBreaker(c,DM_EFFECT_TRIPLE_BREAKER)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_HORNED_BEAST,DM_RACE_ANGEL_COMMAND,DM_RACE_COMMAND}
 --vortex evolution
 scard.evofilter1=aux.FilterBoolFunction(Card.DMIsRace,DM_RACE_HORNED_BEAST)
 scard.evofilter2=aux.FilterBoolFunction(Card.DMIsRace,DM_RACE_ANGEL_COMMAND)
@@ -27,5 +28,6 @@ function scard.tbop(e,tp,eg,ep,ev,re,r,rp)
 	else
 		Duel.SendtoHand(tc,PLAYER_OWNER,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,tc)
+		Duel.ShuffleHand(tp)
 	end
 end

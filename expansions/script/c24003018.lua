@@ -11,6 +11,7 @@ function scard.initial_effect(c)
 	dm.AddStaticEffectCannotBeBlocked(c,DM_LOCATION_BATTLE,0,scard.acttg)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_LEVIATHAN}
 function scard.acttg(e,c)
 	return c~=e:GetHandler() and c:IsCivilization(DM_CIVILIZATION_WATER)
 end

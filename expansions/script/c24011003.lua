@@ -9,6 +9,7 @@ function scard.initial_effect(c)
 	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.retop)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_SNOW_FAERIE}
 function scard.retfilter(c)
 	return c:DMIsRace(DM_RACE_SNOW_FAERIE) and c:IsAbleToHand()
 end

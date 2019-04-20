@@ -1135,6 +1135,19 @@ function Auxiliary.SortDeck(sort_player,target_player,ct,seq)
 		end
 	else Duel.MoveSequence(g:GetFirst(),seq) end
 end
+--check if an evolution creature evolves from a specified race
+--include this in each evolution creature's script that evolves from a specified race
+--required for "Spiritual Star Dragon" (DM-13 12/55)
+function Auxiliary.IsEvolutionListRace(c,...)
+	if not c.evolution_race_list then return false end
+	local race_list={...}
+	for _,race in ipairs(race_list) do
+		for _,erace in ipairs(c.evolution_race_list) do
+			if erace==race then return true end
+		end
+	end
+	return false
+end
 
 --add procedure and rules to creature
 function Auxiliary.AddSummonProcedure(c)

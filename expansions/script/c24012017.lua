@@ -11,6 +11,7 @@ function scard.initial_effect(c)
 	dm.AddStaticEffectCannotBeBlocked(c,DM_LOCATION_BATTLE,0,scard.acttg)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_CYBER_LORD,DM_RACE_CYBER,DM_RACE_HEDRIAN}
 --evolution
 function scard.evofilter(c)
 	return c:DMIsEvolutionRace(DM_RACE_CYBER_LORD) or c:DMIsEvolutionRace(DM_RACE_HEDRIAN)

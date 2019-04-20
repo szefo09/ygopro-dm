@@ -9,5 +9,6 @@ function scard.initial_effect(c)
 	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.destg,scard.desop)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_PARASITE_WORM}
 scard.destg=dm.CheckCardFunction(Card.IsFaceup,0,DM_LOCATION_BATTLE)
 scard.desop=dm.DestroyOperation(PLAYER_SELF,Card.IsFaceup,0,DM_LOCATION_BATTLE,1)

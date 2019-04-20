@@ -11,6 +11,7 @@ function scard.initial_effect(c)
 	dm.EnableBreaker(c,DM_EFFECT_TRIPLE_BREAKER)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_DRAGON}
 function scard.powval(e,c)
 	return Duel.GetMatchingGroupCount(dm.DMGraveFilter(Card.IsCreature),c:GetControler(),DM_LOCATION_GRAVE,0,nil)*2000
 end

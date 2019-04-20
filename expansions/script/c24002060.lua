@@ -11,3 +11,4 @@ function scard.initial_effect(c)
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_BEAST_FOLK}

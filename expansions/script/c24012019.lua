@@ -20,6 +20,7 @@ function scard.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_XENOPARTS,DM_RACE_GIANT_INSECT,DM_RACE_GIANT}
 --evolution
 function scard.evofilter(c)
 	return c:DMIsEvolutionRace(DM_RACE_XENOPARTS) or c:DMIsEvolutionRace(DM_RACE_GIANT_INSECT)

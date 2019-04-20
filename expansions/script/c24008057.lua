@@ -11,6 +11,7 @@ function scard.initial_effect(c)
 	dm.AddPlayerUseShieldTriggerEffect(c,0,PLAYER_OPPO,nil,nil,scard.drop)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_CYBER_LORD,DM_RACE_CYBER}
 function scard.drop(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
 	Duel.DrawUpTo(tp,2,REASON_EFFECT)

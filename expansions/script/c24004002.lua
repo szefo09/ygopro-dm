@@ -9,3 +9,4 @@ function scard.initial_effect(c)
 	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,dm.DrawUpToOperation(PLAYER_SELF,3))
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_CYBER_VIRUS,DM_RACE_CYBER}

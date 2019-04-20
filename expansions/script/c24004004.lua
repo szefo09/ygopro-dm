@@ -11,6 +11,7 @@ function scard.initial_effect(c)
 	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.destg,scard.desop)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_ROCK_BEAST}
 function scard.desfilter(c)
 	return c:IsFaceup() and c:IsPowerBelow(3000)
 end
