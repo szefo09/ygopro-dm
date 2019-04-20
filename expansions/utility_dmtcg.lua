@@ -3000,7 +3000,7 @@ function Auxiliary.EnableUpdateManaCost(c,val,s_range,o_range,targ_func)
 	else
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
-		e1:SetRange(LOCATION_HAND+EFFECT_TYPE_FIELD)
+		e1:SetRange(LOCATION_HAND+DM_LOCATION_BATTLE)
 	end
 	e1:SetCode(DM_EFFECT_UPDATE_MANA_COST)
 	e1:SetValue(val)
@@ -3697,7 +3697,7 @@ Auxiliary.sbatcon=Auxiliary.SelfBattlingCondition
 function Auxiliary.AttackTargetCondition(f)
 	return	function(e,tp,eg,ep,ev,re,r,rp) 
 				local d=Duel.GetAttackTarget()
-				return d~=nil and d:IsFaceup() and (not f or f(d))
+				return d and d:IsFaceup() and (not f or f(d))
 			end
 end
 Auxiliary.dfcon=Auxiliary.AttackTargetCondition
