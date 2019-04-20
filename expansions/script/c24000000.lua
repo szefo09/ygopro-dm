@@ -446,6 +446,8 @@ function scard.tgop1(e,tp,eg,ep,ev,re,r,rp)
 	if re:IsHasCategory(DM_CATEGORY_SHIELD_TRIGGER) and Duel.IsPlayerAffectedByEffect(rp,DM_EFFECT_DONOT_DISCARD_SHIELD_TRIGGER) then return end
 	if (re:IsHasProperty(DM_EFFECT_FLAG_CHARGE) or rc:IsHasEffect(DM_EFFECT_CHARGER)) and rc:IsAbleToMana() then
 		Duel.SendtoMana(rc,POS_FACEUP_UNTAPPED,REASON_RULE)
+	elseif re:IsHasProperty(DM_EFFECT_FLAG_CHARGE_TAPPED) then
+		Duel.SendtoMana(rc,POS_FACEUP_TAPPED,REASON_RULE)
 	else
 		Duel.DMSendtoGrave(rc,REASON_RULE+REASON_DISCARD)
 	end

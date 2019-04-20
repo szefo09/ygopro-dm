@@ -137,6 +137,14 @@ end
 function Card.IsBrokenShield(c)
 	return c:GetFlagEffect(DM_EFFECT_BROKEN_SHIELD)>0
 end
+--check if a card is in the mana zone
+function Card.IsMana(c)
+	return (c:IsUntapped() or c:IsTapped()) and c:IsLocation(DM_LOCATION_MANA)
+end
+--check if a card is in the graveyard
+function Card.IsGrave(c)
+	return c:IsFaceup() and c:IsLocation(DM_LOCATION_GRAVE)
+end
 --check if a spell can be cast for no cost
 function Card.IsCanCastFree(c)
 	return c:GetLevel()<=0
@@ -290,6 +298,21 @@ end
 function Card.IsHasCivilization(c)
 	return c:GetCivilization()~=DM_CIVILIZATION_NONE
 end
+]]
+--check if a creature has a race
+function Card.IsHasRace(c)
+	local race=false
+	local ct=1
+	while ct<=4095 and race==false do
+		if c:DMIsRace(ct) then
+			race=true
+		end
+		ct=ct+1
+	end
+	return race
+end
+--reserved
+--[[
 --check if a creature has no abilities
 function Card.IsHasNoAbility(c)
 	return c:IsType(DM_TYPE_NO_ABILITY)
@@ -703,6 +726,10 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason,ignore_br
 			rc:RegisterFlagEffect(DM_EFFECT_BREAK_SHIELD,RESET_PHASE+PHASE_END,0,1)
 			--register broken shield for Duel.GetBrokenShieldCount
 			Duel.RegisterFlagEffect(rc:GetControler(),DM_EFFECT_BREAK_SHIELD,RESET_PHASE+PHASE_END,0,1)
+		end
+		--check for "Your opponent reveals shields broken by your creatures"
+		if Duel.IsPlayerAffectedByEffect(1-rc:GetControler(),DM_EFFECT_CONFIRM_BROKEN_SHIELD) then
+			Duel.ConfirmCards(rc:GetControler(),sg)
 		end
 		ct=ct+Duel.SendtoHand(sg,PLAYER_OWNER,reason+DM_REASON_BREAK)
 		local og=Duel.GetOperatedGroup()
@@ -2003,6 +2030,27 @@ function Auxiliary.WaveStrikerCondition(e)
 	return Duel.IsExistingMatchingCard(f,e:GetHandlerPlayer(),DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,2,e:GetHandler())
 end
 Auxiliary.wscon=Auxiliary.WaveStrikerCondition
+--"Sympathy: "RACE" (This creature/spell costs 1 less to summon/cast for each of your "RACE" creatures in the battle zone. It can't cost less than X.)"
+--e.g. "Akashic First, Electro-Dragon" (DM-13 3/55)
+--Not fully implemented: If a creature in the battle zone has both specified races listed, it can't count as both 
+--https://duelmasters.fandom.com/wiki/Dolgeza,_Veteran_of_Hard_Battle/Rulings
+function Auxiliary.EnableSympathy(c,race1,race2)
+	Auxiliary.EnableUpdateManaCost(c,Auxiliary.SympathyValue(race1,race2))
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_SYMPATHY)
+end
+function Auxiliary.SympathyValue(race1,race2)
+	return	function(e,c)
+				local f1=function(c,race1)
+					return c:IsFaceup() and c:DMIsRace(race1)
+				end
+				local f2=function(c,race2)
+					return c:IsFaceup() and c:DMIsRace(race2)
+				end
+				local ct1=Duel.GetMatchingGroupCount(f1,0,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,race1)
+				local ct2=Duel.GetMatchingGroupCount(f2,0,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,race2)
+				return (ct1+ct2)*-1
+			end
+end
 --"RACE Hunter (This creature wins all battles against RACE.)"
 --e.g. "Pearl Carras, Barrier Guardian" (Game Original)
 function Auxiliary.EnableWinsAllBattles(c,desc_id,f)
@@ -2294,6 +2342,36 @@ function Auxiliary.AddSingleBeAttackedEffect(c,desc_id,optional,targ_func,op_fun
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
+end
+--"Whenever your creatures are attacked, ABILITY."
+--e.g. "Polaris, the Oracle" (DM-13 21/55)
+function Auxiliary.AddBeAttackedEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
+	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	if cate then e1:SetCategory(cate) end
+	e1:SetType(EFFECT_TYPE_FIELD+typ)
+	e1:SetCode(EVENT_BE_BATTLE_TARGET)
+	if typ==EFFECT_TYPE_TRIGGER_O and prop then
+		e1:SetProperty(EFFECT_FLAG_DELAY+prop)
+	elseif typ==EFFECT_TYPE_TRIGGER_O then
+		e1:SetProperty(EFFECT_FLAG_DELAY)
+	elseif prop then
+		e1:SetProperty(prop)
+	end
+	e1:SetRange(DM_LOCATION_BATTLE)
+	if con_func then e1:SetCondition(con_func) end
+	if cost_func then e1:SetCost(cost_func) end
+	if targ_func then e1:SetTarget(targ_func) end
+	e1:SetOperation(op_func)
+	c:RegisterEffect(e1)
+end
+--"Whenever this creature battles, ABILITY."
+--e.g. "Akashic Third, the Electro-Bandit" (DM-13 19/55)
+function Auxiliary.AddSingleBattleEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
+	local con_func=con_func or aux.TRUE
+	Auxiliary.AddSingleAttackTriggerEffect(c,desc_id,optional,targ_func,op_func,prop,aux.AND(Auxiliary.AttackTargetCondition(),con_func),cost_func,cate)
+	Auxiliary.AddSingleBeAttackedEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
 end
 --"Whenever this creature blocks, ABILITY."
 --e.g. "Spiral Grass" (DM-02 10/55)
@@ -2864,12 +2942,46 @@ function Auxiliary.SelfDestroyOperation(ram)
 				Duel.Destroy(c,REASON_EFFECT)
 			end
 end
+--"Whenever this creature wins a battle, [you may] untap this creature."
+--e.g. "Mobile Saint Meermax" (DM-13 17/55)
+function Auxiliary.EnableBattleWinSelfUntap(c,desc_id,forced)
+	local desc_id=desc_id or 0
+	local typ=(forced and EFFECT_TYPE_TRIGGER_F) or EFFECT_TYPE_TRIGGER_O
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	e1:SetType(EFFECT_TYPE_SINGLE+typ)
+	e1:SetCode(EVENT_BATTLE_DESTROYING)
+	e1:SetCondition(Auxiliary.SelfBattleWinCondition)
+	if typ==EFFECT_TYPE_TRIGGER_O then
+		e1:SetTarget(Auxiliary.SelfUntapTarget)
+	end
+	e1:SetOperation(Auxiliary.SelfUntapOperation())
+	c:RegisterEffect(e1)
+	--fix for "When this creature wins a battle" abilities not triggering
+	local e2=Effect.CreateEffect(c)
+	e2:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	e2:SetType(EFFECT_TYPE_SINGLE+typ)
+	e2:SetCode(EVENT_CUSTOM+DM_EVENT_WIN_BATTLE)
+	if typ==EFFECT_TYPE_TRIGGER_O then
+		e2:SetTarget(Auxiliary.SelfUntapTarget)
+	end
+	e2:SetOperation(Auxiliary.SelfUntapOperation())
+	c:RegisterEffect(e2)
+end
 --"This creature can attack untapped creatures."
 --"This creature can attack untapped CIVILIZATION creatures."
+--"Each of your creatures in the battle zone can attack untapped creatures."
 --e.g. "Gatling Skyterror" (DM-01 79/110), "Aeris, Flight Elemental" (DM-04 6/55), "Storm Javelin Wyvern" (Game Original)
-function Auxiliary.EnableAttackUntapped(c,val,con_func)
+function Auxiliary.EnableAttackUntapped(c,val,con_func,s_range,o_range,targ_func)
 	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_SINGLE)
+	if s_range or o_range then
+		e1:SetType(EFFECT_TYPE_FIELD)
+		e1:SetRange(DM_LOCATION_BATTLE)
+		e1:SetTargetRange(s_range,o_range)
+		if targ_func then e1:SetTarget(targ_func) end
+	else
+		e1:SetType(EFFECT_TYPE_SINGLE)
+	end
 	e1:SetCode(DM_EFFECT_ATTACK_UNTAPPED)
 	if con_func then e1:SetCondition(con_func) end
 	if val then e1:SetValue(val) end
@@ -2882,15 +2994,15 @@ function Auxiliary.EnableUpdateManaCost(c,val,s_range,o_range,targ_func)
 	local e1=Effect.CreateEffect(c)
 	if s_range or o_range then
 		e1:SetType(EFFECT_TYPE_FIELD)
+		e1:SetRange(DM_LOCATION_BATTLE)
 		e1:SetTargetRange(s_range,o_range)
 		if targ_func then e1:SetTarget(targ_func) end
 	else
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
-		e1:SetRange(LOCATION_HAND)
+		e1:SetRange(LOCATION_HAND+EFFECT_TYPE_FIELD)
 	end
 	e1:SetCode(DM_EFFECT_UPDATE_MANA_COST)
-	e1:SetRange(DM_LOCATION_BATTLE)
 	e1:SetValue(val)
 	c:RegisterEffect(e1)
 end
@@ -3564,6 +3676,12 @@ function Auxiliary.SelfAttackerCondition(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetAttacker()==e:GetHandler()
 end
 Auxiliary.satcon=Auxiliary.SelfAttackerCondition
+--condition of "Whenever this creature is attacked"
+--e.g. "Scalpel Spider" (DM-07 32/55)
+function Auxiliary.SelfAttackTargetCondition(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.GetAttackTarget()==e:GetHandler()
+end
+Auxiliary.sdfcon=Auxiliary.SelfAttackTargetCondition
 --condition of "While this creature is battling"
 --e.g. "Sasha, Channeler of Suns" (DM-08 12/55)
 function Auxiliary.SelfBattlingCondition(f)
@@ -3574,6 +3692,15 @@ function Auxiliary.SelfBattlingCondition(f)
 			end
 end
 Auxiliary.sbatcon=Auxiliary.SelfBattlingCondition
+--condition to return the creature another creature is attacking
+--e.g. "Akashic Third, the Electro-Bandit" (DM-13 19/55)
+function Auxiliary.AttackTargetCondition(f)
+	return	function(e,tp,eg,ep,ev,re,r,rp) 
+				local d=Duel.GetAttackTarget()
+				return d~=nil and d:IsFaceup() and (not f or f(d))
+			end
+end
+Auxiliary.dfcon=Auxiliary.AttackTargetCondition
 --condition of "Whenever this creature wins a battle" + EVENT_BATTLE_DESTROYING
 --e.g. "Bloody Squito" (DM-01 46/110), "Hanakage, Shadow of Transience" (Game Original)
 function Auxiliary.SelfBattleWinCondition(e,tp,eg,ep,ev,re,r,rp)
@@ -3733,8 +3860,7 @@ Auxiliary.hinttg=Auxiliary.HintTarget
 function Auxiliary.ManaZoneFilter(f)
 	--DM_LOCATION_MANA + f: function
 	return	function(target,...)
-				return (target:IsUntapped() or target:IsTapped()) and target:IsLocation(DM_LOCATION_MANA)
-					and (not f or f(target,...))
+				return target:IsMana() and (not f or f(target,...))
 			end
 end
 Auxiliary.mzfilter=Auxiliary.ManaZoneFilter
@@ -3742,7 +3868,7 @@ Auxiliary.mzfilter=Auxiliary.ManaZoneFilter
 function Auxiliary.DMGraveFilter(f)
 	--DM_LOCATION_GRAVE + f: function
 	return	function(target,...)
-				return target:IsFaceup() and (not f or f(target,...))
+				return target:IsGrave() and (not f or f(target,...))
 			end
 end
 Auxiliary.gyfilter=Auxiliary.DMGraveFilter
