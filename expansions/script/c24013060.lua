@@ -22,5 +22,5 @@ function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e1,tp)
 end
 function scard.actval(e,re,tp)
-	return re:IsHasCategory(DM_CATEGORY_SHIELD_TRIGGER) and re:GetHandler():IsBrokenShield()
+	return re:IsHasCategory(DM_CATEGORY_SHIELD_TRIGGER)
 end

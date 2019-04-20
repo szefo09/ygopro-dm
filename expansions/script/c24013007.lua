@@ -24,7 +24,6 @@ function scard.drcon(e,tp,eg,ep,ev,re,r,rp)
 	return ep~=tp and r~=REASON_RULE
 end
 function scard.drop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
+	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
 	Duel.Draw(tp,eg:GetCount(),REASON_EFFECT)
 end

@@ -6,6 +6,8 @@ function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--to shield or to mana
 	dm.AddSingleAttackTriggerEffect(c,0,true,scard.tstg,scard.tsop)
+	--double breaker
+	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end
 scard.duel_masters_card=true
 scard.tstg=dm.CheckCardFunction(aux.OR(Card.IsAbleToShield,Card.IsAbleToMana),LOCATION_HAND,0)

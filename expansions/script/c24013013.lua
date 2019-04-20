@@ -20,7 +20,7 @@ function scard.regcon(e,tp,eg,ep,ev,re,r,rp)
 	return re:GetHandler()==e:GetHandler()
 end
 function scard.regop(e,tp,eg,ep,ev,re,r,rp)
-	e:GetHandler():RegisterFlagEffect(sid,RESET_PHASE+PHASE_END,0,1)
+	e:GetHandler():RegisterFlagEffect(sid,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END,0,1)
 end
 function scard.descon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():GetFlagEffect(sid)>0

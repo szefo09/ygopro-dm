@@ -7,7 +7,7 @@ function scard.initial_effect(c)
 	--wave striker (return)
 	dm.EnableWaveStriker(c)
 	dm.AddEffectDescription(c,1,dm.WaveStrikerCondition)
-	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.rettg,scard.retop)
+	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.rettg,scard.retop,nil,dm.WaveStrikerCondition)
 end
 scard.duel_masters_card=true
 function scard.retfilter(c)
