@@ -1,6 +1,5 @@
 --Duel Masters Rules
---Not fully implemented: Monster must change to defense mode for attack cost
---Not fully implemented: "Destroy a monster by battle" does not apply if monster is destroyed by rule
+--Not fully implemented: Tap a creature to have it attack
 local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)

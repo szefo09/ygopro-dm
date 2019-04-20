@@ -4,7 +4,7 @@
 	<img src="https://user-images.githubusercontent.com/18324297/34651382-49c5daba-f3d8-11e7-9222-1488ac1761d8.png">
 </p>
 
-## How to Install
+## How to install
 1. Exit [YGOPro](https://github.com/Fluorohydride/ygopro).
 2. Put the following folders in YGOPro's main folder. **Make a backup of the original files, if you do not want to overwrite them**:<br>
 ● deck<br>
@@ -12,7 +12,7 @@
 ● textures
 3. Optional: Click [here](https://mega.nz/#F!5RAFSIYb!nF8pJNkmZk4TzwMGtiX8Xw) to download card pics. Put all card pics in expansions\pics.
 
-## How to Play
+## How to play
 1. Start YGOPro.
 2. Click on `Deck Management` to build your deck. Remember to add 1 *Duel Masters Rules*!<br>
 If you do not build your deck according to the following rules, you will lose the game and have to rebuild your deck:<br>
@@ -27,12 +27,12 @@ If you do not build your deck according to the following rules, you will lose th
 9. During your [Attack Step](https://duelmasters.fandom.com/wiki/Attack_Step), you can attack with your creatures in the battle zone by tapping them and declaring what you want to attack. You cannot attack with creatures you just put into the battle zone this turn because they have [summoning sickness](https://duelmasters.fandom.com/wiki/Summoning_Sickness). As many of your creatures as you want can attack each turn as many times as possible.  There is no limit to the number of times a creature can attack each turn as long as it is untapped and you can tap it.
 10. During your [End Step](https://duelmasters.fandom.com/wiki/End_Step), [resolve](https://duelmasters.fandom.com/wiki/Resolution) any [abilities](https://duelmasters.fandom.com/wiki/Ability) that [trigger](https://duelmasters.fandom.com/wiki/Trigger) "at the end of your turn". Then your turn ends.
 
-## How to Win
+## How to win
 1. [Attack](https://duelmasters.fandom.com/wiki/Attack) your opponent with a creature that is not [blocked](https://duelmasters.fandom.com/wiki/Block) (or [attack bended](https://duelmasters.fandom.com/wiki/Attack_Bend)) or removed when they have no shields left.
 2. When your opponent has no cards left in their deck or they would draw their last card.
 3. [Some cards](http://duelmasters.wikia.com/wiki/Template:Alternate_Win_Condition) will enable you to win the game via their [effects](http://duelmasters.wikia.com/wiki/Effect).
 
-## Extra Information
+## Extra information for scripters
 <details>
 <summary>Card Type</summary>
 

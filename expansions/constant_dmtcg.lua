@@ -23,20 +23,20 @@ CARD_CLONED_NIGHTMARE				=24012026	--"Cloned Nightmare" (DM-12 26/55)
 CARD_CLONED_BLADE					=24012028	--"Cloned Blade" (DM-12 28/55)
 CARD_CLONED_SPIKEHORN				=24012030	--"Cloned Spike-Horn" (DM-12 30/55)
 --↑EVENT_CUSTOM
-CARD_HOLY_AWE						=24001006	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_TRIGGER_SHIELD_TRIGGER,e,0,0,0,0)
-CARD_BLOODY_SQUITO					=24001046	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
-CARD_CREEPING_PLAGUE				=24001049	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED,e,0,0,0,0)
-CARD_MARROW_OOZE_THE_TWISTER		=24002032	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_ATTACK_PLAYER,e,0,0,0,0)
-CARD_BRUTAL_CHARGE					=24005049	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD,e,0,0,0,0)
-CARD_STORM_WRANGLER_THE_FURIOUS		=24009051	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_TRIGGER_BLOCKER,e,0,0,0,0)
-CARD_BLUUM_ERKIS_FLARE_GUARDIAN		=24010119	--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_CAST_FREE,e,0,0,0,0)
-CARD_WOLFIS_BLUE_DIVINE_DRAGON		=24027		--Duel.Raise[Single]Event(c|g,EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER,e,0,0,0,0)
+CARD_HOLY_AWE						=24001006	--EVENT_CUSTOM+DM_EVENT_TRIGGER_SHIELD_TRIGGER
+CARD_BLOODY_SQUITO					=24001046	--EVENT_CUSTOM+DM_EVENT_WIN_BATTLE
+CARD_CREEPING_PLAGUE				=24001049	--EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED
+CARD_MARROW_OOZE_THE_TWISTER		=24002032	--EVENT_CUSTOM+DM_EVENT_ATTACK_PLAYER
+CARD_BRUTAL_CHARGE					=24005049	--EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD
+CARD_STORM_WRANGLER_THE_FURIOUS		=24009051	--EVENT_CUSTOM+DM_EVENT_TRIGGER_BLOCKER
+CARD_BLUUM_ERKIS_FLARE_GUARDIAN		=24010119	--EVENT_CUSTOM+DM_EVENT_CAST_FREE
+CARD_WOLFIS_BLUE_DIVINE_DRAGON		=24027		--EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER
 --↑RegisterFlagEffect
-CARD_DIA_NORK_MOONLIGHT_GUARDIAN	=24001002	--c:RegisterFlagEffect(DM_EFFECT_BLOCKED,RESET_EVENT+RESETS_STANDARD+RESET_CHAIN,0,1)
-CARD_MIRACLE_QUEST					=24005019	--c:RegisterFlagEffect(DM_EFFECT_BREAK_SHIELD,RESET_PHASE+PHASE_END,0,1)
+CARD_DIA_NORK_MOONLIGHT_GUARDIAN	=24001002	--DM_EFFECT_BLOCKED
+CARD_MIRACLE_QUEST					=24005019	--DM_EFFECT_BREAK_SHIELD
 --Win Reason
-DM_WIN_REASON_INVALID				=0x4d		--"Deck was invalid."
-DM_WIN_REASON_DECKOUT				=0x4e		--"Ran out of cards in the deck."
+DM_WIN_REASON_INVALID				=0x4d		--"Invalid deck."
+DM_WIN_REASON_DECKOUT				=0x4e		--"Ran out of cards in deck."
 DM_WIN_REASON_BOMBAZAR				=0x4f		--"Won due to the ability of [Bombazar, Dragon of Destiny]."
 --Setname
 --↑Race
@@ -129,14 +129,14 @@ DM_LOCATION_GRAVE					=LOCATION_REMOVED					--Graveyard
 --↑Location combinations
 LOCATION_ALL						=0xff		--All locations
 --Position
-POS_FACEUP_UNTAPPED					=POS_FACEUP_ATTACK		--Face-up untapped card in the battle zone
+POS_FACEUP_UNTAPPED					=POS_FACEUP_ATTACK		--Face-up untapped
 POS_FACEDOWN_UNTAPPED				=POS_FACEDOWN_ATTACK	--N/A
-POS_FACEUP_TAPPED					=POS_FACEUP_DEFENSE		--Face-up tapped card in the battle zone
+POS_FACEUP_TAPPED					=POS_FACEUP_DEFENSE		--Face-up tapped 
 POS_FACEDOWN_TAPPED					=POS_FACEDOWN_DEFENSE	--N/A
-POS_UNTAPPED						=POS_ATTACK				--RESERVED	--Untapped card in the battle or mana zone
-POS_TAPPED							=POS_DEFENSE			--RESERVED	--Tapped card in the battle or mana zone
+POS_UNTAPPED						=POS_ATTACK				--RESERVED --Face-up or face-down untapped
+POS_TAPPED							=POS_DEFENSE			--RESERVED --Face-up or face-down untapped
 --Type
-DM_TYPE_RULE						=TYPE_SPELL+TYPE_FIELD	--RESERVED	--Unofficial card
+DM_TYPE_RULE						=TYPE_SPELL+TYPE_FIELD	--RESERVED --Unofficial card
 DM_TYPE_CREATURE					=TYPE_EFFECT			--Creature
 DM_TYPE_MULTICOLORED				=TYPE_DUAL				--Card that has 2 or more civilizations
 DM_TYPE_NO_ABILITY					=TYPE_TUNER				--Creature that has no abilities
@@ -212,7 +212,7 @@ DM_EFFECT_BLOCKED					=CARD_DIA_NORK_MOONLIGHT_GUARDIAN	--Register a creature th
 DM_EFFECT_BREAK_SHIELD				=CARD_MIRACLE_QUEST				--Register number of broken shields ("Miracle Quest" DM-05 19/55)
 DM_EFFECT_BLOCKER					=701	--Blocker ("Dia Nork, Moonlight Guardian" DM-01 2/110)
 DM_EFFECT_SHIELD_TRIGGER			=702	--Shield Trigger ("Holy Awe" DM-01 6/110)
-DM_EFFECT_UNBLOCKABLE				=703	--Cannot be blocked ("Laser Wing" DM-01 11/110)
+DM_EFFECT_UNBLOCKABLE				=703	--RESERVED --Cannot be blocked ("Laser Wing" DM-01 11/110)
 DM_EFFECT_SLAYER					=704	--Slayer ("Bone Assassin, the Ripper" DM-01 47/110)
 DM_EFFECT_BREAKER					=705	--Breaker ("Gigaberos" DM-01 55/110)
 DM_EFFECT_DOUBLE_BREAKER			=706	--Double Breaker ("Gigaberos" DM-01 55/110)
@@ -278,7 +278,7 @@ DM_HINTMSG_NOSZONES					=1653	--"You cannot put any more cards in the shield zon
 DM_DESC_EVOLUTION_RULE				=1499	--"If an evolution creature is moved from the battle zone to anywhere else, then the whole pile moves, not just the evolution creature on top."
 DM_DESC_BLOCKED						=1659	--"Your creature has been blocked!"
 DM_DESC_BLOCKER						=1660	--"Blocker (Whenever an opponent's creature attacks, you may tap this creature to stop the attack. Then the 2 creatures battle.)"
-DM_DESC_SHIELD_TRIGGER_SPELL		=1661	--RESERVED	--"Shield Trigger (When this spell is put into your hand from your shield zone, you may cast it immediately for no cost.)"
+--DM_DESC_SHIELD_TRIGGER_SPELL		=1661	--RESERVED --"Shield Trigger (When this spell is put into your hand from your shield zone, you may cast it immediately for no cost.)"
 DM_DESC_SLAYER						=1662	--"Slayer (Whenever this creature battles, destroy the other creature after the battle.)"
 DM_DESC_SHIELD_TRIGGER_CREATURE		=1663	--"Shield Trigger (When this creature is put into your hand from your shield zone, you may summon it immediately for no cost.)"
 DM_DESC_FIRE_NATURE_BLOCKER			=1664	--"Fire and nature blocker (Whenever an opponent's fire or nature creature attacks, you may tap this creature to stop the attack. Then the 2 creatures battle.)"
@@ -387,7 +387,7 @@ DM_QHINTMSG_TOMANA					=704	--"Put a card into your mana zone?"
 DM_QHINTMSG_TOSHIELD				=705	--"Add a card to your shields face down?"
 DM_QHINTMSG_NUMBERTOSHIELD			=706	--"Add how many new shields?"
 DM_QHINTMSG_RTOHAND					=707	--"Return a card to its owner's hand?"
-DM_QHINTMSG_TAP						=708	--RESERVED	--"Tap a card?"
+--DM_QHINTMSG_TAP						=708	--RESERVED --"Tap a card?"
 DM_QHINTMSG_UNTAP					=709	--"Untap a card?"
 --Timing
 DM_TIMING_BATTLE					=TIMING_BATTLE_START+TIMING_BATTLE_END+TIMING_BATTLE_PHASE+TIMING_BATTLE_STEP_END	--Timing for abilities that can trigger during the Attack Step
