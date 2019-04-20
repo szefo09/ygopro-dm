@@ -13,8 +13,9 @@ function scard.retfilter1(c)
 	return c:IsCreature() and c:IsAbleToHand()
 end
 function scard.rettg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(DM_LOCATION_GRAVE) and chkc:IsControler(tp) and dm.DMGraveFilter(scard.retfilter1)(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(dm.DMGraveFilter(scard.retfilter1),tp,DM_LOCATION_GRAVE,0,1,nil) end
+	local f=dm.DMGraveFilter(scard.retfilter1)
+	if chkc then return chkc:IsLocation(DM_LOCATION_GRAVE) and chkc:IsControler(tp) and f(chkc) end
+	if chk==0 then return Duel.IsExistingTarget(f,tp,DM_LOCATION_GRAVE,0,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TARGET)
 	local tc=Duel.SelectTarget(tp,dm.DMGraveFilter(Card.IsCreature),tp,DM_LOCATION_GRAVE,0,1,1,nil):GetFirst()
 	e:SetLabel(tc:GetCode())
