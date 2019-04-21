@@ -5,7 +5,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--mana cost down
-	dm.EnableUpdateManaCost(c,-3,LOCATION_HAND,0,aux.TargetBoolFunction(Card.IsSpell))
+	dm.EnableUpdateManaCost(c,-3,LOCATION_ALL,0,aux.TargetBoolFunction(Card.IsSpell))
 	--tap ability (return)
 	dm.EnableTapAbility(c,0,scard.rettg,scard.retop,EFFECT_FLAG_CARD_TARGET)
 end

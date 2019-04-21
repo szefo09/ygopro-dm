@@ -190,7 +190,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	ye4:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	ye4:SetType(EFFECT_TYPE_FIELD)
 	ye4:SetCode(EFFECT_EXTRA_ATTACK)
-	ye4:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
+	ye4:SetTargetRange(DM_LOCATION_BATTLE,DM_LOCATION_BATTLE)
 	ye4:SetValue(MAX_NUMBER)
 	Duel.RegisterEffect(ye4,tp)
 	--cannot change position
@@ -198,7 +198,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	ye5:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE)
 	ye5:SetType(EFFECT_TYPE_FIELD)
 	ye5:SetCode(EFFECT_CANNOT_CHANGE_POSITION)
-	ye5:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
+	ye5:SetTargetRange(DM_LOCATION_BATTLE,DM_LOCATION_BATTLE)
 	Duel.RegisterEffect(ye5,tp)
 	--no battle damage
 	local ye6=Effect.CreateEffect(c)
@@ -300,15 +300,36 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	ye18:SetCode(EVENT_CHAINING)
 	ye18:SetOperation(scard.chop)
 	Duel.RegisterEffect(ye18,tp)
-	--no replay
+	--set mana cost equal to civilization sum
 	local ye19=Effect.CreateEffect(c)
 	ye19:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	ye19:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	ye19:SetCode(EVENT_LEAVE_FIELD)
-	ye19:SetCondition(function(e,tp,eg,ep,ev,re,r,rp)
+	ye19:SetCode(EVENT_ADJUST)
+	ye19:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+		local f=function(c)
+			return c:GetManaCost()<c:GetCivilizationCount()
+		end
+		local g=Duel.GetMatchingGroup(f,0,LOCATION_ALL,LOCATION_ALL,nil)
+		if g:GetCount()==0 then return end
+		for tc in aux.Next(g) do
+			local e1=Effect.CreateEffect(e:GetHandler())
+			e1:SetType(EFFECT_TYPE_SINGLE)
+			e1:SetCode(DM_EFFECT_UPDATE_MANA_COST)
+			e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+			e1:SetValue(tc:GetCivilizationCount()-tc:GetManaCost())
+			tc:RegisterEffect(e1)
+		end
+	end)
+	Duel.RegisterEffect(ye19,tp)
+	--no replay
+	local ye20=Effect.CreateEffect(c)
+	ye20:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+	ye20:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	ye20:SetCode(EVENT_LEAVE_FIELD)
+	ye20:SetCondition(function(e,tp,eg,ep,ev,re,r,rp)
 		return eg:IsExists(Card.IsPreviousLocation,1,nil,LOCATION_ONFIELD) and Duel.CheckEvent(EVENT_ATTACK_ANNOUNCE)
 	end)
-	ye19:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+	ye20:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
 		local a=Duel.GetAttacker()
 		local d=Duel.GetAttackTarget()
 		--[[if not d or not d:IsOnField() then
@@ -317,7 +338,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 		end]]
 		Duel.ChangeAttackTarget(d)
 	end)
-	Duel.RegisterEffect(ye19,tp)
+	Duel.RegisterEffect(ye20,tp)
 end
 --untap
 function scard.posfilter1(c)
@@ -453,17 +474,19 @@ function scard.desop2(e,tp,eg,ep,ev,re,r,rp)
 	local ab1=a:IsHasEffect(EFFECT_INDESTRUCTIBLE) and a:IsHasEffect(EFFECT_INDESTRUCTIBLE_BATTLE)
 	local ab2=d:IsHasEffect(EFFECT_INDESTRUCTIBLE) and d:IsHasEffect(EFFECT_INDESTRUCTIBLE_BATTLE)
 	local g=Group.CreateGroup()
+	local ec=nil
 	if a:GetAttack()<d:GetDefense() then
-		if not ab1 and a:IsRelateToBattle() then g:AddCard(a) end
+		if not ab1 and a:IsRelateToBattle() then g:AddCard(a) ec=d end
 	elseif a:GetAttack()==d:GetDefense() then
 		if not ab1 and a:IsRelateToBattle() then g:AddCard(a) end
 		if not ab2 and d:IsRelateToBattle() then g:AddCard(d) end
 	end
 	Duel.Destroy(g,REASON_RULE)
+	if not ec then return end
 	--raise event for "When this creature wins a battle"
-	Duel.RaiseSingleEvent(d,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
+	Duel.RaiseSingleEvent(ec,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
 	--raise event for "Whenever one of your creatures wins a battle"
-	Duel.RaiseEvent(d,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
+	Duel.RaiseEvent(ec,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
 end
 --to grave redirect
 function scard.tgtg(e,c)
