@@ -21,7 +21,7 @@ function scard.initial_effect(c)
 	e1:SetCondition(scard.macon)
 	c:RegisterEffect(e1)
 	local e2=e1:Clone()
-	e2:SetCode(dm_EFFECT_MUST_ATTACK_CREATURE)
+	e2:SetCode(DM_EFFECT_MUST_ATTACK_CREATURE)
 	c:RegisterEffect(e2)
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE)
@@ -32,7 +32,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.regop(e,tp,eg,ep,ev,re,r,rp)
-	e:GetHandler():RegisterFlagEffect(sid,RESET_PHASE+PHASE_END,0,1)
+	e:GetHandler():RegisterFlagEffect(sid,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END,0,1)
 end
 function scard.macon(e)
 	return e:GetHandler():IsTapped() and e:GetHandler():GetFlagEffect(sid)==0

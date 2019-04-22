@@ -23,6 +23,6 @@ function scard.dhop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_RTOHAND)
 	local g=Duel.SelectMatchingCard(tp,scard.retfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,ct,ct,nil,e)
 	if g:GetCount()==0 then return end
-	Duel.HintSelection(g)
+	Duel.SetTargetCard(g)
 	Duel.SendtoHand(g,PLAYER_OWNER,REASON_EFFECT)
 end
