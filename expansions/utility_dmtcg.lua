@@ -311,6 +311,18 @@ function Card.IsHasRace(c)
 	end
 	return race
 end
+--return the race a creature has
+function Card.DMGetRace(c)
+	local race=0
+	local ct=1
+	while ct<=4095 and race==0 do
+		if c:DMIsRace(ct) then
+			race=race+ct
+		end
+		ct=ct+1
+	end
+	return race
+end
 --reserved
 --[[
 --check if a creature has no abilities
