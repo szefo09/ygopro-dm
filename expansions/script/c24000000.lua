@@ -449,7 +449,7 @@ function scard.tgop1(e,tp,eg,ep,ev,re,r,rp)
 	elseif rc:IsHasEffect(DM_EFFECT_CHARGE_TAPPED) then
 		Duel.SendtoMana(rc,POS_FACEUP_TAPPED,REASON_RULE)
 	else
-		Duel.DMSendtoGrave(rc,REASON_RULE+REASON_DISCARD)
+		Duel.DMSendtoGrave(rc,REASON_RULE)
 	end
 end
 --win game
@@ -476,19 +476,27 @@ function scard.desop2(e,tp,eg,ep,ev,re,r,rp)
 	local ab1=a:IsHasEffect(EFFECT_INDESTRUCTIBLE) and a:IsHasEffect(EFFECT_INDESTRUCTIBLE_BATTLE)
 	local ab2=d:IsHasEffect(EFFECT_INDESTRUCTIBLE) and d:IsHasEffect(EFFECT_INDESTRUCTIBLE_BATTLE)
 	local g=Group.CreateGroup()
-	local ec=nil
+	local wc=nil
+	local lc=nil
 	if a:GetAttack()<d:GetDefense() then
-		if not ab1 and a:IsRelateToBattle() then g:AddCard(a) ec=d end
+		if not ab1 and a:IsRelateToBattle() then g:AddCard(a) wc=d lc=a end
 	elseif a:GetAttack()==d:GetDefense() then
 		if not ab1 and a:IsRelateToBattle() then g:AddCard(a) end
 		if not ab2 and d:IsRelateToBattle() then g:AddCard(d) end
 	end
+	if lc then
+		--raise event for "When this creature loses a battle"
+		Duel.RaiseSingleEvent(lc,EVENT_CUSTOM+DM_EVENT_LOSE_BATTLE,e,0,0,0,0)
+		--raise event for "Whenever one of your creatures loses a battle"
+		--Duel.RaiseEvent(lc,EVENT_CUSTOM+DM_EVENT_LOSE_BATTLE,e,0,0,0,0) --reserved
+	end
+	if wc then
+		--raise event for "When this creature wins a battle"
+		Duel.RaiseSingleEvent(wc,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
+		--raise event for "Whenever one of your creatures wins a battle"
+		Duel.RaiseEvent(wc,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
+	end
 	Duel.Destroy(g,REASON_RULE)
-	if not ec then return end
-	--raise event for "When this creature wins a battle"
-	Duel.RaiseSingleEvent(ec,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
-	--raise event for "Whenever one of your creatures wins a battle"
-	Duel.RaiseEvent(ec,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
 end
 --to grave redirect
 function scard.tgtg(e,c)
@@ -502,10 +510,7 @@ function scard.tgcon(e,tp,eg,ep,ev,re,r,rp)
 end
 function scard.tgop2(e,tp,eg,ep,ev,re,r,rp)
 	for ec in aux.Next(eg) do
-		local g=ec:GetStackGroup()
-		g=g:Filter(Card.DMIsAbleToGrave,nil)
-		for c in aux.Next(g) do
-			Duel.DMSendtoGrave(c,REASON_RULE)
-		end
+		local g=ec:GetStackGroup():Filter(Card.DMIsAbleToGrave,nil)
+		Duel.DMSendtoGrave(g,REASON_RULE)
 	end
 end

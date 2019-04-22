@@ -2101,6 +2101,10 @@ function Auxiliary.WinsAllBattlesOperation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.RaiseSingleEvent(c,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
 		--raise event for "Whenever one of your creatures wins a battle"
 		Duel.RaiseEvent(c,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
+		--raise event for "When this creature loses a battle"
+		Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_LOSE_BATTLE,e,0,0,0,0)
+		--raise event for "Whenever one of your creatures loses a battle"
+		--Duel.RaiseEvent(tc,EVENT_CUSTOM+DM_EVENT_LOSE_BATTLE,e,0,0,0,0) --reserved
 	end
 end
 
