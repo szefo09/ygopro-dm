@@ -8,6 +8,6 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
-	local ct=Duel.GetMatchingGroupCount(dm.ManaZoneFilter(),tp,DM_LOCATION_MANA,0,nil)
+	local ct=Duel.GetManaCount(tp)
 	Duel.SendDecktoptoMana(tp,ct,POS_FACEUP_TAPPED,REASON_EFFECT)
 end

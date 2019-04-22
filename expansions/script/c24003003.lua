@@ -6,7 +6,6 @@ function scard.initial_effect(c)
 	--shield trigger
 	dm.EnableShieldTrigger(c)
 	--return
-	dm.AddSpellCastEffect(c,0,nil,scard.retop,DM_EFFECT_FLAG_CHARGE)
+	dm.AddSpellCastEffect(c,0,nil,dm.SendtoHandOperation(PLAYER_SELF,dm.ManaZoneFilter(),DM_LOCATION_MANA,0,1),DM_EFFECT_FLAG_CHARGE)
 end
 scard.duel_masters_card=true
-scard.retop=dm.SendtoHandOperation(PLAYER_SELF,dm.ManaZoneFilter(),DM_LOCATION_MANA,0,1)

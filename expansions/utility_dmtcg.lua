@@ -943,6 +943,10 @@ end
 function Duel.GetBrokenShieldCount(player)
 	return Duel.GetFlagEffect(player,DM_EFFECT_BREAK_SHIELD)
 end
+--return the number of cards a player has in their mana zone
+function Duel.GetManaCount(player)
+	return Duel.GetMatchingGroupCount(Auxiliary.ManaZoneFilter(),player,DM_LOCATION_MANA,0,nil)
+end
 --check if a player can use the tap ability of their creatures
 function Duel.IsPlayerCanUseTapAbility(player)
 	return not Duel.IsPlayerAffectedByEffect(player,DM_EFFECT_CANNOT_USE_TAP_ABILITY)
@@ -2666,6 +2670,18 @@ function Auxiliary.SpellChainSolvedOperation(p,f)
 					e:GetLabelObject():SetLabel(1)
 				end
 			end
+end
+--"When this creature would leave the battle zone, ABILITY."
+--Not fully implemented: The effect of leaving the battle zone is not replaced 
+--e.g. "Soul Phoenix, Avatar of Unity" (DM-12 5/55)
+function Auxiliary.AddSingleLeaveReplaceEffect(c,desc_id,targ_func,op_func,op_func2)
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
+	e1:SetCode(EVENT_LEAVE_FIELD)
+	e1:SetOperation(op_func)
+	c:RegisterEffect(e1)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_EVOLUTION_SOURCE_REMAIN)
 end
 --"When this creature leaves the battle zone, ABILITY."
 --Not fully implemented: Ability does not trigger when the creature is added to the shields

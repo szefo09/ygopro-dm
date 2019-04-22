@@ -13,7 +13,7 @@ end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_DEVIL_MASK}
 --Note: Moved card targeting to the operation function in the event opponent also has Evil Incarnate in the battle zone
---This prevents the turn player from choosing the same monster again to destroy
+--This prevents the turn player from choosing the same monster again to destroy as the chain resolves
 --[[
 function scard.destg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local turnp=Duel.GetTurnPlayer()

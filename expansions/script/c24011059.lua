@@ -13,7 +13,7 @@ end
 function scard.thtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(DM_LOCATION_SHIELD) and chkc:IsControler(1-tp) and dm.ShieldZoneFilter()(chkc) end
 	if chk==0 then return true end
-	local ct=Duel.GetMatchingGroupCount(dm.ShieldZoneFilter(),tp,DM_LOCATION_SHIELD,0,nil)
+	local ct=Duel.GetShieldCount(tp)
 	Duel.Hint(HINT_SELECTMSG,1-tp,DM_HINTMSG_TARGET)
 	Duel.SelectTarget(1-tp,dm.ShieldZoneFilter(),1-tp,DM_LOCATION_SHIELD,0,ct,ct,nil)
 end

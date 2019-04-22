@@ -22,7 +22,7 @@ function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	if not tc or not tc:IsRelateToEffect(e) then return end
 	if Duel.SendtoMana(tc,POS_FACEUP_UNTAPPED,REASON_EFFECT)==0 then return end
 	local p=tc:GetOwner()
-	local cost=Duel.GetMatchingGroupCount(dm.ManaZoneFilter(),p,DM_LOCATION_MANA,0,nil)
+	local cost=Duel.GetManaCount(p)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOBATTLE)
 	local g2=Duel.SelectMatchingCard(tp,dm.ManaZoneFilter(scard.tbfilter),p,DM_LOCATION_MANA,0,1,1,nil,e,p,cost)
 	if g2:GetCount()==0 then return end

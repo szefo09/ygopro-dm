@@ -6,14 +6,14 @@ function scard.initial_effect(c)
 	--wave striker (draw)
 	dm.EnableWaveStriker(c)
 	dm.AddEffectDescription(c,1,dm.WaveStrikerCondition)
-	dm.AddDestroyedEffect(c,0,true,dm.DrawTarget(PLAYER_SELF),scard.drop,nil,scard.drcon)
+	dm.AddDestroyedEffect(c,0,true,dm.DrawTarget(PLAYER_SELF),scard.drop,nil,aux.AND(dm.WaveStrikerCondition,scard.drcon))
 end
 scard.duel_masters_card=true
 function scard.cfilter(c,tp)
 	return c:GetPreviousControler()==tp and c:IsPreviousLocation(DM_LOCATION_BATTLE)
 end
 function scard.drcon(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(scard.cfilter,1,nil,tp) and dm.WaveStrikerCondition(e) and Duel.GetTurnPlayer()~=tp
+	return eg:IsExists(scard.cfilter,1,nil,tp) and Duel.GetTurnPlayer()~=tp
 end
 function scard.drop(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
