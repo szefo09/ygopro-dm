@@ -20,8 +20,8 @@ end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_FIRE_BIRD,DM_RACE_EARTH_DRAGON,DM_RACE_DRAGON}
 --vortex evolution
-scard.evofilter1=aux.FilterBoolFunction(Card.DMIsRace,DM_RACE_FIRE_BIRD)
-scard.evofilter2=aux.FilterBoolFunction(Card.DMIsRace,DM_RACE_EARTH_DRAGON)
+scard.evofilter1=aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_FIRE_BIRD)
+scard.evofilter2=aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_EARTH_DRAGON)
 --leave replace (separate evolution source)
 function scard.repop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
