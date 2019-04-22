@@ -9,6 +9,7 @@ function scard.initial_effect(c)
 	dm.AddStaticEffectTapAbility(c,0,scard.abtg1,scard.abop,DM_LOCATION_BATTLE,0,scard.abtg2)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_DRAGO_NOID}
 function scard.abfilter(c)
 	return c:IsFaceup() and c:IsCivilization(DM_CIVILIZATION_FIRE)
 end

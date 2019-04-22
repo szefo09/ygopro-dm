@@ -9,6 +9,7 @@ function scard.initial_effect(c)
 	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,dm.SendtoHandOperation(nil,scard.retfilter,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE))
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_LIQUID_PEOPLE}
 function scard.retfilter(c)
 	return c:IsFaceup() and c:IsHasEffect(DM_EFFECT_BLOCKER)
 end

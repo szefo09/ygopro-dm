@@ -11,6 +11,7 @@ function scard.initial_effect(c)
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER,nil,DM_LOCATION_BATTLE,0,scard.dbtg)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_CHIMERA,DM_RACE_ARMORLOID}
 --evolution
 function scard.evofilter(c)
 	return c:DMIsEvolutionRace(DM_RACE_CHIMERA) or c:DMIsEvolutionRace(DM_RACE_ARMORLOID)

@@ -9,3 +9,4 @@ function scard.initial_effect(c)
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_LIQUID_PEOPLE))
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_LIQUID_PEOPLE}

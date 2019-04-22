@@ -9,6 +9,7 @@ function scard.initial_effect(c)
 	dm.AddStaticEffectBlocker(c,DM_LOCATION_BATTLE,0,scard.bltg)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_INITIATE}
 function scard.bltg(e,c)
 	return c~=e:GetHandler() and c:IsCivilization(DM_CIVILIZATION_LIGHT)
 end

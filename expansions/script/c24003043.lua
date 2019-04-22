@@ -11,6 +11,7 @@ function scard.initial_effect(c)
 	dm.AddStaticEffectPowerAttacker(c,2000,DM_LOCATION_BATTLE,0,scard.patg)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_ARMORED_DRAGON,DM_RACE_DRAGON}
 function scard.patg(e,c)
 	return c~=e:GetHandler()
 end

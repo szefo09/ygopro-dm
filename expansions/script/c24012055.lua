@@ -3,7 +3,7 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
-	--to mana & return
+	--wave striker (to mana & return)
 	dm.EnableWaveStriker(c)
 	dm.AddEffectDescription(c,1,dm.WaveStrikerCondition)
 	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.tmop,nil,dm.WaveStrikerCondition)

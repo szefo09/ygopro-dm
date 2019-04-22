@@ -11,6 +11,7 @@ function scard.initial_effect(c)
 	dm.AddTurnEndEffect(c,0,PLAYER_SELF,true,scard.postg,scard.posop)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_WILD_VEGGIES,DM_RACE_RAINBOW_PHANTOM}
 --evolution
 function scard.evofilter(c)
 	return c:DMIsEvolutionRace(DM_RACE_WILD_VEGGIES) or c:DMIsEvolutionRace(DM_RACE_RAINBOW_PHANTOM)

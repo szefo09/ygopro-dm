@@ -13,3 +13,4 @@ function scard.initial_effect(c)
 	dm.EnableCannotAttackPlayer(c)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_MECHA_THUNDER}

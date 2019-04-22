@@ -8,10 +8,11 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.conftg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(DM_LOCATION_SHIELD) and dm.ShieldZoneFilter(chkc.IsFacedown) end
-	if chk==0 then return Duel.IsExistingTarget(dm.ShieldZoneFilter(Card.IsFacedown),tp,DM_LOCATION_SHIELD,DM_LOCATION_SHIELD,1,nil) end
+	local f=dm.ShieldZoneFilter(Card.IsFacedown)
+	if chkc then return chkc:IsLocation(DM_LOCATION_SHIELD) and f(chkc) end
+	if chk==0 then return Duel.IsExistingTarget(f,tp,DM_LOCATION_SHIELD,DM_LOCATION_SHIELD,1,nil) end
 	local ct=Duel.GetMatchingGroupCount(Card.IsFaceup,tp,DM_LOCATION_BATTLE,0,nil)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_CONFIRM)
-	Duel.SelectTarget(tp,dm.ShieldZoneFilter(Card.IsFacedown),tp,DM_LOCATION_SHIELD,DM_LOCATION_SHIELD,ct,ct,nil)
+	Duel.SelectTarget(tp,f,tp,DM_LOCATION_SHIELD,DM_LOCATION_SHIELD,ct,ct,nil)
 end
 scard.confop=dm.TargetConfirmOperation(true)

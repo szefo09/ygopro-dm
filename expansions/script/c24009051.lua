@@ -11,6 +11,7 @@ function scard.initial_effect(c)
 	dm.AddSingleBecomeBlockedEffect(c,1,nil,nil,scard.abop2)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_BEAST_FOLK}
 function scard.abfilter(c)
 	return c:IsFaceup() and c:IsUntapped() and c:IsHasEffect(DM_EFFECT_BLOCKER)
 end

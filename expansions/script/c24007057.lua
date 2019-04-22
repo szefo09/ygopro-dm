@@ -17,6 +17,7 @@ function scard.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_CYBER_VIRUS,DM_RACE_CYBER}
 function scard.drcon(e,tp,eg,ep,ev,re,r,rp)
 	return ep==tp and r==REASON_RULE
 end

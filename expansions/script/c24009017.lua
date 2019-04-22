@@ -17,6 +17,7 @@ function scard.initial_effect(c)
 	c:RegisterEffect(e1)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_CYBER_LORD,DM_RACE_CYBER}
 --return
 function scard.cfilter(c,tp)
 	return c:IsFaceup() and c:GetSummonPlayer()==tp

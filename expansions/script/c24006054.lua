@@ -9,3 +9,4 @@ function scard.initial_effect(c)
 	dm.AddStaticEffectSlayer(c,DM_LOCATION_BATTLE,0,aux.TargetBoolFunction(Card.DMIsRace,DM_RACE_GHOST))
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_GHOST}

@@ -9,6 +9,7 @@ function scard.initial_effect(c)
 	dm.AddDestroyReplaceEffect(c,0,scard.reptg,scard.repop,scard.repval)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_GHOST}
 function scard.repfilter(c,tp)
 	return c:IsLocation(DM_LOCATION_BATTLE) and c:IsFaceup() and c:IsCivilization(DM_CIVILIZATION_DARKNESS)
 		and c:IsControler(tp) and not c:IsReason(REASON_REPLACE)

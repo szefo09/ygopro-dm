@@ -19,6 +19,7 @@ function scard.initial_effect(c)
 	dm.EnableTurnEndSelfReturn(c)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_ARMORED_WYVERN}
 function scard.skipcon(e,tp,eg,ep,ev,re,r,rp)
 	return not e:GetHandler():IsBlocked() and Duel.GetAttackTarget()==nil
 end

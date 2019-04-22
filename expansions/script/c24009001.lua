@@ -11,6 +11,7 @@ function scard.initial_effect(c)
 	dm.AddPlayerUseShieldTriggerEffect(c,0,PLAYER_OPPO,true,scard.tstg,scard.tsop)
 end
 scard.duel_masters_card=true
+scard.evolution_race_list={DM_RACE_GUARDIAN}
 scard.tstg=dm.CheckDeckFunction(PLAYER_SELF)
 function scard.tsop(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
