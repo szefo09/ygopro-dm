@@ -205,6 +205,10 @@ function Card.DMIsEvolutionCivilization(c,civ)
 	return c:IsCivilization(civ) or c:IsHasEffect(DM_EFFECT_EVOLUTION_ANY_CIVILIZATION)
 end
 ]]
+--check if an evolution creature's source can leave the battle zone
+function Card.IsCanSourceLeave(c)
+	return not c:IsHasEffect(DM_EFFECT_EVOLUTION_SOURCE_REMAIN)
+end
 --return the amount of civilizations a card has
 function Card.GetCivilizationCount(c)
 	local civ=c:GetCivilization()
@@ -404,10 +408,10 @@ Card.IsAbleToMana=Card.IsAbleToGrave
 Card.DMIsAbleToGrave=Card.IsAbleToRemove
 --check if a card can be put into the graveyard as a cost
 --Card.DMIsAbleToGraveAsCost=Card.IsAbleToRemoveAsCost --reserved
---return the cards stacked under a card
-Card.GetStackGroup=Card.GetOverlayGroup
---return the number of cards stacked under a card
-Card.GetStackCount=Card.GetOverlayCount
+--return the cards under a card
+Card.GetSourceGroup=Card.GetOverlayGroup
+--return the number of cards under a card
+Card.GetSourceCount=Card.GetOverlayCount
 --========== Group ==========
 --Overwritten Group functions
 --select a specified card from a group
@@ -483,8 +487,8 @@ function Duel.SendtoHand(targets,player,reason,use_shield_trigger)
 	--use_shield_trigger: true if player can use the "shield trigger" ability of the returned shield
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
 	for tc1 in aux.Next(targets) do
-		local g=tc1:GetStackGroup()
-		targets:Merge(g)
+		local g=tc1:GetSourceGroup()
+		if tc1:IsCanSourceLeave() then targets:Merge(g) end
 	end
 	local ct=duel_send_to_hand(targets,player,reason,use_shield_trigger)
 	for tc2 in aux.Next(targets) do
@@ -500,8 +504,8 @@ local duel_send_to_deck=Duel.SendtoDeck
 function Duel.SendtoDeck(targets,player,seq,reason)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
 	for tc in aux.Next(targets) do
-		local g=tc:GetStackGroup()
-		targets:Merge(g)
+		local g=tc:GetSourceGroup()
+		if tc1:IsCanSourceLeave() then targets:Merge(g) end
 	end
 	local ct=duel_send_to_deck(targets,player,seq,reason)
 	if seq==DECK_SEQUENCE_TOP or seq==DECK_SEQUENCE_BOTTOM then
@@ -778,7 +782,7 @@ function Duel.SendtoMana(targets,pos,reason)
 	targets:Sub(g1)
 	local ct=0
 	for tc in aux.Next(targets) do
-		local g2=tc:GetStackGroup()
+		local g2=(tc:IsCanSourceLeave() and tc:GetSourceGroup() or Group.CreateGroup())
 		if pos==POS_FACEUP_UNTAPPED then
 			ct=ct+Duel.SendtoGrave(g2,reason)
 			ct=ct+Duel.SendtoGrave(tc,reason)
@@ -789,8 +793,9 @@ function Duel.SendtoMana(targets,pos,reason)
 	end
 	--put multicolored cards into the mana zone tapped
 	for tc in aux.Next(g1) do
-		local g2=tc:GetStackGroup()
+		local g2=(tc:IsCanSourceLeave() and tc:GetSourceGroup() or Group.CreateGroup())
 		ct=ct+Duel.Remove(g2,POS_FACEDOWN,REASON_RULE)
+		Debug.Message(ct)
 	end
 	ct=ct+Duel.Remove(g1,POS_FACEDOWN,REASON_RULE)
 	return ct
@@ -819,16 +824,14 @@ end
 function Duel.DMSendtoGrave(targets,reason)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
 	local ct=0
-	for tc1 in aux.Next(targets) do
-		local g=tc1:GetStackGroup()
-		for tc2 in aux.Next(g) do
-			ct=ct+Duel.Remove(tc2,POS_FACEUP,reason)
-		end
-		if tc1:IsLocation(LOCATION_REMOVED) and tc1:IsFacedown() then
+	for tc in aux.Next(targets) do
+		local g=tc:GetSourceGroup()
+		if tc:IsCanSourceLeave() then targets:Merge(g) end
+		if tc:IsLocation(LOCATION_REMOVED) and tc:IsFacedown() then
 			--workaround to banish a banished card
-			if Duel.SendtoHand(tc1,PLAYER_OWNER,REASON_RULE)>0 then Duel.ConfirmCards(1-tc1:GetControler(),tc1) end
+			if Duel.SendtoHand(tc,PLAYER_OWNER,REASON_RULE)>0 then Duel.ConfirmCards(1-tc:GetControler(),tc) end
 		end
-		ct=ct+Duel.Remove(tc1,POS_FACEUP,reason)
+		ct=ct+Duel.Remove(tc,POS_FACEUP,reason)
 	end
 	return ct
 end
@@ -847,12 +850,13 @@ function Duel.DMIsPlayerCanSendDecktoptoGrave(player,count)
 end
 ]]
 --add a card to a player's shields face down
+--Not fully implemented: Does not check if an evolution source can leave the battle zone
 function Duel.SendtoShield(targets,player)
 	--player: the player whose shields to add a card to (generally its owner)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
 	local b=nil
 	for tc1 in aux.Next(targets) do
-		local g=tc1:GetStackGroup()
+		local g=tc1:GetSourceGroup()
 		for tc2 in aux.Next(g) do
 			if tc2:IsAbleToShield() then
 				if Duel.GetLocationCount(player,DM_LOCATION_SHIELD)>0 then
@@ -1464,7 +1468,7 @@ function Auxiliary.EvolutionOperation(e,tp,eg,ep,ev,re,r,rp,c)
 	Auxiliary.PayManaSelect(g1,tp,c,c:GetManaCost(),c:GetCivilizationCount())
 	local g2=e:GetLabelObject()
 	for tc in aux.Next(g2) do
-		local sg=tc:GetStackGroup()
+		local sg=tc:GetSourceGroup()
 		if sg:GetCount()>0 then
 			Duel.PutOnTop(c,sg)
 		end

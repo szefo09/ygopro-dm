@@ -247,9 +247,10 @@ DM_EFFECT_SILENT_SKILL				=728	--Keep creature tapped during untap step to use i
 DM_EFFECT_WAVE_STRIKER				=729	--Wave Striker ("Asra, Vizier of Safety" DM-11 6/55)
 DM_EFFECT_CANNOT_USE_TAP_ABILITY	=730	--Player cannot use the Tap ability of their creatures ("Lockdown Lizard" DM-11 39/55)
 DM_EFFECT_VORTEX_EVOLUTION			=731	--Vortex Evolution ("Soul Phoenix, Avatar of Unity" DM-12 5/55)
-DM_EFFECT_SYMPATHY					=732	--Sympathy ("Akashic First, Electro-Dragon" DM-13 3/55)
-DM_EFFECT_CONFIRM_BROKEN_SHIELD		=733	--Player reveals their shields broken by their opponent's creatures ("Rubels, the Explorer" DM-13 36/55)
-DM_EFFECT_CHARGE_TAPPED				=734	--Put a cast spell with this ability into the mana zone tapped instead of the graveyard ("Pixie Cocoon" DM-13 50/55)
+DM_EFFECT_EVOLUTION_SOURCE_REMAIN	=732	--When an evolution creature would leave the battle zone, only the top card leaves instead ("Soul Phoenix, Avatar of Unity" DM-12 5/55)
+DM_EFFECT_SYMPATHY					=733	--Sympathy ("Akashic First, Electro-Dragon" DM-13 3/55)
+DM_EFFECT_CONFIRM_BROKEN_SHIELD		=734	--Player reveals their shields broken by their opponent's creatures ("Rubels, the Explorer" DM-13 36/55)
+DM_EFFECT_CHARGE_TAPPED				=735	--Put a cast spell with this ability into the mana zone tapped instead of the graveyard ("Pixie Cocoon" DM-13 50/55)
 DM_EFFECT_WINS_ALL_BATTLES			=799	--Wins All Battles ("Marshias, Spirit of the Sun" DM-14 S1/S10)		
 --Abilities that trigger or actions that occur at the appropriate event
 DM_EVENT_UNTAP_STEP					=EVENT_PREDRAW					--Start of Turn Step (Untap Step)
@@ -270,8 +271,8 @@ DM_EVENT_TRIGGER_BLOCKER			=CARD_STORM_WRANGLER_THE_FURIOUS--Trigger a creature'
 DM_EVENT_CAST_FREE					=CARD_BLUUM_ERKIS_FLARE_GUARDIAN--Cast a spell immediately for no cost
 DM_EVENT_BECOME_SHIELD_TRIGGER		=CARD_WOLFIS_BLUE_DIVINE_DRAGON	--Card gets "Shield Trigger" (Can be summoned or cast for no cost)
 --Category (ability classification)
-DM_CATEGORY_BLOCKER					=CATEGORY_NEGATE	--"Blocker" ability, needed for unblockable abilities ("Laser Wing" DM-01 11/110)
-DM_CATEGORY_SHIELD_TRIGGER			=CATEGORY_FLIP		--"Shield Trigger" ability, needed for "Emperor Quazla" (DM-08 S2/S5)
+DM_CATEGORY_BLOCKER					=0x10000000		--"Blocker", needed for unblockable abilities ("Laser Wing" DM-01 11/110)
+DM_CATEGORY_SHIELD_TRIGGER			=0x800			--"Shield Trigger" ("Emperor Quazla" DM-08 S2/S5)
 --Description
 --↑Play Description (for Effect.Description)
 DM_DESC_SUMMON						=2		--"Play this card by summoning it."

@@ -4,6 +4,7 @@
 		1. The effect of Soul Phoenix leaving the battle zone is not substituted or replaced
 		It should not be treated as being destroyed by effects that destroy it (same for any other removal effect)
 		2. The effect of Soul Phoenix leaving the battle zone is not applied when it is returned to the deck
+		3. The effect of Soul Phoenix leaving the battle zone is not applied when it is added to the shield zone
 ]]
 local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
@@ -21,6 +22,7 @@ function scard.initial_effect(c)
 	e1:SetCode(EVENT_LEAVE_FIELD)
 	e1:SetOperation(scard.repop)
 	c:RegisterEffect(e1)
+	dm.EnableEffectCustom(c,DM_EFFECT_EVOLUTION_SOURCE_REMAIN)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_FIRE_BIRD,DM_RACE_EARTH_DRAGON,DM_RACE_DRAGON}
@@ -30,7 +32,7 @@ scard.evofilter2=aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_EARTH_DRA
 --leave replace (separate evolution source)
 function scard.repop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local mg=c:GetStackGroup()
+	local mg=c:GetSourceGroup()
 	local pos=c:GetPreviousPosition()
 	local g=Group.CreateGroup()
 	g:Merge(mg)

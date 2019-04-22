@@ -11,12 +11,12 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.tgfilter(c)
-	return c:IsFaceup() and c:IsEvolution() and c:GetStackCount()>0 and c:DMIsAbleToGrave()
+	return c:IsFaceup() and c:IsEvolution() and c:GetSourceCount()>0 and c:DMIsAbleToGrave()
 end
 scard.tgtg=dm.TargetCardFunction(PLAYER_SELF,scard.tgfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TOGRAVE)
 function scard.tgop(e,tp,eg,ep,ev,re,r,rp)
 	local tc1=Duel.GetFirstTarget()
-	local mg=tc1:GetStackGroup()
+	local mg=tc1:GetSourceGroup()
 	local pos=tc1:GetPosition()
 	local seq=tc1:GetSequence()
 	if not tc1:IsRelateToEffect(e) or mg:GetCount()==0 then return end

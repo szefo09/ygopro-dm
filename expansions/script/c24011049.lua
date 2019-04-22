@@ -11,13 +11,13 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.tmfilter(c)
-	return c:IsFaceup() and c:IsEvolution() and c:GetStackCount()>0 and c:IsAbleToMana()
+	return c:IsFaceup() and c:IsEvolution() and c:GetSourceCount()>0 and c:IsAbleToMana()
 end
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	local g1=Duel.GetMatchingGroup(scard.tmfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil)
 	if g1:GetCount()==0 then return end
 	for tc1 in aux.Next(g1) do
-		local mg=tc1:GetStackGroup()
+		local mg=tc1:GetSourceGroup()
 		local pos=tc1:GetPosition()
 		local seq=tc1:GetSequence()
 		local g2=Group.CreateGroup()

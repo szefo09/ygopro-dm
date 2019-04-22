@@ -484,17 +484,17 @@ function scard.desop2(e,tp,eg,ep,ev,re,r,rp)
 		if not ab1 and a:IsRelateToBattle() then g:AddCard(a) end
 		if not ab2 and d:IsRelateToBattle() then g:AddCard(d) end
 	end
-	if lc then
-		--raise event for "When this creature loses a battle"
-		Duel.RaiseSingleEvent(lc,EVENT_CUSTOM+DM_EVENT_LOSE_BATTLE,e,0,0,0,0)
-		--raise event for "Whenever one of your creatures loses a battle"
-		--Duel.RaiseEvent(lc,EVENT_CUSTOM+DM_EVENT_LOSE_BATTLE,e,0,0,0,0) --reserved
-	end
 	if wc then
 		--raise event for "When this creature wins a battle"
 		Duel.RaiseSingleEvent(wc,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
 		--raise event for "Whenever one of your creatures wins a battle"
 		Duel.RaiseEvent(wc,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
+	end
+	if lc then
+		--raise event for "When this creature loses a battle"
+		Duel.RaiseSingleEvent(lc,EVENT_CUSTOM+DM_EVENT_LOSE_BATTLE,e,0,0,0,0)
+		--raise event for "Whenever one of your creatures loses a battle"
+		--Duel.RaiseEvent(lc,EVENT_CUSTOM+DM_EVENT_LOSE_BATTLE,e,0,0,0,0) --reserved
 	end
 	Duel.Destroy(g,REASON_RULE)
 end
@@ -503,14 +503,14 @@ function scard.tgtg(e,c)
 	return (c:IsReason(REASON_DESTROY) or c:IsReason(REASON_BATTLE)) and not c:IsHasEffect(DM_EFFECT_TO_GRAVE_REDIRECT)
 end
 function scard.cfilter3(c)
-	return c:GetStackCount()>0
+	return c:GetSourceCount()>0
 end
 function scard.tgcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(scard.cfilter3,1,nil)
 end
 function scard.tgop2(e,tp,eg,ep,ev,re,r,rp)
 	for ec in aux.Next(eg) do
-		local g=ec:GetStackGroup():Filter(Card.DMIsAbleToGrave,nil)
+		local g=ec:GetSourceGroup():Filter(Card.DMIsAbleToGrave,nil)
 		Duel.DMSendtoGrave(g,REASON_RULE)
 	end
 end
