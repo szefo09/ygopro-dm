@@ -197,7 +197,6 @@ DM_EFFECT_TYPE_CAST_SPELL			=EFFECT_TYPE_IGNITION			--Cast a spell
 DM_EFFECT_FLAG_SUMMON_PARAM			=EFFECT_FLAG_SPSUM_PARAM		--Included in a creature's summon procedure
 DM_EFFECT_FLAG_CHAIN_LIMIT			=0x8000000						--Included in an effect that cannot be chained to
 DM_EFFECT_FLAG_CHARGE				=0x20000000						--Included in an effect where a player puts the cast spell into the mana zone
-DM_EFFECT_FLAG_CHARGE_TAPPED		=0x40000000						--Included in an effect where a player puts the cast spell into the mana zone tapped
 --Code
 DM_EFFECT_SUMMON_PROC				=EFFECT_SPSUMMON_PROC			--Summon creature procedure
 DM_EFFECT_TO_GRAVE_REDIRECT			=EFFECT_REMOVE_REDIRECT			--Put a card into another zone instead of the graveyard
@@ -249,6 +248,7 @@ DM_EFFECT_CANNOT_USE_TAP_ABILITY	=730	--Player cannot use the Tap ability of the
 DM_EFFECT_VORTEX_EVOLUTION			=731	--Vortex Evolution ("Soul Phoenix, Avatar of Unity" DM-12 5/55)
 DM_EFFECT_SYMPATHY					=732	--Sympathy ("Akashic First, Electro-Dragon" DM-13 3/55)
 DM_EFFECT_CONFIRM_BROKEN_SHIELD		=733	--Player reveals their shields broken by their opponent's creatures ("Rubels, the Explorer" DM-13 36/55)
+DM_EFFECT_CHARGE_TAPPED				=734	--Put a cast spell with this ability into the mana zone tapped instead of the graveyard ("Pixie Cocoon" DM-13 50/55)
 DM_EFFECT_WINS_ALL_BATTLES			=799	--Wins All Battles ("Marshias, Spirit of the Sun" DM-14 S1/S10)		
 --Abilities that trigger or actions that occur at the appropriate event
 DM_EVENT_UNTAP_STEP					=EVENT_PREDRAW					--Start of Turn Step (Untap Step)
