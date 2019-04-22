@@ -505,7 +505,7 @@ function Duel.SendtoDeck(targets,player,seq,reason)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
 	for tc in aux.Next(targets) do
 		local g=tc:GetSourceGroup()
-		if tc1:IsCanSourceLeave() then targets:Merge(g) end
+		if tc:IsCanSourceLeave() then targets:Merge(g) end
 	end
 	local ct=duel_send_to_deck(targets,player,seq,reason)
 	if seq==DECK_SEQUENCE_TOP or seq==DECK_SEQUENCE_BOTTOM then
@@ -795,7 +795,6 @@ function Duel.SendtoMana(targets,pos,reason)
 	for tc in aux.Next(g1) do
 		local g2=(tc:IsCanSourceLeave() and tc:GetSourceGroup() or Group.CreateGroup())
 		ct=ct+Duel.Remove(g2,POS_FACEDOWN,REASON_RULE)
-		Debug.Message(ct)
 	end
 	ct=ct+Duel.Remove(g1,POS_FACEDOWN,REASON_RULE)
 	return ct
