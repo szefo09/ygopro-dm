@@ -19,5 +19,5 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_ZOMBIE_DRAGON,DM_RACE_DRAGON,DM_RACE_FIRE_BIRD}
-scard.evofilter1=aux.FilterBoolFunction(Card.DMIsRace,DM_RACE_ZOMBIE_DRAGON)
-scard.evofilter2=aux.FilterBoolFunction(Card.DMIsRace,DM_RACE_FIRE_BIRD)
+scard.evofilter1=aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_ZOMBIE_DRAGON)
+scard.evofilter2=aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_FIRE_BIRD)

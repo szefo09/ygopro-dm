@@ -15,8 +15,8 @@ end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_HORNED_BEAST,DM_RACE_ANGEL_COMMAND,DM_RACE_COMMAND}
 --vortex evolution
-scard.evofilter1=aux.FilterBoolFunction(Card.DMIsRace,DM_RACE_HORNED_BEAST)
-scard.evofilter2=aux.FilterBoolFunction(Card.DMIsRace,DM_RACE_ANGEL_COMMAND)
+scard.evofilter1=aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_HORNED_BEAST)
+scard.evofilter2=aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_ANGEL_COMMAND)
 --to battle or to hand
 function scard.tbop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetFieldGroupCount(tp,LOCATION_DECK,0)==0 then return end
