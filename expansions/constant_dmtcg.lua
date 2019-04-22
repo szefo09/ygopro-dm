@@ -149,6 +149,7 @@ DM_CIVILIZATION_WATER				=ATTRIBUTE_WATER	--Water
 DM_CIVILIZATION_DARKNESS			=ATTRIBUTE_DARK		--Darkness
 DM_CIVILIZATION_FIRE				=ATTRIBUTE_FIRE		--Fire
 DM_CIVILIZATION_NATURE				=ATTRIBUTE_EARTH	--Nature
+DM_CIVILIZATION_COUNT				=5					--Number of different civilizations that exists
 --↑2 color civilization combinations (Multicolored)
 DM_CIVILIZATIONS_LW					=DM_CIVILIZATION_LIGHT+DM_CIVILIZATION_WATER		--Light and water
 DM_CIVILIZATIONS_LD					=DM_CIVILIZATION_LIGHT+DM_CIVILIZATION_DARKNESS		--Light and darkness
@@ -195,7 +196,8 @@ DM_EFFECT_TYPE_CAST_SPELL			=EFFECT_TYPE_IGNITION			--Cast a spell
 --Flag
 DM_EFFECT_FLAG_SUMMON_PARAM			=EFFECT_FLAG_SPSUM_PARAM		--Included in a creature's summon procedure
 DM_EFFECT_FLAG_CHAIN_LIMIT			=0x8000000						--Included in an effect that cannot be chained to
-DM_EFFECT_FLAG_CHARGE				=0x20000000						--Included in a spell's ability where the spell puts itself in the mana zone after it's cast
+DM_EFFECT_FLAG_CHARGE				=0x20000000						--Included in an effect where a player puts the cast spell into the mana zone
+DM_EFFECT_FLAG_CHARGE_TAPPED		=0x40000000						--Included in an effect where a player puts the cast spell into the mana zone tapped
 --Code
 DM_EFFECT_SUMMON_PROC				=EFFECT_SPSUMMON_PROC			--Summon creature procedure
 DM_EFFECT_TO_GRAVE_REDIRECT			=EFFECT_REMOVE_REDIRECT			--Put a card into another zone instead of the graveyard
@@ -203,7 +205,11 @@ DM_EFFECT_CANNOT_ATTACK_PLAYER		=EFFECT_CANNOT_DIRECT_ATTACK	--Cannot attack pla
 DM_EFFECT_ATTACK_PLAYER				=EFFECT_DIRECT_ATTACK			--Attack player
 DM_EFFECT_CANNOT_CHANGE_POS_ABILITY	=EFFECT_CANNOT_CHANGE_POS_E		--Cannot untap or tap a card by an ability 
 DM_EFFECT_UPDATE_POWER				=EFFECT_UPDATE_ATTACK			--Increase or decrease a creature's power
+DM_EFFECT_SET_POWER					=EFFECT_SET_ATTACK				--Creature's power becomes a particular value
 DM_EFFECT_UPDATE_MANA_COST			=EFFECT_UPDATE_LEVEL			--Increase or decrease a card's mana cost
+DM_EFFECT_CHANGE_MANA_COST			=EFFECT_CHANGE_LEVEL			--Mana cost becomes a particular value
+DM_EFFECT_ADD_CIVILIZATION			=EFFECT_ADD_ATTRIBUTE			--Card is considered to be a card of another civilization
+DM_EFFECT_CHANGE_CIVILIZATION		=EFFECT_CHANGE_ATTRIBUTE		--Civilization becomes another civilization
 DM_EFFECT_ADD_RACE 					=EFFECT_ADD_SETCODE				--Creature is a particular race in addition to its other races
 DM_EFFECT_MUST_ATTACK_CREATURE		=EFFECT_MUST_ATTACK_MONSTER		--Creature attacks a creature if able
 DM_EFFECT_BROKEN_SHIELD				=CARD_DUEL_MASTERS_RULES		--Register a broken shield
@@ -241,6 +247,8 @@ DM_EFFECT_SILENT_SKILL				=728	--Keep creature tapped during untap step to use i
 DM_EFFECT_WAVE_STRIKER				=729	--Wave Striker ("Asra, Vizier of Safety" DM-11 6/55)
 DM_EFFECT_CANNOT_USE_TAP_ABILITY	=730	--Player cannot use the Tap ability of their creatures ("Lockdown Lizard" DM-11 39/55)
 DM_EFFECT_VORTEX_EVOLUTION			=731	--Vortex Evolution ("Soul Phoenix, Avatar of Unity" DM-12 5/55)
+DM_EFFECT_SYMPATHY					=732	--Sympathy ("Akashic First, Electro-Dragon" DM-13 3/55)
+DM_EFFECT_CONFIRM_BROKEN_SHIELD		=733	--Player reveals their shields broken by their opponent's creatures ("Rubels, the Explorer" DM-13 36/55)
 DM_EFFECT_WINS_ALL_BATTLES			=799	--Wins All Battles ("Marshias, Spirit of the Sun" DM-14 S1/S10)		
 --Abilities that trigger or actions that occur at the appropriate event
 DM_EVENT_UNTAP_STEP					=EVENT_PREDRAW					--Start of Turn Step (Untap Step)

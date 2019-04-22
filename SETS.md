@@ -51,8 +51,6 @@
 ## Booster Packs
 
 ### DM Packs - Not Yet Scripted
-### Holy Fist Saga 聖拳編, エターナル・アームズ
-- **Mar. 26, 2005** : DM-13 Eternal Phoenix 「聖拳編 第4弾 龍炎鳳神誕（エターナル・フェニックス）」 : `24013001-24013060`
 ### Reincarnation Saga 転生編, ジェネレート・ギア
 - **June 25, 2005** : DM-14 Generate Gear 「転生編（ジェネレート・ギア） 第1弾」 : `24014001-24014120`
 - **Sept. 17, 2005** : DM-15 Secret of Hidden Gear 「転生編 第2弾 神滅奥義継承（シークレット・オブ・ヒドゥン・ギア）」 : `24015001-24015060`
@@ -114,6 +112,8 @@
 	- ~Cursed Totem 《呪紋の化身（カース・トーテム）》 : `24007061` (OCG only)~
 - ~**Dec. 25, 2003** : DM-08 Invincible Legend 「闘魂編 第3弾 超神龍の復活（インビンシブル・レジェンド）」~
 	- ~Skeleton Vice 《スケルトン･バイス》 : `24008061` (OCG only)~
+### Holy Fist Saga 聖拳編, エターナル・アームズ
+- ~**Mar. 26, 2005** : DM-13 Eternal Phoenix 「聖拳編 第4弾 龍炎鳳神誕（エターナル・フェニックス）」 : `24013001-24013060`~
 
 ### DMR Packs - Not Yet Scripted
 ### Episode 1 エピソード1

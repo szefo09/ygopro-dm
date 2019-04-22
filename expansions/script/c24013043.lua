@@ -1,4 +1,5 @@
---Scalpel Spider
+--爆弾人形ニヤーリ
+--Niyaari, Exploding Doll
 local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
