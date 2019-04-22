@@ -470,13 +470,16 @@ local duel_send_to_hand=Duel.SendtoHand
 function Duel.SendtoHand(targets,player,reason,use_shield_trigger)
 	--use_shield_trigger: true if player can use the "shield trigger" ability of the returned shield
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
-	local ct=duel_send_to_hand(targets,player,reason,use_shield_trigger)
-	for tc in aux.Next(targets) do
-		if use_shield_trigger then
-			Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_TRIGGER_SHIELD_TRIGGER,Effect.GlobalEffect(),0,0,0,0)
-		end
-		local g=tc:GetStackGroup()
+	for tc1 in aux.Next(targets) do
+		local g=tc1:GetStackGroup()
 		targets:Merge(g)
+	end
+	local ct=duel_send_to_hand(targets,player,reason,use_shield_trigger)
+	for tc2 in aux.Next(targets) do
+		if use_shield_trigger then
+			--raise event for "Shield Trigger"
+			Duel.RaiseSingleEvent(tc2,EVENT_CUSTOM+DM_EVENT_TRIGGER_SHIELD_TRIGGER,Effect.GlobalEffect(),0,0,0,0)
+		end
 	end
 	return ct
 end
@@ -759,18 +762,25 @@ function Duel.SendtoMana(targets,pos,reason)
 	--pos: POS_FACEUP_UNTAPPED to put in untapped position or POS_FACEUP_TAPPED to put in tapped position
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
 	--check for multicolored cards
-	local g=targets:Filter(Card.IsMulticolored,nil)
-	targets:Sub(g)
+	local g1=targets:Filter(Card.IsMulticolored,nil)
+	targets:Sub(g1)
 	local ct=0
 	for tc in aux.Next(targets) do
+		local g2=tc:GetStackGroup()
 		if pos==POS_FACEUP_UNTAPPED then
+			ct=ct+Duel.SendtoGrave(g2,reason)
 			ct=ct+Duel.SendtoGrave(tc,reason)
 		elseif pos==POS_FACEUP_TAPPED then
+			ct=ct+Duel.Remove(g2,POS_FACEDOWN,reason)
 			ct=ct+Duel.Remove(tc,POS_FACEDOWN,reason)
 		end
 	end
 	--put multicolored cards into the mana zone tapped
-	ct=ct+Duel.Remove(g,POS_FACEDOWN,REASON_RULE)
+	for tc in aux.Next(g1) do
+		local g2=tc:GetStackGroup()
+		ct=ct+Duel.Remove(g2,POS_FACEDOWN,REASON_RULE)
+	end
+	ct=ct+Duel.Remove(g1,POS_FACEDOWN,REASON_RULE)
 	return ct
 end
 --put a card from the top of a player's deck into the mana zone
