@@ -23,10 +23,9 @@ function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e1,tp)
 end
 function scard.repfilter(c,tp)
-	if not c:IsControler(tp) or c:IsReason(REASON_REPLACE) then return false end
 	if c:GetDestination()==LOCATION_REMOVED and c:IsLocation(LOCATION_GRAVE) then return false end
 	if c:GetDestination()==LOCATION_GRAVE and not c:IsLocation(DM_LOCATION_BATTLE) then return false end
-	return true
+	return c:IsControler(tp) and not c:IsReason(REASON_REPLACE)
 end
 function scard.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return eg:IsExists(scard.repfilter,1,c,tp) end
