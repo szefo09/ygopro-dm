@@ -9,6 +9,12 @@ function scard.initial_effect(c)
 	--cannot attack
 	dm.EnableCannotAttack(c)
 	--draw
-	dm.AddSingleDestroyedEffect(c,0,nil,nil,dm.DrawOperation(PLAYER_SELF,math.random(3)))
+	dm.AddSingleDestroyedEffect(c,0,nil,nil,scard.drop)
 end
 scard.duel_masters_card=true
+function scard.drop(e,tp,eg,ep,ev,re,r,rp)
+	local os=require('os')
+	math.randomseed(os.time())
+	local ct=math.random(0,3)
+	Duel.Draw(tp,ct,REASON_EFFECT)
+end

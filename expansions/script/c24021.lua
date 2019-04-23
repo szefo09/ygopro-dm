@@ -33,6 +33,8 @@ end
 scard.duel_masters_card=true
 --power attacker
 function scard.regop(e,tp,eg,ep,ev,re,r,rp)
+	local os=require('os')
+	math.randomseed(os.time())
 	local t={5000,6000,7000,8000,9000,10000,11000,12000,13000,14000}
 	local val=t[math.random(#t)]
 	e:SetLabel(val)
