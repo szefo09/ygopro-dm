@@ -17,7 +17,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 scard.tgtg1=dm.CheckCardFunction(dm.ManaZoneFilter(Card.DMIsAbleToGrave),0,DM_LOCATION_MANA)
-scard.tgop1=dm.SendtoGraveOperation(PLAYER_SELF,dm.ManaZoneFilter(),0,DM_LOCATION_MANA,1)
+scard.tgop1=dm.SendtoGraveOperation(PLAYER_OPPO,dm.ManaZoneFilter(),0,DM_LOCATION_MANA,1)
 function scard.tgcon(e,tp,eg,ep,ev,re,r,rp)
 	return re:GetHandler()==e:GetHandler() and eg:IsExists(Card.DMIsAbleToGrave,1,nil)
 end

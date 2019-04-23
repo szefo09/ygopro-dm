@@ -402,6 +402,9 @@ DM_QHINTMSG_RTOHAND					=707	--"Return a card to its owner's hand?"
 DM_QHINTMSG_UNTAP					=709	--"Untap a card?"
 --Timing
 DM_TIMING_BATTLE					=TIMING_BATTLE_START+TIMING_BATTLE_END+TIMING_BATTLE_PHASE+TIMING_BATTLE_STEP_END	--Timing for abilities that can trigger during the Attack Step
+--Result
+RESULT_TAILS						=0		--Tails coin result
+RESULT_HEADS						=1		--Heads coin result
 --Deck Sequence
 DECK_SEQUENCE_TOP					=0		--seq=DECK_SEQUENCE_TOP in Duel.SendtoDeck(targets, player, seq, reason)
 DECK_SEQUENCE_BOTTOM				=1		--seq=DECK_SEQUENCE_BOTTOM in Duel.SendtoDeck(targets, player, seq, reason)
