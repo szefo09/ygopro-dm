@@ -30,6 +30,7 @@ CARD_MARROW_OOZE_THE_TWISTER		=24002032	--EVENT_CUSTOM+DM_EVENT_ATTACK_PLAYER
 CARD_BRUTAL_CHARGE					=24005049	--EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD
 CARD_STORM_WRANGLER_THE_FURIOUS		=24009051	--EVENT_CUSTOM+DM_EVENT_TRIGGER_BLOCKER
 CARD_BLUUM_ERKIS_FLARE_GUARDIAN		=24010119	--EVENT_CUSTOM+DM_EVENT_CAST_FREE
+CARD_GASHI_GASHI					=24013034	--EVENT_CUSTOM+DM_EVENT_LOSE_BATTLE
 CARD_WOLFIS_BLUE_DIVINE_DRAGON		=24027		--EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER
 --↑RegisterFlagEffect
 CARD_DIA_NORK_MOONLIGHT_GUARDIAN	=24001002	--DM_EFFECT_BLOCKED
@@ -197,7 +198,6 @@ DM_EFFECT_TYPE_CAST_SPELL			=EFFECT_TYPE_IGNITION			--Cast a spell
 DM_EFFECT_FLAG_SUMMON_PARAM			=EFFECT_FLAG_SPSUM_PARAM		--Included in a creature's summon procedure
 DM_EFFECT_FLAG_CHAIN_LIMIT			=0x8000000						--Included in an effect that cannot be chained to
 DM_EFFECT_FLAG_CHARGE				=0x20000000						--Included in an effect where a player puts the cast spell into the mana zone
-DM_EFFECT_FLAG_CHARGE_TAPPED		=0x40000000						--Included in an effect where a player puts the cast spell into the mana zone tapped
 --Code
 DM_EFFECT_SUMMON_PROC				=EFFECT_SPSUMMON_PROC			--Summon creature procedure
 DM_EFFECT_TO_GRAVE_REDIRECT			=EFFECT_REMOVE_REDIRECT			--Put a card into another zone instead of the graveyard
@@ -249,6 +249,7 @@ DM_EFFECT_CANNOT_USE_TAP_ABILITY	=730	--Player cannot use the Tap ability of the
 DM_EFFECT_VORTEX_EVOLUTION			=731	--Vortex Evolution ("Soul Phoenix, Avatar of Unity" DM-12 5/55)
 DM_EFFECT_SYMPATHY					=732	--Sympathy ("Akashic First, Electro-Dragon" DM-13 3/55)
 DM_EFFECT_CONFIRM_BROKEN_SHIELD		=733	--Player reveals their shields broken by their opponent's creatures ("Rubels, the Explorer" DM-13 36/55)
+DM_EFFECT_CHARGE_TAPPED				=734	--Put a cast spell with this ability into the mana zone tapped instead of the graveyard ("Pixie Cocoon" DM-13 50/55)
 DM_EFFECT_WINS_ALL_BATTLES			=799	--Wins All Battles ("Marshias, Spirit of the Sun" DM-14 S1/S10)		
 --Abilities that trigger or actions that occur at the appropriate event
 DM_EVENT_UNTAP_STEP					=EVENT_PREDRAW					--Start of Turn Step (Untap Step)
@@ -261,6 +262,7 @@ DM_EVENT_ATTACK_END					=EVENT_DAMAGE_STEP_END			--When a creature finishes its 
 DM_EVENT_BATTLE_END					=EVENT_DAMAGE_STEP_END			--After a battle happens
 DM_EVENT_TRIGGER_SHIELD_TRIGGER		=CARD_HOLY_AWE					--Trigger a card's "Shield Trigger" ability
 DM_EVENT_WIN_BATTLE					=CARD_BLOODY_SQUITO				--When a creature wins a battle + EVENT_BATTLE_DESTROYING
+DM_EVENT_LOSE_BATTLE				=CARD_GASHI_GASHI				--When a creature loses a battle + EVENT_BATTLE_DESTROYED
 DM_EVENT_BECOME_BLOCKED				=CARD_CREEPING_PLAGUE			--When a creature becomes blocked
 DM_EVENT_ATTACK_PLAYER				=CARD_MARROW_OOZE_THE_TWISTER	--When a creature attacks a player
 DM_EVENT_BREAK_SHIELD				=CARD_BRUTAL_CHARGE				--When a creature finishes attacking the opponent and broke a shield

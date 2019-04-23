@@ -131,9 +131,9 @@ You can search for the following specific card information in YGOPro:
 - Civilization: Use the `Civilization` (`Civ`) tab
 - Evolution Creature: Use the `Evolution` tab
 - Mana Cost: Use the `Mana` tab
-- Multicolored: Type `put into your mana zone tapped.)` in the search bar
+- Multicolored: Use the `Multi` tab
 - Power: Use the `Power` tab
-- Race: Type `Race:` in the search bar
+- Race: **N/A**
 - Region-exclusive cards: Use the `Limitation` tab
 - You can also search for cards whose abilities have been modified for YGOPro by typing `YGOPro`.
 </details>
