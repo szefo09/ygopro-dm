@@ -9,5 +9,5 @@ function scard.initial_effect(c)
 	dm.AddSingleDestroyReplaceEffect(c,0,scard.reptg,scard.repop)
 end
 scard.duel_masters_card=true
-scard.reptg=dm.SingleDestroyReplaceTarget(aux.TRUE)
+scard.reptg=dm.SingleDestroyReplaceTarget(Card.IsAbleToShield)
 scard.repop=dm.SingleDestroyReplaceOperation(Duel.SendtoShield,PLAYER_OWNER)

@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.tsfilter(c)
-	return c:IsFaceup() and not c:IsEvolution()
+	return c:IsFaceup() and not c:IsEvolution() and c:IsAbleToShield()
 end
 scard.tstg=dm.TargetCardFunction(PLAYER_SELF,scard.tsfilter,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TOSHIELD)
 scard.tsop=dm.TargetSendtoShieldOperation
