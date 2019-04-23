@@ -7,6 +7,7 @@ function scard.initial_effect(c)
 	dm.EnableBlocker(c)
 	--power up
 	dm.EnableUpdatePower(c,2000,scard.powcon)
+	dm.AddEffectDescription(c,0,scard.powcon)
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 end

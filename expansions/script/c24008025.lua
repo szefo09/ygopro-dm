@@ -14,8 +14,8 @@ scard.rettg=dm.TargetCardFunction(PLAYER_SELF,scard.retfilter,DM_LOCATION_BATTLE
 function scard.retop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if not tc or not tc:IsRelateToEffect(e) then return end
-	if Duel.SendtoHand(tc,PLAYER_OWNER,REASON_EFFECT)>0 and tc:DMIsRace(DM_RACE_DRAGON)
-		and Duel.IsPlayerCanDraw(tp,1) and Duel.SelectYesNo(tp,DM_QHINTMSG_DRAW) then
+	Duel.SendtoHand(tc,PLAYER_OWNER,REASON_EFFECT)
+	if tc:DMIsRace(DM_RACE_DRAGON) and Duel.IsPlayerCanDraw(tp,1) and Duel.SelectYesNo(tp,DM_QHINTMSG_DRAW) then
 		Duel.Draw(tp,1,REASON_EFFECT)
 	end
 end

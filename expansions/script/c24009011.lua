@@ -20,7 +20,6 @@ scard.postg=dm.TargetCardFunction(PLAYER_SELF,scard.posfilter,0,DM_LOCATION_BATT
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
 	local tc=Duel.GetFirstTarget()
-	if tc and tc:IsRelateToEffect(e) then
-		Duel.Tap(tc,REASON_EFFECT)
-	end
+	if not tc or not tc:IsRelateToEffect(e) then return end
+	Duel.Tap(tc,REASON_EFFECT)
 end

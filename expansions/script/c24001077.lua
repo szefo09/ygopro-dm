@@ -4,7 +4,8 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--power up
-	dm.EnableUpdatePower(c,2000,scard.powcon)
+	dm.EnableUpdatePower(c,2000,aux.AND(dm.SelfAttackerCondition,scard.powcon))
+	dm.AddEffectDescription(c,0,scard.powcon)
 end
 scard.duel_masters_card=true
 function scard.cfilter(c)
@@ -12,5 +13,4 @@ function scard.cfilter(c)
 end
 function scard.powcon(e)
 	return Duel.IsExistingMatchingCard(scard.cfilter,e:GetHandlerPlayer(),DM_LOCATION_BATTLE,0,1,nil)
-		and Duel.GetAttacker()==e:GetHandler()
 end

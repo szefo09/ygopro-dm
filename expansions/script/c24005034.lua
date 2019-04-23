@@ -7,5 +7,6 @@ function scard.initial_effect(c)
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--cannot attack
 	dm.EnableCannotAttack(c,dm.NoShieldsCondition(PLAYER_OPPO))
+	dm.AddEffectDescription(c,0,dm.NoShieldsCondition(PLAYER_OPPO))
 end
 scard.duel_masters_card=true

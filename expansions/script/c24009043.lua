@@ -8,8 +8,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.cfilter(c)
-	return c:IsPreviousLocation(DM_LOCATION_BATTLE)
-		and c:IsPreviousPosition(POS_FACEUP) and c:DMIsPreviousRace(DM_RACE_ARMORLOID)
+	return c:IsPreviousLocation(DM_LOCATION_BATTLE) and c:IsPreviousPosition(POS_FACEUP) and c:DMIsPreviousRace(DM_RACE_ARMORLOID)
 end
 function scard.tgcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(scard.cfilter,1,nil)
@@ -18,9 +17,8 @@ scard.tgtg=dm.TargetCardFunction(PLAYER_OPPO,dm.ManaZoneFilter(Card.DMIsAbleToGr
 function scard.tgop(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
 	local tc=Duel.GetFirstTarget()
-	if tc and tc:IsRelateToEffect(e) then
-		Duel.DMSendtoGrave(tc,REASON_EFFECT)
-	end
+	if not tc or not tc:IsRelateToEffect(e) then return end
+	Duel.DMSendtoGrave(tc,REASON_EFFECT)
 end
 --[[
 	References
