@@ -2841,7 +2841,6 @@ function Auxiliary.SelfUntapOperation(ram)
 					local os=require('os')
 					math.randomseed(os.time())
 					local ct=math.random(0,1)
-					Debug.Message(ct)
 					if ct==0 then return end
 				end
 				Duel.Untap(c,REASON_EFFECT)
