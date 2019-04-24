@@ -54,7 +54,7 @@
 0x47	71 Mana Cost
 0x63	99 Mana Cost
 0x3e7	999 Mana Cost
-0x3b9ac9ff	∞ Mana Cost
+0xffffffff	∞ Mana Cost
 ##link marker
 0x40	
 0x80	

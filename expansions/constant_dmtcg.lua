@@ -9,8 +9,6 @@
 local DMTCG={}
 
 --Card ID
---↑Rule
-CARD_DUEL_MASTERS_RULES				=24000000	--Duel Masters Rules (Unofficial card)
 --↑Support
 CARD_OBSIDIAN_SCARAB				=24005005	--"Obsidian Scarab" (DM-05 5/55)
 CARD_AMBUSH_SCORPION				=24005046	--"Ambush Scorpion" (DM-05 46/55)
@@ -40,7 +38,7 @@ DM_WIN_REASON_INVALID				=0x4d		--"Invalid deck."
 DM_WIN_REASON_DECKOUT				=0x4e		--"Ran out of cards in deck."
 DM_WIN_REASON_BOMBAZAR				=0x4f		--"Won due to the ability of [Bombazar, Dragon of Destiny]."
 --Setname
---↑Race
+--↑Race (Card.DMIsRace, Card.DMIsRace)
 DM_RACE_LIGHT_BRINGER				=0x1		--"Chilias, the Oracle" (DM-01 1/110)
 DM_RACE_GUARDIAN					=0x2		--"Dia Nork, Moonlight Guardian" (DM-01 2/110)
 DM_RACE_STARLIGHT_TREE				=0x3		--"Emerald Grass" (DM-01 3/110)
@@ -121,7 +119,7 @@ DM_RACE_NAGA						=0x35		--"Cruel Naga, Avatar of Fate" (DM-12 S3/S5)
 DM_RACE_PEGASUS						=0x36		--"Aura Pegasus, Avatar of Life" (DM-12 S5/S5)
 --Min/Max Value
 MAX_NUMBER							=999999999	--Max number allowed in YGOPro
-DM_MAX_MANA_COST					=999		--"Dormageddon X, Forbidden Armageddon" (DMR-23 FFL1,FFL2,FFL3,FFL4,FFL5/FFL5)
+DM_MAX_MANA_COST					=4294967295	--"Dormageddon X, Forbidden Armageddon" (DMR-23 FFL1,FFL2,FFL3,FFL4,FFL5/FFL5)
 --Location
 DM_LOCATION_BATTLE					=LOCATION_MZONE						--Battle Zone
 DM_LOCATION_SHIELD					=LOCATION_SZONE						--Shield Zone
@@ -136,8 +134,7 @@ POS_FACEUP_TAPPED					=POS_FACEUP_DEFENSE		--Face-up tapped
 POS_FACEDOWN_TAPPED					=POS_FACEDOWN_DEFENSE	--N/A
 POS_UNTAPPED						=POS_ATTACK				--RESERVED --Face-up or face-down untapped
 POS_TAPPED							=POS_DEFENSE			--RESERVED --Face-up or face-down untapped
---Type
-DM_TYPE_RULE						=TYPE_SPELL+TYPE_FIELD	--RESERVED --Unofficial card
+--Type (Card.IsType)
 DM_TYPE_CREATURE					=TYPE_EFFECT			--Creature
 DM_TYPE_MULTICOLORED				=TYPE_DUAL				--Card that has 2 or more civilizations
 DM_TYPE_NO_ABILITY					=TYPE_TUNER				--Creature that has no abilities
@@ -182,17 +179,15 @@ DM_REASON_BREAK						=0x20000000		--Reason for breaking a player's shield
 --Summon Type
 DM_SUMMON_TYPE_NORMAL				=0x49000000		--Summon a creature by paying its mana cost(SUMMON_TYPE_XYZ)
 DM_SUMMON_TYPE_EVOLUTION			=0x49000100		--Summon a creature by evolving a creature in the battle zone(SUMMON_TYPE_XYZ+0x100)
---Player
+--Player (parameter)
 PLAYER_OWNER						=nil	--player=PLAYER_OWNER in Duel.Sendto..(targets, player, reason)
 PLAYER_SELF							=0		--player=PLAYER_SELF in Effect.SetCondition(Auxiliary.Function(player)), etc.
 PLAYER_OPPO							=1		--player=PLAYER_OPPO in Effect.SetCondition(Auxiliary.Function(player)), etc.
 --Reset
-DM_RESET_TOMANA						=RESET_TOGRAVE	--Reset a card's gained ability when it is put into the mana zone
-DM_RESET_TOGRAVE					=RESET_REMOVE	--Reset a card's gained ability when it is put into the graveyard
 --↑Reset combinations
 RESETS_STANDARD						=0x1fe0000	--RESET_TURN_SET+RESET_TOGRAVE+RESET_REMOVE+RESET_TEMP_REMOVE+RESET_TOHAND+RESET_TODECK+RESET_LEAVE+RESET_TOFIELD
 RESETS_REDIRECT						=0x47e0000	--RESETS_STANDARD+RESET_OVERLAY-RESET_TOFIELD-RESET_LEAVE (EFFECT_LEAVE_FIELD_REDIRECT)
---Type (for Effect.SetType)
+--Type (for SetType)
 DM_EFFECT_TYPE_CAST_SPELL			=EFFECT_TYPE_IGNITION			--Cast a spell
 --Flag
 DM_EFFECT_FLAG_SUMMON_PARAM			=EFFECT_FLAG_SPSUM_PARAM		--Included in a creature's summon procedure
@@ -212,10 +207,10 @@ DM_EFFECT_ADD_CIVILIZATION			=EFFECT_ADD_ATTRIBUTE			--Card is considered to be 
 DM_EFFECT_CHANGE_CIVILIZATION		=EFFECT_CHANGE_ATTRIBUTE		--Civilization becomes another civilization
 DM_EFFECT_ADD_RACE 					=EFFECT_ADD_SETCODE				--Creature is a particular race in addition to its other races
 DM_EFFECT_MUST_ATTACK_CREATURE		=EFFECT_MUST_ATTACK_MONSTER		--Creature attacks a creature if able
-DM_EFFECT_BROKEN_SHIELD				=CARD_DUEL_MASTERS_RULES		--Register a broken shield
-DM_EFFECT_IGNORE_TAP				=CARD_DUEL_MASTERS_RULES+1		--Workaround to not tap a creature at the end of the damage step
+DM_EFFECT_BROKEN_SHIELD				=24000000						--Register a broken shield
+DM_EFFECT_IGNORE_TAP				=24000001						--Workaround to not tap a creature at the end of the damage step
 DM_EFFECT_BLOCKED					=CARD_DIA_NORK_MOONLIGHT_GUARDIAN	--Register a creature that has become blocked
-DM_EFFECT_BREAK_SHIELD				=CARD_MIRACLE_QUEST				--Register number of broken shields ("Miracle Quest" DM-05 19/55)
+DM_EFFECT_BREAK_SHIELD				=CARD_MIRACLE_QUEST				--Register number of broken shields
 DM_EFFECT_BLOCKER					=701	--Blocker ("Dia Nork, Moonlight Guardian" DM-01 2/110)
 DM_EFFECT_SHIELD_TRIGGER			=702	--Shield Trigger ("Holy Awe" DM-01 6/110)
 DM_EFFECT_UNBLOCKABLE				=703	--RESERVED --Cannot be blocked ("Laser Wing" DM-01 11/110)
@@ -228,7 +223,7 @@ DM_EFFECT_ATTACK_UNTAPPED			=709	--Can attack untapped creatures ("Gatling Skyte
 DM_EFFECT_CANNOT_ATTACK_CREATURE	=710	--Cannot attack creatures ("Diamond Cutter" DM-02 1/55)
 DM_EFFECT_IGNORE_SUMMONING_SICKNESS	=711	--Ignore summoning sickness ("Diamond Cutter" DM-02 1/55)
 DM_EFFECT_IGNORE_CANNOT_ATTACK		=712	--Ignore "This creature can't attack" ("Diamond Cutter" DM-02 1/55)
-DM_EFFECT_IGNORE_CANNOT_ATTACK_PLAYER=713	--Ignore "This creature can't attack players" ("Diamond Cutter" DM-02 1/55)
+DM_EFFECT_IGNORE_CANNOT_ATTACK_PLAYER	=713--Ignore "This creature can't attack players" ("Diamond Cutter" DM-02 1/55)
 DM_EFFECT_TRIPLE_BREAKER			=714	--Triple Breaker ("Bolgash Dragon" DM-05 37/55)
 DM_EFFECT_SPEED_ATTACKER			=715	--Speed Attacker ("Bombat, General of Speed" DM-05 38/55)
 DM_EFFECT_ENTER_BZONE_TAPPED		=716	--Creature is put into the battle zone tapped ("Lu Gila, Silver Rift Guardian" DM-06 2/110)
@@ -241,7 +236,7 @@ DM_EFFECT_EVOLUTION_ANY_RACE		=722	--Can put an evolution creature of any race o
 DM_EFFECT_BREAK_SHIELD_REPLACE		=723	--When a creature would break a shield, do something else to that shield instead ("Bolmeteus Steel Dragon" DM-06 S7/S10)
 DM_EFFECT_STEALTH					=724	--Stealth ("Kizar Basiku, the Outrageous" DM-07 9/55)
 DM_EFFECT_CHARGER					=725	--Charger ("Lightning Charger" DM-07 15/55)
-DM_EFFECT_DONOT_DISCARD_SHIELD_TRIGGER=726	--Do not discard a spell after using its "Shield Trigger" ability ("Super Terradragon Bailas Gale" DM-08 S5/S5)
+DM_EFFECT_DONOT_DISCARD_SHIELD_TRIGGER	=726--Do not discard a spell after using its "Shield Trigger" ability ("Super Terradragon Bailas Gale" DM-08 S5/S5)
 DM_EFFECT_MUST_BLOCK				=727	--Creature must block another creature if able ("Storm Wrangler, the Furious" DM-09 51/55)
 DM_EFFECT_SILENT_SKILL				=728	--Keep creature tapped during untap step to use its "Silent Skill" ability ("Kejila, the Hidden Horror" DM-10 5/110)
 DM_EFFECT_WAVE_STRIKER				=729	--Wave Striker ("Asra, Vizier of Safety" DM-11 6/55)
@@ -270,22 +265,18 @@ DM_EVENT_BREAK_SHIELD				=CARD_BRUTAL_CHARGE				--When a creature finishes attac
 DM_EVENT_TRIGGER_BLOCKER			=CARD_STORM_WRANGLER_THE_FURIOUS--Trigger a creature's "Blocker" ability
 DM_EVENT_CAST_FREE					=CARD_BLUUM_ERKIS_FLARE_GUARDIAN--Cast a spell immediately for no cost
 DM_EVENT_BECOME_SHIELD_TRIGGER		=CARD_WOLFIS_BLUE_DIVINE_DRAGON	--Card gets "Shield Trigger" (Can be summoned or cast for no cost)
---Category (ability classification)
+--Category (for SetCategory)
 DM_CATEGORY_BLOCKER					=0x10000000		--"Blocker", needed for unblockable abilities ("Laser Wing" DM-01 11/110)
 DM_CATEGORY_SHIELD_TRIGGER			=0x800			--"Shield Trigger" ("Emperor Quazla" DM-08 S2/S5)
---Description
---↑Play Description (for Effect.Description)
-DM_DESC_SUMMON						=2		--"Play this card by summoning it."
-DM_DESC_EVOLUTION					=1199	--"Play this card by putting it on a creature in the battle zone."
---↑Deck Error Hint Message
-DM_DECKERROR_DECKCOUNT				=1450	--"Your deck must be exactly 40 cards!"
-DM_DECKERROR_NONDM					=1451	--"You can't have any non-Duel Masters cards in your deck!"
---↑Gameplay Hint Message
-DM_HINTMSG_NOTARGETS				=1650	--"There is no applicable card."
-DM_HINTMSG_NOSTRIGGER				=1651	--"No "Shield Trigger" ability can be activated."
-DM_HINTMSG_NOBZONES					=1652	--"You cannot put any more cards in the battle zone because all zones are occupied!"
-DM_HINTMSG_NOSZONES					=1653	--"You cannot put any more cards in the shield zone because all zones are occupied!"
---↑Evergreen Keyword (for Effect.Description)
+--Description (for SetDescription, Duel.Hint)
+DM_DESC_SUMMON						=2		--"Summon"
+DM_DESC_EVOLUTION					=1199	--"Evolve a creature(s) in the battle zone."
+DM_DESC_BROKEN						=300	--"Broken shield"
+DM_DESC_SUMMONSICKNESS				=301	--"Summoning Sickness"
+DM_DESC_NOTARGETS					=1650	--"There is no applicable card."
+DM_DESC_NOSTRIGGER					=1651	--"No "Shield Trigger" ability can be activated."
+DM_DESC_NOBZONES					=1652	--"You cannot put any more cards in the battle zone because all zones are occupied!"
+DM_DESC_NOSZONES					=1653	--"You cannot put any more cards in the shield zone because all zones are occupied!"
 DM_DESC_BLOCKED						=1659	--"Your creature has been blocked!"
 DM_DESC_BLOCKER						=1660	--"Blocker (Whenever an opponent's creature attacks, you may tap this creature to stop the attack. Then the 2 creatures battle.)"
 --DM_DESC_SHIELD_TRIGGER_SPELL		=1661	--RESERVED --"Shield Trigger (When this spell is put into your hand from your shield zone, you may cast it immediately for no cost.)"
@@ -295,14 +286,12 @@ DM_DESC_FIRE_NATURE_BLOCKER			=1664	--"Fire and nature blocker (Whenever an oppo
 DM_DESC_NATURE_LIGHT_SLAYER			=1665	--"Nature and light slayer (Whenever this creature battles a nature or light creature, destroy the other creature after the battle.)"
 DM_DESC_TURBO_RUSH					=1666	--"Turbo rush (If any of your other creatures broke any shields this turn, this creature gets its Turborush ability until the end of the turn.)"
 DM_DESC_DRAGON_BLOCKER				=1667	--"Dragon blocker (Whenever an opponent's creature that has Dragon in its race attacks, you may tap this creature to stop the attack. Then the 2 creatures battle.)"
---↑"Breaker" Keyword (for Effect.Description)
-DM_DESC_NON_BREAKER					=1800	--"This creature breaks 1 shield."
+--DM_DESC_NON_BREAKER					=1800	--RESERVED --"This creature breaks 1 shield."
 DM_DESC_DOUBLE_BREAKER				=1801	--"Double Breaker (This creature breaks 2 shields.)"
 DM_DESC_TRIPLE_BREAKER				=1802	--"Triple Breaker (This creature breaks 3 shields.)"
 DM_DESC_CREW_BREAKER				=1803	--"Crew Breaker—"RACE" (This creature breaks one more shield for each of your other "RACE" in the battle zone.)"
---↑Ability (for card hint)
-DM_DESC_BROKEN						=300	--"Broken shield"
-DM_DESC_SUMMONSICKNESS				=301	--"Summoning Sickness"
+DM_DECKERROR_DECKCOUNT				=1450	--"Your deck must be exactly 40 cards!"
+DM_DECKERROR_NONDM					=1451	--"You can't have any non-Duel Masters cards in your deck!"
 --Select Message (for Duel.SelectOption)
 DM_SELECT_RACE_ANGEL_COMMAND		=aux.Stringid(24000003,4)	--"Angel Command"
 DM_SELECT_RACE_ARMORED_DRAGON		=aux.Stringid(24000002,5)	--"Armored Dragon"
@@ -368,40 +357,40 @@ DM_SELECT_RACE_WILD_VEGGIES			=aux.Stringid(24000004,9)	--"Wild Veggies"
 DM_SELECT_RACE_XENOPARTS			=aux.Stringid(24000004,1)	--"Xenoparts"
 DM_SELECT_RACE_ZOMBIE_DRAGON		=aux.Stringid(24000002,7)	--"Zombie Dragon"
 --Hint Message
+DM_HINTMSG_DISCARD					=501	--"Choose a card to discard."
+DM_HINTMSG_DESTROY					=502	--"Choose a card to destroy."
+DM_HINTMSG_TOGRAVE					=503	--"Choose a card to put into the graveyard."
+DM_HINTMSG_TOMANA					=504	--"Choose a card to put into the mana zone."
+DM_HINTMSG_RTOHAND					=505	--"Choose a card to return to its owner's hand."
+DM_HINTMSG_ATOHAND					=506	--"Choose a card to put into your hand."
+DM_HINTMSG_TODECK					=507	--"Choose a card to return to its owner's deck."
 DM_HINTMSG_TOBATTLE					=509	--"Choose a creature to put into the battle zone."
+DM_HINTMSG_CONFIRM					=526	--"Choose a card to look at it."
+DM_HINTMSG_TOSHIELD					=527	--"Choose a card to add to its owner's shields."
 DM_HINTMSG_ATTACKTARGET				=549	--"Choose a creature to attack."
 DM_HINTMSG_TARGET					=551	--"Choose a target for the ability."
 DM_HINTMSG_APPLYABILITY				=556	--"Choose an ability to apply."
 DM_HINTMSG_CIVILIZATION				=562	--"Choose a civilization(s)."
 DM_HINTMSG_RACE						=563	--"Choose a race."
-DM_HINTMSG_TOMANA					=600	--"Choose a card to put into the mana zone."
+DM_HINTMSG_NAME						=564	--"Name a card."
+DM_HINTMSG_NUMBER					=565	--"Choose a number."
 DM_HINTMSG_TAP						=601	--"Choose a card to tap."
 DM_HINTMSG_UNTAP					=602	--"Choose a card to untap."
 DM_HINTMSG_BREAK					=603	--"Choose a shield to break."
-DM_HINTMSG_ATOHAND					=604	--"Choose a card to put into your hand."
-DM_HINTMSG_RTOHAND					=605	--"Choose a card to return to its owner's hand."
-DM_HINTMSG_DESTROY					=606	--"Choose a card to destroy."
-DM_HINTMSG_DISCARD					=607	--"Choose a card to discard."
-DM_HINTMSG_TOGRAVE					=608	--"Choose a card to put into the graveyard."
-DM_HINTMSG_CREATURE					=609	--"Choose a creature."
-DM_HINTMSG_EVOLVE					=610	--"Choose a creature to evolve."
-DM_HINTMSG_CONFIRM					=611	--"Choose a card to look at it."
-DM_HINTMSG_TODECK					=612	--"Choose a card to return to its owner's deck."
-DM_HINTMSG_TOSHIELD					=613	--"Choose a card to add to its owner's shields face-down."
---Question Hint Message
+DM_HINTMSG_CREATURE					=604	--"Choose a creature."
+DM_HINTMSG_EVOLVE					=605	--"Choose a creature to evolve."
+--Question Hint Message (for Duel.SelectYesNo)
 DM_QHINTMSG_DRAW					=700	--"Draw a card?"
-DM_QHINTMSG_NUMBERDRAW				=701	--"Draw how many cards?"
+DM_QHINTMSG_CARD					=701	--"How many cards?"
 DM_QHINTMSG_CHOOSE					=702	--"Choose a card?"
-DM_QHINTMSG_NUMBERCHOOSE			=703	--"Choose how many cards?"
-DM_QHINTMSG_TOMANA					=704	--"Put a card into your mana zone?"
-DM_QHINTMSG_TOSHIELD				=705	--"Add a card to your shields face down?"
-DM_QHINTMSG_NUMBERTOSHIELD			=706	--"Add how many new shields?"
-DM_QHINTMSG_RTOHAND					=707	--"Return a card to its owner's hand?"
---DM_QHINTMSG_TAP						=708	--RESERVED --"Tap a card?"
-DM_QHINTMSG_UNTAP					=709	--"Untap a card?"
+DM_QHINTMSG_TOMANA					=703	--"Put a card into your mana zone?"
+DM_QHINTMSG_TOSHIELD				=704	--"Add a card to your shields?"
+DM_QHINTMSG_TOHAND					=705	--"Put a card into its owner's hand?"
+--DM_QHINTMSG_TAP						=706	--RESERVED --"Tap a card?"
+DM_QHINTMSG_UNTAP					=707	--"Untap a card?"
 --Timing
 DM_TIMING_BATTLE					=TIMING_BATTLE_START+TIMING_BATTLE_END+TIMING_BATTLE_PHASE+TIMING_BATTLE_STEP_END	--Timing for abilities that can trigger during the Attack Step
---Result
+--Result (for Duel.TossCoin)
 RESULT_TAILS						=0		--Tails coin result
 RESULT_HEADS						=1		--Heads coin result
 --Deck Sequence
