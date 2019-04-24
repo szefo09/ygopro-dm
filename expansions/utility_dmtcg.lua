@@ -195,10 +195,21 @@ function Card.DMIsEvolutionCivilization(c,civ)
 	return c:IsCivilization(civ) or c:IsHasEffect(DM_EFFECT_EVOLUTION_ANY_CIVILIZATION)
 end
 ]]
+--check if there is a card under a card
+function Card.IsHasSource(c)
+	return c:GetSourceCount()>0
+end
 --check if an evolution creature's source can leave the battle zone
 function Card.IsCanSourceLeave(c)
 	return not c:IsHasEffect(DM_EFFECT_EVOLUTION_SOURCE_REMAIN)
 end
+--reserved
+--[[
+--check if a card has a civilization
+function Card.IsHasCivilization(c)
+	return c:GetCivilization()~=DM_CIVILIZATION_NONE
+end
+]]
 --return the amount of civilizations a card has
 function Card.GetCivilizationCount(c)
 	local civ=c:GetCivilization()
@@ -286,13 +297,6 @@ function Card.GetFifthCivilization(c)
 		return DM_CIVILIZATION_NATURE
 	else return DM_CIVILIZATION_NONE end
 end
---reserved
---[[
---check if a card has a civilization
-function Card.IsHasCivilization(c)
-	return c:GetCivilization()~=DM_CIVILIZATION_NONE
-end
-]]
 --check if a creature has a race
 function Card.IsHasRace(c)
 	local race=false
@@ -3924,7 +3928,7 @@ return Auxiliary
 --[[
 	References
 		1. Prevent multiple "shield trigger" abilities from chaining
-			1.1. Voltanis the Adjudicator
+			- Voltanis the Adjudicator
 			https://github.com/Fluorohydride/ygopro-scripts/blob/967a2fe/c20951752.lua#L12
 		2. Auxiliary.mana_cost_list
 		https://duelmasters.fandom.com/wiki/Category:Cards_by_Mana_Cost

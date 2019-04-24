@@ -41,3 +41,7 @@ end
 function scard.tbcon(e)
 	return e:GetHandler():IsPowerAbove(9000)
 end
+--[[
+	Notes
+		1. The possible increase amount of this card in the original video game is 1000 to 5000 per turn.
+]]
