@@ -548,7 +548,7 @@ function Duel.SpecialSummon(targets,sumtype,sumplayer,target_player,nocheck,noli
 		else
 			Duel.Hint(HINT_MESSAGE,sumplayer,DM_HINTMSG_NOBZONES)
 			Duel.DMSendtoGrave(tc,REASON_RULE) --put into the graveyard if all zones are occupied
-			ct=ct+1 --count the summon that would have happened because YGOPro's limitations prevented it
+			ct=ct+1 --count the summon that did not happen because YGOPro's limited zones prevented it
 		end
 	end
 	Duel.SpecialSummonComplete()
@@ -853,31 +853,31 @@ end
 function Duel.SendtoShield(targets,player)
 	--player: the player whose shields to add a card to (generally its owner)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
-	local b=nil
+	local ct=0
 	for tc1 in aux.Next(targets) do
 		local g=tc1:GetSourceGroup()
 		for tc2 in aux.Next(g) do
-			if tc2:IsAbleToShield() then
-				if Duel.GetLocationCount(player,DM_LOCATION_SHIELD)>0 then
-					b=Duel.MoveToField(tc2,player,player,DM_LOCATION_SHIELD,POS_FACEDOWN,true)
-				else
-					Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOSZONES)
-					Duel.DMSendtoGrave(tc2,REASON_RULE) --put into the graveyard if all zones are occupied
-					b=true --return true because YGOPro's limitations prevented there from being a new shield
-				end
-			end
-		end
-		if tc1:IsAbleToShield() then
 			if Duel.GetLocationCount(player,DM_LOCATION_SHIELD)>0 then
-				b=Duel.MoveToField(tc1,player,player,DM_LOCATION_SHIELD,POS_FACEDOWN,true)
+				if Duel.MoveToField(tc2,player,player,DM_LOCATION_SHIELD,POS_FACEDOWN,true) then
+					ct=ct+1
+				end
 			else
 				Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOSZONES)
-				Duel.DMSendtoGrave(tc1,REASON_RULE) --put into the graveyard if all zones are occupied
-				b=true --return true because YGOPro's limitations prevented there from being a new shield
+				Duel.DMSendtoGrave(tc2,REASON_RULE) --put into the graveyard if all zones are occupied
+				ct=ct+1	--count the card that did not add because YGOPro's limited zones prevented it
 			end
 		end
+		if Duel.GetLocationCount(player,DM_LOCATION_SHIELD)>0 then
+			if Duel.MoveToField(tc1,player,player,DM_LOCATION_SHIELD,POS_FACEDOWN,true) then
+				ct=ct+1
+			end
+		else
+			Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOSZONES)
+			Duel.DMSendtoGrave(tc1,REASON_RULE) --put into the graveyard if all zones are occupied
+			ct=ct+1 --count the card that did not add because YGOPro's limited zones prevented it
+		end
 	end
-	return b
+	return ct
 end
 --add a card from the top of a player's deck to their shields face down
 function Duel.SendDecktoptoShield(player,count)
@@ -2668,6 +2668,7 @@ function Auxiliary.SpellChainSolvedOperation(p,f)
 			end
 end
 --"When this creature leaves the battle zone, ABILITY."
+--Not fully implemented: Ability does not trigger when the creature is added to the shields
 --e.g. "Wise Starnoid, Avatar of Hope" (DM-12 S2/S5)
 function Auxiliary.AddSingleLeaveBattleEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
 	local con_func=con_func or aux.TRUE
