@@ -1,6 +1,5 @@
 --緑神龍ハルクーンベルガ
 --Terradragon Hulcoon Berga
---Not fully implemented: DEF~=ATK and ATK/DEF randomly changes during a turn
 local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
@@ -27,22 +26,16 @@ end
 function scard.powop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
-	--power up
-	dm.RegisterEffectUpdatePower(c,c,1,scard.powval,0)
-end
-function scard.powval(e,c)
+	local os=require('os')
+	math.randomseed(os.time())
 	local t={1000,2000,3000,4000,5000}
-	local val=math.randomchoice(t)
-	if e:GetHandler():GetPower()+val>=MAX_NUMBER then
-		return MAX_NUMBER
-	else
-		return val
-	end
+	local val=t[math.random(#t)]
+	--power up
+	dm.RegisterEffectUpdatePower(c,c,1,val,0,0)
 end
 --double breaker
 function scard.dbcon(e)
-	local c=e:GetHandler()
-	return c:IsPowerAbove(6000) and c:GetPower()<9000
+	return e:GetHandler():IsPowerAbove(6000)
 end
 --triple breaker
 function scard.tbcon(e)

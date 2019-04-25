@@ -10,7 +10,10 @@ end
 scard.duel_masters_card=true
 function scard.destg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
-	local pwr=math.random(2999,6001)
+	local os=require('os')
+	math.randomseed(os.time())
+	local t={3000,3500,4000,4500,5000,5500,6000}
+	local pwr=t[math.random(#t)]
 	e:SetLabel(pwr)
 	Duel.Hint(HINT_NUMBER,0,pwr)
 end

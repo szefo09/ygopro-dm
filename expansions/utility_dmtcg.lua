@@ -37,16 +37,6 @@ function type(o)
 	elseif m==Effect then return "Effect"
 	else return "Card" end
 end
---New Lua functions
---select a random item from a table
-function math.randomchoice(t)
-	local keys={}
-	for key,value in pairs(t) do
-		keys[#keys+1]=key --store keys in another table
-	end
-	index=keys[math.random(1,#keys)]
-	return t[index]
-end
 --========== Card ==========
 --Overwritten Card functions
 --check if a card can be put into the battle zone
@@ -2848,10 +2838,12 @@ function Auxiliary.SelfUntapOperation(ram)
 	--ram: true for "untap this creature at random"
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local c=e:GetHandler()
-				if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
-				local ct=math.random(4) --generate either 2 or 3 for 50% chance
-				if ram and ct~=2 then return end
-				Duel.Untap(c,REASON_EFFECT)
+				if not c:IsRelateToEffect(e) or c:IsFacedown() or c:IsUntapped() then return end
+				local res=RESULT_TAILS
+				if ram then res=Duel.TossCoin(tp,1) end
+				if not ram or res==RESULT_HEADS then
+					Duel.Untap(c,REASON_EFFECT)
+				end
 			end
 end
 --"This creature can't be blocked."
@@ -2982,10 +2974,12 @@ function Auxiliary.SelfDestroyOperation(ram)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local c=e:GetHandler()
 				if Duel.GetAttacker()==c then Duel.Tap(c,REASON_RULE) end --fix creature not being tapped when attacking
-				if not c:IsRelateToEffect(e) then return end
-				local ct=math.random(4) --generate either 2 or 3 for 50% chance
-				if ram and ct~=2 then return end
-				Duel.Destroy(c,REASON_EFFECT)
+				if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
+				local res=RESULT_TAILS
+				if ram then res=Duel.TossCoin(tp,1) end
+				if not ram or res==RESULT_HEADS then
+					Duel.Destroy(c,REASON_EFFECT)
+				end
 			end
 end
 --"Whenever this creature wins a battle, [you may] untap this creature."
