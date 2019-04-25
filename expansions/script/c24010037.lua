@@ -27,7 +27,6 @@ function scard.rettg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local g1=Duel.GetMatchingGroup(scard.retfilter2,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,e)
 	local g2=Duel.GetMatchingGroup(dm.ManaZoneFilter(scard.retfilter3),tp,DM_LOCATION_MANA,DM_LOCATION_MANA,nil,e)
 	g1:Merge(g2)
-	if g1:GetCount()==0 then return end
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_RTOHAND)
 	local sg=g1:Select(tp,1,1,nil)
 	Duel.SetTargetCard(sg)

@@ -19,7 +19,7 @@ function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	if g1:GetCount()==0 then return end
 	Duel.HintSelection(g1)
 	if Duel.Destroy(g1,REASON_EFFECT)==0 then return end
-	local cost=Duel.GetMatchingGroupCount(dm.ManaZoneFilter(),tp,DM_LOCATION_MANA,0,nil)
+	local cost=Duel.GetManaCount(tp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOBATTLE)
 	local g2=Duel.SelectMatchingCard(tp,scard.tbfilter,tp,LOCATION_HAND,0,1,1,nil,e,tp,cost)
 	if g2:GetCount()==0 then return end

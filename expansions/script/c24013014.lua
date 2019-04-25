@@ -14,7 +14,8 @@ scard.duel_masters_card=true
 --power up
 function scard.powval(e,c)
 	local g=Duel.GetMatchingGroup(Card.IsFaceup,c:GetControler(),DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil)
-	return g:GetClassCount(Card.GetCivilization)*2000
+	local ct=g:GetClassCount(Card.GetCivilization)
+	return ct*2000
 end
 --double breaker
 function scard.dbcon(e)

@@ -25,6 +25,7 @@ function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	if g2:GetCount()>0 then
 		Duel.DMSendtoGrave(g2,REASON_EFFECT)
 	end
+	Duel.BreakEffect()
 	Duel.Hint(HINT_SELECTMSG,1-tp,DM_HINTMSG_DESTROY)
 	local g3=Duel.SelectMatchingCard(1-tp,scard.desfilter,1-tp,DM_LOCATION_BATTLE,0,1,1,nil,e)
 	if g3:GetCount()>0 then

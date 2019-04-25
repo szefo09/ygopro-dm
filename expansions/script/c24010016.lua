@@ -24,7 +24,7 @@ function scard.repfilter(c,tp)
 end
 function scard.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return eg:FilterCount(scard.repfilter,nil,tp)==1 and bit.band(r,DM_REASON_BREAK)~=0
-		and Duel.IsExistingMatchingCard(aux.TRUE,tp,LOCATION_HAND,0,1,nil) end
+		and Duel.IsExistingMatchingCard(aux.TRUE,tp,LOCATION_HAND,0,2,nil) end
 	return Duel.SelectYesNo(tp,aux.Stringid(sid,1))
 end
 function scard.repval(e,c)

@@ -19,7 +19,7 @@ function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e1,tp)
 end
 function scard.cfilter(c,tp)
-	return c:GetPreviousControler()==tp and c:IsPreviousLocation(DM_LOCATION_BATTLE)
+	return c:GetPreviousControler()~=tp and c:IsPreviousLocation(DM_LOCATION_BATTLE)
 end
 function scard.tgcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(scard.cfilter,1,nil,tp)

@@ -10,7 +10,7 @@ scard.duel_masters_card=true
 scard.reptg=dm.SingleDestroyReplaceTarget2(1,Card.IsAbleToHand)
 function scard.repop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_CARD,0,sid)
-	if Duel.SendtoHand(e:GetHandler(),PLAYER_OWNER,REASON_EFFECT+REASON_REPLACE)==0 then return end
+	Duel.SendtoHand(e:GetHandler(),PLAYER_OWNER,REASON_EFFECT+REASON_REPLACE)
 	Duel.ShuffleHand(tp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOGRAVE)
 	local g=Duel.SelectMatchingCard(tp,Card.DMIsAbleToGrave,tp,LOCATION_HAND,0,1,1,nil)

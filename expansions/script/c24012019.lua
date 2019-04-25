@@ -32,7 +32,7 @@ end
 --to grave
 function scard.tgcon(e,tp,eg,ep,ev,re,r,rp)
 	local a=Duel.GetAttacker()
-	return a:GetControler()~=tp and (a:DMIsRace(DM_RACE_XENOPARTS) or a:DMIsRace(DM_RACE_GIANT_INSECT))
+	return a:IsControler(tp) and (a:DMIsRace(DM_RACE_XENOPARTS) or a:DMIsRace(DM_RACE_GIANT_INSECT))
 		and not a:IsBlocked() and Duel.GetAttackTarget()==nil
 end
 scard.tgtg=dm.TargetCardFunction(PLAYER_OPPO,dm.ManaZoneFilter(Card.DMIsAbleToGrave),0,DM_LOCATION_MANA,1,1,DM_HINTMSG_TOGRAVE)

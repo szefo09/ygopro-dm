@@ -16,13 +16,7 @@ function scard.initial_effect(c)
 	--triple breaker
 	dm.EnableBreaker(c,DM_EFFECT_TRIPLE_BREAKER)
 	--leave replace (separate evolution source)
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(sid,0))
-	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
-	e1:SetCode(EVENT_LEAVE_FIELD)
-	e1:SetOperation(scard.repop)
-	c:RegisterEffect(e1)
-	dm.EnableEffectCustom(c,DM_EFFECT_EVOLUTION_SOURCE_REMAIN)
+	dm.AddSingleLeaveReplaceEffect(c,0,nil,scard.repop)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_FIRE_BIRD,DM_RACE_EARTH_DRAGON,DM_RACE_DRAGON}

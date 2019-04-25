@@ -4,7 +4,6 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
 	--confirm
-	dm.AddSpellCastEffect(c,0,nil,scard.confop)
+	dm.AddSpellCastEffect(c,0,nil,dm.ConfirmOperation(PLAYER_SELF,dm.ShieldZoneFilter(Card.IsFacedown),0,DM_LOCATION_SHIELD,0,3))
 end
 scard.duel_masters_card=true
-scard.confop=dm.ConfirmOperation(PLAYER_SELF,dm.ShieldZoneFilter(Card.IsFacedown),0,DM_LOCATION_SHIELD,0,3)
