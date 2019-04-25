@@ -10,7 +10,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.retfilter(c,race)
-	return c:IsFaceup() and c:DMIsRace(race) and c:IsAbleToHand()
+	return c:DMIsRace(race) and c:IsAbleToHand()
 end
 function scard.retop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_RACE)

@@ -6,10 +6,9 @@ function scard.initial_effect(c)
 	--shield trigger
 	dm.EnableShieldTrigger(c)
 	--tap
-	dm.AddSpellCastEffect(c,0,nil,scard.posop)
+	dm.AddSpellCastEffect(c,0,nil,dm.TapOperation(nil,scard.posfilter,0,DM_LOCATION_BATTLE))
 end
 scard.duel_masters_card=true
 function scard.posfilter(c)
 	return c:IsFaceup() and c:IsUntapped()
 end
-scard.posop=dm.TapOperation(nil,scard.posfilter,0,DM_LOCATION_BATTLE)

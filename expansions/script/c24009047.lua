@@ -16,7 +16,6 @@ function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	local ct=Duel.GetMatchingGroupCount(scard.tmfilter,tp,LOCATION_HAND,0,e:GetHandler(),race)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOMANA)
 	local g=Duel.SelectMatchingCard(tp,scard.tmfilter,tp,LOCATION_HAND,0,0,ct,e:GetHandler(),race)
-	if g:GetCount()>0 then
-		Duel.SendtoMana(g,POS_FACEUP_UNTAPPED,REASON_EFFECT)
-	end
+	if g:GetCount()==0 then return end
+	Duel.SendtoMana(g,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 end

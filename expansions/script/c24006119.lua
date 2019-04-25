@@ -5,6 +5,7 @@ function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--cannot attack
 	dm.EnableCannotAttack(c,scard.atcon)
+	dm.AddEffectDescription(c,0,scard.atcon)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end

@@ -2674,7 +2674,7 @@ end
 --"When this creature would leave the battle zone, ABILITY."
 --Not fully implemented: The effect of leaving the battle zone is not replaced 
 --e.g. "Soul Phoenix, Avatar of Unity" (DM-12 5/55)
-function Auxiliary.AddSingleLeaveReplaceEffect(c,desc_id,targ_func,op_func,op_func2)
+function Auxiliary.AddSingleLeaveReplaceEffect(c,desc_id,targ_func,op_func)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)

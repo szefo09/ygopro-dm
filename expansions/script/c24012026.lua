@@ -7,10 +7,13 @@ function scard.initial_effect(c)
 	dm.AddSpellCastEffect(c,0,scard.dhtg,scard.dhop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
+function scard.dhfilter(c,e)
+	return c:IsCanBeEffectTarget(e)
+end
 function scard.dhtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return false end
 	if chk==0 then return true end
-	local g=Duel.GetMatchingGroup(Card.IsCanBeEffectTarget,tp,0,LOCATION_HAND,nil,e)
+	local g=Duel.GetMatchingGroup(scard.dhfilter,tp,0,LOCATION_HAND,nil,e)
 	local sg1=g:RandomSelect(tp,1)
 	Duel.SetTargetCard(sg1)
 	g:Sub(sg1)
