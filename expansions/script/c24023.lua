@@ -12,7 +12,7 @@ function scard.destg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	local os=require('os')
 	math.randomseed(os.time())
-	local t={3000,3500,4000,4500,5000,5500,6000}
+	local t={3000,4000,5000,6000}
 	local pwr=t[math.random(#t)]
 	e:SetLabel(pwr)
 	Duel.Hint(HINT_NUMBER,0,pwr)

@@ -1,5 +1,5 @@
 --Pouch Shell
---Not fully implemented: YGOPro makes the evolution creature's entire stack leave the battle zone
+--Not fully implemented: YGOPro makes all cards under an evolution creature leave the battle zone
 local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
@@ -9,7 +9,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.tgfilter(c)
-	return c:IsFaceup() and c:IsEvolution() and c:GetSourceCount()>0 and c:DMIsAbleToGrave()
+	return c:IsFaceup() and c:IsEvolution() and c:IsHasSource() and c:DMIsAbleToGrave()
 end
 scard.tgtg=dm.TargetCardFunction(PLAYER_SELF,scard.tgfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TOGRAVE)
 function scard.tgop(e,tp,eg,ep,ev,re,r,rp)

@@ -19,24 +19,18 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetFlagEffect(tp,sid)>0 or Duel.GetFlagEffect(1-tp,sid)>0 then return end
 	Duel.RegisterFlagEffect(tp,sid,0,0,0)
 	--apply rules for you
-	local fc1=Duel.GetFieldCard(tp,DM_LOCATION_SHIELD,5)
-	if fc1 then
-		Duel.SendtoDeck(fc1,PLAYER_OWNER,DECK_SEQUENCE_UNEXIST,REASON_RULE)
-		Duel.BreakEffect()
+	if not Duel.GetFieldCard(tp,LOCATION_SZONE,5) then
+		Duel.MoveToField(c,tp,tp,LOCATION_SZONE,POS_FACEUP,true)
 	end
-	Duel.MoveToField(c,tp,tp,DM_LOCATION_SHIELD,POS_FACEUP,true)
 	--apply rules for opponent
 	local g=Duel.GetMatchingGroup(Card.IsCode,tp,0,LOCATION_ALL,nil,sid)
 	if g:GetCount()>0 then
-		local fc2=Duel.GetFieldCard(1-tp,DM_LOCATION_SHIELD,5)
-		if fc2 then
-			Duel.SendtoDeck(fc2,PLAYER_OWNER,DECK_SEQUENCE_UNEXIST,REASON_RULE)
-			Duel.BreakEffect()
+		if not Duel.GetFieldCard(1-tp,LOCATION_SZONE,5) then
+			Duel.MoveToField(g:GetFirst(),tp,1-tp,LOCATION_SZONE,POS_FACEUP,true)
 		end
-		Duel.MoveToField(g:GetFirst(),tp,1-tp,DM_LOCATION_SHIELD,POS_FACEUP,true)
 	else
 		local rule=Duel.CreateToken(1-tp,sid)
-		Duel.MoveToField(rule,tp,1-tp,DM_LOCATION_SHIELD,POS_FACEUP,true)
+		Duel.MoveToField(rule,tp,1-tp,LOCATION_SZONE,POS_FACEUP,true)
 	end
 	--shuffle your deck
 	local hg1=Duel.GetFieldGroup(tp,LOCATION_HAND,0)
@@ -45,7 +39,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.ShuffleDeck(tp)
 	end
 	--shuffle opponent's deck
-	local hg2=Duel.GetFieldGroup(1,LOCATION_HAND,0)
+	local hg2=Duel.GetFieldGroup(1-tp,LOCATION_HAND,0)
 	if hg2:GetCount()>0 then
 		Duel.SendtoDeck(hg2,PLAYER_OWNER,DECK_SEQUENCE_SHUFFLE,REASON_RULE)
 		Duel.ShuffleDeck(1-tp)
@@ -113,7 +107,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	local e3=Effect.CreateEffect(c)
 	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
+	e3:SetCode(DM_EVENT_COME_INTO_PLAY_SUCCESS)
 	e3:SetCondition(scard.regcon)
 	e3:SetOperation(scard.regop)
 	Duel.RegisterEffect(e3,tp)
@@ -137,10 +131,9 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	e6:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	e6:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e6:SetCode(EVENT_ADJUST)
-	e6:SetCondition(scard.descon)
 	e6:SetOperation(scard.desop1)
 	Duel.RegisterEffect(e6,tp)
-	--discard spell
+	--spell to grave
 	local e7=Effect.CreateEffect(c)
 	e7:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	e7:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -157,14 +150,13 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	e9:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	e9:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e9:SetCode(EVENT_ADJUST)
-	e9:SetCondition(scard.wincon)
 	e9:SetOperation(scard.winop)
 	Duel.RegisterEffect(e9,tp)
 	--ignore yugioh rules
 	--attack first turn
 	if EFFECT_BP_FIRST_TURN then
 		local ye1=Effect.CreateEffect(c)
-		ye1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_PLAYER_TARGET)
+		ye1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_PLAYER_TARGET)
 		ye1:SetType(EFFECT_TYPE_FIELD)
 		ye1:SetCode(EFFECT_BP_FIRST_TURN)
 		ye1:SetTargetRange(1,1)
@@ -202,10 +194,10 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(ye5,tp)
 	--no battle damage
 	local ye6=Effect.CreateEffect(c)
-	ye6:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+	ye6:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_PLAYER_TARGET)
 	ye6:SetType(EFFECT_TYPE_FIELD)
 	ye6:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
-	ye6:SetTargetRange(DM_LOCATION_BATTLE,DM_LOCATION_BATTLE)
+	ye6:SetTargetRange(1,1)
 	ye6:SetValue(1)
 	Duel.RegisterEffect(ye6,tp)
 	--no effect damage
@@ -215,19 +207,16 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	ye7:SetCode(EFFECT_CHANGE_DAMAGE)
 	ye7:SetTargetRange(1,1)
 	ye7:SetValue(function(e,re,val,r,rp,rc)
-		if bit.band(r,REASON_EFFECT)~=0 then return 0
-		else return val end
+		if bit.band(r,REASON_EFFECT)~=0 then return 0 end
+		return val
 	end)
 	Duel.RegisterEffect(ye7,tp)
-	local ye8=Effect.CreateEffect(c)
-	ye8:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_PLAYER_TARGET)
-	ye8:SetType(EFFECT_TYPE_FIELD)
+	local ye8=ye7:Clone()
 	ye8:SetCode(EFFECT_NO_EFFECT_DAMAGE)
-	ye8:SetTargetRange(1,1)
 	Duel.RegisterEffect(ye8,tp)
 	--set def equal to atk
 	local ye9=Effect.CreateEffect(c)
-	ye9:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_DELAY)
+	ye9:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	ye9:SetType(EFFECT_TYPE_FIELD)
 	ye9:SetCode(EFFECT_SET_DEFENSE_FINAL)
 	ye9:SetTargetRange(DM_LOCATION_BATTLE,DM_LOCATION_BATTLE)
@@ -253,7 +242,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	local ye12=ye11:Clone()
 	ye12:SetCode(EFFECT_CANNOT_MSET)
 	Duel.RegisterEffect(ye12,tp)
-	--can set in szone
+	--monster sset
 	local ye13=Effect.CreateEffect(c)
 	ye13:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_IGNORE_RANGE)
 	ye13:SetType(EFFECT_TYPE_FIELD)
@@ -262,6 +251,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	ye13:SetTarget(aux.TargetBoolFunction(Card.IsCreature))
 	ye13:SetValue(TYPE_SPELL)
 	Duel.RegisterEffect(ye13,tp)
+	--cannot sset
 	local ye14=Effect.CreateEffect(c)
 	ye14:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_PLAYER_TARGET)
 	ye14:SetType(EFFECT_TYPE_FIELD)
@@ -293,7 +283,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	ye17:SetCondition(scard.tgcon)
 	ye17:SetOperation(scard.tgop2)
 	Duel.RegisterEffect(ye17,tp)
-	--chain limit
+	--set chain limit
 	local ye18=Effect.CreateEffect(c)
 	ye18:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	ye18:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -302,7 +292,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(ye18,tp)
 	--set mana cost equal to civilization sum
 	local ye19=Effect.CreateEffect(c)
-	ye19:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+	ye19:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_IGNORE_RANGE)
 	ye19:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	ye19:SetCode(EVENT_ADJUST)
 	ye19:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
@@ -319,6 +309,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 			e1:SetValue(tc:GetCivilizationCount()-tc:GetManaCost())
 			tc:RegisterEffect(e1)
 		end
+		Duel.Readjust()
 	end)
 	Duel.RegisterEffect(ye19,tp)
 	--no replay
@@ -344,28 +335,31 @@ end
 function scard.posfilter1(c)
 	return c:IsFaceup() and c:IsTapped() and not c:IsHasEffect(DM_EFFECT_SILENT_SKILL)
 end
+function scard.posfilter2(c)
+	return c:IsTapped()
+end
 function scard.poscon1(e)
 	local turnp=Duel.GetTurnPlayer()
 	return Duel.IsExistingMatchingCard(scard.posfilter1,turnp,DM_LOCATION_BATTLE,0,1,nil)
-		or Duel.IsExistingMatchingCard(Card.IsTapped,turnp,DM_LOCATION_MANA,0,1,nil)
+		or Duel.IsExistingMatchingCard(dm.ManaZoneFilter(scard.posfilter2),turnp,DM_LOCATION_MANA,0,1,nil)
 end
 function scard.posop1(e,tp,eg,ep,ev,re,r,rp)
 	local turnp=Duel.GetTurnPlayer()
 	local g1=Duel.GetMatchingGroup(scard.posfilter1,turnp,DM_LOCATION_BATTLE,0,nil)
-	local g2=Duel.GetMatchingGroup(Card.IsTapped,turnp,DM_LOCATION_MANA,0,nil)
+	local g2=Duel.GetMatchingGroup(dm.ManaZoneFilter(scard.posfilter2),turnp,DM_LOCATION_MANA,0,nil)
 	g1:Merge(g2)
 	Duel.Untap(g1,REASON_RULE)
 end
 --check for creatures that did not use "silent skill"
-function scard.posfilter2(c)
+function scard.posfilter3(c)
 	return c:IsFaceup() and c:IsTapped() and c:IsHasEffect(DM_EFFECT_SILENT_SKILL)
 		and c:GetFlagEffect(DM_EFFECT_SILENT_SKILL)==0
 end
 function scard.poscon2(e)
-	return Duel.IsExistingMatchingCard(scard.posfilter2,Duel.GetTurnPlayer(),DM_LOCATION_BATTLE,0,1,nil)
+	return Duel.IsExistingMatchingCard(scard.posfilter3,Duel.GetTurnPlayer(),DM_LOCATION_BATTLE,0,1,nil)
 end
 function scard.posop2(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(scard.posfilter2,Duel.GetTurnPlayer(),DM_LOCATION_BATTLE,0,nil)
+	local g=Duel.GetMatchingGroup(scard.posfilter3,Duel.GetTurnPlayer(),DM_LOCATION_BATTLE,0,nil)
 	Duel.Untap(g,REASON_RULE)
 end
 --charge
@@ -378,11 +372,11 @@ function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SendtoMana(sg,POS_FACEUP_UNTAPPED,REASON_RULE)
 end
 --summoning sickness
-function scard.cfilter1(c,tp)
+function scard.cfilter(c,tp)
 	return not c:IsCanAttackTurn() and c:IsControler(tp)
 end
 function scard.regcon(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(scard.cfilter1,1,nil,Duel.GetTurnPlayer())
+	return eg:IsExists(scard.cfilter,1,nil,ep)
 end
 function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	for ec in aux.Next(eg) do
@@ -406,17 +400,12 @@ function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function scard.rscon(e)
-	return e:GetLabelObject() and e:GetLabelObject():GetLabelObject() and e:GetLabelObject():GetLabelObject():IsCanAttackTurn()
+	local ec=e:GetLabelObject():GetLabelObject()
+	return ec:IsCanAttackTurn()
 end
 function scard.rsop(e,tp,eg,ep,ev,re,r,rp)
 	local te=e:GetLabelObject()
 	te:Reset()
-end
---chain limit
-function scard.chop(e,tp,eg,ep,ev,re,r,rp)
-	if re:IsHasProperty(DM_EFFECT_FLAG_CHAIN_LIMIT) then
-		Duel.SetChainLimit(aux.FALSE)
-	end
 end
 --attack cost workaround
 function scard.posop3(e,tp,eg,ep,ev,re,r,rp)
@@ -432,30 +421,26 @@ end
 function scard.desfilter(c)
 	return c:IsFaceup() and c:GetPower()<=0 and not c:IsStatus(STATUS_DESTROY_CONFIRMED)
 end
-function scard.descon(e)
-	return Duel.IsExistingMatchingCard(scard.desfilter,0,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,1,nil)
-end
 function scard.desop1(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(scard.desfilter,0,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil)
-	Duel.Destroy(g,REASON_RULE)
+	if Duel.Destroy(g,REASON_RULE)>0 then
+		Duel.Readjust()
+	end
 end
---discard spell
+--spell to grave
 function scard.tgop1(e,tp,eg,ep,ev,re,r,rp)
 	local rc=re:GetHandler()
 	if not rc:IsSpell() or not rc:IsLocation(LOCATION_HAND) or e:GetHandler():GetFlagEffect(1)==0 then return end
 	if re:IsHasCategory(DM_CATEGORY_SHIELD_TRIGGER) and Duel.IsPlayerAffectedByEffect(rp,DM_EFFECT_DONOT_DISCARD_SHIELD_TRIGGER) then return end
 	if (re:IsHasProperty(DM_EFFECT_FLAG_CHARGE) or rc:IsHasEffect(DM_EFFECT_CHARGER)) and rc:IsAbleToMana() then
 		Duel.SendtoMana(rc,POS_FACEUP_UNTAPPED,REASON_RULE)
-	elseif rc:IsHasEffect(DM_EFFECT_CHARGE_TAPPED) then
+	elseif rc:IsHasEffect(DM_EFFECT_CHARGE_TAPPED) and rc:IsAbleToMana() then
 		Duel.SendtoMana(rc,POS_FACEUP_TAPPED,REASON_RULE)
 	else
 		Duel.DMSendtoGrave(rc,REASON_RULE)
 	end
 end
 --win game
-function scard.wincon(e)
-	return Duel.GetFieldGroupCount(0,LOCATION_DECK,0)==0 or Duel.GetFieldGroupCount(1,LOCATION_DECK,0)==0
-end
 function scard.winop(e,tp,eg,ep,ev,re,r,rp)
 	local win={}
 	win[0]=Duel.GetFieldGroupCount(0,LOCATION_DECK,0)==0
@@ -500,13 +485,10 @@ function scard.desop2(e,tp,eg,ep,ev,re,r,rp)
 end
 --to grave redirect
 function scard.tgtg(e,c)
-	return (c:IsReason(REASON_DESTROY) or c:IsReason(REASON_BATTLE)) and not c:IsHasEffect(DM_EFFECT_TO_GRAVE_REDIRECT)
-end
-function scard.cfilter3(c)
-	return c:GetSourceCount()>0
+	return c:IsReason(REASON_DESTROY+REASON_BATTLE) and not c:IsHasEffect(DM_EFFECT_TO_GRAVE_REDIRECT)
 end
 function scard.tgcon(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(scard.cfilter3,1,nil)
+	return eg:IsExists(Card.IsHasSource,1,nil)
 end
 function scard.tgop2(e,tp,eg,ep,ev,re,r,rp)
 	for ec in aux.Next(eg) do
@@ -514,3 +496,23 @@ function scard.tgop2(e,tp,eg,ep,ev,re,r,rp)
 		Duel.DMSendtoGrave(g,REASON_RULE)
 	end
 end
+--set chain limit
+function scard.chop(e,tp,eg,ep,ev,re,r,rp)
+	if re:IsHasProperty(DM_EFFECT_FLAG_CHAIN_LIMIT) then
+		Duel.SetChainLimit(aux.FALSE)
+	end
+end
+--[[
+	References
+		1. A creature that has a power 0 or less is immediately destroyed
+			- Call of Darkness
+			https://github.com/Fluorohydride/ygopro-scripts/blob/9c40273/c78637313.lua#L12
+			- Rivalry of Warlords
+			https://github.com/Fluorohydride/ygopro-scripts/blob/55de4af/c90846359.lua#L14
+		2. You win the game when your opponent has no cards left in their deck
+			- Ghostrick Angel of Mischief
+			https://github.com/Fluorohydride/ygopro-scripts/blob/master/c53334641.lua#L10
+		3. Rule: A card sent to the graveyard is banished instead
+			- Macro Cosmos
+			https://github.com/Fluorohydride/ygopro-scripts/blob/2fcfdf8/c30241314.lua#L16
+]]
