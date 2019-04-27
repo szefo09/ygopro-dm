@@ -15,7 +15,7 @@ scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_SPIRIT_QUARTZ}
 function scard.thop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetFieldGroupCount(tp,LOCATION_DECK,0)==0 then return end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CODE)
+	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_NAME)
 	local code=Duel.AnnounceCard(tp)
 	Duel.ConfirmDecktop(tp,1)
 	local tc=Duel.GetDecktopGroup(tp,1):GetFirst()

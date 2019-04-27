@@ -20,7 +20,7 @@ function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	for tc in aux.Next(g1) do
 		if table.unpack(t)~=tc:GetPower() then table.insert(t,tc:GetPower()) end
 	end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_NUMBER)
+	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_NUMBER)
 	local pwr=Duel.AnnounceNumber(tp,table.unpack(t))
 	local g2=Duel.GetMatchingGroup(scard.desfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,pwr)
 	Duel.Destroy(g2,REASON_EFFECT)

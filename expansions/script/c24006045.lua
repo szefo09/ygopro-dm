@@ -23,7 +23,7 @@ function scard.retop(e,tp,eg,ep,ev,re,r,rp)
 		ct2=Duel.SendtoHand(g1,PLAYER_OWNER,REASON_EFFECT)
 	end
 	local g2=Duel.GetMatchingGroup(scard.retfilter2,tp,0,DM_LOCATION_BATTLE,nil,e)
-	if ct2>g2:GetCount() or g2:GetCount()==0 or not Duel.SelectYesNo(tp,DM_QHINTMSG_RTOHAND) then return end
+	if ct2>g2:GetCount() or g2:GetCount()==0 or not Duel.SelectYesNo(tp,DM_QHINTMSG_TOHAND) then return end
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_RTOHAND)
 	local sg=g2:Select(tp,ct2,ct2,nil)
 	if sg:GetCount()==0 then return end

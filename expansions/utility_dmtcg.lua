@@ -13,7 +13,6 @@ DM_DESC_NL_SLAYER=DM_DESC_NATURE_LIGHT_SLAYER
 EFFECT_INDESTRUCTIBLE=EFFECT_INDESTRUCTABLE
 EFFECT_INDESTRUCTIBLE_EFFECT=EFFECT_INDESTRUCTABLE_EFFECT
 EFFECT_INDESTRUCTIBLE_BATTLE=EFFECT_INDESTRUCTABLE_BATTLE
-HINTMSG_NUMBER=HINGMSG_NUMBER
 
 --return a card script's name and id
 --include in each script: local scard,sid=dm.GetID()
@@ -421,7 +420,7 @@ function Group.FilterSelect(g,player,f,min,max,ex,...)
 		return sg2:RandomSelect(player,min,max)
 	else
 		if not g:IsExists(f,1,ex,...) then
-			Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
+			Duel.Hint(HINT_MESSAGE,player,DM_DESC_NOTARGETS)
 		end
 		return group_filter_select(g,player,f,min,max,ex,...)
 	end
@@ -439,7 +438,7 @@ function Group.Select(g,player,min,max,ex)
 		return sg2:RandomSelect(player,min,max)
 	else
 		if g:GetCount()==0 then
-			Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
+			Duel.Hint(HINT_MESSAGE,player,DM_DESC_NOTARGETS)
 		end
 		return group_select(g,player,min,max,ex)
 	end
@@ -458,11 +457,11 @@ function Group.RandomSelect(g,player,count,max_count)
 			if ct>max_count then ct=max_count end
 			local t={}
 			for i=1,ct do t[i]=i end
-			Duel.Hint(HINT_SELECTMSG,player,DM_QHINTMSG_NUMBERCHOOSE)
+			Duel.Hint(HINT_SELECTMSG,player,DM_QHINTMSG_CARD)
 			count=Duel.AnnounceNumber(player,table.unpack(t))
 		end
 	else
-		Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
+		Duel.Hint(HINT_MESSAGE,player,DM_DESC_NOTARGETS)
 	end
 	return group_random_select(g,player,count,max_count)
 end
@@ -540,7 +539,7 @@ function Duel.SpecialSummon(targets,sumtype,sumplayer,target_player,nocheck,noli
 				ct=ct+1
 			end
 		else
-			Duel.Hint(HINT_MESSAGE,sumplayer,DM_HINTMSG_NOBZONES)
+			Duel.Hint(HINT_MESSAGE,sumplayer,DM_DESC_NOBZONES)
 			Duel.DMSendtoGrave(tc,REASON_RULE) --put into the graveyard if all zones are occupied
 			ct=ct+1 --count the summon that did not happen because YGOPro's limited zones prevented it
 		end
@@ -605,7 +604,7 @@ function Duel.SelectMatchingCard(sel_player,f,player,s,o,min,max,ex,...)
 		return g:RandomSelect(sel_player,min,max)
 	else
 		if not Duel.IsExistingMatchingCard(f,player,s,o,1,ex,...) then
-			Duel.Hint(HINT_MESSAGE,sel_player,DM_HINTMSG_NOTARGETS)
+			Duel.Hint(HINT_MESSAGE,sel_player,DM_DESC_NOTARGETS)
 		end
 		return duel_select_matching_card(sel_player,f,player,s,o,min,max,ex,...)
 	end
@@ -622,7 +621,7 @@ function Duel.SelectTarget(sel_player,f,player,s,o,min,max,ex,...)
 		return sg
 	else
 		if not Duel.IsExistingTarget(f,player,s,o,1,ex,...) then
-			Duel.Hint(HINT_MESSAGE,sel_player,DM_HINTMSG_NOTARGETS)
+			Duel.Hint(HINT_MESSAGE,sel_player,DM_DESC_NOTARGETS)
 		end
 		return duel_select_target(sel_player,f,player,s,o,min,max,ex,...)
 	end
@@ -748,7 +747,7 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason,ignore_br
 		local og=Duel.GetOperatedGroup()
 		for oc in aux.Next(og) do
 			--add message
-			if not oc:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER) then Duel.Hint(HINT_MESSAGE,target_player,DM_HINTMSG_NOSTRIGGER) end
+			if not oc:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER) then Duel.Hint(HINT_MESSAGE,target_player,DM_DESC_NOSTRIGGER) end
 			--raise event for "Shield Trigger"
 			Duel.RaiseSingleEvent(oc,EVENT_CUSTOM+DM_EVENT_TRIGGER_SHIELD_TRIGGER,Effect.GlobalEffect(),0,0,0,0)
 		end
@@ -803,14 +802,15 @@ end
 --reserved
 --[[
 function Duel.SendDecktoptoManaUpTo(player,count,pos,reason)
-	local g=Duel.GetDecktopGroup(player,count)
-	local ct=0
-	repeat
-		Duel.DisableShuffleCheck()
-		ct=Duel.SendDecktoptoMana(player,1,pos,reason)
-		count=count-ct
-	until count<=0 or not Duel.IsPlayerCanSendDecktoptoMana(player,1) or not Duel.SelectYesNo(player,DM_QHINTMSG_TOMANAEXTRA)
-	return ct
+	local ct=Duel.GetFieldGroupCount(player,LOCATION_DECK,0)
+	if ct>0 and Duel.IsPlayerCanSendDecktoptoMana(player,1) and Duel.SelectYesNo(player,DM_QHINTMSG_TOMANA) then
+		if ct>count then ct=count end
+		local t={}
+		for i=1,ct do t[i]=i end
+		Duel.Hint(HINT_SELECTMSG,player,DM_QHINTMSG_CARD)
+		local an=Duel.AnnounceNumber(player,table.unpack(t))
+		return Duel.SendDecktoptoMana(player,an,pos,reason)
+	else return 0 end
 end
 ]]
 --put a card into the graveyard
@@ -856,7 +856,7 @@ function Duel.SendtoShield(targets,player)
 					ct=ct+1
 				end
 			else
-				Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOSZONES)
+				Duel.Hint(HINT_MESSAGE,player,DM_DESC_NOSZONES)
 				Duel.DMSendtoGrave(tc2,REASON_RULE) --put into the graveyard if all zones are occupied
 				ct=ct+1	--count the card that did not add because YGOPro's limited zones prevented it
 			end
@@ -866,7 +866,7 @@ function Duel.SendtoShield(targets,player)
 				ct=ct+1
 			end
 		else
-			Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOSZONES)
+			Duel.Hint(HINT_MESSAGE,player,DM_DESC_NOSZONES)
 			Duel.DMSendtoGrave(tc1,REASON_RULE) --put into the graveyard if all zones are occupied
 			ct=ct+1 --count the card that did not add because YGOPro's limited zones prevented it
 		end
@@ -887,7 +887,7 @@ function Duel.SendDecktoptoShieldUpTo(player,count)
 	if ct>count then ct=count end
 	local t={}
 	for i=1,ct do t[i]=i end
-	Duel.Hint(HINT_SELECTMSG,player,DM_QHINTMSG_NUMBERTOSHIELD)
+	Duel.Hint(HINT_SELECTMSG,player,DM_QHINTMSG_CARD)
 	local an=Duel.AnnounceNumber(player,table.unpack(t))
 	return Duel.SendDecktoptoShield(player,an)
 end
@@ -903,7 +903,7 @@ function Duel.DrawUpTo(player,count,reason)
 		if ct>count then ct=count end
 		local t={}
 		for i=1,ct do t[i]=i end
-		Duel.Hint(HINT_SELECTMSG,player,DM_QHINTMSG_NUMBERDRAW)
+		Duel.Hint(HINT_SELECTMSG,player,DM_QHINTMSG_CARD)
 		local an=Duel.AnnounceNumber(player,table.unpack(t))
 		return Duel.Draw(player,an,reason)
 	else return 0 end
@@ -1112,7 +1112,7 @@ Auxiliary.race_value_list={
 	]]
 }
 --list of all existing mana costs for Duel.AnnounceNumber
-Auxiliary.mana_cost_list={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,20,24,25,30,39,40,50,71,99,999,}
+Auxiliary.mana_cost_list={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,20,24,25,30,39,40,50,71,99,999,DM_MAX_MANA_COST}
 --cast a spell immediately for no cost
 function Duel.CastFree(targets)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
@@ -1907,12 +1907,12 @@ function Auxiliary.RegisterEffectSlayer(c,tc,desc_id,reset_flag,reset_count)
 	e1:SetTarget(Auxiliary.HintTarget)
 	e1:SetOperation(Auxiliary.SlayerOperation)
 	if tc==c then
-		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_DISABLE-DM_RESET_TOGRAVE-RESET_LEAVE+reset_flag,reset_count)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_DISABLE-RESET_REMOVE-RESET_LEAVE+reset_flag,reset_count)
 	else
-		e1:SetReset(RESET_EVENT+RESETS_STANDARD-DM_RESET_TOGRAVE-RESET_LEAVE+reset_flag,reset_count)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD-RESET_REMOVE-RESET_LEAVE+reset_flag,reset_count)
 	end
 	tc:RegisterEffect(e1)
-	Auxiliary.RegisterEffectCustom(c,tc,desc_id,DM_EFFECT_SLAYER,-DM_RESET_TOGRAVE-RESET_LEAVE+reset_flag,reset_count)
+	Auxiliary.RegisterEffectCustom(c,tc,desc_id,DM_EFFECT_SLAYER,-RESET_REMOVE-RESET_LEAVE+reset_flag,reset_count)
 end
 --"Breaker (This creature breaks N shields.)"
 --"Each creature in the battle zone has "Breaker"."
@@ -3374,7 +3374,7 @@ function Auxiliary.SendtoBattleOperation(p,f,s,o,min,max,pos,ex,...)
 						Duel.SendtoBattle(g,0,player,player,false,false,pos)
 					end
 				else
-					Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
+					Duel.Hint(HINT_MESSAGE,player,DM_DESC_NOTARGETS)
 				end
 			end
 end
@@ -3425,7 +3425,7 @@ function Auxiliary.SendtoGraveOperation(p,f,s,o,min,max,ex,...)
 						Duel.DMSendtoGrave(g,REASON_EFFECT)
 					end
 				else
-					Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
+					Duel.Hint(HINT_MESSAGE,player,DM_DESC_NOTARGETS)
 				end
 			end
 end
@@ -3466,7 +3466,7 @@ function Auxiliary.SendtoHandOperation(p,f,s,o,min,max,conf,ex,...)
 					if (conf and og1:GetCount()>0 and og3:GetCount()>0) or og4:GetCount()>0 then Duel.ConfirmCards(1-tp,og1) end
 					if (conf and og2:GetCount()>0 and og3:GetCount()>0) or og4:GetCount()>0 then Duel.ConfirmCards(tp,og2) end
 				else
-					Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
+					Duel.Hint(HINT_MESSAGE,player,DM_DESC_NOTARGETS)
 				end
 			end
 end
@@ -3509,7 +3509,7 @@ function Auxiliary.SendtoManaOperation(p,f,s,o,min,max,ex,...)
 						Duel.SendtoMana(g,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 					end
 				else
-					Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
+					Duel.Hint(HINT_MESSAGE,player,DM_DESC_NOTARGETS)
 				end
 			end
 end
@@ -3568,7 +3568,7 @@ function Auxiliary.SendtoShieldOperation(p,f,s,o,min,max,ex,...)
 						end
 					end
 				else
-					Duel.Hint(HINT_MESSAGE,player,DM_HINTMSG_NOTARGETS)
+					Duel.Hint(HINT_MESSAGE,player,DM_DESC_NOTARGETS)
 				end
 			end
 end
