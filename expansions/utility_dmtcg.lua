@@ -41,9 +41,9 @@ end
 --check if a card can be put into the battle zone
 local card_is_can_be_special_summoned=Card.IsCanBeSpecialSummoned
 function Card.IsCanBeSpecialSummoned(c,...)
-	if c:IsLocation(LOCATION_REMOVED) and c:IsFacedown() then
-		return true --workaround to allow face-down banished monsters to special summon
-	else return card_is_can_be_special_summoned(c,...) end
+	--workaround to allow face-down banished monsters to special summon
+	if c:IsLocation(LOCATION_REMOVED) and c:IsFacedown() then return true end
+	return card_is_can_be_special_summoned(c,...)
 end
 Card.IsCanSendtoBattle=Card.IsCanBeSpecialSummoned
 --check if a card can be discarded from a player's hand
@@ -469,9 +469,8 @@ end
 --Fix missing Duel function errors
 local duel_attack_cost_paid=Duel.AttackCostPaid
 function Duel.AttackCostPaid()
-	if duel_attack_cost_paid then
-		return duel_attack_cost_paid()
-	else return nil end
+	if duel_attack_cost_paid then return duel_attack_cost_paid() end
+	return nil
 end
 --Overwritten Duel functions
 --put a card into a player's hand
@@ -554,7 +553,7 @@ Duel.SendtoBattleComplete=Duel.SpecialSummonComplete
 --Note: Added reason parameter
 local duel_change_position=Duel.ChangePosition
 function Duel.ChangePosition(targets,pos,reason)
-	local reason=reason or 0
+	local reason=reason or REASON_EFFECT
 	return duel_change_position(targets,pos,reason)
 end
 --show a player a card
@@ -583,15 +582,12 @@ function Duel.IsPlayerCanDraw(player,count)
 	return duel_is_player_can_draw(player,count)
 end
 --discard a card
-local discard_hand=Duel.DiscardHand
 function Duel.DiscardHand(player,f,min,max,reason,ex,...)
 	local max=max or min
 	local reason=reason or REASON_EFFECT
 	Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_DISCARD)
 	local g=Duel.SelectMatchingCard(player,f,player,LOCATION_HAND,0,min,max,ex,...)
-	if g:GetCount()==0 then
-		return discard_hand(player,f,min,max,reason,ex,...)
-	end
+	if g:GetCount()==0 then return 0 end
 	return Duel.Remove(g,POS_FACEUP,reason+REASON_DISCARD)
 end
 --select a card
@@ -686,7 +682,7 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason,ignore_br
 	--rc: the creature that breaks a shield
 	--reason: the reason for breaking a shield (generally REASON_EFFECT)
 	--ignore_breaker: true to not break a number of shields according to the breaker abilities a creature may have
-	local reason=reason or 0
+	local reason=reason or REASON_EFFECT
 	Duel.Tap(rc,REASON_RULE) --fix creature not being tapped when attacking
 	local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(),target_player,DM_LOCATION_SHIELD,0,nil)
 	if g:GetCount()==0 or not rc:IsCanBreakShield() then return 0 end
@@ -762,9 +758,7 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason,ignore_br
 	return ct
 end
 Auxiliary.break_select_list={
-	[1]=DM_DESC_DOUBLE_BREAKER,
-	[2]=DM_DESC_TRIPLE_BREAKER,
-	[3]=DM_DESC_CREW_BREAKER,
+	[1]=DM_DESC_DOUBLE_BREAKER,[2]=DM_DESC_TRIPLE_BREAKER,[3]=DM_DESC_CREW_BREAKER
 }
 --put a card into the mana zone
 function Duel.SendtoMana(targets,pos,reason)
@@ -775,7 +769,7 @@ function Duel.SendtoMana(targets,pos,reason)
 	targets:Sub(g1)
 	local ct=0
 	for tc in aux.Next(targets) do
-		local g2=(tc:IsCanSourceLeave() and tc:GetSourceGroup() or Group.CreateGroup())
+		local g2=tc:IsCanSourceLeave() and tc:GetSourceGroup() or Group.CreateGroup()
 		if pos==POS_FACEUP_UNTAPPED then
 			ct=ct+Duel.SendtoGrave(g2,reason)
 			ct=ct+Duel.SendtoGrave(tc,reason)
@@ -786,7 +780,7 @@ function Duel.SendtoMana(targets,pos,reason)
 	end
 	--put multicolored cards into the mana zone tapped
 	for tc in aux.Next(g1) do
-		local g2=(tc:IsCanSourceLeave() and tc:GetSourceGroup() or Group.CreateGroup())
+		local g2=tc:IsCanSourceLeave() and tc:GetSourceGroup() or Group.CreateGroup()
 		ct=ct+Duel.Remove(g2,POS_FACEDOWN,REASON_RULE)
 	end
 	ct=ct+Duel.Remove(g1,POS_FACEDOWN,REASON_RULE)
@@ -810,7 +804,8 @@ function Duel.SendDecktoptoManaUpTo(player,count,pos,reason)
 		Duel.Hint(HINT_SELECTMSG,player,DM_QHINTMSG_CARD)
 		local an=Duel.AnnounceNumber(player,table.unpack(t))
 		return Duel.SendDecktoptoMana(player,an,pos,reason)
-	else return 0 end
+	end
+	return 0
 end
 ]]
 --put a card into the graveyard
@@ -883,7 +878,7 @@ end
 function Duel.SendDecktoptoShieldUpTo(player,count)
 	local ct=Duel.GetFieldGroupCount(player,LOCATION_DECK,0)
 	if ct==0 or not Duel.IsPlayerCanSendDecktoptoShield(player,1)
-		or not Duel.SelectYesNo(player,DM_QHINTMSG_TOSHIELD) then return end
+		or not Duel.SelectYesNo(player,DM_QHINTMSG_TOSHIELD) then return 0 end
 	if ct>count then ct=count end
 	local t={}
 	for i=1,ct do t[i]=i end
@@ -906,7 +901,8 @@ function Duel.DrawUpTo(player,count,reason)
 		Duel.Hint(HINT_SELECTMSG,player,DM_QHINTMSG_CARD)
 		local an=Duel.AnnounceNumber(player,table.unpack(t))
 		return Duel.Draw(player,an,reason)
-	else return 0 end
+	end
+	return 0
 end
 --discard a card at random
 function Duel.RandomDiscardHand(player,count,reason,ex)
@@ -915,6 +911,7 @@ function Duel.RandomDiscardHand(player,count,reason,ex)
 	local extype=type(ex)
 	if extype=="Card" then g:RemoveCard(ex)
 	elseif extype=="Group" then g:Sub(ex) end
+	if g:GetCount()==0 then return 0 end
 	local sg=g:RandomSelect(player,count)
 	return Duel.Remove(sg,POS_FACEUP,reason+REASON_DISCARD)
 end
@@ -1028,7 +1025,7 @@ Auxiliary.race_desc_list={
 	DM_SELECT_RACE_POSEIDIA_DRAGON,
 	DM_SELECT_RACE_SNOW_FAERIE_KAZE,
 	DM_SELECT_RACE_SOUL_COMMAND,
-	DM_SELECT_RACE_WORLD_COMMAND,
+	DM_SELECT_RACE_WORLD_COMMAND
 	]]
 }
 Auxiliary.race_value_list={
@@ -1108,7 +1105,7 @@ Auxiliary.race_value_list={
 	DM_RACE_POSEIDIA_DRAGON,
 	DM_RACE_SNOW_FAERIE_KAZE,
 	DM_RACE_SOUL_COMMAND,
-	DM_RACE_WORLD_COMMAND,
+	DM_RACE_WORLD_COMMAND
 	]]
 }
 --list of all existing mana costs for Duel.AnnounceNumber
@@ -1116,12 +1113,15 @@ Auxiliary.mana_cost_list={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,20,24,25,30,
 --cast a spell immediately for no cost
 function Duel.CastFree(targets)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
+	local ct=0
 	for tc in aux.Next(targets) do
 		Duel.DisableShuffleCheck(true)
 		Duel.SendtoHand(tc,PLAYER_OWNER,REASON_RULE)
 		Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_CAST_FREE,tc:GetReasonEffect(),0,0,0,0)
 		Duel.DisableShuffleCheck(false)
+		ct=ct+1
 	end
+	return ct
 end
 --Renamed Duel functions
 --let 2 creatures do battle with each other
@@ -1174,8 +1174,8 @@ end
 --ct: the number of cards to sort
 --seq: DECK_SEQUENCE_TOP to sort the top cards or DECK_SEQUENCE_BOTTOM to sort the bottom cards
 function Auxiliary.SortDeck(sort_player,target_player,ct,seq)
-	local ft=Duel.GetFieldGroupCount(target_player,LOCATION_DECK,0)
-	if ft<ct then ct=ft end
+	local deck_count=Duel.GetFieldGroupCount(target_player,LOCATION_DECK,0)
+	if deck_count<ct then ct=deck_count end
 	if ct>1 then Duel.SortDecktop(sort_player,target_player,ct) end
 	if seq~=DECK_SEQUENCE_BOTTOM or ct<=0 then return end
 	local g=Duel.GetDecktopGroup(target_player,1)
@@ -1348,14 +1348,14 @@ function Auxiliary.EnableCreatureAttribute(c)
 	e3:SetCode(DM_EVENT_ATTACK_SHIELD)
 	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	e3:SetCondition(Auxiliary.AttackShieldCondition)
-	e3:SetTarget(Auxiliary.AttackShieldTarget)
 	e3:SetOperation(Auxiliary.AttackShieldOperation)
 	c:RegisterEffect(e3)
 end
 --cannot be battle target
 function Auxiliary.CannotBeBattleTargetCondition(e)
 	local c=e:GetHandler()
-	return c:IsFaceup() and c:IsUntapped() and not c:IsCanBeUntappedAttacked()
+	if c:IsCanBeUntappedAttacked() then return false end
+	return c:IsFaceup() and c:IsUntapped()
 end
 function Auxiliary.CannotBeBattleTargetValue(e,c)
 	--check for "This creature can attack untapped CIVILIZATION creatures."
@@ -1373,11 +1373,9 @@ end
 --attack shield
 function Auxiliary.AttackShieldCondition(e)
 	local tp=e:GetHandlerPlayer()
+	local c=e:GetHandler()
 	return Duel.IsExistingMatchingCard(Auxiliary.ShieldZoneFilter(),tp,0,DM_LOCATION_SHIELD,1,nil)
-		and Duel.GetTurnPlayer()==tp and Duel.GetAttacker()==e:GetHandler() and Duel.GetAttackTarget()==nil
-end
-function Auxiliary.AttackShieldTarget(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return not e:GetHandler():IsStatus(STATUS_CHAINING) end
+		and Duel.GetTurnPlayer()==tp and Duel.GetAttacker()==c and Duel.GetAttackTarget()==nil and c:IsCanBreakShield()
 end
 function Auxiliary.AttackShieldOperation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
@@ -1617,11 +1615,7 @@ function Auxiliary.RegisterEffectCustom(c,tc,desc_id,code,reset_flag,reset_count
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(code)
-	if code==DM_EFFECT_CANNOT_CHANGE_POS_ABILITY then
-		e1:SetProperty(EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_CLIENT_HINT)
-	else
-		e1:SetProperty(EFFECT_FLAG_CLIENT_HINT)
-	end
+	e1:SetProperty(EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_CLIENT_HINT)
 	if tc==c then
 		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_DISABLE+reset_flag,reset_count)
 	else
@@ -2191,7 +2185,7 @@ end
 function Auxiliary.AddTurnEndEffect(c,desc_id,p,optional,targ_func,op_func,con_func,prop)
 	--p: PLAYER_SELF for your turn, PLAYER_OPPO for your opponent's, or nil for either player's
 	local con_func=con_func or aux.TRUE
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_FIELD+typ)
@@ -2211,7 +2205,7 @@ end
 --"When you put this creature into the battle zone, ABILITY."
 --e.g. "Miele, Vizier of Lightning" (DM-01 13/110)
 function Auxiliary.AddSingleComeIntoPlayEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e1:SetCategory(cate) end
@@ -2233,7 +2227,7 @@ end
 --"Whenever another creature is put into the battle zone, ABILITY."
 --e.g. "Mist Rias, Sonic Guardian" (DM-04 13/55)
 function Auxiliary.AddComeIntoPlayEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e1:SetCategory(cate) end
@@ -2261,7 +2255,7 @@ function Auxiliary.AddStaticEffectSingleComeIntoPlay(c,desc_id,optional,targ_fun
 	local s_range=s_range or LOCATION_ALL
 	local o_range=o_range or 0
 	local targ_func2=targ_func2 or aux.TRUE
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE+typ)
@@ -2280,7 +2274,7 @@ end
 --"Whenever this creature attacks, ABILITY."
 --e.g. "Laguna, Lightning Enforcer" (DM-02 4/55)
 function Auxiliary.AddSingleAttackTriggerEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e1:SetCategory(cate) end
@@ -2305,7 +2299,7 @@ function Auxiliary.AddStaticEffectSingleAttackTrigger(c,desc_id,optional,targ_fu
 	local s_range=s_range or LOCATION_ALL
 	local o_range=o_range or 0
 	local targ_func2=targ_func2 or aux.TRUE
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE+typ)
@@ -2328,7 +2322,7 @@ end
 --"Whenever any of your creatures attacks, ABILITY."
 --e.g. "Thrumiss, Zephyr Guardian" (DM-08 15/55)
 function Auxiliary.AddAttackTriggerEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e1:SetCategory(cate) end
@@ -2349,7 +2343,7 @@ end
 --"Whenever this creature is attacked, ABILITY."
 --e.g. "Scalpel Spider" (DM-07 32/55)
 function Auxiliary.AddSingleBeAttackedEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
@@ -2373,7 +2367,7 @@ end
 --"Whenever your creatures are attacked, ABILITY."
 --e.g. "Polaris, the Oracle" (DM-13 21/55)
 function Auxiliary.AddBeAttackedEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e1:SetCategory(cate) end
@@ -2403,7 +2397,7 @@ end
 --"Whenever this creature blocks, ABILITY."
 --e.g. "Spiral Grass" (DM-02 10/55)
 function Auxiliary.AddSingleBlockEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
@@ -2426,7 +2420,7 @@ end
 --"Whenever one of your creatures blocks, ABILITY."
 --e.g. "Agira, the Warlord Crawler" (DM-12 16/55)
 function Auxiliary.AddBlockEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
@@ -2450,7 +2444,7 @@ end
 --"When this creature is destroyed, ABILITY."
 --e.g. "Bombersaur" (DM-02 36/55)
 function Auxiliary.AddSingleDestroyedEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e1:SetCategory(cate) end
@@ -2472,7 +2466,7 @@ end
 --"Whenever another creature is destroyed, ABILITY."
 --e.g. "Mongrel Man" (DM-04 33/55)
 function Auxiliary.AddDestroyedEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e1:SetCategory(cate) end
@@ -2497,7 +2491,7 @@ end
 function Auxiliary.AddEnterGraveEffect(c,desc_id,p,optional,targ_func,op_func,prop,con_func,cost_func,cate)
 	--p: PLAYER_SELF for your graveyard, PLAYER_OPPO for your opponent's, or nil for either player's
 	local con_func=con_func or aux.TRUE
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e1:SetCategory(cate) end
@@ -2520,7 +2514,7 @@ end
 --"Whenever this creature becomes blocked, ABILITY."
 --e.g. "Avalanche Giant" (DM-05 S5/S5)
 function Auxiliary.AddSingleBecomeBlockedEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e1:SetCategory(cate) end
@@ -2543,7 +2537,7 @@ end
 --e.g. "Aqua Rider" (DM-06 31/110)
 function Auxiliary.AddPlayerSummonCreatureEffect(c,desc_id,p,optional,targ_func,op_func,prop)
 	--p: PLAYER_SELF if you summon, PLAYER_OPPO if your opponent does, or nil if either player does
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_FIELD+typ)
@@ -2575,7 +2569,7 @@ end
 --e.g. "Emperor Quazla" (DM-08 S2/S5), "Glena Vuele, the Hypnotic" (DM-09 1/55)
 function Auxiliary.AddPlayerUseShieldTriggerEffect(c,desc_id,p,optional,targ_func,op_func)
 	--p: PLAYER_SELF if you use "shield trigger", PLAYER_OPPO if your opponent does, or nil if either player does
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EVENT_CHAINING)
@@ -2620,7 +2614,7 @@ end
 --e.g. "Natalia, Channeler of Suns" (Game Original)
 function Auxiliary.AddPlayerCastSpellEffect(c,desc_id,p,f,optional,targ_func,op_func,prop)
 	--p: PLAYER_SELF if you cast a spell, PLAYER_OPPO if your opponent does, or nil if either player does
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EVENT_CHAINING)
@@ -2682,7 +2676,7 @@ end
 --e.g. "Wise Starnoid, Avatar of Hope" (DM-12 S2/S5)
 function Auxiliary.AddSingleLeaveBattleEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
 	local con_func=con_func or aux.TRUE
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e1:SetCategory(cate) end
@@ -2704,7 +2698,7 @@ end
 --"Whenever this creature breaks a shield, ABILITY."
 --e.g. "Bolblaze Dragon" (Game Original)
 function Auxiliary.AddBreakShieldEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e1:SetCategory(cate) end
@@ -2729,7 +2723,7 @@ end
 function Auxiliary.AddTurnStartEffect(c,desc_id,p,optional,targ_func,op_func,con_func,prop)
 	--p: PLAYER_SELF for your turn, PLAYER_OPPO for your opponent's, or nil for either player's
 	local con_func=con_func or aux.TRUE
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_FIELD+typ)
@@ -2818,7 +2812,7 @@ end
 --e.g. "Ruby Grass" (DM-01 17/110)
 function Auxiliary.EnableTurnEndSelfUntap(c,desc_id,con_func,forced)
 	local desc_id=desc_id or 0
-	local typ=(forced and EFFECT_TYPE_TRIGGER_F) or EFFECT_TYPE_TRIGGER_O
+	local typ=forced and EFFECT_TYPE_TRIGGER_F or EFFECT_TYPE_TRIGGER_O
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_FIELD+typ)
@@ -2843,11 +2837,13 @@ function Auxiliary.SelfUntapOperation(ram)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local c=e:GetHandler()
 				if not c:IsRelateToEffect(e) or c:IsFacedown() or c:IsUntapped() then return end
-				local res=RESULT_TAILS
-				if ram then res=Duel.TossCoin(tp,1) end
-				if not ram or res==RESULT_HEADS then
-					Duel.Untap(c,REASON_EFFECT)
+				if ram then
+					local os=require('os')
+					math.randomseed(os.time())
+					local ct=math.random(0,1)
+					if ct==0 then return end
 				end
+				Duel.Untap(c,REASON_EFFECT)
 			end
 end
 --"This creature can't be blocked."
@@ -2979,18 +2975,20 @@ function Auxiliary.SelfDestroyOperation(ram)
 				local c=e:GetHandler()
 				if Duel.GetAttacker()==c then Duel.Tap(c,REASON_RULE) end --fix creature not being tapped when attacking
 				if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
-				local res=RESULT_TAILS
-				if ram then res=Duel.TossCoin(tp,1) end
-				if not ram or res==RESULT_HEADS then
-					Duel.Destroy(c,REASON_EFFECT)
+				if ram then
+					local os=require('os')
+					math.randomseed(os.time())
+					local ct=math.random(0,1)
+					if ct==0 then return end
 				end
+				Duel.Destroy(c,REASON_EFFECT)
 			end
 end
 --"Whenever this creature wins a battle, [you may] untap this creature."
 --e.g. "Mobile Saint Meermax" (DM-13 17/55)
 function Auxiliary.EnableBattleWinSelfUntap(c,desc_id,forced)
 	local desc_id=desc_id or 0
-	local typ=(forced and EFFECT_TYPE_TRIGGER_F) or EFFECT_TYPE_TRIGGER_O
+	local typ=forced and EFFECT_TYPE_TRIGGER_F or EFFECT_TYPE_TRIGGER_O
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE+typ)
@@ -3153,7 +3151,7 @@ end
 --e.g. "Ganzo, Flame Fisherman" (Game Original)
 function Auxiliary.EnableTurnEndSelfReturn(c,desc_id,con_func,optional)
 	local desc_id=desc_id or 0
-	local typ=(optional and EFFECT_TYPE_TRIGGER_O) or EFFECT_TYPE_TRIGGER_F
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_FIELD+typ)
@@ -3365,16 +3363,12 @@ function Auxiliary.SendtoBattleOperation(p,f,s,o,min,max,pos,ex,...)
 				if max>=0 and ft>max then ft=max end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(Auxiliary.SendtoBattleFilter,tp,s,o,ex,e,tp,f,table.unpack(funs))
-				if g:GetCount()>0 then
-					if min and max then
-						Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOBATTLE)
-						local sg=g:Select(player,min,ft,ex,table.unpack(funs))
-						Duel.SendtoBattle(sg,0,player,player,false,false,pos)
-					else
-						Duel.SendtoBattle(g,0,player,player,false,false,pos)
-					end
+				if min and max then
+					Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOBATTLE)
+					local sg=g:Select(player,min,ft,ex,table.unpack(funs))
+					Duel.SendtoBattle(sg,0,player,player,false,false,pos)
 				else
-					Duel.Hint(HINT_MESSAGE,player,DM_DESC_NOTARGETS)
+					Duel.SendtoBattle(g,0,player,player,false,false,pos)
 				end
 			end
 end
@@ -3414,18 +3408,14 @@ function Auxiliary.SendtoGraveOperation(p,f,s,o,min,max,ex,...)
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(aux.AND(Card.DMIsAbleToGrave,f),tp,s,o,ex,table.unpack(funs))
-				if g:GetCount()>0 then
-					if min and max then
-						Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOGRAVE)
-						local sg=g:Select(player,min,max,ex,table.unpack(funs))
-						local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BATTLE+DM_LOCATION_SHIELD)
-						Duel.HintSelection(hg)
-						Duel.DMSendtoGrave(sg,REASON_EFFECT)
-					else
-						Duel.DMSendtoGrave(g,REASON_EFFECT)
-					end
+				if min and max then
+					Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOGRAVE)
+					local sg=g:Select(player,min,max,ex,table.unpack(funs))
+					local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BATTLE+DM_LOCATION_SHIELD)
+					Duel.HintSelection(hg)
+					Duel.DMSendtoGrave(sg,REASON_EFFECT)
 				else
-					Duel.Hint(HINT_MESSAGE,player,DM_DESC_NOTARGETS)
+					Duel.DMSendtoGrave(g,REASON_EFFECT)
 				end
 			end
 end
@@ -3448,26 +3438,22 @@ function Auxiliary.SendtoHandOperation(p,f,s,o,min,max,conf,ex,...)
 				local desc=DM_HINTMSG_RTOHAND
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToHand,f),tp,s,o,ex,table.unpack(funs))
-				if g:GetCount()>0 then
-					if min and max then
-						if s==LOCATION_DECK or o==LOCATION_DECK then desc=DM_HINTMSG_ATOHAND end
-						Duel.Hint(HINT_SELECTMSG,player,desc)
-						local sg=g:Select(player,min,max,ex,table.unpack(funs))
-						local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BATTLE+DM_LOCATION_SHIELD)
-						Duel.HintSelection(hg)
-						Duel.SendtoHand(sg,PLAYER_OWNER,REASON_EFFECT)
-					else
-						Duel.SendtoHand(g,PLAYER_OWNER,REASON_EFFECT)
-					end
-					local og1=Duel.GetOperatedGroup():Filter(Card.IsControler,nil,tp)
-					local og2=Duel.GetOperatedGroup():Filter(Card.IsControler,nil,1-tp)
-					local og3=Duel.GetOperatedGroup():Filter(Card.IsPreviousLocation,nil,LOCATION_DECK)
-					local og4=Duel.GetOperatedGroup():Filter(Card.IsPreviousLocation,nil,LOCATION_GRAVE+LOCATION_REMOVED)
-					if (conf and og1:GetCount()>0 and og3:GetCount()>0) or og4:GetCount()>0 then Duel.ConfirmCards(1-tp,og1) end
-					if (conf and og2:GetCount()>0 and og3:GetCount()>0) or og4:GetCount()>0 then Duel.ConfirmCards(tp,og2) end
+				if min and max then
+					if s==LOCATION_DECK or o==LOCATION_DECK then desc=DM_HINTMSG_ATOHAND end
+					Duel.Hint(HINT_SELECTMSG,player,desc)
+					local sg=g:Select(player,min,max,ex,table.unpack(funs))
+					local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BATTLE+DM_LOCATION_SHIELD)
+					Duel.HintSelection(hg)
+					Duel.SendtoHand(sg,PLAYER_OWNER,REASON_EFFECT)
 				else
-					Duel.Hint(HINT_MESSAGE,player,DM_DESC_NOTARGETS)
+					Duel.SendtoHand(g,PLAYER_OWNER,REASON_EFFECT)
 				end
+				local og1=Duel.GetOperatedGroup():Filter(Card.IsControler,nil,tp)
+				local og2=Duel.GetOperatedGroup():Filter(Card.IsControler,nil,1-tp)
+				local og3=Duel.GetOperatedGroup():Filter(Card.IsPreviousLocation,nil,LOCATION_DECK)
+				local og4=Duel.GetOperatedGroup():Filter(Card.IsPreviousLocation,nil,LOCATION_GRAVE+LOCATION_REMOVED)
+				if (conf and og1:GetCount()>0 and og3:GetCount()>0) or og4:GetCount()>0 then Duel.ConfirmCards(1-tp,og1) end
+				if (conf and og2:GetCount()>0 and og3:GetCount()>0) or og4:GetCount()>0 then Duel.ConfirmCards(tp,og2) end
 			end
 end
 --operation function for abilities that target cards to put into a player's hand
@@ -3498,18 +3484,14 @@ function Auxiliary.SendtoManaOperation(p,f,s,o,min,max,ex,...)
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToMana,f),tp,s,o,ex,table.unpack(funs))
-				if g:GetCount()>0 then
-					if min and max then
-						Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOMANA)
-						local sg=g:Select(player,min,max,ex,table.unpack(funs))
-						local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BATTLE+DM_LOCATION_SHIELD)
-						Duel.HintSelection(hg)
-						Duel.SendtoMana(sg,POS_FACEUP_UNTAPPED,REASON_EFFECT)
-					else
-						Duel.SendtoMana(g,POS_FACEUP_UNTAPPED,REASON_EFFECT)
-					end
+				if min and max then
+					Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOMANA)
+					local sg=g:Select(player,min,max,ex,table.unpack(funs))
+					local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BATTLE+DM_LOCATION_SHIELD)
+					Duel.HintSelection(hg)
+					Duel.SendtoMana(sg,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 				else
-					Duel.Hint(HINT_MESSAGE,player,DM_DESC_NOTARGETS)
+					Duel.SendtoMana(g,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 				end
 			end
 end
@@ -3550,25 +3532,21 @@ function Auxiliary.SendtoShieldOperation(p,f,s,o,min,max,ex,...)
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToShield,f),player,s,o,ex,table.unpack(funs))
-				if g:GetCount()>0 then
-					if min and max then
-						Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOSHIELD)
-						local sg=g:Select(player,min,ft,ex,table.unpack(funs))
-						local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BATTLE)
-						Duel.HintSelection(hg)
-						Duel.SendtoShield(sg,player)
-					else
-						Duel.SendtoShield(g,player)
-					end
-					local og=Duel.GetOperatedGroup()
-					if og:GetCount()==0 then return end
-					for oc in aux.Next(og) do
-						if oc:IsPreviousLocation(LOCATION_GRAVE+LOCATION_REMOVED) then
-							Duel.ConfirmCards(1-oc:GetControler(),oc)
-						end
-					end
+				if min and max then
+					Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOSHIELD)
+					local sg=g:Select(player,min,ft,ex,table.unpack(funs))
+					local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BATTLE)
+					Duel.HintSelection(hg)
+					Duel.SendtoShield(sg,player)
 				else
-					Duel.Hint(HINT_MESSAGE,player,DM_DESC_NOTARGETS)
+					Duel.SendtoShield(g,player)
+				end
+				local og=Duel.GetOperatedGroup()
+				if og:GetCount()==0 then return end
+				for oc in aux.Next(og) do
+					if oc:IsPreviousLocation(LOCATION_GRAVE+LOCATION_REMOVED) then
+						Duel.ConfirmCards(1-oc:GetControler(),oc)
+					end
 				end
 			end
 end
