@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.cfilter(c,tp)
-	return c:IsFaceup() and c:GetSummonPlayer()==tp and (c:DMIsRace(DM_RACE_DRAGO_NOID) or c:DMIsRace(DM_RACE_DRAGON))
+	return c:IsFaceup() and c:GetSummonPlayer()==tp and c:DMIsRace(DM_RACE_DRAGO_NOID,DM_RACE_DRAGON)
 end
 function scard.tmcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(scard.cfilter,1,e:GetHandler(),tp)

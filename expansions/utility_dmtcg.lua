@@ -37,6 +37,25 @@ function type(o)
 	else return "Card" end
 end
 --========== Card ==========
+--Temporary Card functions
+--check if a card's mana cost is equal to a given value
+local card_is_level=Card.IsLevel
+function Card.IsLevel(c,lv)
+	if card_is_level then
+		return card_is_level(c,lv)
+	else
+		return c:GetLevel()==lv
+	end
+end
+--check if a card has a particular race
+local card_is_set_card=Card.IsSetCard
+function Card.IsSetCard(c,...)
+	local setname_list={...}
+	for _,setname in ipairs(setname_list) do
+		if card_is_set_card(c,setname,...) then return true end
+	end
+	return false
+end
 --Overwritten Card functions
 --check if a card can be put into the battle zone
 local card_is_can_be_special_summoned=Card.IsCanBeSpecialSummoned
@@ -356,9 +375,6 @@ Card.GetOriginalManaCost=Card.GetOriginalLevel
 Card.GetPreviousManaCostOnField=Card.GetPreviousLevelOnField
 ]]
 --check if a card's mana cost is equal to a given value
-function Card.IsLevel(c,lv)
-	return c:GetLevel()==lv
-end
 Card.IsManaCost=Card.IsLevel
 --check if a card's mana cost is less than or equal to a given value
 Card.IsManaCostBelow=Card.IsLevelBelow

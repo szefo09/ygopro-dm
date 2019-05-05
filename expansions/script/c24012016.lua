@@ -18,11 +18,11 @@ function scard.evofilter(c)
 end
 --power up
 function scard.powtg(e,c)
-	return c~=e:GetHandler() and c:IsFaceup() and (c:DMIsRace(DM_RACE_GLADIATOR) or c:DMIsRace(DM_RACE_EARTH_EATER))
+	return c~=e:GetHandler() and c:IsFaceup() and c:DMIsRace(DM_RACE_GLADIATOR,DM_RACE_EARTH_EATER)
 end
 --draw
 function scard.cfilter(c)
-	return c:IsFaceup() and (c:DMIsRace(DM_RACE_GLADIATOR) or c:DMIsRace(DM_RACE_EARTH_EATER))
+	return c:IsFaceup() and c:DMIsRace(DM_RACE_GLADIATOR,DM_RACE_EARTH_EATER)
 end
 function scard.drcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(scard.cfilter,1,nil)

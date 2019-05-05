@@ -10,7 +10,7 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--get ability (attack untapped)
-	dm.EnableAttackUntapped(c,nil,nil,DM_LOCATION_BATTLE,0,scard.abtg)
+	dm.EnableAttackUntapped(c,nil,nil,DM_LOCATION_BATTLE,0,aux.TargetBoolFunction(Card.DMIsRace,DM_RACE_PHOENIX,DM_RACE_DRAGON))
 	--return
 	dm.AddSingleLeaveBattleEffect(c,0,nil,nil,dm.SendtoHandOperation(nil,dm.DMGraveFilter(scard.retfilter),DM_LOCATION_GRAVE,0))
 end
@@ -19,10 +19,6 @@ scard.evolution_race_list={DM_RACE_FIRE_BIRD,DM_RACE_ARMORED_DRAGON,DM_RACE_DRAG
 --vortex evolution
 scard.evofilter1=aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_FIRE_BIRD)
 scard.evofilter2=aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_ARMORED_DRAGON)
---get ability (attack untapped)
-function scard.abtg(e,c)
-	return c:DMIsRace(DM_RACE_PHOENIX) or c:DMIsRace(DM_RACE_DRAGON)
-end
 --return
 function scard.retfilter(c)
 	return c:IsCivilization(DM_CIVILIZATION_FIRE) and c:IsCreature() and not c:IsEvolution()
