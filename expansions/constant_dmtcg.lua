@@ -28,7 +28,7 @@ CARD_MARROW_OOZE_THE_TWISTER		=24002032	--EVENT_CUSTOM+DM_EVENT_ATTACK_PLAYER
 CARD_BRUTAL_CHARGE					=24005049	--EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD
 CARD_STORM_WRANGLER_THE_FURIOUS		=24009051	--EVENT_CUSTOM+DM_EVENT_TRIGGER_BLOCKER
 CARD_BLUUM_ERKIS_FLARE_GUARDIAN		=24010119	--EVENT_CUSTOM+DM_EVENT_CAST_FREE
---CARD_SOUL_PHOENIX					=24012005	--RESERVED --EVENT_CUSTOM+DM_EVENT_TO_SZONE
+CARD_SOUL_PHOENIX					=24012005	--RESERVED --EVENT_CUSTOM+DM_EVENT_TO_SZONE
 CARD_GASHI_GASHI					=24013034	--EVENT_CUSTOM+DM_EVENT_LOSE_BATTLE
 CARD_WOLFIS_BLUE_DIVINE_DRAGON		=24027		--EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER
 --↑RegisterFlagEffect
@@ -39,7 +39,7 @@ DM_WIN_REASON_INVALID				=0x4d		--"Invalid deck."
 DM_WIN_REASON_DECKOUT				=0x4e		--"Ran out of cards in deck."
 DM_WIN_REASON_BOMBAZAR				=0x4f		--"Won due to the ability of [Bombazar, Dragon of Destiny]."
 --Setname
---↑Race (Card.DMIsRace, Card.DMIsRace)
+--↑Race (Card.DMIsRace)
 DM_RACE_LIGHT_BRINGER				=0x1		--"Chilias, the Oracle" (DM-01 1/110)
 DM_RACE_GUARDIAN					=0x2		--"Dia Nork, Moonlight Guardian" (DM-01 2/110)
 DM_RACE_STARLIGHT_TREE				=0x3		--"Emerald Grass" (DM-01 3/110)
@@ -266,7 +266,7 @@ DM_EVENT_ATTACK_PLAYER				=CARD_MARROW_OOZE_THE_TWISTER	--When a creature attack
 DM_EVENT_BREAK_SHIELD				=CARD_BRUTAL_CHARGE				--When a creature finishes attacking the opponent and broke a shield
 DM_EVENT_TRIGGER_BLOCKER			=CARD_STORM_WRANGLER_THE_FURIOUS--Trigger a creature's "Blocker" ability
 DM_EVENT_CAST_FREE					=CARD_BLUUM_ERKIS_FLARE_GUARDIAN--Cast a spell immediately for no cost
---DM_EVENT_TO_SZONE					=CARD_SOUL_PHOENIX				--RESERVED --When a card is added to a player's shields
+DM_EVENT_TO_SZONE					=CARD_SOUL_PHOENIX				--RESERVED --When a card is added to a player's shields
 DM_EVENT_BECOME_SHIELD_TRIGGER		=CARD_WOLFIS_BLUE_DIVINE_DRAGON	--Card gets "Shield Trigger" (Can be summoned or cast for no cost)
 --Category (for SetCategory)
 DM_CATEGORY_BLOCKER					=0x10000000		--"Blocker", needed for unblockable abilities ("Laser Wing" DM-01 11/110)

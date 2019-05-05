@@ -210,7 +210,7 @@ end
 --[[
 --check if a card has a particular name category to put the appropriate evolution creature on it
 function Card.DMIsEvolutionNameCategory(c,...)
-	local namecate_list={}
+	local namecate_list={...}
 	for _,namecate in ipairs(namecate_list) do
 		if c:IsNameCategory(namecate) or c:IsHasEffect(DM_EFFECT_EVOLUTION_ANY_CODE) then return true end
 	end
