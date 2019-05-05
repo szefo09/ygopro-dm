@@ -838,23 +838,26 @@ function Duel.DMIsPlayerCanSendDecktoptoGrave(player,count)
 end
 ]]
 --add a card to a player's shields face down
---Not fully implemented: Does not check if an evolution source can leave the battle zone
+--Note: Currently disabled check if an evolution source can leave the battle zone
 function Duel.SendtoShield(targets,player)
 	--player: the player whose shields to add a card to (generally its owner)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
 	local ct=0
 	for tc1 in aux.Next(targets) do
+		--add evolution source to shields first to prevent YGOPro from sending it to yugioh's graveyard
 		local g=tc1:GetSourceGroup()
 		for tc2 in aux.Next(g) do
-			if Duel.GetLocationCount(player,DM_LOCATION_SHIELD)>0 then
-				if Duel.MoveToField(tc2,player,player,DM_LOCATION_SHIELD,POS_FACEDOWN,true) then
-					ct=ct+1
+			--if tc1:IsCanSourceLeave() then
+				if Duel.GetLocationCount(player,DM_LOCATION_SHIELD)>0 then
+					if Duel.MoveToField(tc2,player,player,DM_LOCATION_SHIELD,POS_FACEDOWN,true) then
+						ct=ct+1
+					end
+				else
+					Duel.Hint(HINT_MESSAGE,player,DM_DESC_NOSZONES)
+					Duel.DMSendtoGrave(tc2,REASON_RULE) --put into the graveyard if all zones are occupied
+					ct=ct+1	--count the card that did not add because YGOPro's limited zones prevented it
 				end
-			else
-				Duel.Hint(HINT_MESSAGE,player,DM_DESC_NOSZONES)
-				Duel.DMSendtoGrave(tc2,REASON_RULE) --put into the graveyard if all zones are occupied
-				ct=ct+1	--count the card that did not add because YGOPro's limited zones prevented it
-			end
+			--end
 		end
 		if Duel.GetLocationCount(player,DM_LOCATION_SHIELD)>0 then
 			if Duel.MoveToField(tc1,player,player,DM_LOCATION_SHIELD,POS_FACEDOWN,true) then
@@ -2210,7 +2213,7 @@ function Auxiliary.AddSingleComeIntoPlayEffect(c,desc_id,optional,targ_func,op_f
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e1:SetCategory(cate) end
 	e1:SetType(EFFECT_TYPE_SINGLE+typ)
-	e1:SetCode(DM_EVENT_COME_INTO_PLAY_SUCCESS)
+	e1:SetCode(DM_EVENT_COME_INTO_PLAY)
 	if typ==EFFECT_TYPE_TRIGGER_O and prop then
 		e1:SetProperty(EFFECT_FLAG_DELAY+prop)
 	elseif typ==EFFECT_TYPE_TRIGGER_O then
@@ -2232,7 +2235,7 @@ function Auxiliary.AddComeIntoPlayEffect(c,desc_id,optional,targ_func,op_func,pr
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e1:SetCategory(cate) end
 	e1:SetType(EFFECT_TYPE_FIELD+typ)
-	e1:SetCode(DM_EVENT_COME_INTO_PLAY_SUCCESS)
+	e1:SetCode(DM_EVENT_COME_INTO_PLAY)
 	if typ==EFFECT_TYPE_TRIGGER_O and prop then
 		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY+prop)
 	elseif typ==EFFECT_TYPE_TRIGGER_O then
@@ -2259,7 +2262,7 @@ function Auxiliary.AddStaticEffectSingleComeIntoPlay(c,desc_id,optional,targ_fun
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE+typ)
-	e1:SetCode(DM_EVENT_COME_INTO_PLAY_SUCCESS)
+	e1:SetCode(DM_EVENT_COME_INTO_PLAY)
 	if prop then e1:SetProperty(prop) end
 	if targ_func1 then e1:SetTarget(targ_func1) end
 	e1:SetOperation(op_func)
@@ -2541,7 +2544,7 @@ function Auxiliary.AddPlayerSummonCreatureEffect(c,desc_id,p,optional,targ_func,
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_FIELD+typ)
-	e1:SetCode(DM_EVENT_SUMMON_SUCCESS)
+	e1:SetCode(DM_EVENT_SUMMON)
 	if typ==EFFECT_TYPE_TRIGGER_O and prop then
 		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY+prop)
 	elseif typ==EFFECT_TYPE_TRIGGER_O then
@@ -2666,13 +2669,14 @@ function Auxiliary.AddSingleLeaveReplaceEffect(c,desc_id,targ_func,op_func)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
-	e1:SetCode(EVENT_LEAVE_FIELD)
+	e1:SetCode(DM_EVENT_LEAVE_BZONE)
+	e1:SetCondition(Auxiliary.PreviousLocationCondition(DM_LOCATION_BATTLE))
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_EVOLUTION_SOURCE_REMAIN)
 end
 --"When this creature leaves the battle zone, ABILITY."
---Not fully implemented: Ability does not trigger when the creature is added to the shields
+--Not fully implemented: Ability does not trigger when the creature is added to the shields face down
 --e.g. "Wise Starnoid, Avatar of Hope" (DM-12 S2/S5)
 function Auxiliary.AddSingleLeaveBattleEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
 	local con_func=con_func or aux.TRUE
@@ -2681,7 +2685,7 @@ function Auxiliary.AddSingleLeaveBattleEffect(c,desc_id,optional,targ_func,op_fu
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e1:SetCategory(cate) end
 	e1:SetType(EFFECT_TYPE_SINGLE+typ)
-	e1:SetCode(EVENT_LEAVE_FIELD)
+	e1:SetCode(DM_EVENT_LEAVE_BZONE)
 	if typ==EFFECT_TYPE_TRIGGER_O and prop then
 		e1:SetProperty(EFFECT_FLAG_DELAY+prop)
 	elseif typ==EFFECT_TYPE_TRIGGER_O then
@@ -3745,12 +3749,12 @@ Auxiliary.blcon=Auxiliary.BlockCondition
 --condition to check what a card's previous location was
 --e.g. "Bombersaur" (DM-02 36/55), "Altimeth, Holy Divine Dragon" (Game Original)
 function Auxiliary.PreviousLocationCondition(loc)
-	--loc: DM_LOCATION_BATTLE for "When this creature is destroyed/leaves the battle zone" + EVENT_DESTROYED
+	--loc: DM_LOCATION_BATTLE for "When this creature is destroyed/leaves the battle zone"
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				return e:GetHandler():IsPreviousLocation(loc)
 			end
 end
-Auxiliary.plocon=Auxiliary.PreviousLocationCondition
+Auxiliary.ploccon=Auxiliary.PreviousLocationCondition
 --condition of "While this creature is tapped"
 --e.g. "Barkwhip, the Smasher" (DM-02 45/55)
 function Auxiliary.SelfTappedCondition(e,tp,eg,ep,ev,re,r,rp)
