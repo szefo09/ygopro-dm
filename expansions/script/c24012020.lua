@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--evolution
-	dm.AddEvolutionProcedure(c,scard.evofilter)
+	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_WILD_VEGGIES,DM_RACE_RAINBOW_PHANTOM))
 	--power up
 	dm.EnableUpdatePower(c,2000,nil,DM_LOCATION_BATTLE,0,scard.powtg)
 	--untap
@@ -12,10 +12,6 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_WILD_VEGGIES,DM_RACE_RAINBOW_PHANTOM}
---evolution
-function scard.evofilter(c)
-	return c:DMIsEvolutionRace(DM_RACE_WILD_VEGGIES) or c:DMIsEvolutionRace(DM_RACE_RAINBOW_PHANTOM)
-end
 --power up
 function scard.powtg(e,c)
 	return c~=e:GetHandler() and c:IsFaceup() and c:DMIsRace(DM_RACE_WILD_VEGGIES,DM_RACE_RAINBOW_PHANTOM)

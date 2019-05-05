@@ -14,7 +14,7 @@ end
 scard.duel_masters_card=true
 function scard.descon(e,tp,eg,ep,ev,re,r,rp)
 	local a=Duel.GetAttacker()
-	return a:IsControler(tp) and (a:DMIsRace(DM_RACE_ANGEL_COMMAND) or a:DMIsRace(DM_RACE_DEMON_COMMAND))
+	return a:IsControler(tp) and a:DMIsRace(DM_RACE_ANGEL_COMMAND,DM_RACE_DEMON_COMMAND)
 end
 function scard.desfilter(c)
 	return c:IsFaceup() and c:IsTapped()

@@ -199,14 +199,22 @@ function Card.DMIsSummonable(c)
 	return not c:IsHasEffect(DM_EFFECT_CANNOT_SUMMON)
 end
 --check if a card has a particular race to put the appropriate evolution creature on it
-function Card.DMIsEvolutionRace(c,race)
-	return c:DMIsRace(race) or c:IsHasEffect(DM_EFFECT_EVOLUTION_ANY_RACE)
+function Card.DMIsEvolutionRace(c,...)
+	local race_list={...}
+	for _,race in ipairs(race_list) do
+		if c:DMIsRace(race) or c:IsHasEffect(DM_EFFECT_EVOLUTION_ANY_RACE) then return true end
+	end
+	return false
 end
 --reserved
 --[[
 --check if a card has a particular name category to put the appropriate evolution creature on it
-function Card.DMIsEvolutionNameCategory(c,setname)
-	return c:IsNameCategory(setname) or c:IsHasEffect(DM_EFFECT_EVOLUTION_ANY_CODE)
+function Card.DMIsEvolutionNameCategory(c,...)
+	local namecate_list={...}
+	for _,namecate in ipairs(namecate_list) do
+		if c:IsNameCategory(namecate) or c:IsHasEffect(DM_EFFECT_EVOLUTION_ANY_CODE) then return true end
+	end
+	return false
 end
 --check if a card has a particular civilization to put the appropriate evolution creature on it
 function Card.DMIsEvolutionCivilization(c,civ)
