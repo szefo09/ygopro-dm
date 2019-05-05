@@ -76,10 +76,10 @@
 0x80	Destroy Deck       
 0x100	Increase Draw      
 0x200	Search Deck        
-0x400	GY to Hand/Battle  
+0x400	GY to Hand/BZone   
 0x800	Tap/Untap          
-0x1000	N/A Get Control    
-0x2000	Power Up/Down      
+0x1000	Change Cost        
+0x2000	Change Power       
 0x4000	Speed Attacker     
 0x8000	Attack Untapped    
 0x10000	Limit Attack       
@@ -87,7 +87,7 @@
 0x40000	Put in Battle Zone 
 0x80000	N/A Token          
 0x100000	Race-related       
-0x200000	Civilization-rel.  
+0x200000	Civ-related        
 0x400000	Destroy Mana       
 0x800000	Shield Addition    
 0x1000000	Cannot Destroy     
@@ -96,7 +96,7 @@
 0x8000000	N/A Gamble         
 0x10000000	N/A Fusion         
 0x20000000	N/A Synchro        
-0x40000000	Evolution/Stack    
+0x40000000	Evolution          
 0x80000000	N/A Negate Effect  
 ##race
 0x0	(Not Available)
@@ -235,162 +235,4 @@
 0x34	Starnoid	スターノイド (Sutānoido)
 0x35	Naga	ナーガ (Nāga)
 0x36	Pegasus	セイント・ペガサス (Seinto Pegasasu)
-
-0x37	Cosmo Walker	コスモ・ウォーカー (Kosumo U~ōkā)
-0x38	Big Muscle	ビッグマッスル (Biggu Massuru)
-0x39	Wonder Trick	ワンダー・トリック (Wandā Torikku)
-0x3a	Splash Queen	スプラッシュ・クイーン (Supurasshu Kuīn)
-0x3b	Gargoyle	ガーゴイル (Gāgoiru)
-0x3c	Feathernoid	フェザーノイド (Fezānoido)
-0x3d	Arc Seraphim	アーク・セラフィム (Āku Serafimu)
-0x3e	Grand Devil	グランド・デビル (Gurando Debiru)
-0x3f	Tyranno Drake	ティラノ・ドレイク (Tirano Doreiku)
-0x40	Dreammate	ドリームメイト (Dorīmumeito)
-0x41	Great Mecha King	グレートメカオー (Gurēto Meka Ō)
-0x42	Dynamo	ダイナモ (Dainamo)
-0x43	Deep Marine	ディープ・マリーン (Dīpu Marīn)
-0x44	Brave Spirit	ブレイブ・スピリット (Bureibu Supiritto)
-0x45	Vehicle Bee	ビークル・ビー (Bīkuru Bī)
-0x46	Hero	ヒーロー (Hīrō)
-0x1046	Machine Hero	キカイヒーロー (Kikai Hīrō)
-0x47	Saint Head	セイント・ヘッド (Seinto Geddo)
-0x48	God	ゴッド (Goddo)
-0x1048	God Nova	ゴッド・ノヴァ (Goddo Novu~A)
-0x00491048	God Nova OMG	ゴッド・ノヴァ OMG (Goddo Nova OMG)
-0x4a	Lost Crusader	ロスト・クルセイダー (Rosuto Kuruseidā)
-0x4b	World Bird	ワールド・バード (Wārudo Bādo)
-0x004c0012	World Dragon	ワールド・ドラゴン (Wārudo Doragon)
-0x4d	Monster	モンスター (Monsutā)
-0x104d	Blue Monster	ブルー・モンスター (Burū Monsutā)
-0x204d	Flame Monster	フレイム・モンスター (Fureimu Monsutā)
-0x404d	Shine Monster	シャイン・モンスター (Shain Monsutā)
-0x804d	Dark Monster	ダーク・モンスター (Dāku Monsutā)
-0xa04d	Emerald Monster	エメラルド・モンスター (Emerarudo Monsutā)
-0xe04d	Gao Monster	ガオー・モンスター (Gaō Monsutā)
-0x4e	Knight	ナイト (Naito)
-0x104e	Funky Knightmare	ファンキー・ナイトメア (Fankī Naitomea)
-0x204e	Dark Knightmare	ダーク・ナイトメア (Dāku Naitomea)
-0x4f	Samurai	サムライ (Samurai)
-0x50	Shinobi	シノビ (Shinobi)
-0x51	Sword Flash	紫電・ドラゴン (Shiden Doragon)
-0x52	Origin	オリジン (Orijin)
-0x53	Lunatic Emperor	ルナティック・エンペラー (Runatikku Enperā)
-0x54	Ken Crimson Lord	ケングレンオー
-0x1054	Ken Gou Crimson Lord	ケンゴウグレンオー
-0x2054	Wan Ken Crimson Lord	ワンケングレンオー
-0x55	Lupia	ルピア (Rupia)
-0x56	Lord Gou Ken	ゴウケンオー
-0x57	White Knight	白騎士 (Shirokishi)
-0x58	Creator	クリエイター (Kurieitā)
-0x59	Ken Geki, Absolute Ruler ~Final Flare~	ケンゲキオージャ ～究極火焔～
-0x5a	NEX	NEX(ネックス) (Nekkusu)
-0x5b	Aku and Zen	アク (Aku) ゼン (Zen) サガ (Saga)
-0x5c	Romanov	ロマノフ (Romanov)
-0x5d	Luna's Sun Geyser	ルナーズ・サンガイザー (Runāzu San Gaizā)
-0x5e	Spark	スパーク (Supāku)
-0x5f	Hyperspatial	超次元 (Choujigen)
-0x60	Double Cross	XX(ダブルクロス) (Daburu Kurosu)
-0x1060	GENJI Double Cross	GENJI(ゲンジ)・XX(ダブルクロス) (Genji Daburu Kurosu)
-0x61	Emperor of the Gods	神帝 (Shintei)
-0x62	Zeta	ゼータ (Zēta)
-0x63	Alien	エイリアン (Eirian)
-0x64	Awakened	覚醒者 (Kakusei-sha)
-0x65	Five Star	ファイブスター (Faibusutā)
-0x66	Reaper	死神 (Shinigami)
-0x67	Aini	アイニー (Aini)
-0x68	G Hogan	G・ホーガン (G Hōgan)
-0x69	Ganveet	ガンヴィート (Gan'vu~īto)
-0x6a	Kankuro	カンクロウ (Kankurou)
-0x6b	Hunter	ハンター (Hantā)
-0x006c001d0012	Red Command Dragon	レッド・コマンド・ドラゴン (Reddo Komando Doragon)
-0x006d001d0012	Rainbow Command Dragon	レインボー・コマンド・ドラゴン (Reinbō Komando Doragon)
-0x6e	Egg	エッグ (Eggu)
-0x006f001d0012	Devil Command Dragon	デビル・コマンド・ドラゴン (Debiru Komando Doragon)
-0x0070001d0012	King Command Dragon	キング・コマンド・ドラゴン (Kingu Komando Doragon)
-0x71	Bolshack	ボルシャック (Borushakku)
-0x0072001d0012	Blue Command Dragon	ブルー・コマンド・ドラゴン (Burū Komando Doragon)
-0x0073001d	Sumo Wrestler Command	リキシ・コマンド (Rikishi Komando)
-0x0073001d0012	Sumo Wrestler Command Dragon	リキシ・コマンド・ドラゴン (Rikishi Komando Doragon)
-0x0074001d0012	Black Command Dragon	ブラック・コマンド・ドラゴン (Burakku Komando Doragon)
-0x0075001d0012	Shining Command Dragon	シャイニング・コマンド・ドラゴン (Shainingu Komando Doragon)
-0x0076001d0012	White Command Dragon	ホワイト・コマンド・ドラゴン (Howaito Komando Doragon)
-0x77	Unknown	アンノウン (An'nōn)
-0x0078001d	Beast Command	ビースト・コマンド (Bīsuto Komando)
-0x79	Curry Bread	カレーパン (Karē Pan)
-0x7a	Unnoise	アンノイズ (An'noizu)
-0x7b	Zenith	ゼニス (Zenisu)
-0x7c	Victory	ビクトリー (Bikutorī)
-0x7d	Heaven's	ヘブンズ (Hebunzu
-0x7e	Idol	アイドル (Aidoru)
-0x107e	World Idol	ワールドアイドル (Wārudo Aidoru)
-0x007f001d0012	Green Command Dragon	グリーン・コマンド・ドラゴン (Gurīn Komando Doragon)
-0x80	Pianist	ピアニスト (Pianisuto)
-0x81	Tristone	トライストーン (Toraisutōn)
-0x82	Special Climax	スペシャル・クライマックス (Supesharu Kuraimakkusu)
-0x83	Oracle	オラクル (Orakuru)
-0x84	Outrage	アウトレイジ (Autoreiji)
-0x1084	Outrage OMG	アウトレイジOMG (Autoreiji OMG)
-0x2084	Outrage Nyanko	アウトレイジ猫 (Autoreiji Nyanko)
-0x4084	Outrage Wanko	アウトレイジ犬 (Autoreiji Wanko)
-0x8084	Outrage MAX	アウトレイジMAX (Autoreiji MAX)
-0x00850012	Elder Dragon	エルダー・ドラゴン (Erudā Doragon)
-0x86	Children	チルドレン (Chirudoren)
-0x87	Oraclion	オラクリオン (Orakurion)
-0x88	Parlock	パーロック (Parlock)
-0x89	Prin	プリン (Prin)
-0x8a	Testa Rossa	テスタ・ロッサ (Tesuta Rossa)
-0x008b004d	Magical Monster	マジカル・モンスター (Majikaru Monsutā)
-0x8c	Justice Wing	ジャスティス・ウィング (Jasutisu U~ingu)
-0x8d	Ryusei	リュウセイ (Ryusei)
-0x008e001d0012	Crystal Command Dragon	クリスタル・コマンド・ドラゴン (Kurisutaru Komando Doragon)
-0x008f001d0012	Jurassic Command Dragon	ジュラシック・コマンド・ドラゴン (Jurashikku Komando Doragon)
-0x0090001d0012	Gaial Command Dragon	ガイアール・コマンド・ドラゴン (Gaiāru Komando Doragon)
-0x91	Draguner	ドラグナー (Doragunā)
-0x92	Gaial	ガイアール (Gaiāru)
-0x93	Paras	パラス (Paras)
-0x0094001d0012	Mega Command Dragon	メガ・コマンド・ドラゴン (Mega Komando Doragon)
-0x95	Guerrilla Division	遊撃師団 (Yūgeki Shidan)
-0x00961007	Cyber Virus Kai	サイバー・ウイルス海 (Saibā Virusu Kai)
-0x97	Justice Orb	ジャスティス・オーブ (Jasutisu Ōbu)
-0x98	Invader	侵略者 (Shinryaku-sha)
-0x1098	S-Rank Invader	S級侵略者 (Esu Kyū Shinryakusha)
-0x2098	Invader ZERO	侵略者ZERO (Shinryaku-sha Zero)
-0x99	Revolutionary	革命軍 (Kakumei-gun)
-0x1099	Master Revolutionary	マスター革命軍 (Masutā Kakumei-gun)
-0x009a001d	Magic Command	マジック・コマンド (Majikku Komando)
-0x009b001d	Guerrilla Command	ゲリラ・コマンド (Gerira Komando)
-0x009c001d	Sonic Command	ソニック・コマンド (Sonikku Komando)
-0x9d	Bolmeteus	ボルメテウス (Borumeteusu)
-0x9e	Musha	武者 (Musha)
-0x9f	Yamato	大和 (Yamato)
-0xa0	Lord of Spirits	聖霊王 (Seirei-ō)
-0xa1	Ballom	バロム (Baromu)
-0xa2	Bolberg	ボルベルグ (Boruberugu)
-0xa3	Initials	イニシャルズ (Inisharuzu)
-0x10a3	Initials X	イニシャルズX (Inisharuzu Ekkusu)
-0x20a3	Master Initials	マスター・イニシャルズ (Masutā Inisharuzu)
-0xa4	Dokindam	ドキンダム (Dokindamu)
-0xa5	2016 Calendar	2016カレンダー (2016 Karendā)
-0xa6	Narrator	ナレーター (Narētā)
-0x00a7001d0012	Metal Command Dragon	メタル・コマンド・ドラゴン (Metaru Komando Doragon)
-0xa8	Planeswalker	プレインズ・ウォーカー (Pureinzu U~ōkā)
-0xa9	Special Thanks	スペシャル・サンクス (Supesharu Sankusu)
-0xaa	The Answer	ジ・アンサー (Ji Ansā)
-0x10aa	???	??? (???)
-0xab	Team Hamukatsu	ハムカツ団 (Hamukatsu-dan)
-0xac	Team Doremi	ドレミ団 (Doremi-dan)
-0xad	Team Acme	アクミ団 (Akumi-dan)
-0xae	Team Damama	ダママ団 (Damama-dan)
-0xaf	Team Tech	テック団 (Tekku-dan)
-0xb0	Milkboy	ミルクボーイ (Mirukubōi)
-0x00b1009b001d	Forbidden Sonic Command	禁断ソニック・コマンド (Kindan Sonikku Komando)
-0xb2	Forbidden	禁断 (Kindan)
-0xb3	Metallica	メタリカ (Metarika)
-0xb4	Jokers	ジョーカーズ (Jokers)
-0xb5	Mutopia	ムートピア (Mūtopia)
-0xb6	Mafi Gang	マフィ・ギャング (Mafi Gyangu)
-0xb7	Beat Jockey	ビートジョッキー (Bītojokkī)
-0xb8	Gransect	グランセクト (Guransekuto)
-0x00b90012	Dragon Guild	ドラゴンギルド (Doragon Girudo)
-0xba	DG	Dragon Generator	DG(ディージー)
 #end

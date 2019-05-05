@@ -95,11 +95,11 @@ If you do not build your deck according to the following rules, you will lose th
 - `0x20	Return to Deck` = Put a card into a player's deck
 - `0x40	Destroy Hand` = Decrease the opponent's hand size
 - `0x80	Destroy Deck` = Decrease the opponent's deck size
-- `0x100	Increase Draw` = Put a card from the top of a player's deck into a player's hand
+- `0x100	Increase Draw` = Draw a card from the deck
 - `0x200	Search Deck` = Look at a player's deck
 - `0x400	GY to Hand/Field` = Put a card from the graveyard into a player's hand or in play
 - `0x800	Change Battle Position` = Untap or tap a card
-- `0x1000	Get Control` = ～Reserved～
+- `0x1000	Get Control` = Increase or decrease a card's mana cost
 - `0x2000	Increase/Decrease ATK/DEF` = Increase or decrease a creature's power
 - `0x4000	Piercing` = No summoning sickness; ignore any effects that prevent creatures from attacking
 - `0x8000	Attack Multiple Times` = Lists "can attack untapped creatures" in the card's text
@@ -119,7 +119,6 @@ If you do not build your deck according to the following rules, you will lose th
 - `0x20000000	Synchro` = ～Reserved～
 - `0x40000000	Xyz` = Evolution creature; lists "evolution" in the card's text
 - `0x80000000	Negate Effect` = ～Reserved～
-- Uncategorized: `Play for Free`, `Increase/Decrease Mana Cost`
 </details>
 <details>
 <summary>Card Search</summary>
