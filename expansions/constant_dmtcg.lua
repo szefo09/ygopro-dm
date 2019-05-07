@@ -387,12 +387,11 @@ DM_NAME_TRAP						=0xa2e		--"Na Turalgo Danger" (DMRP-06 S9/S10)
 MAX_NUMBER							=999999999	--Max number allowed in YGOPro
 DM_MAX_MANA_COST					=4294967295	--"Dormageddon X, Forbidden Armageddon" (DMR-23 FFL1,FFL2,FFL3,FFL4,FFL5/FFL5)
 --Location
+LOCATION_ALL						=0xff		--All locations
 DM_LOCATION_BATTLE					=LOCATION_MZONE						--Battle Zone
 DM_LOCATION_SHIELD					=LOCATION_SZONE						--Shield Zone
 DM_LOCATION_MANA					=LOCATION_GRAVE+LOCATION_REMOVED	--Mana Zone
 DM_LOCATION_GRAVE					=LOCATION_REMOVED					--Graveyard
----Location combinations
-LOCATION_ALL						=0xff		--All locations
 --Position
 POS_FACEUP_UNTAPPED					=POS_FACEUP_ATTACK		--Face-up untapped
 POS_FACEDOWN_UNTAPPED				=POS_FACEDOWN_ATTACK	--N/A
@@ -509,9 +508,10 @@ DM_EFFECT_WAVE_STRIKER				=729	--Wave Striker ("Asra, Vizier of Safety" DM-11 6/
 DM_EFFECT_CANNOT_USE_TAP_ABILITY	=730	--Player cannot use the Tap ability of their creatures ("Lockdown Lizard" DM-11 39/55)
 DM_EFFECT_VORTEX_EVOLUTION			=731	--Vortex Evolution ("Soul Phoenix, Avatar of Unity" DM-12 5/55)
 DM_EFFECT_EVOLUTION_SOURCE_REMAIN	=732	--When an evolution creature would leave the battle zone, only the top card leaves instead ("Soul Phoenix, Avatar of Unity" DM-12 5/55)
-DM_EFFECT_SYMPATHY					=733	--Sympathy ("Akashic First, Electro-Dragon" DM-13 3/55)
-DM_EFFECT_CONFIRM_BROKEN_SHIELD		=734	--Player reveals their shields broken by their opponent's creatures ("Rubels, the Explorer" DM-13 36/55)
-DM_EFFECT_CHARGE_TAPPED				=735	--Put a cast spell with this ability into the mana zone tapped instead of the graveyard ("Pixie Cocoon" DM-13 50/55)
+DM_EFFECT_BREAK_EXTRA_SHIELD		=733	--Breaks one more shield ("Dyno Mantis, the Mightspinner" L10 Y2)
+DM_EFFECT_SYMPATHY					=734	--Sympathy ("Akashic First, Electro-Dragon" DM-13 3/55)
+DM_EFFECT_CONFIRM_BROKEN_SHIELD		=735	--Player reveals their shields broken by their opponent's creatures ("Rubels, the Explorer" DM-13 36/55)
+DM_EFFECT_CHARGE_TAPPED				=736	--Put a cast spell with this ability into the mana zone tapped instead of the graveyard ("Pixie Cocoon" DM-13 50/55)
 DM_EFFECT_WINS_ALL_BATTLES			=799	--Wins All Battles ("Marshias, Spirit of the Sun" DM-14 S1/S10)		
 --Abilities that trigger or actions that occur at the appropriate event
 DM_EVENT_UNTAP_STEP					=EVENT_PREDRAW					--Start of Turn Step (Untap Step)
@@ -558,6 +558,8 @@ DM_DESC_DRAGON_BLOCKER				=1667	--"Dragon blocker (Whenever an opponent's creatu
 DM_DESC_DOUBLE_BREAKER				=1801	--"Double Breaker (This creature breaks 2 shields.)"
 DM_DESC_TRIPLE_BREAKER				=1802	--"Triple Breaker (This creature breaks 3 shields.)"
 DM_DESC_CREW_BREAKER				=1803	--"Crew Breaker—"RACE" (This creature breaks one more shield for each of your other "RACE" in the battle zone.)"
+DM_DESC_DARKNESS_BLOCKER			=1804	--"Darkness blocker (Whenever an opponent's darkness creature attacks, you may tap this creature to stop the attack. Then the 2 creatures battle.)"
+DM_DESC_LIGHT_BLOCKER				=1805	--"Light blocker (Whenever an opponent's light creature attacks, you may tap this creature to stop the attack. Then the 2 creatures battle.)"
 DM_DECKERROR_DECKCOUNT				=1450	--"Your deck must be exactly 40 cards!"
 DM_DECKERROR_NONDM					=1451	--"You can't have any non-Duel Masters cards in your deck!"
 --Select Message (for Duel.SelectOption)

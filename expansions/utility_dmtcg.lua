@@ -47,6 +47,15 @@ function Card.IsLevel(c,lv)
 		return c:GetLevel()==lv
 	end
 end
+--check if a creature's power is equal to a given value
+local card_is_attack=Card.IsAttack
+function Card.IsAttack(c,atk)
+	if card_is_attack then
+		return card_is_attack(c,atk)
+	else
+		return c:GetAttack()==atk
+	end
+end
 --check if a card has a particular race
 local card_is_set_card=Card.IsSetCard
 function Card.IsSetCard(c,...)
@@ -411,9 +420,6 @@ Card.GetTextPower=Card.GetTextAttack
 Card.GetPreviousPowerOnField=Card.GetPreviousAttackOnField
 ]]
 --check if a creature's power is equal to a given value
-function Card.IsAttack(c,atk)
-	return c:GetAttack()==atk
-end
 Card.IsPower=Card.IsAttack
 --check if a creature's power is less than or equal to a given value
 Card.IsPowerBelow=Card.IsAttackBelow
@@ -711,6 +717,7 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason,ignore_br
 	local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(),target_player,DM_LOCATION_SHIELD,0,nil)
 	if g:GetCount()==0 or not rc:IsCanBreakShield() then return 0 end
 	if rc and not ignore_breaker then
+		--check for "Breaker"
 		local m=_G["c"..rc:GetCode()]
 		local db=rc:IsHasEffect(DM_EFFECT_DOUBLE_BREAKER)
 		local tb=rc:IsHasEffect(DM_EFFECT_TRIPLE_BREAKER)
@@ -733,6 +740,11 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason,ignore_br
 			if opt==1 then min,max=2,2
 			elseif opt==2 then min,max=3,3
 			elseif opt==3 then min,max=m.crew_breaker_count(rc),m.crew_breaker_count(rc) end
+		end
+		--check for "breaks one more shield"
+		if rc:IsHasEffect(DM_EFFECT_BREAK_EXTRA_SHIELD) then
+			min=min+rc:GetEffectCount(DM_EFFECT_BREAK_EXTRA_SHIELD)
+			max=min
 		end
 	end
 	Duel.Hint(HINT_SELECTMSG,sel_player,DM_HINTMSG_BREAK)
@@ -3161,8 +3173,28 @@ function Auxiliary.EnableCannotBeDestroyed(c,s_range,o_range,targ_func)
 	e2:SetCode(EFFECT_INDESTRUCTIBLE_BATTLE)
 	c:RegisterEffect(e2)
 	local e3=e1:Clone()
-	e3:SetCode(EFFECT_INDESTRUCTIBLE_ABILITY)
+	e3:SetCode(EFFECT_INDESTRUCTIBLE_EFFECT)
 	c:RegisterEffect(e3)
+end
+--"When this creature loses a battle, it isn't destroyed."
+--e.g. "Amnis, Holy Elemental" (L3/6 Y1)
+function Auxiliary.EnableCannotBeBattleDestroyed(c,val,s_range,o_range,targ_func)
+	local e1=Effect.CreateEffect(c)
+	if s_range or o_range then
+		e1:SetType(EFFECT_TYPE_FIELD)
+		e1:SetRange(DM_LOCATION_BATTLE)
+		e1:SetTargetRange(s_range,o_range)
+		if targ_func then e1:SetTarget(targ_func) end
+	else
+		e1:SetType(EFFECT_TYPE_SINGLE)
+	end
+	e1:SetCode(EFFECT_INDESTRUCTIBLE_BATTLE)
+	if val then
+		e1:SetValue(val)
+	else
+		e1:SetValue(1)
+	end
+	c:RegisterEffect(e1)
 end
 --"Whenever your opponent would choose a creature in the battle zone, he can't choose this one."
 --e.g. "Petrova, Channeler of Suns" (DM-09 S1/S5)
@@ -3547,6 +3579,17 @@ function Auxiliary.DecktopSendtoManaOperation(p,ct)
 			end
 end
 --========== SendtoShield ==========
+--operation function for abilities that put cards from the top of a player's deck into the shield zone
+--use Auxiliary.CheckDeckFunction for the target function, if needed
+function Auxiliary.DecktopSendtoShieldOperation(p,ct)
+	--p: PLAYER_SELF/tp for the top of your deck or PLAYER_OPPO/1-tp for your opponent's
+	--ct: the number of cards to put into the shield zone
+	return	function(e,tp,eg,ep,ev,re,r,rp)
+				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
+				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
+				Duel.SendDecktoptoShield(player,ct)
+			end
+end
 --operation function for abilities that put cards into the shield zone
 function Auxiliary.SendtoShieldOperation(p,f,s,o,min,max,ex,...)
 	--p,min,max: nil to put all cards into the shield zone

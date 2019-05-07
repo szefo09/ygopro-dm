@@ -15,20 +15,20 @@
 - ~**Nov., 2006** : DM-12 Thrash of the Hybrid Megacreatures : `24012XXX`~
 
 ## [Promotional Cards](https://duelmasters.fandom.com/wiki/English_Promotional_Cards)
-- Event Promos - Year 1 : `240XXX`
-- Event Promos - Year 2 : `240XXX`
-- Tournament Promos - Year 1 : `240XXX`
-- Tournament Promos - Year 2 : `240XXX`
-- JDC League Promos - Year 1 : `240XXX`
-- JDC League Promos - Year 2 : `240XXX`
-- Sempai Legends Atari Promos : `240XXX`
-- McDonalds Kids Meal Promotional : `240XXX`
-- Burger King Kids Meal Promotional : `240XXX`
-- D-MAX Reward - Year 1 : `240XXX`
-- D-MAX Reward - Year 2 : `240XXX`
-- D-MAX Reward - Year 3 : `240XXX`
-- Kellogg's Promos : `240XXX`
-- Duel Masters Comic Promo Cards : `240XXX`
+- ~Event Promos - Year 1 : `240XXX`~
+- ~Event Promos - Year 2 : `240XXX`~
+- ~Tournament Promos - Year 1 : `240XXX`~
+- ~Tournament Promos - Year 2 : `240XXX`~
+- ~JDC League Promos - Year 1 : `240XXX`~
+- ~JDC League Promos - Year 2 : `240XXX`~
+- ~Sempai Legends Atari Promos : `240XXX`~
+- ~McDonalds Kids Meal Promotional : `240XXX`~
+- ~Burger King Kids Meal Promotional : `240XXX`~
+- ~D-MAX Reward - Year 1 : `240XXX`~
+- ~D-MAX Reward - Year 2 : `240XXX`~
+- ~D-MAX Reward - Year 3 : `240XXX`~
+- ~Kellogg's Promos : `240XXX`~
+- ~Duel Masters Comic Promo Cards : `240XXX`~
 
 # Duel Masters [OCG Sets](https://duelmasters.fandom.com/wiki/List_of_Duel_Masters_OCG_Sets)
 
@@ -185,7 +185,7 @@
 - **July 15, 2006** : DMC-29 Arc Seraphim Reverser アーク・セラフィム・リバーサー : `4034XXX`
 - **Sept. 16, 2006** : DMC-30 Tyranno Drake Crusher ティラノ・ドレイク・クラッシャー : `4035XXX`
 - **Sept. 16, 2006** : DMC-31 Great Mecha-O Eraser グレートメカオー・イレイザー : `4036XXX`
-- **Mar. 24, 2007** : DMC-34 CoroCoro Dream Pack 2: Eternal Legacy ドリーム・パック2: エターナル・レガシー : `4037XXX`
+- **Mar. 24, 2007** : DMC-34 CoroCoro Dream Pack 2: Eternal Legacy エターナル・レガシー : `4037XXX`
 - **May 21, 2007** : DMC-35 Beginner Beat Slash Deck ビギナーズ・ビートスラッシュ・デッキ : `4038XXX`
 - **July 21, 2007** : DMC-36 Heaven of Dragon ヘヴン・オブ・ドラゴン : `4039XXX`
 - **July 21, 2007** : DMC-37 Violence Angel バイオレンス・エンジェル : `4040XXX`
@@ -301,10 +301,10 @@
 - **Nov. 11, 2018** : DMBD-07 Behold!! Twin Hero Deck 80: Jokers Deluxe VS Calibur Saga : `4150XXX`
 - **Nov. 11, 2018** : DMBD-08 Behold!! Twin Hero Deck 80: Final Hazard VS Moonless Moon : `4151XXX`
 -----
-- **Mar. 16, 2019** : DMSD-08 Super GR Start Deck: Joe's GachaMecha Wonderfoo : `4141XXX`
-- **Mar. 16, 2019** : DMSD-09 Super GR Start Deck: Cap's Orega-Ora Delete : `4141XXX`
-- **May 18, 2019** : DMSD-10 : `4141XXX`
-- **June 15, 2019** : DMSD-11 : `4141XXX`
+- **Mar. 16, 2019** : DMSD-08 Super GR Start Deck: Joe's GachaMecha Wonderfoo : `4152XXX`
+- **Mar. 16, 2019** : DMSD-09 Super GR Start Deck: Cap's Orega-Ora Delete : `4153XXX`
+- **May 18, 2019** : DMSD-10 : `4154XXX`
+- **June 15, 2019** : DMSD-11 : `4155XXX`
 
 ## [Japanese Promotional Cards](https://duelmasters.fandom.com/wiki/Promotional#OCG_Promos)
 ### [Year 1-5](https://duelmasters.fandom.com/wiki/Japanese_Promotional_Cards_(Year_1-5))
