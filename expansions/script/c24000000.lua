@@ -457,14 +457,16 @@ function scard.desop2(e,tp,eg,ep,ev,re,r,rp)
 	local a=Duel.GetAttacker()
 	local d=Duel.GetAttackTarget()
 	if not a or not a:IsOnField() or not d or not d:IsOnField() or not d:IsDefensePos() then return end
+	local ab1=a:IsHasEffect(EFFECT_INDESTRUCTIBLE) or a:IsHasEffect(EFFECT_INDESTRUCTIBLE_BATTLE)
+	local ab2=d:IsHasEffect(EFFECT_INDESTRUCTIBLE) or d:IsHasEffect(EFFECT_INDESTRUCTIBLE_BATTLE)
 	local g=Group.CreateGroup()
 	local wc=nil
 	local lc=nil
 	if a:GetAttack()<d:GetDefense() then
-		if a:IsDestructable() and a:IsRelateToBattle() then g:AddCard(a) wc=d lc=a end
+		if not ab1 and a:IsRelateToBattle() then g:AddCard(a) wc=d lc=a end
 	elseif a:GetAttack()==d:GetDefense() then
-		if not a:IsDestructable() and a:IsRelateToBattle() then g:AddCard(a) end
-		if not d:IsDestructable() and d:IsRelateToBattle() then g:AddCard(d) end
+		if not ab1 and a:IsRelateToBattle() then g:AddCard(a) end
+		if not ab2 and d:IsRelateToBattle() then g:AddCard(d) end
 	end
 	if wc then
 		--raise event for "When this creature wins a battle"
