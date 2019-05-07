@@ -5,6 +5,8 @@ function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--to mana
 	dm.AddAttackTriggerEffect(c,0,true,scard.tmtg,scard.tmop,EFFECT_FLAG_CARD_TARGET,scard.tmcon)
+	--double breaker
+	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end
 scard.duel_masters_card=true
 function scard.tmcon(e,tp,eg,ep,ev,re,r,rp)
