@@ -19,42 +19,42 @@ If you do not build your deck according to the following rules, you will lose th
 ● Your deck must be exactly 40 cards.<br>
 ● All 40 cards must be [Duel Masters](https://duelmasters.fandom.com/wiki/Card) cards. You cannot have any non-Duel Masters cards in your deck.
 3. Enable `Auto shield placement` or `Auto Spell/Trap Card placement` in the Settings menu so YGOPro will not tell you the names of the cards to set as shields.
-4. At the start of the game, take 5 cards from the top of your deck without looking at them and put them in a row in front of you face down. These face down cards are your [shields](http://duelmasters.wikia.com/wiki/Shield). (You can only have a maximum of 5 shields in YGOPro.) Then [draw](https://duelmasters.fandom.com/wiki/Draw) 5 cards. There is no limit to the number of cards you can have in your hand.
+4. At the start of the game, take 5 cards from the top of your deck without [looking](https://duelmasters.fandom.com/wiki/Look) at them and put them in a row in front of you face down. These face down cards are your [shields](https://duelmasters.wikia.com/wiki/Shield). (You can only have a maximum of 5 shields in YGOPro.) Then [draw](https://duelmasters.fandom.com/wiki/Draw) 5 cards. There is no limit to the number of cards you can have in your hand.
 5. During your [Start of Turn Step](https://duelmasters.fandom.com/wiki/Start_of_Turn_Step), [untap](https://duelmasters.fandom.com/wiki/Tap_(Untap)) all your [tapped](https://duelmasters.fandom.com/wiki/Tap_(Untap)) creatures in the [battle zone](https://duelmasters.fandom.com/wiki/Battle_Zone) and tapped cards in your [mana zone](https://duelmasters.fandom.com/wiki/Mana_Zone).
 6. During your [Draw Step](https://duelmasters.fandom.com/wiki/Draw_Step), draw 1 card. The person who plays first skips drawing a card on their first turn.
 7. During your [Charge Step](https://duelmasters.fandom.com/wiki/Charge_Step), you can put a card from your hand into your mana zone. There is no limit to the number of cards you can have in your mana zone.
-8. During your [Main Step](https://duelmasters.fandom.com/wiki/Main_Step), you can play as many [creatures](https://duelmasters.fandom.com/wiki/Creature), [spells](https://duelmasters.fandom.com/wiki/Spell), [cross gears](https://duelmasters.fandom.com/wiki/Cross_Gear), and [castles](https://duelmasters.fandom.com/wiki/Castle) as your mana zone can afford. You can play any card in any order. (You can only have a maximum of 6 creatures in YGOPro.)
-9. During your [Attack Step](https://duelmasters.fandom.com/wiki/Attack_Step), you can attack with your creatures in the battle zone by tapping them and declaring what you want to attack. You cannot attack with creatures you just put into the battle zone this turn because they have [summoning sickness](https://duelmasters.fandom.com/wiki/Summoning_Sickness). As many of your creatures as you want can attack each turn as many times as possible. There is no limit to the number of times a creature can attack each turn as long as it is untapped and you can tap it.
+8. During your [Main Step](https://duelmasters.fandom.com/wiki/Main_Step), you can [play](https://duelmasters.fandom.com/wiki/Play) as many [creatures](https://duelmasters.fandom.com/wiki/Creature), [spells](https://duelmasters.fandom.com/wiki/Spell), [cross gears](https://duelmasters.fandom.com/wiki/Cross_Gear), and [castles](https://duelmasters.fandom.com/wiki/Castle) as your mana zone can afford. You can play any card in any order. (You can only have a maximum of 6 creatures in YGOPro.)
+9. During your [Attack Step](https://duelmasters.fandom.com/wiki/Attack_Step), you can [attack](https://duelmasters.fandom.com/wiki/Attack) with your creatures in the battle zone by tapping them and declaring what you want to attack. You cannot attack with creatures you just put into the battle zone this turn because they have [summoning sickness](https://duelmasters.fandom.com/wiki/Summoning_Sickness). As many of your creatures as you want can attack each turn as many times as possible. There is no limit to the number of times a creature can attack each turn as long as it is untapped and you can tap it.
 10. During your [End Step](https://duelmasters.fandom.com/wiki/End_Step), [resolve](https://duelmasters.fandom.com/wiki/Resolution) any [abilities](https://duelmasters.fandom.com/wiki/Ability) that [trigger](https://duelmasters.fandom.com/wiki/Trigger) "at the end of your turn". Then your turn ends.
 
 ## How to win
-1. [Attack](https://duelmasters.fandom.com/wiki/Attack) your opponent with a creature that is not [blocked](https://duelmasters.fandom.com/wiki/Block) (or [attack bended](https://duelmasters.fandom.com/wiki/Attack_Bend)) or removed when they have no shields left.
+1. Attack your opponent with a creature that is not [blocked](https://duelmasters.fandom.com/wiki/Block) (or [attack bended](https://duelmasters.fandom.com/wiki/Attack_Bend)) or removed when they have no shields left.
 2. When your opponent has no cards left in their deck or they would draw their last card.
-3. [Some cards](http://duelmasters.wikia.com/wiki/Template:Alternate_Win_Condition) will enable you to win the game via their [effects](http://duelmasters.wikia.com/wiki/Effect).
+3. [Some cards](https://duelmasters.wikia.com/wiki/Template:Alternate_Win_Condition) will enable you to win the game via their [effects](https://duelmasters.wikia.com/wiki/Effect).
 
 ## Extra information for scripters
 <details>
 <summary>Card Type</summary>
 
 - `0x21	Monster+Effect` = Creature
-- `0x1021	Monster+Effect+Tuner` = Creature that has no abilities
-- `0x2000021	Monster+Effect+Special Summon` = Evolution Creature
-	- `Attribute` = Civilization
-	- `Level` = Mana Cost
-	- `ATK` = `DEF` = Power
+- `0x1021	Monster+Effect+Tuner` = Creature that has [no abilities](https://duelmasters.wikia.com/wiki/Vanilla)
+- `0x2000021	Monster+Effect+Special Summon` = [Evolution Creature](https://duelmasters.fandom.com/wiki/Evolution_Creature)
+	- `Attribute` = [Civilization](https://duelmasters.fandom.com/wiki/Civilization)
+	- `Level` = [Mana Cost](https://duelmasters.fandom.com/wiki/Mana_Cost)
+	- `ATK` = `DEF` = [Power](https://duelmasters.fandom.com/wiki/Power)
 - `0x3	Monster+Spell` = Spell
 	- `Attribute` = Civilization
 	- `Level` = Mana Cost
-- `0x800	Gemini` = Multi-civilization card
+- `0x800	Gemini` = [Multi-civilization](https://duelmasters.fandom.com/wiki/Multicolored) card
 </details>
 <details>
 <summary>Attribute</summary>
 
-- `0x1	EARTH` = Nature Civilization
-- `0x2	WATER` = Water Civilization
-- `0x4	FIRE` = Fire Civilization
-- `0x10	LIGHT` = Light Civilization
-- `0x20	DARK` = Darkness Civilization
+- `0x1	EARTH` = [Nature Civilization](https://duelmasters.fandom.com/wiki/Nature_Civilization)
+- `0x2	WATER` = [Water Civilization](https://duelmasters.fandom.com/wiki/Water_Civilization)
+- `0x4	FIRE` = [Fire Civilization](https://duelmasters.fandom.com/wiki/Fire_Civilization)
+- `0x10	LIGHT` = [Light Civilization](https://duelmasters.fandom.com/wiki/Light_Civilization)
+- `0x20	DARK` = [Darkness Civilization](https://duelmasters.fandom.com/wiki/Darkness_Civilization)
 </details>
 <details>
 <summary>Location</summary>
@@ -63,7 +63,7 @@ If you do not build your deck according to the following rules, you will lose th
 - `0x8	Spell & Trap Zone` = Shield Zone
 - `0x10	Graveyard` = Mana Zone (untapped cards)
 - `0x20	Banished` = Mana Zone (tapped cards) (text color = blue)
-- `0x20	Banished` = Graveyard (text color = black)
+- `0x20	Banished` = [Graveyard](https://duelmasters.fandom.com/wiki/Graveyard) (text color = black)
 - `0x40	Extra Deck` = Hyperspatial Zone
 </details>
 <details>
@@ -73,16 +73,16 @@ If you do not build your deck according to the following rules, you will lose th
 2. `PHASE_DRAW` = Draw Step = Draw a card from your deck.
 3. `PHASE_STANDBY` = Charge Step = You may put a card from your hand into your mana zone.
 4. `PHASE_MAIN1` = Main Step = You may use cards, such as summoning creatures, casting spells, generating and crossing cross gear or fortifying castles by paying the appropriate costs.
-5. `PHASE_BATTLE` = Attack Step = You may attack with creatures or use Tap Abilities.
+5. `PHASE_BATTLE` = Attack Step = You may attack with creatures or use [Tap Abilities](https://duelmasters.fandom.com/wiki/Tap_Ability).
 6. `PHASE_END` = End Step = Any abilities that trigger "the end of your turn" resolve now.
 </details>
 <details>
 <summary>OT</summary>
 
-- `0x1` = OCG only card
-- `0x2` = TCG only card
+- `0x1` = [OCG](https://duelmasters.fandom.com/wiki/OCG) only card
+- `0x2` = [TCG](https://duelmasters.fandom.com/wiki/TCG) only card
 - `0x3` = OCG + TCG card
-- `0x4` = Game Original/Custom card
+- `0x4` = [Game Original](https://duelmasters.fandom.com/wiki/Game_Original_Card)/Custom card
 </details>
 <details>
 <summary>Category</summary>
@@ -117,7 +117,7 @@ If you do not build your deck according to the following rules, you will lose th
 - `0x8000000	Gamble` = ～Reserved～
 - `0x10000000	Fusion` = ～Reserved～
 - `0x20000000	Synchro` = ～Reserved～
-- `0x40000000	Xyz` = Evolution creature; lists "evolution" in the card's text
+- `0x40000000	Xyz` = Evolution creature; lists "evolution" in the card's text; [evolution source](https://duelmasters.fandom.com/wiki/Evolution_Source)-related
 - `0x80000000	Negate Effect` = ～Reserved～
 </details>
 <details>
@@ -125,15 +125,15 @@ If you do not build your deck according to the following rules, you will lose th
 
 You can search for the following specific card information in YGOPro:
 
-- Card Ability: Use the `No Ability` tab for creatures that have [no abilities](http://duelmasters.wikia.com/wiki/Vanilla)
-- Card Type: Use the `Card Type` tab
+- Card Ability: Use the `No Ability` (`No Ab`) tab for creatures that have no abilities
+- Card Type: Use the `Card Type` (`Type`) tab
 - Civilization: Use the `Civilization` (`Civ`) tab
-- Evolution Creature: Use the `Evolution` tab
-- Mana Cost: Use the `Mana` tab
-- Multicolored: Use the `Multi` tab
+- Evolution Creature: Use the `Evolution` (`Evo`) tab
+- Mana Cost: Use the `Cost` tab
+- Multicolored: Use the `Multicolored` (`Multi`) tab
 - Power: Use the `Power` tab
 - Race: **N/A**
-- Region-exclusive cards: Use the `Limitation` tab
+- Region-exclusive cards: Use the `Limitation` (`Limit`) tab
 - You can also search for cards whose abilities have been modified for YGOPro by typing `YGOPro`.
 </details>
 <details>
@@ -164,18 +164,18 @@ You can search for the following specific card information in YGOPro:
 - Multicolored = `Card with, or is treated as having, 2 or more Attributes`
 - Power = `ATK` = `DEF`
 - Put Into Graveyard = `If this card is banished:`
-- Race (Category) = `Category` (similar to [Types](http://yugioh.wikia.com/wiki/Type) in Yugioh)
+- Race (Category) = `Category` (similar to [Types](https://yugioh.wikia.com/wiki/Type) in Yugioh)
 - Reveal = `Show a card`
 - Search = `Look at a player's Deck`
 - Shield = `Card in the Spell & Trap Zone`
-- Static Ability = [`Continuous Effect`](http://yugioh.wikia.com/wiki/Continuous_Effect)
+- Static Ability = [`Continuous Effect`](https://yugioh.wikia.com/wiki/Continuous_Effect)
 - Step = `Phase`
 - Summon = `Special Summon this card (from your hand) in Attack Position, by banishing cards from your Graveyard face-down equal to its Level, including at least 1 card with the same Attribute as it`
 - Summoning Sickness = `This card cannot attack the turn it is Special Summoned`
 - Switch = `Switch the location of a card in the X Zone with a card in the Y Zone`
 - Tap = `Change a monster to Defense Position/Banish a card from the Graveyard face-down`
 - Tapped = `Defense Position/Face-down banished card`
-- Trigger Ability = [`Trigger Effect`](http://yugioh.wikia.com/wiki/Trigger_Effect)
+- Trigger Ability = [`Trigger Effect`](https://yugioh.wikia.com/wiki/Trigger_Effect)
 - Untap = `Change a monster to Attack Position/Send a face-down banished card to the Graveyard`
 - Untap Step = `Before the turn player's normal draw`
 - Untapped = `Attack Position/Card in the Graveyard`
