@@ -87,9 +87,9 @@ If you do not build your deck according to the following rules, you will lose th
 <details>
 <summary>Category</summary>
 
-- `0x1	Destroy Spell/Trap` = Decrease the number of cards in a player's shield zone
+- `0x1	Destroy Spell/Trap` = Decrease the number of cards in the opponent's shield zone; "Breaker"
 - `0x2	Destroy Monster` = Destroy a creature
-- `0x4	Banish Card` = Put a card into the graveyard
+- `0x4	Banish Card` = Put a card into the graveyard; discard a card from a player's hand
 - `0x8	Send to Graveyard` = Put a card into the mana zone
 - `0x10	Return to Hand` = Return a card from the battle zone, shield zone, mana zone or graveyard to a player's hand
 - `0x20	Return to Deck` = Put a card into a player's deck
@@ -97,34 +97,34 @@ If you do not build your deck according to the following rules, you will lose th
 - `0x80	Destroy Deck` = Decrease the opponent's deck size
 - `0x100	Increase Draw` = Draw a card from the deck
 - `0x200	Search Deck` = Look at a player's deck
-- `0x400	GY to Hand/Field` = Put a card from the graveyard into a player's hand or in play
+- `0x400	GY to Hand/Field` = ～Reserved～
 - `0x800	Change Battle Position` = Untap or tap a card
 - `0x1000	Get Control` = Increase or decrease a card's mana cost
 - `0x2000	Increase/Decrease ATK/DEF` = Increase or decrease a creature's power
-- `0x4000	Piercing` = No summoning sickness; ignore any effects that prevent creatures from attacking
-- `0x8000	Attack Multiple Times` = Lists "can attack untapped creatures" in the card's text
-- `0x10000	Limit Attack` = Prevent an attack from taking place; can't attack or can't attack players
-- `0x20000	Direct Attack` = Lists "attacks each turn if able" or "blocks if able"
-- `0x40000	Special Summon` = Evolution creature; shield trigger creature; put a card into the battle zone
+- `0x4000	Piercing` = No summoning sickness
+- `0x8000	Attack Multiple Times` = Can attack untapped creatures
+- `0x10000	Limit Attack` = Prevent a creature from attacking; change a creature's attack target
+- `0x20000	Direct Attack` = Attacks each turn if able; force a creature to battle another creature
+- `0x40000	Special Summon` = Creature with "Shield trigger"; put a card into the battle zone
 - `0x80000	Token` = ～Reserved～
 - `0x100000	Type-related` = Lists "race" or a particular race in the card's text
 - `0x200000	Attribute-related` = Lists "civilization" or a particular civilization in the card's text
-- `0x400000	Reduce LP` = Decrease the number of cards in a player's mana zone
-- `0x800000	Increase LP` = Increase the number of cards in a player's shield zone
+- `0x400000	Reduce LP` = Decrease the number of cards in the opponent's mana zone
+- `0x800000	Increase LP` = Increase the number of cards in the shield zone
 - `0x1000000	Cannot Be Destroyed` = Prevent a card from being destroyed
 - `0x2000000	Cannot Be Targeted` = Prevent a creature from being blocked or chosen with an ability
-- `0x4000000	Counter` = Prevent a player from casting spells
+- `0x4000000	Counter` = Prevent the opponent from casting spells
 - `0x8000000	Gamble` = ～Reserved～
 - `0x10000000	Fusion` = ～Reserved～
 - `0x20000000	Synchro` = ～Reserved～
 - `0x40000000	Xyz` = Evolution creature; lists "evolution" in the card's text; [evolution source](https://duelmasters.fandom.com/wiki/Evolution_Source)-related
 - `0x80000000	Negate Effect` = ～Reserved～
+- [Category list](https://duelmasters.fandom.com/wiki/Category:Advanced_Gameplay)
 </details>
 <details>
 <summary>Card Search</summary>
 
 You can search for the following specific card information in YGOPro:
-
 - Card Ability: Use the `No Ability` (`No Ab`) tab for creatures that have no abilities
 - Card Type: Use the `Card Type` (`Type`) tab
 - Civilization: Use the `Civilization` (`Civ`) tab
