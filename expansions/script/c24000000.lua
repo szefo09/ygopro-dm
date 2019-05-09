@@ -376,7 +376,7 @@ function scard.cfilter(c,tp)
 	return not c:IsCanAttackTurn() and c:IsControler(tp)
 end
 function scard.regcon(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(scard.cfilter,1,nil,ep)
+	return eg:IsExists(scard.cfilter,1,nil,tp)
 end
 function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	for ec in aux.Next(eg) do
