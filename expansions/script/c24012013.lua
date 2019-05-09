@@ -16,12 +16,17 @@ end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	local g1=Duel.GetMatchingGroup(scard.cfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil)
 	if g1:GetCount()==0 then return end
-	local t={}
+	local ag=Group.CreateGroup()
+	local power_list={}
 	for tc in aux.Next(g1) do
-		if table.unpack(t)~=tc:GetPower() then table.insert(t,tc:GetPower()) end
+		local pwr=tc:GetPower()
+		if not ag:IsExists(Card.IsPower,1,nil,pwr) then
+			ag:AddCard(tc)
+			table.insert(power_list,pwr)
+		end
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_NUMBER)
-	local pwr=Duel.AnnounceNumber(tp,table.unpack(t))
-	local g2=Duel.GetMatchingGroup(scard.desfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,pwr)
+	local an=Duel.AnnounceNumber(tp,table.unpack(power_list))
+	local g2=Duel.GetMatchingGroup(scard.desfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,an)
 	Duel.Destroy(g2,REASON_EFFECT)
 end
