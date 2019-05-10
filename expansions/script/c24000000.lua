@@ -235,7 +235,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 		return c:GetPower()
 	end)
 	Duel.RegisterEffect(ye9,tp)
-	--destroy equal & lower def
+	--destroy equal/lower def
 	local ye10=Effect.CreateEffect(c)
 	ye10:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	ye10:SetDescription(aux.Stringid(sid,2))
@@ -432,7 +432,7 @@ function scard.winop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Win(0,DM_WIN_REASON_DECKOUT)
 	end
 end
---destroy equal & lower def
+--destroy equal/lower def
 function scard.desop2(e,tp,eg,ep,ev,re,r,rp)
 	local a=Duel.GetAttacker()
 	local d=Duel.GetAttackTarget()

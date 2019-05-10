@@ -5,7 +5,7 @@ function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
 	--shield trigger
 	dm.EnableShieldTrigger(c)
-	--destroy & draw
+	--destroy, draw
 	dm.AddSpellCastEffect(c,0,nil,scard.desop)
 end
 scard.duel_masters_card=true

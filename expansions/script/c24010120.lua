@@ -3,7 +3,7 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
-	--tap ability (destroy & discard)
+	--tap ability (destroy, discard)
 	dm.EnableTapAbility(c,0,scard.destg,scard.desop)
 end
 scard.duel_masters_card=true

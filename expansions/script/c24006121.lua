@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
 	--shield trigger
 	dm.EnableShieldTrigger(c)
-	--to grave & draw
+	--to grave, draw
 	dm.AddSpellCastEffect(c,0,scard.tgtg,scard.tgop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true

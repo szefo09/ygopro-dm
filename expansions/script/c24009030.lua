@@ -3,7 +3,7 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
-	--discard & to grave
+	--discard, to grave
 	dm.AddPlayerCastSpellEffect(c,0,PLAYER_OPPO,nil,nil,nil,scard.dhop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true

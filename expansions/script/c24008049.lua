@@ -3,7 +3,7 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
-	--destroy replace (to mana & return)
+	--destroy replace (to mana, return)
 	dm.AddSingleDestroyReplaceEffect(c,0,scard.reptg,scard.repop,scard.repcon)
 end
 scard.duel_masters_card=true

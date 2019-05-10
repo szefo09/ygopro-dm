@@ -7,7 +7,7 @@ function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_CYBER_LORD))
-	--to shield & to hand
+	--to shield, to hand
 	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.tstg,scard.tsop)
 end
 scard.duel_masters_card=true

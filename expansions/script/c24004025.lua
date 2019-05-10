@@ -3,7 +3,7 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
-	--confirm & to hand
+	--confirm, to hand
 	dm.AddSingleComeIntoPlayEffect(c,0,true,dm.CheckDeckFunction(PLAYER_SELF),scard.confop)
 end
 scard.duel_masters_card=true
