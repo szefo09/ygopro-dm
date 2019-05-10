@@ -444,7 +444,9 @@ DM_REASON_BREAK						=0x20000000		--Reason for breaking a player's shield
 --Summon Type
 DM_SUMMON_TYPE_NORMAL				=0x49000000		--Summon a creature by paying its mana cost(SUMMON_TYPE_XYZ)
 DM_SUMMON_TYPE_EVOLUTION			=0x49000100		--Summon a creature by evolving a creature in the battle zone(SUMMON_TYPE_XYZ+0x100)
---Player (parameter)
+--Status
+DM_STATUS_TO_BZONE_TURN				=STATUS_SPSUMMON_TURN	--Status of a creature that was put into the battle zone during the current turn
+--Player (as parameter)
 PLAYER_OWNER						=nil	--player=PLAYER_OWNER in Duel.Sendto..(targets, player, reason)
 PLAYER_SELF							=0		--player=PLAYER_SELF in Effect.SetCondition(Auxiliary.Function(player)), etc.
 PLAYER_OPPO							=1		--player=PLAYER_OPPO in Effect.SetCondition(Auxiliary.Function(player)), etc.
@@ -660,7 +662,7 @@ DM_QHINTMSG_TOHAND					=705	--"Put a card into its owner's hand?"
 DM_QHINTMSG_UNTAP					=707	--"Untap a card?"
 --Timing
 DM_TIMING_BATTLE					=TIMING_BATTLE_START+TIMING_BATTLE_END+TIMING_BATTLE_PHASE+TIMING_BATTLE_STEP_END	--Timing for abilities that can trigger during the Attack Step
---Deck Sequence
+--Deck Sequence (as parameter)
 DECK_SEQUENCE_TOP					=0		--seq=DECK_SEQUENCE_TOP in Duel.SendtoDeck(targets, player, seq, reason)
 DECK_SEQUENCE_BOTTOM				=1		--seq=DECK_SEQUENCE_BOTTOM in Duel.SendtoDeck(targets, player, seq, reason)
 DECK_SEQUENCE_SHUFFLE				=2		--seq=DECK_SEQUENCE_SHUFFLE in Duel.SendtoDeck(targets, player, seq, reason)
