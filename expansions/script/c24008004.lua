@@ -26,5 +26,5 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 end
 function scard.sacon(e)
 	local c=e:GetHandler()
-	return c:IsFaceup() and c:IsOnField()
+	return c:IsFaceup() and c:IsLocation(DM_LOCATION_BATTLE)
 end
