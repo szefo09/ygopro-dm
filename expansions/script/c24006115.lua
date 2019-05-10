@@ -4,12 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--attack cost (destroy)
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_SINGLE)
-	e1:SetCode(EFFECT_ATTACK_COST)
-	e1:SetCost(scard.atcost)
-	e1:SetOperation(scard.atop)
-	c:RegisterEffect(e1)
+	dm.AddAttackCost(c,scard.atcost,scard.atop)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end

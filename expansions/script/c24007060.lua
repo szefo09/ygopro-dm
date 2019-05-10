@@ -7,12 +7,7 @@ function scard.initial_effect(c)
 	dm.EnableCannotAttack(c,dm.NoHandCondition(PLAYER_SELF))
 	dm.AddEffectDescription(c,1,dm.NoHandCondition(PLAYER_SELF))
 	--attack cost (discard)
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_SINGLE)
-	e1:SetCode(EFFECT_ATTACK_COST)
-	e1:SetCost(scard.atcost)
-	e1:SetOperation(scard.atop)
-	c:RegisterEffect(e1)
+	dm.AddAttackCost(c,scard.atcost,scard.atop)
 	--cannot be blocked
 	dm.EnableCannotBeBlocked(c,dm.CannotBeBlockedBoolFunction(Card.IsPowerBelow,4000))
 	--triple breaker

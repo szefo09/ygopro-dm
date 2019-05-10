@@ -2695,6 +2695,16 @@ function Auxiliary.SpellChainSolvedOperation(p,f)
 				end
 			end
 end
+--"This creature can't attack, unless COST."
+--e.g. "Daidalos, General of Fury" (DM-06 S5/S10)
+function Auxiliary.AddAttackCost(c,cost_func,op_func)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetCode(EFFECT_ATTACK_COST)
+	e1:SetCost(cost_func)
+	e1:SetOperation(op_func)
+	c:RegisterEffect(e1)
+end
 --"Whenever you draw a card, ABILITY."
 --"Whenever your opponent draws a card, ABILITY."
 --e.g. "Cosmic Nebula" (DM-07 S2/S5), "Asteria, Spirit of Heaven's Blessing" (DM-13 7/55)
