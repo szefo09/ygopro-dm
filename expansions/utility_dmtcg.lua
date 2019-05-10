@@ -2216,6 +2216,20 @@ function Auxiliary.AddDestroyReplaceEffect(c,desc_id,targ_func,op_func,val)
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
 end
+--"If this creature would be discarded from your hand, ABILITY."
+--e.g. "Dava Torey, Seeker of Clouds" (DM-06 18/110)
+function Auxiliary.AddSingleDiscardReplaceEffect(c,desc_id,targ_func,op_func,con_func)
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
+	e1:SetCode(EFFECT_SEND_REPLACE)
+	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e1:SetRange(LOCATION_HAND)
+	if con_func then e1:SetCondition(con_func) end
+	e1:SetTarget(targ_func)
+	e1:SetOperation(op_func)
+	c:RegisterEffect(e1)
+end
 --"At the end of the turn, ABILITY."
 --e.g. "Frei, Vizier of Air" (DM-01 4/110)
 function Auxiliary.AddTurnEndEffect(c,desc_id,p,optional,targ_func,op_func,con_func,prop)
