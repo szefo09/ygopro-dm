@@ -384,13 +384,10 @@ Card.IsPreviousNameCategory=Card.IsPreviousSetCard
 ]]
 --return a card's current mana cost
 Card.GetManaCost=Card.GetLevel
---reserved
---[[
 --return a card's original mana cost
 Card.GetOriginalManaCost=Card.GetOriginalLevel
 --return the mana cost a card had when it was in the battle zone
-Card.GetPreviousManaCostOnField=Card.GetPreviousLevelOnField
-]]
+--Card.GetPreviousManaCostOnField=Card.GetPreviousLevelOnField --reserved
 --check if a card's mana cost is equal to a given value
 Card.IsManaCost=Card.IsLevel
 --check if a card's mana cost is less than or equal to a given value
