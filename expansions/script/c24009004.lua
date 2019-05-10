@@ -6,13 +6,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_ARMORED_WYVERN))
 	--skip turn
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(sid,0))
-	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
-	e1:SetCode(EVENT_BATTLE_CONFIRM)
-	e1:SetCondition(scard.skipcon)
-	e1:SetOperation(scard.skipop)
-	c:RegisterEffect(e1)
+	dm.AddSingleUnblockedAttackEffect(c,0,nil,nil,scard.skipop,nil,scard.skipcon)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--return
@@ -20,9 +14,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_ARMORED_WYVERN}
-function scard.skipcon(e,tp,eg,ep,ev,re,r,rp)
-	return not e:GetHandler():IsBlocked() and Duel.GetAttackTarget()==nil
-end
+scard.skipcon=dm.AttackPlayerCondition
 function scard.skipop(e,tp,eg,ep,ev,re,r,rp)
 	local e1=Effect.CreateEffect(e:GetHandler())
 	e1:SetType(EFFECT_TYPE_FIELD)
