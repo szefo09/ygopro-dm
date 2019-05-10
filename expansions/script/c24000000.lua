@@ -372,11 +372,11 @@ function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SendtoMana(sg,POS_FACEUP_UNTAPPED,REASON_RULE)
 end
 --summoning sickness
-function scard.cfilter(c,tp)
-	return not c:IsCanAttackTurn() and c:IsControler(tp)
+function scard.cfilter(c)
+	return not c:IsCanAttackTurn()
 end
 function scard.regcon(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(scard.cfilter,1,nil,tp)
+	return eg:IsExists(scard.cfilter,1,nil)
 end
 function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	for ec in aux.Next(eg) do
