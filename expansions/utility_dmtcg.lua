@@ -2695,6 +2695,30 @@ function Auxiliary.SpellChainSolvedOperation(p,f)
 				end
 			end
 end
+--"Whenever you draw a card, ABILITY."
+--"Whenever your opponent draws a card, ABILITY."
+--e.g. "Cosmic Nebula" (DM-07 S2/S5), "Asteria, Spirit of Heaven's Blessing" (DM-13 7/55)
+function Auxiliary.AddEventDrawEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	if cate then e1:SetCategory(cate) end
+	e1:SetType(EFFECT_TYPE_FIELD+typ)
+	e1:SetCode(EVENT_DRAW)
+	if typ==EFFECT_TYPE_TRIGGER_O and prop then
+		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY+prop)
+	elseif typ==EFFECT_TYPE_TRIGGER_O then
+		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY)
+	elseif prop then
+		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
+	end
+	e1:SetRange(DM_LOCATION_BATTLE)
+	if con_func then e1:SetCondition(con_func) end
+	if cost_func then e1:SetCost(cost_func) end
+	if targ_func then e1:SetTarget(targ_func) end
+	e1:SetOperation(op_func)
+	c:RegisterEffect(e1)
+end
 --"When this creature would leave the battle zone, ABILITY."
 --Not fully implemented: The effect of leaving the battle zone is not replaced 
 --e.g. "Soul Phoenix, Avatar of Unity" (DM-12 5/55)
