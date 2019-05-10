@@ -194,10 +194,11 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(ye5,tp)
 	--no battle damage
 	local ye6=Effect.CreateEffect(c)
-	ye6:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_PLAYER_TARGET)
+	ye6:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	ye6:SetType(EFFECT_TYPE_FIELD)
 	ye6:SetCode(EFFECT_AVOID_BATTLE_DAMAGE)
-	ye6:SetTargetRange(1,1)
+	ye6:SetTargetRange(DM_LOCATION_BATTLE,DM_LOCATION_BATTLE)
+	ye6:SetValue(1)
 	Duel.RegisterEffect(ye6,tp)
 	--no effect damage
 	local ye7=Effect.CreateEffect(c)
@@ -375,7 +376,7 @@ function scard.cfilter(c,tp)
 	return not c:IsCanAttackTurn() and c:IsControler(tp)
 end
 function scard.regcon(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(scard.cfilter,1,nil,ep)
+	return eg:IsExists(scard.cfilter,1,nil,tp)
 end
 function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	for ec in aux.Next(eg) do
