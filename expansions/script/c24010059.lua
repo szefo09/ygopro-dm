@@ -9,7 +9,7 @@ function scard.initial_effect(c)
 	dm.AddSpellCastEffect(c,0,nil,scard.retop)
 end
 scard.duel_masters_card=true
-function scard.return(player)
+function scard.return_card(player)
 	local g1=Duel.GetMatchingGroup(dm.ManaZoneFilter(Card.IsAbleToHand),player,DM_LOCATION_MANA,0,nil)
 	Duel.SendtoHand(g1,PLAYER_OWNER,REASON_EFFECT)
 	local g2=Duel.GetMatchingGroup(Card.IsAbleToMana,player,LOCATION_HAND,0,nil)
@@ -17,6 +17,6 @@ function scard.return(player)
 	Duel.SendtoMana(g2,POS_FACEUP_TAPPED,REASON_EFFECT)
 end
 function scard.retop(e,tp,eg,ep,ev,re,r,rp)
-	scard.return(tp)
-	scard.return(1-tp)
+	scard.return_card(tp)
+	scard.return_card(1-tp)
 end
