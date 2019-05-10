@@ -3293,8 +3293,9 @@ function Auxiliary.ShieldSaverValue(e,c)
 	return Auxiliary.ShieldSaverFilter(c,e:GetHandlerPlayer())
 end
 function Auxiliary.ShieldSaverOperation(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Hint(HINT_CARD,0,sid)
-	Duel.Destroy(e:GetHandler(),REASON_EFFECT+REASON_REPLACE)
+	local c=e:GetHandler()
+	Duel.Hint(HINT_CARD,0,c:GetOriginalCode())
+	Duel.Destroy(c,REASON_EFFECT+REASON_REPLACE)
 end
 --"At the end of your turn, [you may] return this creature to your hand."
 --e.g. "Ganzo, Flame Fisherman" (Game Original)
