@@ -2705,6 +2705,16 @@ function Auxiliary.AddAttackCost(c,cost_func,op_func)
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
 end
+--"Whenever this creature would break a shield, BREAK REPLACE ABILITY." 
+--e.g. "Bolmeteus Steel Dragon" (DM-06 S7/S10)
+function Auxiliary.AddBreakShieldReplaceEffect(c,location)
+	--location: where to put the shield (e.g. DM_LOCATION_GRAVE)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetCode(DM_EFFECT_BREAK_SHIELD_REPLACE)
+	e1:SetValue(location)
+	c:RegisterEffect(e1)
+end
 --"Whenever you draw a card, ABILITY."
 --"Whenever your opponent draws a card, ABILITY."
 --e.g. "Cosmic Nebula" (DM-07 S2/S5), "Asteria, Spirit of Heaven's Blessing" (DM-13 7/55)
