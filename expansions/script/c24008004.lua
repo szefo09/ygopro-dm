@@ -10,10 +10,16 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,DM_LOCATION_BATTLE,0,nil)
-	if g:GetCount()==0 then return end
-	for tc in aux.Next(g) do
-		--speed attacker
-		dm.RegisterEffectCustom(e:GetHandler(),tc,1,DM_EFFECT_SPEED_ATTACKER)
-	end
+	--speed attacker
+	local e1=Effect.CreateEffect(e:GetHandler())
+	e1:SetDescription(aux.Stringid(sid,1))
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetCode(DM_EFFECT_SPEED_ATTACKER)
+	e1:SetProperty(EFFECT_FLAG_CLIENT_HINT)
+	local e2=Effect.CreateEffect(e:GetHandler())
+	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
+	e2:SetTargetRange(DM_LOCATION_BATTLE,0)
+	e2:SetLabelObject(e1)
+	e2:SetReset(RESET_PHASE+PHASE_END)
+	Duel.RegisterEffect(e2,tp)
 end
