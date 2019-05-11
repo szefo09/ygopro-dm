@@ -3262,6 +3262,40 @@ function Auxiliary.EnableCannotBeTargeted(c)
 	e1:SetValue(aux.tgoval)
 	c:RegisterEffect(e1)
 end
+--"Shield Saver (When one of your shields would be broken, you may destroy this creature instead.)"
+--e.g. "Balzark "Fire Blast" Dragon" (DM-30 15/55)
+function Auxiliary.EnableShieldSaver(c,desc_id)
+	local desc_id=desc_id or 0
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(DM_DESC_SHIELD_SAVER)
+	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e1:SetCode(EFFECT_SEND_REPLACE)
+	e1:SetRange(DM_LOCATION_BATTLE)
+	e1:SetTarget(Auxiliary.ShieldSaverTarget(desc_id))
+	e1:SetValue(Auxiliary.ShieldSaverValue)
+	e1:SetOperation(Auxiliary.ShieldSaverOperation)
+	c:RegisterEffect(e1)
+end
+function Auxiliary.ShieldSaverFilter(c,tp)
+	return c:IsLocation(DM_LOCATION_SHIELD) and c:IsControler(tp)
+		and c:GetDestination()~=DM_LOCATION_SHIELD and not c:IsReason(REASON_REPLACE)
+end
+function Auxiliary.ShieldSaverTarget(desc_id)
+	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
+				local c=e:GetHandler()
+				if chk==0 then return eg:FilterCount(Auxiliary.ShieldSaverFilter,nil,tp)==1
+					and bit.band(r,DM_REASON_BREAK)~=0 and c:IsDestructable()
+					and not c:IsStatus(STATUS_DESTROY_CONFIRMED) end
+				return Duel.SelectYesNo(tp,aux.Stringid(c:GetOriginalCode(),desc_id))
+			end
+end
+function Auxiliary.ShieldSaverValue(e,c)
+	return Auxiliary.ShieldSaverFilter(c,e:GetHandlerPlayer())
+end
+function Auxiliary.ShieldSaverOperation(e,tp,eg,ep,ev,re,r,rp)
+	Duel.Hint(HINT_CARD,0,sid)
+	Duel.Destroy(e:GetHandler(),REASON_EFFECT+REASON_REPLACE)
+end
 --"At the end of your turn, [you may] return this creature to your hand."
 --e.g. "Ganzo, Flame Fisherman" (Game Original)
 function Auxiliary.EnableTurnEndSelfReturn(c,desc_id,con_func,optional)
