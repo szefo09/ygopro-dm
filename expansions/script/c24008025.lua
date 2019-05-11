@@ -3,7 +3,7 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
-	--return & draw
+	--return, draw
 	dm.AddSpellCastEffect(c,0,scard.rettg,scard.retop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true

@@ -5,7 +5,7 @@ function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
-	--return & to mana
+	--return, to mana
 	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.retop)
 end
 scard.duel_masters_card=true

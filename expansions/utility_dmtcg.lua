@@ -2216,6 +2216,20 @@ function Auxiliary.AddDestroyReplaceEffect(c,desc_id,targ_func,op_func,val)
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
 end
+--"If this creature would be discarded from your hand, ABILITY."
+--e.g. "Dava Torey, Seeker of Clouds" (DM-06 18/110)
+function Auxiliary.AddSingleDiscardReplaceEffect(c,desc_id,targ_func,op_func,con_func)
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
+	e1:SetCode(EFFECT_SEND_REPLACE)
+	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e1:SetRange(LOCATION_HAND)
+	if con_func then e1:SetCondition(con_func) end
+	e1:SetTarget(targ_func)
+	e1:SetOperation(op_func)
+	c:RegisterEffect(e1)
+end
 --"At the end of the turn, ABILITY."
 --e.g. "Frei, Vizier of Air" (DM-01 4/110)
 function Auxiliary.AddTurnEndEffect(c,desc_id,p,optional,targ_func,op_func,con_func,prop)
@@ -2694,6 +2708,50 @@ function Auxiliary.SpellChainSolvedOperation(p,f)
 					e:GetLabelObject():SetLabel(1)
 				end
 			end
+end
+--"This creature can't attack, unless COST."
+--e.g. "Daidalos, General of Fury" (DM-06 S5/S10)
+function Auxiliary.AddAttackCost(c,cost_func,op_func)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetCode(EFFECT_ATTACK_COST)
+	e1:SetCost(cost_func)
+	e1:SetOperation(op_func)
+	c:RegisterEffect(e1)
+end
+--"Whenever this creature would break a shield, BREAK REPLACE ABILITY." 
+--e.g. "Bolmeteus Steel Dragon" (DM-06 S7/S10)
+function Auxiliary.AddBreakShieldReplaceEffect(c,location)
+	--location: where to put the shield (e.g. DM_LOCATION_GRAVE)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetCode(DM_EFFECT_BREAK_SHIELD_REPLACE)
+	e1:SetValue(location)
+	c:RegisterEffect(e1)
+end
+--"Whenever you draw a card, ABILITY."
+--"Whenever your opponent draws a card, ABILITY."
+--e.g. "Cosmic Nebula" (DM-07 S2/S5), "Asteria, Spirit of Heaven's Blessing" (DM-13 7/55)
+function Auxiliary.AddEventDrawEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	if cate then e1:SetCategory(cate) end
+	e1:SetType(EFFECT_TYPE_FIELD+typ)
+	e1:SetCode(EVENT_DRAW)
+	if typ==EFFECT_TYPE_TRIGGER_O and prop then
+		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY+prop)
+	elseif typ==EFFECT_TYPE_TRIGGER_O then
+		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY)
+	elseif prop then
+		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
+	end
+	e1:SetRange(DM_LOCATION_BATTLE)
+	if con_func then e1:SetCondition(con_func) end
+	if cost_func then e1:SetCost(cost_func) end
+	if targ_func then e1:SetTarget(targ_func) end
+	e1:SetOperation(op_func)
+	c:RegisterEffect(e1)
 end
 --"When this creature would leave the battle zone, ABILITY."
 --Not fully implemented: The effect of leaving the battle zone is not replaced 

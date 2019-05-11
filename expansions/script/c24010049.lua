@@ -3,7 +3,7 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
-	--to mana & return
+	--to mana, return
 	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.tmop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
