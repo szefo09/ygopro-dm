@@ -2753,6 +2753,41 @@ function Auxiliary.AddEventDrawEffect(c,desc_id,optional,targ_func,op_func,prop,
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
 end
+--"Whenever this creature is attacking and isn't blocked, ABILITY."
+--e.g. "Balesk Baj, the Timeburner" (DM-09 4/55)
+function Auxiliary.AddSingleUnblockedAttackEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
+	local con_func=con_func or aux.TRUE
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	if cate then e1:SetCategory(cate) end
+	e1:SetType(EFFECT_TYPE_SINGLE+typ)
+	e1:SetCode(EVENT_BATTLE_CONFIRM)
+	if prop then e1:SetProperty(prop) end
+	e1:SetCondition(aux.AND(Auxiliary.UnblockedCondition,con_func))
+	if cost_func then e1:SetCost(cost_func) end
+	if targ_func then e1:SetTarget(targ_func) end
+	e1:SetOperation(op_func)
+	c:RegisterEffect(e1)
+end
+--"Whenever any of your creatures is attacking and isn't blocked, ABILITY."
+--e.g. "Nemonex, Bajula's Robomantis" (DM-12 19/55)
+function Auxiliary.AddUnblockedAttackEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
+	local con_func=con_func or aux.TRUE
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	if cate then e1:SetCategory(cate) end
+	e1:SetType(EFFECT_TYPE_FIELD+typ)
+	e1:SetCode(EVENT_BATTLE_CONFIRM)
+	if prop then e1:SetProperty(prop) end
+	e1:SetRange(DM_LOCATION_BATTLE)
+	e1:SetCondition(aux.AND(Auxiliary.UnblockedCondition,con_func))
+	if cost_func then e1:SetCost(cost_func) end
+	if targ_func then e1:SetTarget(targ_func) end
+	e1:SetOperation(op_func)
+	c:RegisterEffect(e1)
+end
 --"When this creature would leave the battle zone, ABILITY."
 --Not fully implemented: The effect of leaving the battle zone is not replaced 
 --e.g. "Soul Phoenix, Avatar of Unity" (DM-12 5/55)
@@ -3293,8 +3328,9 @@ function Auxiliary.ShieldSaverValue(e,c)
 	return Auxiliary.ShieldSaverFilter(c,e:GetHandlerPlayer())
 end
 function Auxiliary.ShieldSaverOperation(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Hint(HINT_CARD,0,sid)
-	Duel.Destroy(e:GetHandler(),REASON_EFFECT+REASON_REPLACE)
+	local c=e:GetHandler()
+	Duel.Hint(HINT_CARD,0,c:GetOriginalCode())
+	Duel.Destroy(c,REASON_EFFECT+REASON_REPLACE)
 end
 --"At the end of your turn, [you may] return this creature to your hand."
 --e.g. "Ganzo, Flame Fisherman" (Game Original)
@@ -3965,6 +4001,19 @@ function Auxiliary.NoHandCondition(p)
 			end
 end
 Auxiliary.nhcon=Auxiliary.NoHandCondition
+--condition to check if a creature is attacking a player
+--e.g. "Balesk Baj, the Timeburner" (DM-09 4/55)
+function Auxiliary.AttackPlayerCondition(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.GetAttackTarget()==nil
+end
+Auxiliary.atplcon=Auxiliary.AttackPlayerCondition
+--condition to check if the attacking creature isn't blocked + EVENT_BATTLE_CONFIRM
+--e.g. "Balesk Baj, the Timeburner" (DM-09 4/55)
+function Auxiliary.UnblockedCondition(e,tp,eg,ep,ev,re,r,rp)
+	local a=Duel.GetAttacker()
+	return a and not a:IsBlocked()
+end
+Auxiliary.nblcon=Auxiliary.UnblockedCondition
 --cost function for a card tapping itself
 --e.g. "Millstone Man" (Game Original)
 function Auxiliary.SelfTapCost(e,tp,eg,ep,ev,re,r,rp,chk)

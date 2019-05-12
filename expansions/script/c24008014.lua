@@ -15,13 +15,10 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetDescription(aux.Stringid(sid,0))
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
 	e1:SetCode(EVENT_BATTLE_CONFIRM)
-	e1:SetCondition(scard.poscon)
+	e1:SetCondition(aux.AND(dm.AttackPlayerCondition,dm.UnblockedCondition))
 	e1:SetOperation(scard.posop)
 	e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
 	c:RegisterEffect(e1)
-end
-function scard.poscon(e,tp,eg,ep,ev,re,r,rp)
-	return not e:GetHandler():IsBlocked() and Duel.GetAttackTarget()==nil
 end
 function scard.posfilter(c)
 	return c:IsFaceup() and c:IsTapped() and not c:IsCode(CARD_SOLAR_GRASS)
