@@ -6,14 +6,14 @@ function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
-	--choose one
+	--choose one (to grave or discard or destroy)
 	dm.AddSingleAttackTriggerEffect(c,0,true,scard.opttg,scard.optop)
 	dm.AddSingleDestroyedEffect(c,0,true,scard.opttg,scard.optop)
 end
 scard.duel_masters_card=true
 function scard.opttg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local b1=Duel.IsExistingMatchingCard(dm.ShieldZoneFilter(Card.DMIsAbleToGrave),tp,0,DM_LOCATION_SHIELD,1,nil)
-	local b2=Duel.GetFieldGroupCount(tp,0,LOCATION_HAND)>0
+	local b2=Duel.IsExistingMatchingCard(aux.TRUE,tp,0,LOCATION_HAND,1,nil)
 	local b3=Duel.IsExistingMatchingCard(Card.IsFaceup,tp,0,DM_LOCATION_BATTLE,1,nil)
 	if chk==0 then return b1 or b2 or b3 end
 	local ops={}

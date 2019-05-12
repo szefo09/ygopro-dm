@@ -16,6 +16,6 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
 	local tc=Duel.GetFirstTarget()
 	if not tc or not tc:IsRelateToEffect(e) then return end
-	--attack if able
+	--must attack
 	dm.RegisterEffectCustom(c,tc,1,EFFECT_MUST_ATTACK)
 end

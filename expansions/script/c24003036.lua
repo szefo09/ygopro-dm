@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
 	--get ability
-	dm.AddSpellCastEffect(c,0,nil,scard.abop,nil,nil,dm.ManaExclusiveCondition(Card.IsCivilization,DM_CIVILIZATION_FIRE))
+	dm.AddSpellCastEffect(c,0,nil,scard.abop,nil,nil,dm.MZoneExclusiveCondition(Card.IsCivilization,DM_CIVILIZATION_FIRE))
 end
 scard.duel_masters_card=true
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
