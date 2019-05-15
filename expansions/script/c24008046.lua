@@ -13,8 +13,4 @@ end
 function scard.tmcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(scard.cfilter,1,e:GetHandler(),tp)
 end
-function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
-	Duel.SendDecktoptoMana(tp,1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
-end
+scard.tmop=dm.DecktopSendtoManaOperation(PLAYER_SELF,1)

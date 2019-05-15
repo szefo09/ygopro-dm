@@ -14,7 +14,6 @@ function scard.retfilter(c)
 	return c:IsFaceup() and c:IsAbleToHand()
 end
 function scard.retop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
 	local g=Duel.GetMatchingGroup(scard.retfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil):RandomSelect(tp,1)
 	Duel.HintSelection(g)
 	Duel.SendtoHand(g,PLAYER_OWNER,REASON_EFFECT)

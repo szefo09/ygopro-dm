@@ -33,7 +33,6 @@ function scard.desfilter(c,e)
 	return c:IsFaceup() and c:IsCanBeEffectTarget(e)
 end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
 	local turnp=Duel.GetTurnPlayer()
 	Duel.Hint(HINT_SELECTMSG,turnp,DM_HINTMSG_DESTROY)
 	local g=Duel.SelectMatchingCard(turnp,scard.desfilter,turnp,DM_LOCATION_BATTLE,0,1,1,nil,e)

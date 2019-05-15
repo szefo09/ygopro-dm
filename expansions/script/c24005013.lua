@@ -13,6 +13,5 @@ end
 scard.duel_masters_card=true
 scard.retcon=dm.ReasonPlayerCondition(PLAYER_OPPO)
 function scard.retop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
 	Duel.SendtoMana(eg,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 end

@@ -12,10 +12,8 @@ function scard.abfilter(c)
 end
 scard.abtg=dm.TargetCardFunction(PLAYER_OPPO,scard.abfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TARGET)
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
 	local tc=Duel.GetFirstTarget()
 	if not tc or not tc:IsRelateToEffect(e) then return end
 	--must attack
-	dm.RegisterEffectCustom(c,tc,1,EFFECT_MUST_ATTACK)
+	dm.RegisterEffectCustom(e:GetHandler(),tc,1,EFFECT_MUST_ATTACK)
 end

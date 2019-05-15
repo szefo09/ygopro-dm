@@ -22,7 +22,6 @@ function scard.posfilter(c)
 end
 scard.postg=dm.CheckCardFunction(scard.posfilter,DM_LOCATION_BATTLE,0)
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
 	local ct=Duel.GetMatchingGroupCount(scard.posfilter,tp,DM_LOCATION_BATTLE,0,nil)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_UNTAP)
 	local g=Duel.SelectMatchingCard(tp,scard.posfilter,tp,DM_LOCATION_BATTLE,0,1,ct,nil)

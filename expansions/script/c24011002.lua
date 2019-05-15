@@ -14,12 +14,10 @@ function scard.desfilter(c)
 end
 scard.destg=dm.TargetCardFunction(PLAYER_SELF,scard.desfilter,0,DM_LOCATION_BATTLE,1,2,DM_HINTMSG_TARGET)
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
 	if g:GetCount()==0 then return end
 	local pwr=g:GetSum(Card.GetPower)
-	if pwr<c:GetPower() then
+	if pwr<e:GetHandler():GetPower() then
 		Duel.Destroy(g,REASON_EFFECT)
 	end
 end
