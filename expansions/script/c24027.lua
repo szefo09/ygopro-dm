@@ -19,10 +19,14 @@ function scard.cfilter(c,tp)
 	return c:GetPreviousControler()==tp and not c:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER)
 end
 function scard.abcon(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(scard.cfilter,1,nil,tp)
+	local g=eg:Filter(scard.cfilter,nil,tp)
+	g:KeepAlive()
+	e:SetLabelObject(g)
+	return g:GetCount()>0
 end
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
-	for tc in aux.Next(eg) do
+	local g=e:GetLabelObject()
+	for tc in aux.Next(g) do
 		if tc:IsLocation(LOCATION_HAND) and tc:IsBrokenShield() and not tc:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER) then
 			--shield trigger
 			dm.RegisterEffectCustom(e:GetHandler(),tc,3,DM_EFFECT_SHIELD_TRIGGER)
