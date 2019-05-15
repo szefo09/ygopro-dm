@@ -1,4 +1,5 @@
 --Mongrel Man
+--Not fully implemented: If this and another creature are destroyed at the same time, you can still trigger its ability.
 local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
@@ -8,10 +9,14 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.drcon(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(Card.IsPreviousLocation,1,nil,DM_LOCATION_BATTLE)
+	return eg:IsExists(Card.IsCreature,1,nil)
 end
 scard.drtg=dm.DrawTarget(PLAYER_SELF)
 function scard.drop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
 	Duel.Draw(tp,eg:GetCount(),REASON_EFFECT)
 end
+--[[
+	Notes
+		1. If Mongrel Man and another creature are destroyed at the same time, you can still trigger its ability.
+		https://duelmasters.fandom.com/wiki/Mongrel_Man/Rulings
+]]
