@@ -18,7 +18,6 @@ function scard.retfilter(c,e)
 	return c:IsFaceup() and c:IsAbleToHand() and c:IsCanBeEffectTarget(e)
 end
 function scard.dhop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
 	local ct=Duel.DiscardHand(tp,aux.TRUE,1,2,REASON_EFFECT)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_RTOHAND)
 	local g=Duel.SelectMatchingCard(tp,scard.retfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,ct,ct,nil,e)

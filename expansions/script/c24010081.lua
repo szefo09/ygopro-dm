@@ -21,9 +21,7 @@ function scard.dhcon(e,tp,eg,ep,ev,re,r,rp)
 end
 scard.dhtg=dm.CheckCardFunction(aux.TRUE,LOCATION_HAND,0)
 function scard.dhop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
 	if Duel.DiscardHand(tp,aux.TRUE,1,1,REASON_EFFECT)==0 then return end
 	--power up
-	dm.RegisterEffectUpdatePower(c,Duel.GetAttackTarget(),1,3000)
+	dm.RegisterEffectUpdatePower(e:GetHandler(),Duel.GetAttackTarget(),1,3000)
 end

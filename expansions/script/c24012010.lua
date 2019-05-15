@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--discard
-	dm.AddTurnEndEffect(c,0,nil,nil,nil,scard.dhop,scard.dhcon)
+	dm.AddTurnEndEffect(c,0,nil,nil,nil,dm.DiscardOperation(nil,aux.TRUE,0,LOCATION_HAND),scard.dhcon)
 	if not scard.global_check then
 		scard.global_check=true
 		scard[0]=0
@@ -23,7 +23,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.checkop(e,tp,eg,ep,ev,re,r,rp)
-	for tc in aux.Next(eg) do
+	for ec in aux.Next(eg) do
 		if ep~=tp then
 			scard[ep]=scard[ep]+1
 		end
@@ -35,10 +35,6 @@ function scard.clearop(e,tp,eg,ep,ev,re,r,rp)
 end
 function scard.dhcon(e,tp,eg,ep,ev,re,r,rp)
 	return scard[1-tp]>=2
-end
-function scard.dhop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
-	dm.DiscardOperation(nil,aux.TRUE,0,LOCATION_HAND)(e,tp,eg,ep,ev,re,r,rp)
 end
 --[[
 	References

@@ -17,10 +17,9 @@ function scard.abfilter(c)
 	return c:IsFaceup() and c:DMIsRace(DM_RACE_BEAST_FOLK)
 end
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
 	local g=Duel.GetMatchingGroup(scard.abfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil)
 	if g:GetCount()==0 then return end
+	local c=e:GetHandler()
 	for tc in aux.Next(g) do
 		--power up
 		dm.RegisterEffectUpdatePower(c,tc,1,2000*eg:GetCount())

@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	--cannot attack
 	dm.EnableCannotAttack(c)
 	--power up
-	dm.EnableUpdatePower(c,3000,dm.ManaExclusiveCondition(Card.IsCivilization,DM_CIVILIZATION_WATER))
-	dm.AddEffectDescription(c,0,dm.ManaExclusiveCondition(Card.IsCivilization,DM_CIVILIZATION_WATER))
+	dm.EnableUpdatePower(c,3000,dm.MZoneExclusiveCondition(Card.IsCivilization,DM_CIVILIZATION_WATER))
+	dm.AddEffectDescription(c,0,dm.MZoneExclusiveCondition(Card.IsCivilization,DM_CIVILIZATION_WATER))
 end
 scard.duel_masters_card=true

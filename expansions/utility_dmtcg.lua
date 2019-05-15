@@ -1682,7 +1682,7 @@ function Auxiliary.EnableBlocker(c,con_func,desc,f)
 	e1:SetTarget(Auxiliary.BlockerTarget)
 	e1:SetOperation(Auxiliary.BlockerOperation)
 	c:RegisterEffect(e1)
-	--block if able
+	--must block
 	local e2=e1:Clone()
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_QUICK_F)
 	e2:SetProperty(0)
@@ -1762,7 +1762,7 @@ function Auxiliary.AddStaticEffectBlocker(c,s_range,o_range,targ_func,con_func)
 	e2:SetTarget(targ_func)
 	e2:SetLabelObject(e1)
 	c:RegisterEffect(e2)
-	--block if able
+	--must block
 	local e3=e1:Clone()
 	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_QUICK_F)
 	e3:SetProperty(0)
@@ -1798,7 +1798,7 @@ function Auxiliary.RegisterEffectBlocker(c,tc,desc_id,reset_flag,reset_count)
 		e1:SetReset(RESET_EVENT+RESETS_STANDARD+reset_flag,reset_count)
 	end
 	tc:RegisterEffect(e1)
-	--block if able
+	--must block
 	local e2=e1:Clone()
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_QUICK_F)
 	e2:SetProperty(0)
@@ -2394,7 +2394,6 @@ end
 --e.g. "Scalpel Spider" (DM-07 32/55)
 function Auxiliary.AddSingleBeAttackedEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
-	local con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	if cate then e1:SetCategory(cate) end
@@ -2408,7 +2407,7 @@ function Auxiliary.AddSingleBeAttackedEffect(c,desc_id,optional,targ_func,op_fun
 		e1:SetProperty(prop)
 	end
 	e1:SetRange(DM_LOCATION_BATTLE)
-	e1:SetCondition(aux.AND(Auxiliary.SelfAttackTargetCondition,con_func))
+	if con_func then e1:SetCondition(con_func) end
 	if cost_func then e1:SetCost(cost_func) end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
@@ -3955,7 +3954,7 @@ end
 Auxiliary.stapcon=Auxiliary.SelfTappedCondition
 --condition of "While all the cards in your mana zone are CIVILIZATION cards"
 --e.g. "Sparkle Flower" (DM-03 9/55)
-function Auxiliary.ManaExclusiveCondition(f,...)
+function Auxiliary.MZoneExclusiveCondition(f,...)
 	local ext_params={...}
 	return	function(e)
 				local tp=e:GetHandlerPlayer()
@@ -3966,7 +3965,7 @@ function Auxiliary.ManaExclusiveCondition(f,...)
 					and not Duel.IsExistingMatchingCard(Auxiliary.ManaZoneFilter(filter_func),tp,DM_LOCATION_MANA,0,1,nil,f,table.unpack(ext_params))
 			end
 end
-Auxiliary.mexcon=Auxiliary.ManaExclusiveCondition
+Auxiliary.mexcon=Auxiliary.MZoneExclusiveCondition
 --condition of "When a card is put into your graveyard" + DM_EVENT_TO_GRAVE
 --e.g. "Snork La, Shrine Guardian" (DM-05 13/55)
 function Auxiliary.EnterGraveCondition(p)
@@ -3981,7 +3980,7 @@ function Auxiliary.EnterGraveCondition(p)
 			end
 end
 Auxiliary.tgcon=Auxiliary.EnterGraveCondition
---condition of "While a player has no shields"
+--condition for a player having no shields
 --e.g. "Gigazoul" (DM-05 28/55)
 function Auxiliary.NoShieldsCondition(p)
 	return	function(e)
@@ -3991,7 +3990,7 @@ function Auxiliary.NoShieldsCondition(p)
 			end
 end
 Auxiliary.nszcon=Auxiliary.NoShieldsCondition
---condition of "While a player has no cards in their hand"
+--condition for a player having no cards in their hand
 --e.g. "Headlong Giant" (DM-07 S5/S5)
 function Auxiliary.NoHandCondition(p)
 	return	function(e)
@@ -4002,13 +4001,13 @@ function Auxiliary.NoHandCondition(p)
 end
 Auxiliary.nhcon=Auxiliary.NoHandCondition
 --condition to check if a creature is attacking a player
---e.g. "Balesk Baj, the Timeburner" (DM-09 4/55)
+--e.g. "Solar Grass" (DM-08 14/55)
 function Auxiliary.AttackPlayerCondition(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetAttackTarget()==nil
 end
 Auxiliary.atplcon=Auxiliary.AttackPlayerCondition
 --condition to check if the attacking creature isn't blocked + EVENT_BATTLE_CONFIRM
---e.g. "Balesk Baj, the Timeburner" (DM-09 4/55)
+--e.g. "Solar Grass" (DM-08 14/55)
 function Auxiliary.UnblockedCondition(e,tp,eg,ep,ev,re,r,rp)
 	local a=Duel.GetAttacker()
 	return a and not a:IsBlocked()

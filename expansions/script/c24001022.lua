@@ -11,8 +11,4 @@ function scard.posfilter(c)
 	return c:IsFaceup() and c:IsTapped()
 end
 scard.postg=dm.CheckCardFunction(scard.posfilter,DM_LOCATION_BATTLE,0)
-function scard.posop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
-	local g=Duel.GetMatchingGroup(scard.posfilter,tp,DM_LOCATION_BATTLE,0,nil)
-	Duel.Untap(g,REASON_EFFECT)
-end
+scard.posop=dm.UntapOperation(nil,scard.posfilter,DM_LOCATION_BATTLE,0)

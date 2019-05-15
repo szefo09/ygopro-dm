@@ -15,7 +15,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local reset_count=1
 	if Duel.GetTurnPlayer()==tp then reset_count=2 end
 	for tc in aux.Next(g) do
-		--attack if able
+		--must attack
 		dm.RegisterEffectCustom(e:GetHandler(),tc,1,EFFECT_MUST_ATTACK,RESET_PHASE+PHASE_DRAW,reset_count)
 	end
 end

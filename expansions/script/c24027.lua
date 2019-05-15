@@ -22,12 +22,10 @@ function scard.abcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(scard.cfilter,1,nil,tp)
 end
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
 	for tc in aux.Next(eg) do
 		if tc:IsLocation(LOCATION_HAND) and tc:IsBrokenShield() and not tc:IsHasEffect(DM_EFFECT_SHIELD_TRIGGER) then
 			--shield trigger
-			dm.RegisterEffectCustom(c,tc,3,DM_EFFECT_SHIELD_TRIGGER)
+			dm.RegisterEffectCustom(e:GetHandler(),tc,3,DM_EFFECT_SHIELD_TRIGGER)
 			Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER,e,0,0,0,0)
 			if tc:IsCreature() and tc:IsCanSendtoBattle(e,0,tp,false,false) then
 				Duel.SendtoBattle(tc,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)

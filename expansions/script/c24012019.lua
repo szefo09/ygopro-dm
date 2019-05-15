@@ -22,7 +22,4 @@ function scard.tgcon(e,tp,eg,ep,ev,re,r,rp)
 	return a:IsControler(tp) and a:DMIsRace(DM_RACE_XENOPARTS,DM_RACE_GIANT_INSECT) and Duel.GetAttackTarget()==nil
 end
 scard.tgtg=dm.TargetCardFunction(PLAYER_OPPO,dm.ManaZoneFilter(Card.DMIsAbleToGrave),0,DM_LOCATION_MANA,1,1,DM_HINTMSG_TOGRAVE)
-function scard.tgop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
-	dm.TargetSendtoGraveOperation(e,tp,eg,ep,ev,re,r,rp)
-end
+scard.tgop=dm.TargetSendtoGraveOperation

@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--draw
-	dm.AddEventDrawEffect(c,0,true,nil,scard.drop,nil,scard.drcon)
+	dm.AddEventDrawEffect(c,0,true,dm.DrawTarget(PLAYER_SELF),dm.DrawOperation(PLAYER_SELF,1),nil,scard.drcon)
 end
 scard.duel_masters_card=true
 function scard.drcon(e,tp,eg,ep,ev,re,r,rp)
@@ -12,10 +12,6 @@ function scard.drcon(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()==0 then return false end
 	local tg=g:GetMaxGroup(Card.GetPower)
 	return ep==tp and r==REASON_RULE and tg:IsExists(Card.IsControler,1,nil,tp)
-end
-function scard.drop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
-	Duel.Draw(tp,1,REASON_EFFECT)
 end
 --[[
 	References

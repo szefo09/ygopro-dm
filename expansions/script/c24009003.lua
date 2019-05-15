@@ -22,12 +22,7 @@ function scard.desfilter(c)
 	return c:IsFaceup() and c:IsUntapped()
 end
 scard.destg=dm.TargetCardFunction(PLAYER_SELF,scard.desfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_DESTROY)
-function scard.desop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
-	local tc=Duel.GetFirstTarget()
-	if not tc or not tc:IsRelateToEffect(e) then return end
-	Duel.Destroy(tc,REASON_EFFECT)
-end
+scard.desop=dm.TargetDestroyOperation
 --[[
 	Notes
 		1. Script is based on the Japanese rules text

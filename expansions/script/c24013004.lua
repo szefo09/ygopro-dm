@@ -19,7 +19,4 @@ end
 function scard.posfilter(c)
 	return c:IsFaceup() and c:IsEvolution() and c:IsUntapped()
 end
-function scard.posop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
-	dm.TapOperation(nil,scard.posfilter,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE)(e,tp,eg,ep,ev,re,r,rp)
-end
+scard.posop=dm.TapOperation(nil,scard.posfilter,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE)

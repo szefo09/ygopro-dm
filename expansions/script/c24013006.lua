@@ -17,6 +17,5 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.drop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
 	Duel.Draw(tp,eg:GetCount(),REASON_EFFECT)
 end

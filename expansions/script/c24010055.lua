@@ -5,7 +5,7 @@ function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--blocker
 	dm.EnableBlocker(c)
-	--block if able
+	--must block
 	dm.EnableEffectCustom(c,DM_EFFECT_MUST_BLOCK)
 	--cannot attack
 	dm.EnableCannotAttack(c)

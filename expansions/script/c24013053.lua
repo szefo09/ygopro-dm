@@ -4,7 +4,7 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
-	--attack if able
+	--must attack
 	dm.EnableEffectCustom(c,EFFECT_MUST_ATTACK)
 	--destroy replace (return)
 	dm.AddSingleDestroyReplaceEffect(c,0,scard.reptg,scard.repop)

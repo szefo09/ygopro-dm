@@ -16,7 +16,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(scard.abfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,race)
 	if g:GetCount()==0 then return end
 	for tc in aux.Next(g) do
-		--attack if able
+		--must attack
 		dm.RegisterEffectCustom(e:GetHandler(),tc,1,EFFECT_MUST_ATTACK)
 		--power attacker
 		dm.RegisterEffectPowerAttacker(e:GetHandler(),tc,2,4000)

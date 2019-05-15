@@ -16,13 +16,11 @@ end
 scard.duel_masters_card=true
 --get ability
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
 	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,DM_LOCATION_BATTLE,0,nil)
 	if g:GetCount()==0 then return end
 	for tc in aux.Next(g) do
 		--blocker
-		dm.RegisterEffectBlocker(c,tc,3,RESET_PHASE+PHASE_END+RESET_OPPO_TURN)
+		dm.RegisterEffectBlocker(e:GetHandler(),tc,3,RESET_PHASE+PHASE_END+RESET_OPPO_TURN)
 	end
 end
 --tap

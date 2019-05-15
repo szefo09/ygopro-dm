@@ -19,7 +19,7 @@ scard.abtg=dm.TargetCardFunction(PLAYER_SELF,scard.abfilter,0,DM_LOCATION_BATTLE
 function scard.abop1(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if not tc or not tc:IsRelateToEffect(e) then return end
-	--block if able
+	--must block
 	dm.RegisterEffectCustom(e:GetHandler(),tc,2,DM_EFFECT_MUST_BLOCK)
 	--raise event to trigger "Blocker"
 	Duel.RaiseEvent(tc,EVENT_CUSTOM+DM_EVENT_TRIGGER_BLOCKER,e,0,0,0,0)
