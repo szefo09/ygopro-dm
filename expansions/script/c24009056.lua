@@ -32,7 +32,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local race=Duel.DMAnnounceRace(tp)
 	table.insert(t1,1,DM_SELECT_RACE_MECHA_DEL_SOL)
 	table.insert(t2,1,DM_RACE_MECHA_DEL_SOL)
-	--update power
+	--power up
 	local e1=Effect.CreateEffect(e:GetHandler())
 	e1:SetDescription(aux.Stringid(sid,1))
 	e1:SetType(EFFECT_TYPE_SINGLE)
@@ -45,7 +45,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	e2:SetTarget(aux.TargetBoolFunction(Card.DMIsRace,race))
 	e2:SetLabelObject(e1)
 	Duel.RegisterEffect(e2,tp)
-	--reset update power
+	--reset power up
 	local e3=Effect.CreateEffect(e:GetHandler())
 	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e3:SetCode(EVENT_ADJUST)
@@ -69,5 +69,4 @@ end
 	Notes
 		1. The power increase effect lasts as long as Petrova, Channeler of Suns is in the battle zone
 		https://duelmasters.fandom.com/wiki/Petrova,_Channeler_of_Suns/Rulings
-
 ]]

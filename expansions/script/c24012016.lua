@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	--power up
 	dm.EnableUpdatePower(c,2000,nil,DM_LOCATION_BATTLE,0,scard.powtg)
 	--draw
-	dm.AddBlockEffect(c,0,true,dm.DrawTarget(PLAYER_SELF),dm.DrawOperation(PLAYER_SELF,1),nil,scard.drcon)
+	dm.AddBlockEffect(c,0,true,scard.drtg,scard.drop,nil,scard.drcon)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_GLADIATOR,DM_RACE_EARTH_EATER}
@@ -23,3 +23,5 @@ end
 function scard.drcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(scard.cfilter,1,nil)
 end
+scard.drtg=dm.DrawTarget(PLAYER_SELF)
+scard.drop=dm.DrawOperation(PLAYER_SELF,1)

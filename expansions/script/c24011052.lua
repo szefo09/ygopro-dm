@@ -3,11 +3,12 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
-	--search (to battle)
+	--get ability
 	dm.AddSpellCastEffect(c,0,nil,scard.regop)
 end
 scard.duel_masters_card=true
 function scard.regop(e,tp,eg,ep,ev,re,r,rp)
+	--search (to battle)
 	local e1=Effect.CreateEffect(e:GetHandler())
 	e1:SetDescription(aux.Stringid(sid,1))
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -23,9 +24,10 @@ function scard.tbfilter(c,e,tp,code)
 end
 function scard.tbop(e,tp,eg,ep,ev,re,r,rp)
 	local code=eg:GetFirst():GetCode()
+	local g=Duel.GetMatchingGroup(scard.tbfilter,tp,LOCATION_DECK,0,nil,e,tp,code)
+	if g:GetCount()==0 then return end
 	Duel.Hint(HINT_CARD,0,sid)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOBATTLE)
-	local g=Duel.SelectMatchingCard(tp,scard.tbfilter,tp,LOCATION_DECK,0,0,1,nil,e,tp,code)
-	if g:GetCount()==0 then return end
-	Duel.SendtoBattle(g,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
+	local sg=g:Select(tp,0,1,nil)
+	Duel.SendtoBattle(sg,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
 end
