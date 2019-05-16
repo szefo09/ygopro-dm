@@ -12,5 +12,5 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_GUARDIAN}
-scard.tstg=dm.CheckDeckFunction(PLAYER_SELF)
+scard.tstg=dm.DecktopSendtoShieldTarget(PLAYER_SELF)
 scard.tsop=dm.DecktopSendtoShieldOperation(PLAYER_SELF,1)

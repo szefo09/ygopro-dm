@@ -4,8 +4,6 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--silent skill (to shield)
-	dm.EnableSilentSkill(c,0,scard.tstg,scard.tsop)
+	dm.EnableSilentSkill(c,0,dm.DecktopSendtoShieldTarget(PLAYER_SELF),dm.DecktopSendtoShieldOperation(PLAYER_SELF,1))
 end
 scard.duel_masters_card=true
-scard.tstg=dm.CheckDeckFunction(PLAYER_SELF)
-scard.tsop=dm.DecktopSendtoShieldOperation(PLAYER_SELF,1)
