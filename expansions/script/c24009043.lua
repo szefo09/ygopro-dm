@@ -1,4 +1,5 @@
 --Simian Warrior Grash
+--Not fully implemented: If this and another creature are destroyed at the same time, you can still trigger its ability.
 local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
@@ -7,19 +8,17 @@ function scard.initial_effect(c)
 	dm.AddDestroyedEffect(c,0,nil,scard.tgtg,scard.tgop,EFFECT_FLAG_CARD_TARGET,scard.tgcon)
 end
 scard.duel_masters_card=true
-function scard.cfilter(c)
-	return c:IsPreviousLocation(DM_LOCATION_BATTLE) and c:IsPreviousPosition(POS_FACEUP) and c:DMIsPreviousRace(DM_RACE_ARMORLOID)
-end
 function scard.tgcon(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(scard.cfilter,1,nil)
+	return eg:IsExists(Card.DMIsPreviousRace,1,nil,DM_RACE_ARMORLOID)
 end
-scard.tgtg=dm.TargetCardFunction(PLAYER_OPPO,dm.ManaZoneFilter(Card.DMIsAbleToGrave),0,DM_LOCATION_MANA,1,1,DM_HINTMSG_TOGRAVE)
-function scard.tgop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
-	local tc=Duel.GetFirstTarget()
-	if not tc or not tc:IsRelateToEffect(e) then return end
-	Duel.DMSendtoGrave(tc,REASON_EFFECT)
+function scard.tgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	local f=dm.ManaZoneFilter(Card.DMIsAbleToGrave)
+	if chkc then return chkc:IsLocation(DM_LOCATION_MANA) and chkc:IsControler(1-tp) and f(chkc) end
+	if chk==0 then return true end
+	Duel.Hint(HINT_SELECTMSG,1-tp,DM_HINTMSG_TOGRAVE)
+	Duel.SelectTarget(1-tp,f,1-tp,DM_LOCATION_MANA,0,eg:GetCount(),eg:GetCount(),nil)
 end
+scard.tgop=dm.TargetSendtoGraveOperation
 --[[
 	References
 		1. Performapal Sellshell Crab

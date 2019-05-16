@@ -1,4 +1,5 @@
 --Lamiel, Destiny Enforcer
+--Not fully implemented: If this and another creature are destroyed at the same time, you can still trigger its ability.
 local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
@@ -10,12 +11,11 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.cfilter(c,tp)
-	return c:GetPreviousControler()==tp and c:IsPreviousLocation(DM_LOCATION_BATTLE)
+	return c:IsCreature() and c:GetPreviousControler()==tp
 end
 function scard.drcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(scard.cfilter,1,nil,tp) and Duel.GetTurnPlayer()~=tp
 end
 function scard.drop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
 	Duel.Draw(tp,eg:GetCount(),REASON_EFFECT)
 end
