@@ -2111,7 +2111,7 @@ function Auxiliary.EnableWinsAllBattles(c,desc_id,f)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
-	e1:SetCode(EVENT_BATTLE_START)
+	e1:SetCode(EVENT_BATTLED)
 	e1:SetCondition(Auxiliary.WinsAllBattlesCondition(f))
 	e1:SetOperation(Auxiliary.WinsAllBattlesOperation)
 	c:RegisterEffect(e1)
@@ -2139,7 +2139,6 @@ function Auxiliary.WinsAllBattlesOperation(e,tp,eg,ep,ev,re,r,rp)
 		local e2=e1:Clone()
 		tc:RegisterEffect(e2)
 	else
-		Duel.Destroy(tc,REASON_RULE)
 		--raise event for "When this creature wins a battle"
 		Duel.RaiseSingleEvent(c,EVENT_CUSTOM+DM_EVENT_WIN_BATTLE,e,0,0,0,0)
 		--raise event for "Whenever one of your creatures wins a battle"
@@ -2148,6 +2147,7 @@ function Auxiliary.WinsAllBattlesOperation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_LOSE_BATTLE,e,0,0,0,0)
 		--raise event for "Whenever one of your creatures loses a battle"
 		--Duel.RaiseEvent(tc,EVENT_CUSTOM+DM_EVENT_LOSE_BATTLE,e,0,0,0,0) --reserved
+		Duel.Destroy(tc,REASON_RULE)
 	end
 end
 
