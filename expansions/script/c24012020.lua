@@ -18,7 +18,7 @@ function scard.powtg(e,c)
 end
 --untap
 function scard.posfilter(c)
-	return c:IsFaceup() and c:IsTapped() and c:DMIsRace(DM_RACE_WILD_VEGGIES,DM_RACE_RAINBOW_PHANTOM)
+	return c:IsFaceup() and c:DMIsRace(DM_RACE_WILD_VEGGIES,DM_RACE_RAINBOW_PHANTOM) and c:IsAbleToUntap()
 end
 scard.postg=dm.CheckCardFunction(scard.posfilter,DM_LOCATION_BATTLE,0)
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)

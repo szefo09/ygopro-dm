@@ -13,7 +13,7 @@ end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_INITIATE}
 function scard.posfilter(c)
-	return c:IsFaceup() and c:IsUntapped()
+	return c:IsFaceup() and c:IsAbleToTap()
 end
 scard.postg=dm.TargetCardFunction(PLAYER_SELF,scard.posfilter,0,DM_LOCATION_BATTLE,0,2,DM_HINTMSG_TAP)
 scard.posop=dm.TargetTapOperation

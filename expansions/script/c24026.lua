@@ -25,7 +25,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 end
 --tap
 function scard.posfilter(c)
-	return c:IsFaceup() and c:IsUntapped()
+	return c:IsFaceup() and c:IsAbleToTap()
 end
 scard.postg=dm.CheckCardFunction(scard.posfilter,0,DM_LOCATION_BATTLE)
 scard.posop=dm.TapOperation(nil,scard.posfilter,0,DM_LOCATION_BATTLE)

@@ -9,7 +9,4 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 scard.poscon=dm.AttackPlayerCondition
-function scard.posfilter(c)
-	return c:IsFaceup() and c:IsUntapped()
-end
-scard.posop=dm.TapOperation(nil,scard.posfilter,0,DM_LOCATION_BATTLE)
+scard.posop=dm.TapOperation(nil,Card.IsFaceup,0,DM_LOCATION_BATTLE)

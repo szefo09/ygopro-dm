@@ -19,7 +19,7 @@ function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e1,tp)
 end
 function scard.posfilter(c)
-	return c:IsFaceup() and c:IsTapped()
+	return c:IsFaceup() and c:IsAbleToUntap()
 end
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(scard.posfilter,tp,DM_LOCATION_BATTLE,0,nil)

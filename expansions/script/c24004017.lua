@@ -8,5 +8,5 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.posfilter(c)
-	return c:IsFaceup() and c:IsUntapped() and not c:IsCivilization(DM_CIVILIZATION_LIGHT)
+	return c:IsFaceup() and not c:IsCivilization(DM_CIVILIZATION_LIGHT)
 end
