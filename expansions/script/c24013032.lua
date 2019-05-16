@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_SPIRIT_QUARTZ))
-	--to hand or to mana
+	--confirm (to hand or to mana)
 	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.thop)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)

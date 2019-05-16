@@ -4,7 +4,7 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
-	--copy, to grave
+	--confirm (copy, to grave)
 	dm.AddSingleBattleEffect(c,0,nil,nil,scard.copyop)
 end
 scard.duel_masters_card=true

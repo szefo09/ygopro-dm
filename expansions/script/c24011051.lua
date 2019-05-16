@@ -5,7 +5,7 @@ function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
 	--shield trigger
 	dm.EnableShieldTrigger(c)
-	--to hand
+	--confirm (to hand)
 	dm.AddSpellCastEffect(c,0,nil,scard.thop)
 end
 scard.duel_masters_card=true

@@ -3,7 +3,7 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
-	--survivor (to hand or to grave)
+	--survivor (confirm) (to hand or to grave)
 	dm.AddSingleAttackTriggerEffect(c,0,nil,dm.HintTarget,scard.thop)
 	dm.AddStaticEffectSingleAttackTrigger(c,0,nil,dm.HintTarget,scard.thop,LOCATION_ALL,0,scard.thtg)
 end
