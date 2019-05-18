@@ -21,9 +21,7 @@ function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e2,tp)
 end
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
 	Duel.Hint(HINT_CARD,0,sid)
-	Duel.HintSelection(Group.FromCards(c))
 	--slayer
-	dm.RegisterEffectSlayer(c,c,2)
+	dm.RegisterEffectSlayer(e:GetHandler(),e:GetHandler(),2)
 end

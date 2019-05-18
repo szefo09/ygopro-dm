@@ -5,9 +5,6 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--tap
-	dm.AddPlayerCastSpellEffect(c,0,nil,nil,nil,nil,dm.TapOperation(PLAYER_SELF,scard.posfilter,0,DM_LOCATION_BATTLE,1,1,true))
+	dm.AddPlayerCastSpellEffect(c,0,nil,nil,nil,nil,dm.TapOperation(PLAYER_SELF,Card.IsFaceup,0,DM_LOCATION_BATTLE,1,1,true))
 end
 scard.duel_masters_card=true
-function scard.posfilter(c)
-	return c:IsFaceup() and c:IsUntapped()
-end

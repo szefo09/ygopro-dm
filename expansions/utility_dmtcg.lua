@@ -1250,7 +1250,7 @@ function Auxiliary.AddSummonProcedure(c)
 	c:RegisterEffect(e1)
 end
 function Auxiliary.PayManaFilter(c)
-	return c:IsUntapped()
+	return c:IsAbleToTap()
 end
 function Auxiliary.NonEvolutionSummonCondition(e,c)
 	if c==nil then return true end
@@ -1706,7 +1706,7 @@ function Auxiliary.BlockerCondition2(e,tp,eg,ep,ev,re,r,rp)
 end
 function Auxiliary.BlockerCost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return c:IsFaceup() and c:IsUntapped() and Duel.GetFlagEffect(tp,DM_EFFECT_BLOCKER)==0 end
+	if chk==0 then return c:IsFaceup() and c:IsAbleToTap() and Duel.GetFlagEffect(tp,DM_EFFECT_BLOCKER)==0 end
 	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
 	Duel.RegisterFlagEffect(tp,DM_EFFECT_BLOCKER,RESET_CHAIN,0,1)
 end
@@ -2959,13 +2959,13 @@ function Auxiliary.EnableTurnEndSelfUntap(c,desc_id,con_func,forced)
 	c:RegisterEffect(e1)
 end
 function Auxiliary.SelfUntapTarget(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsFaceup() and e:GetHandler():IsTapped() end
+	if chk==0 then return e:GetHandler():IsFaceup() and e:GetHandler():IsAbleToUntap() end
 end
 function Auxiliary.SelfUntapOperation(ram)
 	--ram: true for "untap this creature at random"
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local c=e:GetHandler()
-				if not c:IsRelateToEffect(e) or c:IsFacedown() or c:IsUntapped() then return end
+				if not c:IsRelateToEffect(e) or c:IsFacedown() or not c:IsAbleToUntap() then return end
 				if ram then
 					local os=require('os')
 					math.randomseed(os.time())
@@ -3804,9 +3804,9 @@ function Auxiliary.TapOperation(p,f,s,o,min,max,ram,ex,...)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
-				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
+				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToTap,f),tp,s,o,ex,table.unpack(funs))
 				local a=Duel.GetAttacker()
-				if a and a:IsUntapped() then Duel.Tap(a,REASON_RULE) end --fix creature not being tapped when attacking
+				if a and a:IsAbleToTap() then Duel.Tap(a,REASON_RULE) end --fix creature not being tapped when attacking
 				local sg=nil
 				if min and max then
 					if ram then
@@ -3831,9 +3831,9 @@ function Auxiliary.UntapOperation(p,f,s,o,min,max,ram,ex,...)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
-				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
+				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToUntap,f),tp,s,o,ex,table.unpack(funs))
 				local a=Duel.GetAttacker()
-				if a and a:IsUntapped() then Duel.Tap(a,REASON_RULE) end --fix creature not being tapped when attacking
+				if a and a:IsAbleToTap() then Duel.Tap(a,REASON_RULE) end --fix creature not being tapped when attacking
 				local sg=nil
 				if min and max then
 					if ram then
@@ -4017,7 +4017,7 @@ Auxiliary.nblcon=Auxiliary.UnblockedCondition
 --e.g. "Millstone Man" (Game Original)
 function Auxiliary.SelfTapCost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return c:IsFaceup() and c:IsUntapped() end
+	if chk==0 then return c:IsFaceup() and c:IsAbleToTap() end
 	Duel.Tap(c,REASON_COST)
 end
 Auxiliary.stapcost=Auxiliary.SelfTapCost

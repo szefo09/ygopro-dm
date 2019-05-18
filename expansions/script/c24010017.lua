@@ -12,7 +12,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.posfilter(c)
-	return c:IsFaceup() and c:IsTapped()
+	return c:IsFaceup() and c:IsAbleToUntap()
 end
 scard.postg=dm.TargetCardFunction(PLAYER_SELF,scard.posfilter,DM_LOCATION_BATTLE,0,1,1,DM_HINTMSG_UNTAP)
 scard.posop=dm.TargetUntapOperation

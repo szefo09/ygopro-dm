@@ -16,7 +16,7 @@ function scard.postg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.SelectTarget(1-tp,Card.IsFaceup,1-tp,DM_LOCATION_BATTLE,0,1,1,nil)
 end
 function scard.posfilter(c)
-	return c:IsFaceup() and c:IsUntapped()
+	return c:IsFaceup() and c:IsAbleToTap()
 end
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 	local g1=Duel.GetMatchingGroup(scard.posfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil)

@@ -31,6 +31,8 @@ function scard.tbop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SendtoBattleComplete()
 end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if not c:IsDestructable() then return end
 	Duel.Hint(HINT_CARD,0,sid)
-	Duel.Destroy(e:GetHandler(),REASON_EFFECT)
+	Duel.Destroy(c,REASON_EFFECT)
 end

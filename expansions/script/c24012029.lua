@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--draw
-	dm.AddEventDrawEffect(c,0,true,dm.DrawTarget(PLAYER_SELF),dm.DrawOperation(PLAYER_SELF,1),nil,scard.drcon)
+	dm.AddEventDrawEffect(c,0,true,scard.drtg,scard.drop,nil,scard.drcon)
 end
 scard.duel_masters_card=true
 function scard.drcon(e,tp,eg,ep,ev,re,r,rp)
@@ -13,6 +13,8 @@ function scard.drcon(e,tp,eg,ep,ev,re,r,rp)
 	local tg=g:GetMaxGroup(Card.GetPower)
 	return ep==tp and r==REASON_RULE and tg:IsExists(Card.IsControler,1,nil,tp)
 end
+scard.drtg=dm.DrawTarget(PLAYER_SELF)
+scard.drop=dm.DrawOperation(PLAYER_SELF,1)
 --[[
 	References
 		1. Double Cipher

@@ -12,8 +12,7 @@ scard.duel_masters_card=true
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,DM_LOCATION_BATTLE,0,nil)
 	if g:GetCount()==0 then return end
-	local reset_count=1
-	if Duel.GetTurnPlayer()==tp then reset_count=2 end
+	local reset_count=(Duel.GetTurnPlayer()==tp and 2 or 1)
 	for tc in aux.Next(g) do
 		--blocker
 		dm.RegisterEffectBlocker(e:GetHandler(),tc,1,RESET_PHASE+PHASE_DRAW,reset_count)

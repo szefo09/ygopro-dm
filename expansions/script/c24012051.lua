@@ -9,11 +9,11 @@ end
 scard.duel_masters_card=true
 function scard.poscon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return eg:IsExists(Card.IsFaceup,1,c) and c:IsUntapped()
+	return eg:IsExists(Card.IsFaceup,1,c) and c:IsAbleToTap()
 end
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if c:IsRelateToEffect(e) and c:IsFaceup() and c:IsUntapped() then
+	if c:IsRelateToEffect(e) and c:IsFaceup() and c:IsAbleToTap() then
 		Duel.Tap(c,REASON_EFFECT)
 	end
 end

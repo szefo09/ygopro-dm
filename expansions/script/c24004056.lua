@@ -13,7 +13,7 @@ function scard.cfilter(c)
 	return c:IsUntapped() and c:IsCivilization(DM_CIVILIZATION_LIGHT)
 end
 function scard.posfilter(c)
-	return c:IsFaceup() and c:IsUntapped()
+	return c:IsFaceup() and c:IsAbleToTap()
 end
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 	local ct=Duel.GetMatchingGroupCount(dm.ManaZoneFilter(scard.cfilter),tp,DM_LOCATION_MANA,0,nil)

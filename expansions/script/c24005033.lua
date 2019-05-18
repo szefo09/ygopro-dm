@@ -8,6 +8,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.regop(e,tp,eg,ep,ev,re,r,rp)
+	--get ability
 	local e1=Effect.CreateEffect(e:GetHandler())
 	e1:SetDescription(aux.Stringid(sid,0))
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -19,9 +20,9 @@ function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e1,tp)
 end
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Hint(HINT_CARD,0,sid)
 	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,DM_LOCATION_BATTLE,nil)
 	if g:GetCount()==0 then return end
+	Duel.Hint(HINT_CARD,0,sid)
 	for tc in aux.Next(g) do
 		--must attack
 		dm.RegisterEffectCustom(e:GetHandler(),tc,1,EFFECT_MUST_ATTACK)

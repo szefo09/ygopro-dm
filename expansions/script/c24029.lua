@@ -9,7 +9,7 @@ function scard.initial_effect(c)
 	--speed attacker
 	dm.EnableEffectCustom(c,DM_EFFECT_SPEED_ATTACKER)
 	--to grave (mana)
-	dm.AddSingleAttackTriggerEffect(c,0,true,scard.tgtg1,tgop1)
+	dm.AddSingleAttackTriggerEffect(c,0,true,scard.tgtg1,scard.tgop1)
 	--to grave (shield)
 	dm.AddBreakShieldEffect(c,1,true,scard.tgtg2,scard.tgop2,nil,scard.tgcon)
 	--attack untapped
@@ -19,11 +19,15 @@ scard.duel_masters_card=true
 scard.tgtg1=dm.CheckCardFunction(dm.ManaZoneFilter(Card.DMIsAbleToGrave),0,DM_LOCATION_MANA)
 scard.tgop1=dm.SendtoGraveOperation(PLAYER_OPPO,dm.ManaZoneFilter(),0,DM_LOCATION_MANA,1)
 function scard.tgcon(e,tp,eg,ep,ev,re,r,rp)
-	return re:GetHandler()==e:GetHandler() and eg:IsExists(Card.DMIsAbleToGrave,1,nil)
+	local g=eg:Filter(Card.DMIsAbleToGrave,nil)
+	g:KeepAlive()
+	e:SetLabelObject(g)
+	return re:GetHandler()==e:GetHandler() and g:GetCount()>0
 end
 function scard.tgtg2(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
-	for tc in aux.Next(eg) do
+	local g=e:GetLabelObject()
+	for tc in aux.Next(g) do
 		--chain limit
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
@@ -34,5 +38,5 @@ function scard.tgtg2(e,tp,eg,ep,ev,re,r,rp,chk)
 	end
 end
 function scard.tgop2(e,tp,eg,ep,ev,re,r,rp)
-	Duel.DMSendtoGrave(eg,REASON_EFFECT)
+	Duel.DMSendtoGrave(e:GetLabelObject(),REASON_EFFECT)
 end

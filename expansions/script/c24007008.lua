@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.posfilter(c,civ)
-	return c:IsFaceup() and c:IsUntapped() and c:IsCivilization(civ)
+	return c:IsFaceup() and c:IsCivilization(civ) and c:IsAbleToTap()
 end
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 	local g1=Duel.GetMatchingGroup(scard.posfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,DM_CIVILIZATION_DARKNESS)

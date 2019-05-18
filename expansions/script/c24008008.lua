@@ -21,15 +21,14 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetCode(EVENT_PHASE+PHASE_END)
 		e1:SetRange(DM_LOCATION_BATTLE)
 		e1:SetCountLimit(1)
-		e1:SetCondition(dm.SelfTappedCondition)
 		e1:SetOperation(scard.posop)
 		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
 		tc:RegisterEffect(e1)
 	end
 end
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if not c:IsAbleToUntap() or not Duel.SelectYesNo(tp,DM_QHINTMSG_UNTAP) then return end
 	Duel.Hint(HINT_CARD,0,sid)
-	if Duel.SelectYesNo(tp,DM_QHINTMSG_UNTAP) then
-		Duel.Untap(e:GetHandler(),REASON_EFFECT)
-	end
+	Duel.Untap(c,REASON_EFFECT)
 end

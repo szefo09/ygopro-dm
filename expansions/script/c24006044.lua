@@ -9,7 +9,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.posfilter(c)
-	return c:IsFaceup() and c:IsUntapped()
+	return c:IsFaceup() and c:IsAbleToTap()
 end
 function scard.postg1(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(DM_LOCATION_BATTLE) and chkc:IsControler(1-tp) and scard.posfilter(chkc) end

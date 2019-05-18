@@ -14,7 +14,7 @@ function scard.desfilter(c)
 	return c:IsFaceup() and c:IsPowerBelow(3000)
 end
 function scard.posfilter(c,e)
-	return c:IsFaceup() and c:IsUntapped() and c:IsCanBeEffectTarget(e)
+	return c:IsFaceup() and c:IsAbleToTap() and c:IsCanBeEffectTarget(e)
 end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_DESTROY)

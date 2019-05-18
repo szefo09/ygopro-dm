@@ -10,4 +10,4 @@ scard.duel_masters_card=true
 function scard.poscon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetShieldCount(tp)>=5
 end
-scard.posop=dm.UntapOperation(nil,dm.ManaZoneFilter(Card.IsTapped),DM_LOCATION_MANA,0)
+scard.posop=dm.UntapOperation(nil,dm.ManaZoneFilter(),DM_LOCATION_MANA,0)
