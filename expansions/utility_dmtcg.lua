@@ -3703,10 +3703,15 @@ function Auxiliary.DecktopSendtoManaOperation(p,ct)
 			end
 end
 --========== SendtoShield ==========
---operation function for abilities that put cards from the top of a player's deck into the shield zone
---use Auxiliary.CheckDeckFunction for the target function, if needed
-function Auxiliary.DecktopSendtoShieldOperation(p,ct)
+--target and operation functions for abilities that put cards from the top of a player's deck into the shield zone
+function Auxiliary.DecktopSendtoShieldTarget(p)
 	--p: PLAYER_SELF/tp for the top of your deck or PLAYER_OPPO/1-tp for your opponent's
+	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
+				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
+				if chk==0 then return Duel.IsPlayerCanSendDecktoptoShield(player,1) end
+			end
+end
+function Auxiliary.DecktopSendtoShieldOperation(p,ct)
 	--ct: the number of cards to put into the shield zone
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
