@@ -13,8 +13,7 @@ function scard.savefilter(c,tp)
 end
 function scard.savetg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return eg:FilterCount(scard.savefilter,c,tp)==1
-		and c:IsDestructable(e) and not c:IsStatus(STATUS_DESTROY_CONFIRMED) end
+	if chk==0 then return eg:FilterCount(scard.savefilter,c,tp)==1 and c:IsDestructable(e) end
 	return Duel.SelectYesNo(tp,aux.Stringid(sid,1))
 end
 function scard.saveval(e,c)
