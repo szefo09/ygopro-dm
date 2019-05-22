@@ -475,7 +475,7 @@ function scard.desop2(e,tp,eg,ep,ev,re,r,rp)
 		--raise event for "Whenever one of your creatures loses a battle"
 		--Duel.RaiseEvent(lc,EVENT_CUSTOM+DM_EVENT_LOSE_BATTLE,e,0,0,0,0) --reserved
 	end
-	Duel.Destroy(g,REASON_RULE)
+	Duel.Destroy(g,REASON_BATTLE+REASON_RULE)
 end
 --to grave redirect
 function scard.tgtg(e,c)
