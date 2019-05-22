@@ -129,17 +129,20 @@ function Card.IsTapped(c)
 end
 --check if a card can be untapped
 function Card.IsAbleToUntap(c)
-	if c:IsHasEffect(DM_EFFECT_CANNOT_CHANGE_POS_ABILITY) then return false end
 	if c:IsLocation(LOCATION_REMOVED) then
 		return c:IsAbleToGrave()
 	elseif c:IsLocation(LOCATION_MZONE) then
 		return c:IsDefensePos()
 	else return false end
 end
+--check if a card can be untapped at the start of the turn
+function Card.IsAbleToUntapStartStep(c)
+	return c:IsTapped() and not c:IsHasEffect(DM_EFFECT_DONOT_UNTAP_START_STEP)
+end
 --check if a card can be tapped
 --Note: Remove DM_EFFECT_IGNORE_TAP check if YGOPro allows a creature to tap itself for EFFECT_ATTACK_COST
 function Card.IsAbleToTap(c)
-	if c:IsHasEffect(DM_EFFECT_CANNOT_CHANGE_POS_ABILITY) or c:GetFlagEffect(DM_EFFECT_IGNORE_TAP)>0 then return false end
+	if c:GetFlagEffect(DM_EFFECT_IGNORE_TAP)>0 then return false end
 	if c:IsLocation(LOCATION_GRAVE) then
 		return c:IsAbleToRemove()
 	elseif c:IsLocation(LOCATION_MZONE) then
@@ -950,6 +953,10 @@ function Duel.RandomDiscardHand(player,count,reason,ex)
 	if g:GetCount()==0 then return 0 end
 	local sg=g:RandomSelect(player,count)
 	return Duel.Remove(sg,POS_FACEUP,reason+REASON_DISCARD)
+end
+--check if a player can untap the cards in their mana zone at the start of each of their turns
+function Duel.IsPlayerCanUntapStartStep(player)
+	return not Duel.IsPlayerAffectedByEffect(player,DM_EFFECT_CANNOT_UNTAP_START_STEP)
 end
 --check if a player can use the "blocker" ability of their creatures
 function Duel.IsPlayerCanBlock(player)
