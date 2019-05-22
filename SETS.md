@@ -14,7 +14,7 @@
 - ~**July, 2006** : DM-11 Blast-O-Splosion of Gigantic Rage : `24011XXX`~
 - ~**Nov., 2006** : DM-12 Thrash of the Hybrid Megacreatures : `24012XXX`~
 
-## [Promotional Cards](https://duelmasters.fandom.com/wiki/English_Promotional_Cards)
+## [English Promotional Cards](https://duelmasters.fandom.com/wiki/English_Promotional_Cards)
 - ~Event Promos - Year 1 : `240XXX`~
 - ~Event Promos - Year 2 : `240XXX`~
 - ~Tournament Promos - Year 1 : `240XXX`~

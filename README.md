@@ -14,7 +14,7 @@
 
 ## How to play
 1. Start YGOPro.
-2. Click on `Deck Management` to build your deck. Remember to add 1 *Duel Masters Rules*!<br>
+2. Click on `Deck Management` to build your deck. Remember to add 1 _Duel Masters Rules_!<br>
 If you do not build your deck according to the following rules, you will lose the game and have to rebuild your deck:<br>
 ● Your deck must be exactly 40 cards.<br>
 ● All 40 cards must be [Duel Masters](https://duelmasters.fandom.com/wiki/Card) cards. You cannot have any non-Duel Masters cards in your deck.
@@ -26,6 +26,11 @@ If you do not build your deck according to the following rules, you will lose th
 8. During your [Main Step](https://duelmasters.fandom.com/wiki/Main_Step), you can [play](https://duelmasters.fandom.com/wiki/Play) as many [creatures](https://duelmasters.fandom.com/wiki/Creature), [spells](https://duelmasters.fandom.com/wiki/Spell), [cross gears](https://duelmasters.fandom.com/wiki/Cross_Gear), and [castles](https://duelmasters.fandom.com/wiki/Castle) as your mana zone can afford. You can play any card in any order. (You can only have a maximum of 6 creatures in YGOPro.)
 9. During your [Attack Step](https://duelmasters.fandom.com/wiki/Attack_Step), you can [attack](https://duelmasters.fandom.com/wiki/Attack) with your creatures in the battle zone by tapping them and declaring what you want to attack. You cannot attack with creatures you just put into the battle zone this turn because they have [summoning sickness](https://duelmasters.fandom.com/wiki/Summoning_Sickness). As many of your creatures as you want can attack each turn as many times as possible. There is no limit to the number of times a creature can attack each turn as long as it is untapped and you can tap it.
 10. During your [End Step](https://duelmasters.fandom.com/wiki/End_Step), [resolve](https://duelmasters.fandom.com/wiki/Resolution) any [abilities](https://duelmasters.fandom.com/wiki/Ability) that [trigger](https://duelmasters.fandom.com/wiki/Trigger) "at the end of your turn". Then your turn ends.
+
+**Important:**
+1. At least 1 player must have _Duel Masters Rules_ in their deck, otherwise the mod will not function properly.
+2. When you host a game and get an error that tells you the number of a particular card is not allowed in your deck, if there are no illegal cards in your deck it is because YGOPro does not allow you to have more than 3 copies of a card with the same [name](https://duelmasters.fandom.com/wiki/Card_Name). Enable `Do not check deck` when creating a game to avoid this error.
+3. YGOPro does not allow you to look at a tapped card in your opponent's mana zone that was put there from a [Private Zone](https://duelmasters.fandom.com/wiki/Private_Zone). You will be able to look at it when it untaps, or is put into a [Public Zone](https://duelmasters.fandom.com/wiki/Public_Zone).
 
 ## How to win
 1. Attack your opponent with a creature that is not [blocked](https://duelmasters.fandom.com/wiki/Block) (or [attack bended](https://duelmasters.fandom.com/wiki/Attack_Bend)) or removed when they have no shields left.
