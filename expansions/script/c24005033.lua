@@ -11,7 +11,7 @@ function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	local reset_count=(Duel.GetTurnPlayer()~=tp and 2 or 1)
 	--get ability
 	local e1=Effect.CreateEffect(e:GetHandler())
-	e1:SetDescription(aux.Stringid(sid,0))
+	e1:SetDescription(aux.Stringid(sid,1))
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EVENT_PHASE+PHASE_DRAW)
 	e1:SetCountLimit(1)
@@ -26,6 +26,6 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_CARD,0,sid)
 	for tc in aux.Next(g) do
 		--must attack
-		dm.RegisterEffectCustom(e:GetHandler(),tc,1,EFFECT_MUST_ATTACK)
+		dm.RegisterEffectCustom(e:GetHandler(),tc,2,EFFECT_MUST_ATTACK)
 	end
 end
