@@ -597,7 +597,7 @@ end
 local duel_draw=Duel.Draw
 function Duel.Draw(player,count,reason)
 	local ct=Duel.GetFieldGroupCount(player,LOCATION_DECK,0)
-	if count>ct then count=ct end
+	if ct>0 and count>ct then count=ct end
 	return duel_draw(player,count,reason)
 end
 --check if a player can draw equal to or less than a number of cards
@@ -872,7 +872,7 @@ end
 ]]
 --add a card to a player's shields face down
 --Note: Currently disabled check if an evolution source can leave the battle zone
-function Duel.SendtoShield(targets,player)
+function Duel.SendtoShield(targets)
 	--player: the player whose shields to add a card to (generally its owner)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
 	local ct=0
@@ -881,23 +881,23 @@ function Duel.SendtoShield(targets,player)
 		local g=tc1:GetSourceGroup()
 		for tc2 in aux.Next(g) do
 			--if tc1:IsCanSourceLeave() then
-				if Duel.GetLocationCount(player,DM_LOCATION_SHIELD)>0 then
-					if Duel.MoveToField(tc2,player,player,DM_LOCATION_SHIELD,POS_FACEDOWN,true) then
+				if Duel.GetLocationCount(tc2:GetOwner(),DM_LOCATION_SHIELD)>0 then
+					if Duel.MoveToField(tc2,tc2:GetOwner(),tc2:GetOwner(),DM_LOCATION_SHIELD,POS_FACEDOWN,true) then
 						ct=ct+1
 					end
 				else
-					Duel.Hint(HINT_MESSAGE,player,DM_DESC_NOSZONES)
+					Duel.Hint(HINT_MESSAGE,tc2:GetOwner(),DM_DESC_NOSZONES)
 					Duel.DMSendtoGrave(tc2,REASON_RULE) --put into the graveyard if all zones are occupied
 					ct=ct+1	--count the card that did not add because YGOPro's limited zones prevented it
 				end
 			--end
 		end
-		if Duel.GetLocationCount(player,DM_LOCATION_SHIELD)>0 then
-			if Duel.MoveToField(tc1,player,player,DM_LOCATION_SHIELD,POS_FACEDOWN,true) then
+		if Duel.GetLocationCount(tc1:GetOwner(),DM_LOCATION_SHIELD)>0 then
+			if Duel.MoveToField(tc1,tc1:GetOwner(),tc1:GetOwner(),DM_LOCATION_SHIELD,POS_FACEDOWN,true) then
 				ct=ct+1
 			end
 		else
-			Duel.Hint(HINT_MESSAGE,player,DM_DESC_NOSZONES)
+			Duel.Hint(HINT_MESSAGE,tc1:GetOwner(),DM_DESC_NOSZONES)
 			Duel.DMSendtoGrave(tc1,REASON_RULE) --put into the graveyard if all zones are occupied
 			ct=ct+1 --count the card that did not add because YGOPro's limited zones prevented it
 		end
@@ -908,7 +908,7 @@ end
 function Duel.SendDecktoptoShield(player,count)
 	local g=Duel.GetDecktopGroup(player,count)
 	Duel.DisableShuffleCheck()
-	return Duel.SendtoShield(g,player)
+	return Duel.SendtoShield(g)
 end
 --add up to a number of cards from the top of a player's deck to their shields face down
 function Duel.SendDecktoptoShieldUpTo(player,count)
@@ -1207,16 +1207,16 @@ end
 --sort cards on the top or bottom of a player's deck
 --sort_player: the player who sorts the cards
 --target_player: the player whose deck to sort cards from
---ct: the number of cards to sort
+--count: the number of cards to sort
 --seq: DECK_SEQUENCE_TOP to sort the top cards or DECK_SEQUENCE_BOTTOM to sort the bottom cards
-function Auxiliary.SortDeck(sort_player,target_player,ct,seq)
-	local deck_count=Duel.GetFieldGroupCount(target_player,LOCATION_DECK,0)
-	if deck_count<ct then ct=deck_count end
-	if ct>1 then Duel.SortDecktop(sort_player,target_player,ct) end
-	if seq~=DECK_SEQUENCE_BOTTOM or ct<=0 then return end
+function Auxiliary.SortDeck(sort_player,target_player,count,seq)
+	local ct=Duel.GetFieldGroupCount(target_player,LOCATION_DECK,0)
+	if ct<count then count=ct end
+	if count>1 then Duel.SortDecktop(sort_player,target_player,count) end
+	if seq~=DECK_SEQUENCE_BOTTOM or count<=0 then return end
 	local g=Duel.GetDecktopGroup(target_player,1)
-	if ct>1 then
-		for i=1,ct do
+	if count>1 then
+		for i=1,count do
 			Duel.MoveSequence(g:GetFirst(),seq)
 		end
 	else Duel.MoveSequence(g:GetFirst(),seq) end
@@ -3737,9 +3737,9 @@ function Auxiliary.SendtoShieldOperation(p,f,s,o,min,max,ex,...)
 					local sg=g:Select(player,min,ft,ex,table.unpack(funs))
 					local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BATTLE)
 					Duel.HintSelection(hg)
-					Duel.SendtoShield(sg,player)
+					Duel.SendtoShield(sg)
 				else
-					Duel.SendtoShield(g,player)
+					Duel.SendtoShield(g)
 				end
 				local og=Duel.GetOperatedGroup()
 				if og:GetCount()==0 then return end
@@ -3755,10 +3755,9 @@ function Auxiliary.TargetSendtoShieldOperation(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
 	if g:GetCount()==0 then return end
 	for tc in aux.Next(g) do
-		local p=tc:GetControler()
-		Duel.SendtoShield(tc,p)
+		Duel.SendtoShield(tc)
 		if tc:IsPreviousLocation(LOCATION_GRAVE+LOCATION_REMOVED) then
-			Duel.ConfirmCards(1-p,tc)
+			Duel.ConfirmCards(1-tc:GetControler(),tc)
 		end
 	end
 end

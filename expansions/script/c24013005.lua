@@ -31,7 +31,7 @@ function scard.tsop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,desc)
 	local sg=g:Select(tp,1,1,nil)
 	if opt==1 then
-		Duel.SendtoShield(sg,tp)
+		Duel.SendtoShield(sg)
 	elseif opt==2 then
 		Duel.SendtoMana(sg,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 	end
