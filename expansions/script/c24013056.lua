@@ -21,5 +21,5 @@ scard.evofilter1=aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_FIRE_BIRD
 scard.evofilter2=aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_ARMORED_DRAGON)
 --return
 function scard.retfilter(c)
-	return c:IsCivilization(DM_CIVILIZATION_FIRE) and c:IsCreature() and not c:IsEvolution()
+	return c:IsCreature() and not c:IsEvolution() and c:IsCivilization(DM_CIVILIZATION_FIRE)
 end

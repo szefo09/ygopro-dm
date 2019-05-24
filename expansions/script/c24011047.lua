@@ -10,5 +10,5 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.thfilter(c)
-	return c:IsMulticolored() and c:IsCreature()
+	return c:IsCreature() and c:IsMulticolored()
 end
