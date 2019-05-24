@@ -43,5 +43,6 @@ function scard.tbcon(e)
 end
 --[[
 	Notes
-		1. The possible increase amount of this card in the original video game is 1000 to 5000 per turn.
+		1. The possible increase amount of this card in the original video game is 1000 to 5000 per turn
+		https://duelmasters.fandom.com/wiki/Terradragon_Hulcoon_Berga#Notes
 ]]
