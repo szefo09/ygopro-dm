@@ -14,7 +14,7 @@ scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_XENOPARTS,DM_RACE_GIANT_INSECT,DM_RACE_GIANT}
 --power up
 function scard.powtg(e,c)
-	return c~=e:GetHandler() and c:IsFaceup() and c:DMIsRace(DM_RACE_XENOPARTS,DM_RACE_GIANT_INSECT)
+	return c~=e:GetHandler() and c:DMIsRace(DM_RACE_XENOPARTS,DM_RACE_GIANT_INSECT)
 end
 --to grave
 function scard.tgcon(e,tp,eg,ep,ev,re,r,rp)

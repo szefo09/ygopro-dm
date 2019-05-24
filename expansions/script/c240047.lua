@@ -13,5 +13,5 @@ end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_GIANT_INSECT,DM_RACE_GIANT}
 function scard.abtg(e,c)
-	return c~=e:GetHandler() and c:IsFaceup() and c:IsPowerAbove(5000)
+	return c~=e:GetHandler() and c:IsPowerAbove(5000)
 end

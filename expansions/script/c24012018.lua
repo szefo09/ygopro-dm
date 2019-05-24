@@ -14,7 +14,7 @@ scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_CHIMERA,DM_RACE_ARMORLOID}
 --power up
 function scard.powtg(e,c)
-	return c~=e:GetHandler() and c:IsFaceup() and c:DMIsRace(DM_RACE_CHIMERA,DM_RACE_ARMORLOID)
+	return c~=e:GetHandler() and c:DMIsRace(DM_RACE_CHIMERA,DM_RACE_ARMORLOID)
 end
 --get ability (double breaker)
 function scard.dbtg(e,c)

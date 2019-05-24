@@ -10,5 +10,5 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.powtg(e,c)
-	return c~=e:GetHandler() and c:IsFaceup() and c:DMIsRace(DM_RACE_ARMORED_DRAGON)
+	return c~=e:GetHandler() and c:DMIsRace(DM_RACE_ARMORED_DRAGON)
 end

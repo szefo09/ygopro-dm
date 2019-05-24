@@ -14,7 +14,7 @@ scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_GLADIATOR,DM_RACE_EARTH_EATER}
 --power up
 function scard.powtg(e,c)
-	return c~=e:GetHandler() and c:IsFaceup() and c:DMIsRace(DM_RACE_GLADIATOR,DM_RACE_EARTH_EATER)
+	return c~=e:GetHandler() and c:DMIsRace(DM_RACE_GLADIATOR,DM_RACE_EARTH_EATER)
 end
 --draw
 function scard.cfilter(c)
