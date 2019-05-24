@@ -28,6 +28,7 @@ function scard.thop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_CARD,0,sid)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_ATOHAND)
 	local sg=g:Select(tp,0,ct,nil)
+	if sg:GetCount()==0 then return end
 	Duel.SendtoHand(sg,PLAYER_OWNER,REASON_EFFECT)
 	Duel.ConfirmCards(1-tp,sg)
 end

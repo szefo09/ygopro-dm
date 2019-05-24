@@ -29,5 +29,6 @@ function scard.tbop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_CARD,0,sid)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOBATTLE)
 	local sg=g:Select(tp,0,1,nil)
+	if sg:GetCount()==0 then return end
 	Duel.SendtoBattle(sg,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
 end
