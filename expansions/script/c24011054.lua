@@ -28,13 +28,6 @@ end
 function scard.tgfilter(c,e)
 	return c:DMIsAbleToGrave() and c:IsCanBeEffectTarget(e)
 end
-function scard.tograve(g,player)
-	if g:GetCount()==0 then return end
-	Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOGRAVE)
-	local sg=g:Select(player,1,1,nil)
-	Duel.SetTargetCard(sg)
-	Duel.DMSendtoGrave(sg,REASON_EFFECT)
-end
 function scard.tgop(e,tp,eg,ep,ev,re,r,rp)
 	local g1=Duel.GetMatchingGroup(dm.ManaZoneFilter(scard.tgfilter),tp,0,DM_LOCATION_MANA,nil,e)
 	local g2=Duel.GetMatchingGroup(dm.ShieldZoneFilter(scard.tgfilter),tp,0,DM_LOCATION_SHIELD,nil,e)
@@ -43,4 +36,11 @@ function scard.tgop(e,tp,eg,ep,ev,re,r,rp)
 	scard.tograve(g1,1-tp)
 	Duel.BreakEffect()
 	scard.tograve(g2,1-tp)
+end
+function scard.tograve(g,tp)
+	if g:GetCount()==0 then return end
+	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOGRAVE)
+	local sg=g:Select(tp,1,1,nil)
+	Duel.SetTargetCard(sg)
+	Duel.DMSendtoGrave(sg,REASON_EFFECT)
 end
