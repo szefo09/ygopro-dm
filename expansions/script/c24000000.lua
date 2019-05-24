@@ -359,10 +359,11 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 end
 --untap
 function scard.posfilter1(c)
-	return c:IsFaceup() and c:IsAbleToUntap() and not c:IsHasEffect(DM_EFFECT_SILENT_SKILL)
+	return c:IsFaceup() and Duel.IsPlayerCanUntapStartStep(Duel.GetTurnPlayer()) and c:IsAbleToUntapStartStep()
+		and not c:IsHasEffect(DM_EFFECT_SILENT_SKILL)
 end
 function scard.posfilter2(c)
-	return c:IsAbleToUntap()
+	return c:IsAbleToUntapStartStep() and Duel.IsPlayerCanUntapStartStep(Duel.GetTurnPlayer())
 end
 function scard.poscon1(e)
 	local turnp=Duel.GetTurnPlayer()
@@ -475,7 +476,7 @@ function scard.desop2(e,tp,eg,ep,ev,re,r,rp)
 		--raise event for "Whenever one of your creatures loses a battle"
 		--Duel.RaiseEvent(lc,EVENT_CUSTOM+DM_EVENT_LOSE_BATTLE,e,0,0,0,0) --reserved
 	end
-	Duel.Destroy(g,REASON_RULE)
+	Duel.Destroy(g,REASON_BATTLE+REASON_RULE)
 end
 --to grave redirect
 function scard.tgtg(e,c)

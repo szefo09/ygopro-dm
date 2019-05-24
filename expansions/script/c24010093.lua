@@ -8,10 +8,11 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--cannot untap
-	dm.EnableEffectCustom(c,DM_EFFECT_CANNOT_CHANGE_POS_ABILITY,scard.abcon,DM_LOCATION_MANA,0,scard.abtg)
+	dm.EnablePlayerEffectCustom(c,DM_EFFECT_CANNOT_UNTAP_START_STEP,1,0)
 end
 scard.duel_masters_card=true
-function scard.abcon(e)
-	return Duel.CheckEvent(DM_EVENT_UNTAP_STEP)
-end
-scard.abtg=aux.TargetBoolFunction(Card.IsTapped)
+--[[
+	Notes
+		1. You can untap the cards in your mana zone via a card effect
+		https://duelmasters.fandom.com/wiki/Terradragon_Cusdalf/Rulings
+]]

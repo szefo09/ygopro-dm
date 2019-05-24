@@ -11,12 +11,11 @@ end
 scard.duel_masters_card=true
 function scard.repfilter(c,tp)
 	return c:IsLocation(DM_LOCATION_BATTLE) and c:IsFaceup() and c:IsHasEffect(DM_EFFECT_SILENT_SKILL)
-		and c:IsControler(tp) and not c:IsReason(REASON_REPLACE)
+		and c:IsControler(tp) and not c:IsReason(REASON_REPLACE) and c:IsAbleToHand()
 end
 function scard.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	local c=e:GetHandler()
-	if chk==0 then return eg:IsExists(scard.repfilter,1,c,tp) end
-	local g=eg:Filter(scard.repfilter,c,tp)
+	if chk==0 then return eg:IsExists(scard.repfilter,1,nil,tp) end
+	local g=eg:Filter(scard.repfilter,nil,tp)
 	g:KeepAlive()
 	e:SetLabelObject(g)
 	return true
