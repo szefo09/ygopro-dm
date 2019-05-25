@@ -18,7 +18,7 @@ end
 scard.abtg=dm.TargetCardFunction(PLAYER_SELF,scard.abfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TARGET)
 function scard.abop1(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if not tc or not tc:IsRelateToEffect(e) then return end
+	if not tc or not tc:IsRelateToEffect(e) or not scard.abfilter(tc) then return end
 	--must block
 	dm.RegisterEffectCustom(e:GetHandler(),tc,2,DM_EFFECT_MUST_BLOCK)
 	--raise event to trigger "Blocker"
@@ -26,7 +26,7 @@ function scard.abop1(e,tp,eg,ep,ev,re,r,rp)
 end
 function scard.abop2(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
+	if not c:IsRelateToEffect(e) or not c:IsFaceup() then return end
 	--power up
 	dm.RegisterEffectUpdatePower(c,c,3,3000)
 end

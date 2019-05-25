@@ -61,7 +61,7 @@ function scard.poscon(e,tp,eg,ep,ev,re,r,rp)
 end
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
+	if not c:IsRelateToEffect(e) or not c:IsFaceup() then return end
 	Duel.Untap(c,REASON_EFFECT)
 	--part of workaround to not tap a creature that untaps itself with an ability
 	--Note: Remove this if YGOPro allows a creature to tap itself for EFFECT_ATTACK_COST

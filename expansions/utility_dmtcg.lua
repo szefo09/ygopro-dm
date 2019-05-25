@@ -1725,7 +1725,7 @@ function Auxiliary.BlockerOperation(e,tp,eg,ep,ev,re,r,rp)
 	if not c:IsRelateToEffect(e) then return end
 	Duel.Tap(c,REASON_EFFECT)
 	local a=Duel.GetAttacker()
-	if not a or a:IsImmuneToEffect(e) or c:IsImmuneToEffect(e) or a:IsStatus(STATUS_ATTACK_CANCELED) then return end
+	if not a or a:IsStatus(STATUS_ATTACK_CANCELED) then return end
 	Duel.Tap(a,REASON_RULE) --fix creature not being tapped when attacking
 	Duel.NegateAttack()
 	--register flag effect for Card.IsBlocked
@@ -2966,13 +2966,14 @@ function Auxiliary.EnableTurnEndSelfUntap(c,desc_id,con_func,forced)
 	c:RegisterEffect(e1)
 end
 function Auxiliary.SelfUntapTarget(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsFaceup() and e:GetHandler():IsAbleToUntap() end
+	local c=e:GetHandler()
+	if chk==0 then return c:IsFaceup() and c:IsAbleToUntap() end
 end
 function Auxiliary.SelfUntapOperation(ram)
 	--ram: true for "untap this creature at random"
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local c=e:GetHandler()
-				if not c:IsRelateToEffect(e) or c:IsFacedown() or not c:IsAbleToUntap() then return end
+				if not c:IsAbleToUntap() or not c:IsFaceup() then return end
 				if ram then
 					local os=require('os')
 					math.randomseed(os.time())
@@ -3001,8 +3002,7 @@ end
 --e.g. "Stampeding Longhorn" (DM-01 104/110), "Calgo, Vizier of Rainclouds" (DM-05 7/55)
 function Auxiliary.CannotBeBlockedValue(f)
 	return	function(e,re,tp)
-				return re:IsHasCategory(DM_CATEGORY_BLOCKER) and not re:GetHandler():IsImmuneToEffect(e)
-					and (not f or f(e,re,tp))
+				return re:IsHasCategory(DM_CATEGORY_BLOCKER) and (not f or f(e,re,tp))
 			end
 end
 function Auxiliary.CannotBeBlockedBoolFunction(f,...)
@@ -3110,7 +3110,7 @@ function Auxiliary.SelfDestroyOperation(ram)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local c=e:GetHandler()
 				if Duel.GetAttacker()==c then Duel.Tap(c,REASON_RULE) end --fix creature not being tapped when attacking
-				if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
+				if not c:IsLocation(DM_LOCATION_BATTLE) or not c:IsFaceup() then return end
 				if ram then
 					local os=require('os')
 					math.randomseed(os.time())
@@ -3208,7 +3208,7 @@ function Auxiliary.EnableCannotBeAttacked(c,f)
 end
 function Auxiliary.CannotBeAttackedValue(f)
 	return	function(e,c)
-				return not c:IsImmuneToEffect(e) and (not f or f(e,c))
+				return not f or f(e,c)
 			end
 end
 --"At the end of each of your turns, destroy this creature."
@@ -3362,7 +3362,7 @@ function Auxiliary.SelfReturnTarget(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function Auxiliary.SelfReturnOperation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if c:IsRelateToEffect(e) and c:IsFaceup() then
+	if c:IsFaceup() then
 		Duel.SendtoHand(c,PLAYER_OWNER,REASON_EFFECT)
 	end
 end
@@ -3933,7 +3933,7 @@ Auxiliary.dfcon=Auxiliary.AttackTargetCondition
 --e.g. "Bloody Squito" (DM-01 46/110), "Hanakage, Shadow of Transience" (Game Original)
 function Auxiliary.SelfBattleWinCondition(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:IsRelateToBattle() and c:IsOnField()
+	return c:IsRelateToBattle() and c:IsLocation(DM_LOCATION_BATTLE)
 end
 Auxiliary.sbwcon=Auxiliary.SelfBattleWinCondition
 --condition of "Whenever this creature blocks" + DM_EVENT_BATTLE_END

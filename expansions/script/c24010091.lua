@@ -19,7 +19,7 @@ function scard.tbfilter(c,e,tp,cost)
 end
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if not tc or not tc:IsRelateToEffect(e) then return end
+	if not tc or not tc:IsRelateToEffect(e) or not scard.tmfilter(tc) then return end
 	if Duel.SendtoMana(tc,POS_FACEUP_UNTAPPED,REASON_EFFECT)==0 then return end
 	local p=tc:GetOwner()
 	local cost=Duel.GetManaCount(p)

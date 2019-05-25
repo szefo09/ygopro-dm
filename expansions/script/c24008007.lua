@@ -16,7 +16,7 @@ function scard.abfilter(c,e)
 end
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc and tc:IsRelateToEffect(e) then
+	if tc and tc:IsRelateToEffect(e) and scard.posfilter(tc) then
 		Duel.Tap(tc,REASON_EFFECT)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TARGET)

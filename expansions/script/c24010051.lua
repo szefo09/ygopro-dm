@@ -12,7 +12,7 @@ scard.duel_masters_card=true
 scard.abtg=dm.TargetCardFunction(PLAYER_SELF,Card.IsFaceup,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TARGET)
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if not tc or not tc:IsRelateToEffect(e) then return end
+	if not tc or not tc:IsRelateToEffect(e) or not tc:IsFaceup() then return end
 	local reset_count=(Duel.GetTurnPlayer()==tp and 2 or 1)
 	--must attack
 	dm.RegisterEffectCustom(e:GetHandler(),tc,1,EFFECT_MUST_ATTACK,RESET_PHASE+PHASE_DRAW,reset_count)

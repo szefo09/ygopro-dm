@@ -58,7 +58,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 end
 function scard.rstcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:IsFacedown() or not c:IsLocation(DM_LOCATION_BATTLE)
+	return not c:IsLocation(DM_LOCATION_BATTLE) or not c:IsFaceup()
 end
 function scard.rstop(e,tp,eg,ep,ev,re,r,rp)
 	local e1=e:GetLabelObject()
