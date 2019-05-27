@@ -15,7 +15,7 @@ end
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local d=Duel.GetAttackTarget()
-	if not c:IsRelateToEffect(e) or c:IsFacedown() or not d:IsRelateToBattle() or d:IsFacedown() then return end
+	if not c:IsRelateToEffect(e) or not c:IsFaceup() or not d:IsRelateToBattle() or not d:IsFaceup() then return end
 	--power up
 	dm.RegisterEffectUpdatePower(c,d,1,2000,0,0)
 end

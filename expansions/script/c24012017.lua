@@ -14,7 +14,7 @@ scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_CYBER_LORD,DM_RACE_CYBER,DM_RACE_HEDRIAN}
 --power up
 function scard.powtg(e,c)
-	return c~=e:GetHandler() and c:IsFaceup() and c:DMIsRace(DM_RACE_CYBER_LORD,DM_RACE_HEDRIAN)
+	return c~=e:GetHandler() and c:DMIsRace(DM_RACE_CYBER_LORD,DM_RACE_HEDRIAN)
 end
 --get ability (cannot be blocked)
 function scard.acttg(e,c)

@@ -17,6 +17,6 @@ function scard.drop(e,tp,eg,ep,ev,re,r,rp)
 end
 --[[
 	Notes
-		1. If Mongrel Man and another creature are destroyed at the same time, you can still trigger its ability.
+		1. The ability can still trigger if Mongrel Man and another creature are destroyed at the same time
 		https://duelmasters.fandom.com/wiki/Mongrel_Man/Rulings
 ]]

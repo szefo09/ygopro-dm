@@ -19,7 +19,7 @@ function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	local mg=tc1:GetSourceGroup()
 	local pos=tc1:GetPosition()
 	local seq=tc1:GetSequence()
-	if not tc1:IsRelateToEffect(e) or mg:GetCount()==0 then return end
+	if not tc1:IsRelateToEffect(e) or not scard.tmfilter(tc1) then return end
 	local g=Group.CreateGroup()
 	for mc in aux.Next(mg) do
 		g:AddCard(mc)

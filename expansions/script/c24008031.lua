@@ -19,6 +19,6 @@ function scard.descon(e,tp,eg,ep,ev,re,r,rp)
 end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
+	if not c:IsRelateToEffect(e) or not c:IsFaceup() then return end
 	Duel.Destroy(c,REASON_EFFECT)
 end

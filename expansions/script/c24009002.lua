@@ -14,7 +14,4 @@ function scard.drcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(scard.cfilter,1,e:GetHandler(),tp)
 end
 scard.drtg=dm.DrawTarget(PLAYER_SELF)
-function scard.drop(e,tp,eg,ep,ev,re,r,rp)
-	if not e:GetHandler():IsRelateToEffect(e) or e:GetHandler():IsFacedown() then return end
-	Duel.Draw(tp,1,REASON_EFFECT)
-end
+scard.drop=dm.DrawOperation(PLAYER_SELF,1)

@@ -13,5 +13,5 @@ end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_HUMAN}
 function scard.powtg(e,c)
-	return c~=e:GetHandler() and c:IsFaceup() and c:DMIsRace(DM_RACE_HUMAN)
+	return c~=e:GetHandler() and c:DMIsRace(DM_RACE_HUMAN)
 end

@@ -13,7 +13,7 @@ end
 scard.rettg=dm.TargetCardFunction(PLAYER_SELF,scard.retfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_RTOHAND)
 function scard.retop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc and tc:IsRelateToEffect(e) then
+	if tc and tc:IsRelateToEffect(e) and scard.retfilter(tc) then
 		Duel.SendtoHand(tc,PLAYER_OWNER,REASON_EFFECT)
 		Duel.ShuffleHand(1-tp)
 	end

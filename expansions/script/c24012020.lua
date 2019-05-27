@@ -14,7 +14,7 @@ scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_WILD_VEGGIES,DM_RACE_RAINBOW_PHANTOM}
 --power up
 function scard.powtg(e,c)
-	return c~=e:GetHandler() and c:IsFaceup() and c:DMIsRace(DM_RACE_WILD_VEGGIES,DM_RACE_RAINBOW_PHANTOM)
+	return c~=e:GetHandler() and c:DMIsRace(DM_RACE_WILD_VEGGIES,DM_RACE_RAINBOW_PHANTOM)
 end
 --untap
 function scard.posfilter(c)

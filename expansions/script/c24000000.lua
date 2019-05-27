@@ -349,7 +349,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	ye20:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
 		local a=Duel.GetAttacker()
 		local d=Duel.GetAttackTarget()
-		--[[if not d or not d:IsOnField() then
+		--[[if not d or not d:IsLocation(DM_LOCATION_BATTLE) then
 			Duel.Tap(a,REASON_RULE)
 			return
 		end]]
@@ -359,7 +359,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 end
 --untap
 function scard.posfilter1(c)
-	return c:IsFaceup() and Duel.IsPlayerCanUntapStartStep(Duel.GetTurnPlayer()) and c:IsAbleToUntapStartStep()
+	return c:IsFaceup() and c:IsAbleToUntapStartStep() and Duel.IsPlayerCanUntapStartStep(Duel.GetTurnPlayer())
 		and not c:IsHasEffect(DM_EFFECT_SILENT_SKILL)
 end
 function scard.posfilter2(c)
@@ -452,7 +452,7 @@ end
 function scard.desop2(e,tp,eg,ep,ev,re,r,rp)
 	local a=Duel.GetAttacker()
 	local d=Duel.GetAttackTarget()
-	if not a or not a:IsOnField() or not d or not d:IsOnField() or not d:IsDefensePos() then return end
+	if not a or not a:IsLocation(DM_LOCATION_BATTLE) or not d or not d:IsLocation(DM_LOCATION_BATTLE) or not d:IsDefensePos() then return end
 	local ab1=a:IsHasEffect(EFFECT_INDESTRUCTIBLE) or a:IsHasEffect(EFFECT_INDESTRUCTIBLE_BATTLE)
 	local ab2=d:IsHasEffect(EFFECT_INDESTRUCTIBLE) or d:IsHasEffect(EFFECT_INDESTRUCTIBLE_BATTLE)
 	local g=Group.CreateGroup()

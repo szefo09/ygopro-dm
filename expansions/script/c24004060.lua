@@ -13,5 +13,5 @@ end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_HORNED_BEAST}
 function scard.thfilter(c)
-	return c:IsCivilization(DM_CIVILIZATION_NATURE) and c:IsCreature()
+	return c:IsCreature() and c:IsCivilization(DM_CIVILIZATION_NATURE)
 end

@@ -28,16 +28,16 @@ end
 function scard.tgfilter(c,e)
 	return c:DMIsAbleToGrave() and c:IsCanBeEffectTarget(e)
 end
-function scard.tograve(player)
-	Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOGRAVE)
-	local g=Duel.SelectMatchingCard(player,dm.ManaZoneFilter(scard.tgfilter),player,DM_LOCATION_MANA,0,1,1,nil,e)
-	if g:GetCount()==0 then return end
-	Duel.SetTargetCard(g)
-	Duel.DMSendtoGrave(g,REASON_EFFECT)
-end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Destroy(e:GetHandler(),REASON_EFFECT)
 	Duel.BreakEffect()
-	scard.tograve(tp)
-	scard.tograve(1-tp)
+	scard.tograve(e,tp)
+	scard.tograve(e,1-tp)
+end
+function scard.tograve(e,tp)
+	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOGRAVE)
+	local g=Duel.SelectMatchingCard(tp,dm.ManaZoneFilter(scard.tgfilter),tp,DM_LOCATION_MANA,0,1,1,nil,e)
+	if g:GetCount()==0 then return end
+	Duel.SetTargetCard(g)
+	Duel.DMSendtoGrave(g,REASON_EFFECT)
 end

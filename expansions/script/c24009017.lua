@@ -27,7 +27,7 @@ function scard.retcon(e,tp,eg,ep,ev,re,r,rp)
 end
 function scard.retop1(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
+	if not c:IsRelateToEffect(e) or not c:IsFaceup() then return end
 	Duel.SendtoHand(c,PLAYER_OWNER,REASON_EFFECT)
 end
 --no battle (return)

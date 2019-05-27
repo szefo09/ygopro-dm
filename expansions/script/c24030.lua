@@ -25,7 +25,7 @@ end
 --get ability
 function scard.powop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
+	if not c:IsRelateToEffect(e) or not c:IsFaceup() then return end
 	local os=require('os')
 	math.randomseed(os.time())
 	local t={1000,2000,3000,4000,5000}
@@ -43,5 +43,6 @@ function scard.tbcon(e)
 end
 --[[
 	Notes
-		1. The possible increase amount of this card in the original video game is 1000 to 5000 per turn.
+		1. The possible increase amount of this card in the original video game is 1000 to 5000 per turn
+		https://duelmasters.fandom.com/wiki/Terradragon_Hulcoon_Berga#Notes
 ]]

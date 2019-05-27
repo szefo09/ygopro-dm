@@ -14,5 +14,5 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.atval(e,c)
-	return c:IsFacedown() or not c:IsHasEffect(DM_EFFECT_BLOCKER)
+	return not c:IsHasEffect(DM_EFFECT_BLOCKER) or not c:IsFaceup()
 end
