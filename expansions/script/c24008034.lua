@@ -22,7 +22,9 @@ function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 		local sg=dg:Select(tp,1,1,nil)
 		Duel.HintSelection(sg)
 		Duel.Destroy(sg,REASON_EFFECT)
-	else Duel.Destroy(dg,REASON_EFFECT) end
+	else
+		Duel.Destroy(dg,REASON_EFFECT)
+	end
 end
 --[[
 	References
