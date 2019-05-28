@@ -3,7 +3,7 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
-	--enter tapped
+	--get ability (enter tapped)
 	dm.EnableEffectCustom(c,DM_EFFECT_ENTER_BZONE_TAPPED,nil,LOCATION_ALL,0,aux.TargetBoolFunction(Card.IsHasEffect,DM_EFFECT_SILENT_SKILL))
 	--destroy replace (return)
 	dm.AddDestroyReplaceEffect(c,0,scard.reptg,scard.repop,scard.repval)

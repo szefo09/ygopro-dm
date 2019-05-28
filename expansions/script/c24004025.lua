@@ -15,13 +15,12 @@ function scard.thop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.ConfirmDecktop(tp,3)
 	local g=Duel.GetDecktopGroup(tp,3)
 	local sg=g:Filter(scard.thfilter,nil)
+	g:Sub(sg)
 	Duel.DisableShuffleCheck()
 	if sg:GetCount()>0 then
-		if Duel.SendtoHand(sg,PLAYER_OWNER,REASON_EFFECT)>0 then
-			Duel.ConfirmCards(1-tp,sg)
-			Duel.ShuffleHand(tp)
-			g:Sub(sg)
-		end
+		Duel.SendtoHand(sg,PLAYER_OWNER,REASON_EFFECT)
+		Duel.ConfirmCards(1-tp,sg)
+		Duel.ShuffleHand(tp)
 	end
 	Duel.DMSendtoGrave(g,REASON_EFFECT)
 end
