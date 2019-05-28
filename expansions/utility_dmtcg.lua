@@ -4044,7 +4044,14 @@ function Auxiliary.SelfTapCost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.Tap(c,REASON_COST)
 end
 Auxiliary.stapcost=Auxiliary.SelfTapCost
---target function for optional abilities that do not target cards
+--target function for a continuous effect that is active to cards other than the card with the continuous effect
+function Auxiliary.TargetBoolFunctionExceptSelf(f,...)
+	local ext_params={...}
+	return	function(effect,target)
+				return target~=effect:GetHandler() and (not f or f(target,table.unpack(ext_params)))
+			end
+end
+--target function for optional trigger abilities that do not target cards
 function Auxiliary.CheckCardFunction(f,s,o,ex,...)
 	--f: include Card.IsAbleToX for Duel.SendtoX, Card.IsDiscardable for Duel.DiscardHand, etc.
 	local funs={...}
@@ -4055,7 +4062,7 @@ function Auxiliary.CheckCardFunction(f,s,o,ex,...)
 			end
 end
 Auxiliary.chktg=Auxiliary.CheckCardFunction
---target function for abilities that target cards
+--target function for trigger abilities that target cards
 function Auxiliary.TargetCardFunction(p,f,s,o,min,max,desc,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
@@ -4109,6 +4116,17 @@ function Auxiliary.HintTarget(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
 end
 Auxiliary.hinttg=Auxiliary.HintTarget
+--filter for a face up creature in the battle zone
+--reserved
+--[[
+function Auxiliary.FaceUpFilter(f,...)
+	local ext_params={...}
+	return	function(target)
+				return target:IsFaceup() and f(target,table.unpack(ext_params))
+			end
+end
+Auxiliary.fufilt=Auxiliary.FaceUpFilter
+]]
 --filter for a card in the mana zone
 function Auxiliary.ManaZoneFilter(f)
 	return	function(target,...)

@@ -21,6 +21,4 @@ function scard.thop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.DMSendtoGrave(tc,REASON_EFFECT)
 	end
 end
-function scard.thtg(e,c)
-	return c~=e:GetHandler() and c:DMIsRace(DM_RACE_SURVIVOR)
-end
+scard.thtg=dm.TargetBoolFunctionExceptSelf(Card.DMIsRace,DM_RACE_SURVIVOR)

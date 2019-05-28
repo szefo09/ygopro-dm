@@ -5,9 +5,6 @@ function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--survivor (power attacker)
 	dm.EnablePowerAttacker(c,1000)
-	dm.AddStaticEffectPowerAttacker(c,1000,LOCATION_ALL,0,scard.patg)
+	dm.AddStaticEffectPowerAttacker(c,1000,LOCATION_ALL,0,dm.TargetBoolFunctionExceptSelf(Card.DMIsRace,DM_RACE_SURVIVOR))
 end
 scard.duel_masters_card=true
-function scard.patg(e,c)
-	return c~=e:GetHandler() and c:DMIsRace(DM_RACE_SURVIVOR)
-end

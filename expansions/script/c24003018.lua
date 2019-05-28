@@ -8,10 +8,7 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--get ability (cannot be blocked)
-	dm.AddStaticEffectCannotBeBlocked(c,DM_LOCATION_BZONE,0,scard.acttg)
+	dm.AddStaticEffectCannotBeBlocked(c,DM_LOCATION_BZONE,0,dm.TargetBoolFunctionExceptSelf(Card.IsCivilization,DM_CIVILIZATION_WATER))
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_LEVIATHAN}
-function scard.acttg(e,c)
-	return c~=e:GetHandler() and c:IsCivilization(DM_CIVILIZATION_WATER)
-end

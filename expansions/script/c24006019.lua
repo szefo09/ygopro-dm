@@ -9,6 +9,4 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 scard.thop=dm.SendtoHandOperation(PLAYER_SELF,Card.IsSpell,LOCATION_DECK,0,0,1,true)
-function scard.thtg(e,c)
-	return c~=e:GetHandler() and c:DMIsRace(DM_RACE_SURVIVOR)
-end
+scard.thtg=dm.TargetBoolFunctionExceptSelf(Card.DMIsRace,DM_RACE_SURVIVOR)

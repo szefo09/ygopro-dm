@@ -19,6 +19,4 @@ function scard.postg1(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.SelectTarget(tp,scard.posfilter,tp,0,DM_LOCATION_BZONE,1,1,nil)
 end
 scard.posop=dm.TargetTapOperation
-function scard.postg2(e,c)
-	return c~=e:GetHandler() and c:DMIsRace(DM_RACE_SURVIVOR)
-end
+scard.postg2=dm.TargetBoolFunctionExceptSelf(Card.DMIsRace,DM_RACE_SURVIVOR)

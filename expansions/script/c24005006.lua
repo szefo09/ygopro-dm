@@ -25,11 +25,8 @@ function scard.initial_effect(c)
 	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
 	e3:SetRange(DM_LOCATION_BZONE)
 	e3:SetTargetRange(LOCATION_ALL,0)
-	e3:SetTarget(scard.postg)
+	e3:SetTarget(dm.TargetBoolFunctionExceptSelf(Card.DMIsRace,DM_RACE_SURVIVOR))
 	e3:SetLabelObject(e2)
 	c:RegisterEffect(e3)
 end
 scard.duel_masters_card=true
-function scard.postg(e,c)
-	return c~=e:GetHandler() and c:DMIsRace(DM_RACE_SURVIVOR)
-end
