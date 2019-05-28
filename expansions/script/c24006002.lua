@@ -5,7 +5,7 @@ function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--blocker
 	dm.EnableBlocker(c)
-	--enter tapped
+	--get ability (enter tapped)
 	dm.EnableEffectCustom(c,DM_EFFECT_ENTER_BZONE_TAPPED,nil,LOCATION_ALL,LOCATION_ALL,aux.TargetBoolFunction(Card.IsEvolution))
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)

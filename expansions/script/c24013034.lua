@@ -12,7 +12,6 @@ function scard.initial_effect(c)
 	e1:SetCondition(scard.tmcon1)
 	e1:SetOperation(scard.tmop)
 	c:RegisterEffect(e1)
-	--fix for "When this creature loses a battle" not applying
 	local e2=e1:Clone()
 	e2:SetCode(EVENT_CUSTOM+DM_EVENT_LOSE_BATTLE)
 	e2:SetCondition(scard.tmcon2)
