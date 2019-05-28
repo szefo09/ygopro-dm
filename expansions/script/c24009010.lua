@@ -11,7 +11,7 @@ function scard.cfilter(c)
 	return c:IsFaceup() and c:IsCode(CARD_KALUTE_VIZIER_OF_ETERNITY)
 end
 function scard.repcon(e)
-	return Duel.IsExistingMatchingCard(scard.cfilter,e:GetHandlerPlayer(),DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,1,e:GetHandler())
+	return Duel.IsExistingMatchingCard(scard.cfilter,e:GetHandlerPlayer(),DM_LOCATION_BZONE,DM_LOCATION_BZONE,1,e:GetHandler())
 end
 scard.reptg=dm.SingleDestroyReplaceTarget(Card.IsAbleToHand)
 scard.repop=dm.SingleDestroyReplaceOperation(Duel.SendtoHand,PLAYER_OWNER,REASON_EFFECT+REASON_REPLACE)

@@ -6,6 +6,6 @@ function scard.initial_effect(c)
 	--shield trigger
 	dm.EnableShieldTrigger(c)
 	--tap
-	dm.AddSpellCastEffect(c,0,nil,dm.TapOperation(nil,Card.IsFaceup,0,DM_LOCATION_BATTLE))
+	dm.AddSpellCastEffect(c,0,nil,dm.TapOperation(nil,Card.IsFaceup,0,DM_LOCATION_BZONE))
 end
 scard.duel_masters_card=true

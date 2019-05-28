@@ -4,11 +4,11 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--to deck
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,scard.tdtg,scard.tdop,EFFECT_FLAG_CARD_TARGET)
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,scard.tdtg,scard.tdop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 function scard.tdfilter(c)
 	return c:IsFaceup() and c:IsAbleToDeck()
 end
-scard.tdtg=dm.TargetCardFunction(PLAYER_SELF,scard.tdfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TODECK)
+scard.tdtg=dm.TargetCardFunction(PLAYER_SELF,scard.tdfilter,0,DM_LOCATION_BZONE,1,1,DM_HINTMSG_TODECK)
 scard.tdop=dm.TargetSendtoDeckOperation(DECK_SEQUENCE_TOP)

@@ -8,5 +8,5 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.powval(e,c)
-	return Duel.GetMatchingGroupCount(dm.ManaZoneFilter(Card.IsTapped),c:GetControler(),0,DM_LOCATION_MANA,nil)*1000
+	return Duel.GetMatchingGroupCount(dm.ManaZoneFilter(Card.IsTapped),c:GetControler(),0,DM_LOCATION_MZONE,nil)*1000
 end

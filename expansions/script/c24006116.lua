@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_CHIMERA))
 	--get ability (tap ability) (discard)
-	dm.AddStaticEffectTapAbility(c,0,scard.dhtg1,scard.dhop,DM_LOCATION_BATTLE,0,scard.dhtg2)
+	dm.AddStaticEffectTapAbility(c,0,scard.dhtg1,scard.dhop,DM_LOCATION_BZONE,0,scard.dhtg2)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_CHIMERA}

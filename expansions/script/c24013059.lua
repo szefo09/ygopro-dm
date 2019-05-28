@@ -7,7 +7,7 @@ function scard.initial_effect(c)
 	--sympathy (earth eater, giant)
 	dm.EnableSympathy(c,DM_RACE_EARTH_EATER,DM_RACE_GIANT)
 	--draw
-	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.drtg,scard.drop)
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,true,scard.drtg,scard.drop)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end
@@ -17,15 +17,15 @@ function scard.cfilter(c,race)
 end
 function scard.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,1)
-		and (Duel.IsExistingMatchingCard(scard.cfilter,tp,DM_LOCATION_BATTLE,0,1,nil,DM_RACE_EARTH_EATER)
-		or Duel.IsExistingMatchingCard(scard.cfilter,tp,DM_LOCATION_BATTLE,0,1,nil,DM_RACE_GIANT)) end
+		and (Duel.IsExistingMatchingCard(scard.cfilter,tp,DM_LOCATION_BZONE,0,1,nil,DM_RACE_EARTH_EATER)
+		or Duel.IsExistingMatchingCard(scard.cfilter,tp,DM_LOCATION_BZONE,0,1,nil,DM_RACE_GIANT)) end
 end
 function scard.drop(e,tp,eg,ep,ev,re,r,rp)
-	local ct1=Duel.GetMatchingGroupCount(scard.cfilter,tp,DM_LOCATION_BATTLE,0,nil,DM_RACE_EARTH_EATER)
+	local ct1=Duel.GetMatchingGroupCount(scard.cfilter,tp,DM_LOCATION_BZONE,0,nil,DM_RACE_EARTH_EATER)
 	if ct1>0 then
 		Duel.Draw(tp,ct1,REASON_EFFECT)
 	end
-	local ct2=Duel.GetMatchingGroupCount(scard.cfilter,tp,DM_LOCATION_BATTLE,0,nil,DM_RACE_GIANT)
+	local ct2=Duel.GetMatchingGroupCount(scard.cfilter,tp,DM_LOCATION_BZONE,0,nil,DM_RACE_GIANT)
 	if ct2>0 and Duel.IsPlayerCanDraw(tp,1) and Duel.SelectYesNo(tp,DM_QHINTMSG_DRAW) then
 		Duel.BreakEffect()
 		Duel.Draw(tp,ct2,REASON_EFFECT)

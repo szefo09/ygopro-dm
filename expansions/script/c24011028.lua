@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--wave striker (discard)
 	dm.EnableWaveStriker(c)
 	dm.AddEffectDescription(c,1,dm.WaveStrikerCondition)
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.dhop,nil,dm.WaveStrikerCondition)
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,nil,scard.dhop,nil,dm.WaveStrikerCondition)
 end
 scard.duel_masters_card=true
 scard.dhop=dm.DiscardOperation(PLAYER_OPPO,aux.TRUE,0,LOCATION_HAND,3,3,true)

@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
 	--tap
-	dm.AddSpellCastEffect(c,0,nil,dm.TapOperation(nil,scard.posfilter,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE))
+	dm.AddSpellCastEffect(c,0,nil,dm.TapOperation(nil,scard.posfilter,DM_LOCATION_BZONE,DM_LOCATION_BZONE))
 end
 scard.duel_masters_card=true
 function scard.posfilter(c)

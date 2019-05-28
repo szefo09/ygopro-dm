@@ -11,8 +11,8 @@ function scard.posfilter(c,civ)
 	return c:IsFaceup() and c:IsCivilization(civ) and c:IsAbleToTap()
 end
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
-	local g1=Duel.GetMatchingGroup(scard.posfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,DM_CIVILIZATION_DARKNESS)
-	local g2=Duel.GetMatchingGroup(scard.posfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,DM_CIVILIZATION_FIRE)
+	local g1=Duel.GetMatchingGroup(scard.posfilter,tp,DM_LOCATION_BZONE,DM_LOCATION_BZONE,nil,DM_CIVILIZATION_DARKNESS)
+	local g2=Duel.GetMatchingGroup(scard.posfilter,tp,DM_LOCATION_BZONE,DM_LOCATION_BZONE,nil,DM_CIVILIZATION_FIRE)
 	if g1:GetCount()==0 and g2:GetCount()==0 then return end
 	local ops={}
 	local t={}

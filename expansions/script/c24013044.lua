@@ -18,13 +18,13 @@ function scard.desfilter2(c,e)
 end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_DESTROY)
-	local g1=Duel.SelectMatchingCard(tp,scard.desfilter1,tp,DM_LOCATION_BATTLE,0,1,1,nil)
+	local g1=Duel.SelectMatchingCard(tp,scard.desfilter1,tp,DM_LOCATION_BZONE,0,1,1,nil)
 	if g1:GetCount()>0 then
 		Duel.HintSelection(g1)
 		Duel.Destroy(g1,REASON_EFFECT)
 	end
 	Duel.Hint(HINT_SELECTMSG,1-tp,DM_HINTMSG_DESTROY)
-	local g2=Duel.SelectMatchingCard(1-tp,scard.desfilter2,1-tp,DM_LOCATION_BATTLE,0,1,1,nil,e)
+	local g2=Duel.SelectMatchingCard(1-tp,scard.desfilter2,1-tp,DM_LOCATION_BZONE,0,1,1,nil,e)
 	if g2:GetCount()>0 then
 		Duel.BreakEffect()
 		Duel.SetTargetCard(g2)

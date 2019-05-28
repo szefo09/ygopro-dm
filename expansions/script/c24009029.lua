@@ -16,8 +16,8 @@ end
 function scard.tgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return false end
 	if chk==0 then return true end
-	local g1=Duel.GetMatchingGroup(scard.tgfilter1,tp,0,DM_LOCATION_BATTLE,nil,e)
-	local g2=Duel.GetMatchingGroup(dm.ShieldZoneFilter(scard.tgfilter2),0,DM_LOCATION_SHIELD,nil,e)
+	local g1=Duel.GetMatchingGroup(scard.tgfilter1,tp,0,DM_LOCATION_BZONE,nil,e)
+	local g2=Duel.GetMatchingGroup(dm.ShieldZoneFilter(scard.tgfilter2),0,DM_LOCATION_SZONE,nil,e)
 	g1:Merge(g2)
 	if g1:GetCount()==0 then return end
 	Duel.Hint(HINT_SELECTMSG,1-tp,DM_HINTMSG_TOGRAVE)

@@ -15,7 +15,7 @@ function scard.cfilter(c)
 	return c:IsFaceup() and c:IsCivilization(DM_CIVILIZATION_NATURE)
 end
 function scard.powval(e,c)
-	return Duel.GetMatchingGroupCount(scard.cfilter,c:GetControler(),DM_LOCATION_BATTLE,0,c)*2000
+	return Duel.GetMatchingGroupCount(scard.cfilter,c:GetControler(),DM_LOCATION_BZONE,0,c)*2000
 end
 --double breaker
 function scard.dbcon(e)

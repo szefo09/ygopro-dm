@@ -15,5 +15,5 @@ function scard.cfilter(c)
 	return c:IsFaceup() and c:IsCivilization(DM_CIVILIZATION_FIRE)
 end
 function scard.abcon(e)
-	return not Duel.IsExistingMatchingCard(scard.cfilter,e:GetHandlerPlayer(),DM_LOCATION_BATTLE,0,1,e:GetHandler())
+	return not Duel.IsExistingMatchingCard(scard.cfilter,e:GetHandlerPlayer(),DM_LOCATION_BZONE,0,1,e:GetHandler())
 end

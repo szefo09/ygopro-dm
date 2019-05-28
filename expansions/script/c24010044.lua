@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--discard, return
-	dm.AddComeIntoPlayEffect(c,0,true,scard.dhtg,scard.dhop,EFFECT_FLAG_CARD_TARGET,scard.dhcon)
+	dm.AddComeIntoPlayTriggerEffect(c,0,true,scard.dhtg,scard.dhop,EFFECT_FLAG_CARD_TARGET,scard.dhcon)
 end
 scard.duel_masters_card=true
 function scard.cfilter(c,tp)
@@ -20,7 +20,7 @@ end
 function scard.dhop(e,tp,eg,ep,ev,re,r,rp)
 	local ct=Duel.DiscardHand(tp,aux.TRUE,1,2,REASON_EFFECT)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_RTOHAND)
-	local g=Duel.SelectMatchingCard(tp,scard.retfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,ct,ct,nil,e)
+	local g=Duel.SelectMatchingCard(tp,scard.retfilter,tp,DM_LOCATION_BZONE,DM_LOCATION_BZONE,ct,ct,nil,e)
 	if g:GetCount()==0 then return end
 	Duel.SetTargetCard(g)
 	Duel.SendtoHand(g,PLAYER_OWNER,REASON_EFFECT)

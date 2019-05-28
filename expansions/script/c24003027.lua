@@ -11,10 +11,10 @@ function scard.thfilter(c,e)
 	return c:IsAbleToHand() and c:IsCanBeEffectTarget(e)
 end
 function scard.thtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(DM_LOCATION_SHIELD) and chkc:IsControler(tp) and chkc:IsAbleToHand() end
+	if chkc then return chkc:IsLocation(DM_LOCATION_SZONE) and chkc:IsControler(tp) and chkc:IsAbleToHand() end
 	if chk==0 then return true end
-	local ct=Duel.GetMatchingGroupCount(dm.ShieldZoneFilter(scard.thfilter),tp,DM_LOCATION_SHIELD,0,nil,e)
+	local ct=Duel.GetMatchingGroupCount(dm.ShieldZoneFilter(scard.thfilter),tp,DM_LOCATION_SZONE,0,nil,e)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_ATOHAND)
-	Duel.SelectTarget(tp,dm.ShieldZoneFilter(Card.IsAbleToHand),tp,DM_LOCATION_SHIELD,0,0,ct,nil)
+	Duel.SelectTarget(tp,dm.ShieldZoneFilter(Card.IsAbleToHand),tp,DM_LOCATION_SZONE,0,0,ct,nil)
 end
 scard.thop=dm.TargetSendtoHandOperation()

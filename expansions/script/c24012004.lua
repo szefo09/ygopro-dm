@@ -4,11 +4,11 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--destroy
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.desop)
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,nil,scard.desop)
 end
 scard.duel_masters_card=true
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil)
+	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,DM_LOCATION_BZONE,DM_LOCATION_BZONE,nil)
 	if g:GetCount()==0 then return end
 	local dg=g:GetMinGroup(Card.GetPower)
 	if dg:GetCount()>1 then

@@ -13,11 +13,11 @@ function scard.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD)
 	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
-	e1:SetRange(DM_LOCATION_BATTLE)
+	e1:SetRange(DM_LOCATION_BZONE)
 	e1:SetCondition(scard.regcon)
 	e1:SetOperation(scard.regop)
 	c:RegisterEffect(e1)
-	dm.AddTurnEndEffect(c,0,nil,nil,nil,dm.SelfDestroyOperation(),scard.descon)
+	dm.AddTurnEndTriggerEffect(c,0,nil,nil,nil,dm.SelfDestroyOperation(),scard.descon)
 end
 scard.duel_masters_card=true
 function scard.regcon(e,tp,eg,ep,ev,re,r,rp)

@@ -6,9 +6,9 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_CHIMERA,DM_RACE_ARMORLOID))
 	--power up
-	dm.EnableUpdatePower(c,2000,nil,DM_LOCATION_BATTLE,0,scard.powtg)
+	dm.EnableUpdatePower(c,2000,nil,DM_LOCATION_BZONE,0,scard.powtg)
 	--get ability (double breaker)
-	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER,nil,DM_LOCATION_BATTLE,0,scard.dbtg)
+	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER,nil,DM_LOCATION_BZONE,0,scard.dbtg)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_CHIMERA,DM_RACE_ARMORLOID}

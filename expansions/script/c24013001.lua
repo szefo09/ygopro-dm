@@ -7,10 +7,10 @@ function scard.initial_effect(c)
 	--blocker
 	dm.EnableBlocker(c)
 	--get ability (must attack)
-	dm.EnableEffectCustom(c,EFFECT_MUST_ATTACK,nil,0,DM_LOCATION_BATTLE)
+	dm.EnableEffectCustom(c,EFFECT_MUST_ATTACK,nil,0,DM_LOCATION_BZONE)
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 	--untap
-	dm.AddSingleBlockEffect(c,0,nil,nil,dm.SelfUntapOperation())
+	dm.AddSingleBlockTriggerEffect(c,0,nil,nil,dm.SelfUntapOperation())
 end
 scard.duel_masters_card=true

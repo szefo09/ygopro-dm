@@ -7,4 +7,4 @@ function scard.initial_effect(c)
 	dm.EnableSilentSkill(c,0,scard.brtg,dm.BreakOperation(PLAYER_SELF,PLAYER_OPPO,1,1,c))
 end
 scard.duel_masters_card=true
-scard.brtg=dm.CheckCardFunction(dm.ShieldZoneFilter(aux.TRUE),0,DM_LOCATION_SHIELD)
+scard.brtg=dm.CheckCardFunction(dm.ShieldZoneFilter(aux.TRUE),0,DM_LOCATION_SZONE)

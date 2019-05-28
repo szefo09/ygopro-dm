@@ -11,7 +11,7 @@ function scard.abfilter(c)
 	return c:IsFaceup() and (not c:IsCanAttackTurn() or not c:IsCanAttack() or not c:IsCanAttackPlayer())
 end
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(scard.abfilter,tp,DM_LOCATION_BATTLE,0,nil)
+	local g=Duel.GetMatchingGroup(scard.abfilter,tp,DM_LOCATION_BZONE,0,nil)
 	if g:GetCount()==0 then return end
 	local c=e:GetHandler()
 	for tc in aux.Next(g) do

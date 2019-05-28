@@ -14,7 +14,7 @@ function scard.desfilter(c,pwr)
 	return c:IsFaceup() and c:IsPower(pwr)
 end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
-	local g1=Duel.GetMatchingGroup(scard.cfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil)
+	local g1=Duel.GetMatchingGroup(scard.cfilter,tp,DM_LOCATION_BZONE,DM_LOCATION_BZONE,nil)
 	if g1:GetCount()==0 then return end
 	local ag=Group.CreateGroup()
 	local power_list={}
@@ -27,6 +27,6 @@ function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_NUMBER)
 	local an=Duel.AnnounceNumber(tp,table.unpack(power_list))
-	local g2=Duel.GetMatchingGroup(scard.desfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,an)
+	local g2=Duel.GetMatchingGroup(scard.desfilter,tp,DM_LOCATION_BZONE,DM_LOCATION_BZONE,nil,an)
 	Duel.Destroy(g2,REASON_EFFECT)
 end

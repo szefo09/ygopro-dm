@@ -11,5 +11,5 @@ function scard.cfilter(c)
 	return c:IsFaceup() and c:IsCivilization(DM_CIVILIZATION_LIGHT)
 end
 function scard.powcon(e)
-	return Duel.IsExistingMatchingCard(scard.cfilter,e:GetHandlerPlayer(),DM_LOCATION_BATTLE,0,1,nil)
+	return Duel.IsExistingMatchingCard(scard.cfilter,e:GetHandlerPlayer(),DM_LOCATION_BZONE,0,1,nil)
 end

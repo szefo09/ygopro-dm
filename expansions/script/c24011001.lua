@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_DEVIL_MASK))
 	--destroy
-	dm.AddTurnStartEffect(c,0,nil,nil,nil,scard.desop,nil,EFFECT_FLAG_CARD_TARGET)
+	dm.AddTurnStartTriggerEffect(c,0,nil,nil,nil,scard.desop,nil,EFFECT_FLAG_CARD_TARGET)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end
@@ -17,10 +17,10 @@ scard.evolution_race_list={DM_RACE_DEVIL_MASK}
 --[[
 function scard.destg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local turnp=Duel.GetTurnPlayer()
-	if chkc then return chkc:IsLocation(DM_LOCATION_BATTLE) and chkc:IsControler(turnp) and chkc:IsFaceup() end
+	if chkc then return chkc:IsLocation(DM_LOCATION_BZONE) and chkc:IsControler(turnp) and chkc:IsFaceup() end
 	if chk==0 then return true end
 	Duel.Hint(HINT_SELECTMSG,turnp,DM_HINTMSG_DESTROY)
-	Duel.SelectTarget(turnp,Card.IsFaceup,turnp,DM_LOCATION_BATTLE,0,1,1,nil)
+	Duel.SelectTarget(turnp,Card.IsFaceup,turnp,DM_LOCATION_BZONE,0,1,1,nil)
 end
 scard.desop=dm.TargetDestroyOperation
 ]]
@@ -30,7 +30,7 @@ end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	local turnp=Duel.GetTurnPlayer()
 	Duel.Hint(HINT_SELECTMSG,turnp,DM_HINTMSG_DESTROY)
-	local g=Duel.SelectMatchingCard(turnp,scard.desfilter,turnp,DM_LOCATION_BATTLE,0,1,1,nil,e)
+	local g=Duel.SelectMatchingCard(turnp,scard.desfilter,turnp,DM_LOCATION_BZONE,0,1,1,nil,e)
 	if g:GetCount()==0 then return end
 	Duel.SetTargetCard(g)
 	Duel.Destroy(g,REASON_EFFECT)

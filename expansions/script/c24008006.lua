@@ -12,7 +12,7 @@ scard.duel_masters_card=true
 function scard.posfilter(c)
 	return c:IsFaceup() and c:IsAbleToTap()
 end
-scard.postg=dm.TargetCardFunction(PLAYER_SELF,scard.posfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TAP)
+scard.postg=dm.TargetCardFunction(PLAYER_SELF,scard.posfilter,0,DM_LOCATION_BZONE,1,1,DM_HINTMSG_TAP)
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if not tc or not tc:IsRelateToEffect(e) or not scard.posfilter(tc) then return end

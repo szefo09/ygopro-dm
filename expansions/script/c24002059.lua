@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_HUMAN))
 	--power up
-	dm.EnableUpdatePower(c,1000,nil,DM_LOCATION_BATTLE,0,scard.powtg)
+	dm.EnableUpdatePower(c,1000,nil,DM_LOCATION_BZONE,0,scard.powtg)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end

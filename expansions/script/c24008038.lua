@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--to battle
-	dm.AddSingleDestroyedEffect(c,0,true,scard.tbtg,scard.tbop)
+	dm.AddSingleDestroyedTriggerEffect(c,0,true,scard.tbtg,scard.tbop)
 end
 scard.duel_masters_card=true
 function scard.tbfilter(c)

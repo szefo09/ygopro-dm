@@ -16,7 +16,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local ct2=Duel.DiscardHand(tp,aux.TRUE,0,ct1,REASON_EFFECT,c)
 	if ct2==0 then return end
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TARGET)
-	local g=Duel.SelectMatchingCard(tp,scard.abfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,ct2,ct2,nil,e)
+	local g=Duel.SelectMatchingCard(tp,scard.abfilter,tp,DM_LOCATION_BZONE,DM_LOCATION_BZONE,ct2,ct2,nil,e)
 	if g:GetCount()==0 then return end
 	Duel.SetTargetCard(g)
 	for tc in aux.Next(g) do

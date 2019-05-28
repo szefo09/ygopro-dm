@@ -9,7 +9,7 @@ function scard.initial_effect(c)
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 	--destroy
-	dm.AddSingleBlockEffect(c,0,nil,scard.destg,scard.desop,nil,dm.SelfBattleWinCondition)
+	dm.AddSingleBlockTriggerEffect(c,0,nil,scard.destg,scard.desop,nil,dm.SelfBattleWinCondition)
 end
 scard.duel_masters_card=true
 function scard.desfilter(c,race)
@@ -21,6 +21,6 @@ function scard.destg(e,tp,eg,ep,ev,re,r,rp,chk)
 	e:SetLabel(bc:DMGetRace())
 end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(scard.desfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,e:GetLabel())
+	local g=Duel.GetMatchingGroup(scard.desfilter,tp,DM_LOCATION_BZONE,DM_LOCATION_BZONE,nil,e:GetLabel())
 	Duel.Destroy(g,REASON_EFFECT)
 end

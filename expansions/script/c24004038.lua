@@ -13,7 +13,7 @@ end
 function scard.dhtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_HAND) and chkc:IsControler(1-tp) end
 	if chk==0 then return true end
-	local ct=Duel.GetMatchingGroupCount(scard.cfilter,tp,0,DM_LOCATION_BATTLE,nil)
+	local ct=Duel.GetMatchingGroupCount(scard.cfilter,tp,0,DM_LOCATION_BZONE,nil)
 	Duel.Hint(HINT_SELECTMSG,1-tp,DM_HINTMSG_DISCARD)
 	Duel.SelectTarget(1-tp,aux.TRUE,1-tp,LOCATION_HAND,0,ct,ct,nil)
 end

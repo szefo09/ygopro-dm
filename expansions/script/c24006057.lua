@@ -10,5 +10,5 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.descon(e)
-	return Duel.GetFieldGroupCount(e:GetHandlerPlayer(),DM_LOCATION_BATTLE,0)==1
+	return Duel.GetFieldGroupCount(e:GetHandlerPlayer(),DM_LOCATION_BZONE,0)==1
 end

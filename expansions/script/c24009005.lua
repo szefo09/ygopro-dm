@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--get ability
-	dm.AddComeIntoPlayEffect(c,0,nil,nil,scard.abop,nil,scard.abcon)
+	dm.AddComeIntoPlayTriggerEffect(c,0,nil,nil,scard.abop,nil,scard.abcon)
 end
 scard.duel_masters_card=true
 function scard.cfilter(c,tp)
@@ -17,7 +17,7 @@ function scard.abfilter(c)
 	return c:IsFaceup() and c:DMIsRace(DM_RACE_BEAST_FOLK)
 end
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(scard.abfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil)
+	local g=Duel.GetMatchingGroup(scard.abfilter,tp,DM_LOCATION_BZONE,DM_LOCATION_BZONE,nil)
 	if g:GetCount()==0 then return end
 	local c=e:GetHandler()
 	for tc in aux.Next(g) do

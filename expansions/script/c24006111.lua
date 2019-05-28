@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_INITIATE))
 	--tap
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,scard.postg,scard.posop,EFFECT_FLAG_CARD_TARGET)
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,scard.postg,scard.posop,EFFECT_FLAG_CARD_TARGET)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end
@@ -15,5 +15,5 @@ scard.evolution_race_list={DM_RACE_INITIATE}
 function scard.posfilter(c)
 	return c:IsFaceup() and c:IsAbleToTap()
 end
-scard.postg=dm.TargetCardFunction(PLAYER_SELF,scard.posfilter,0,DM_LOCATION_BATTLE,0,2,DM_HINTMSG_TAP)
+scard.postg=dm.TargetCardFunction(PLAYER_SELF,scard.posfilter,0,DM_LOCATION_BZONE,0,2,DM_HINTMSG_TAP)
 scard.posop=dm.TargetTapOperation

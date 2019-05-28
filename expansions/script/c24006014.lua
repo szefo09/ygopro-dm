@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--shield trigger
 	dm.EnableShieldTrigger(c)
 	--tap
-	dm.AddSpellCastEffect(c,0,nil,dm.TapOperation(nil,scard.posfilter,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE))
+	dm.AddSpellCastEffect(c,0,nil,dm.TapOperation(nil,scard.posfilter,DM_LOCATION_BZONE,DM_LOCATION_BZONE))
 end
 scard.duel_masters_card=true
 function scard.posfilter(c)

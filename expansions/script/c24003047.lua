@@ -11,7 +11,7 @@ end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_GIANT_INSECT,DM_RACE_GIANT}
 function scard.repfilter(c,tp)
-	return c:IsLocation(DM_LOCATION_BATTLE) and c:IsFaceup() and c:IsCivilization(DM_CIVILIZATION_NATURE)
+	return c:IsLocation(DM_LOCATION_BZONE) and c:IsFaceup() and c:IsCivilization(DM_CIVILIZATION_NATURE)
 		and c:IsControler(tp) and not c:IsReason(REASON_REPLACE) and c:IsAbleToMana()
 end
 function scard.reptg(e,tp,eg,ep,ev,re,r,rp,chk)

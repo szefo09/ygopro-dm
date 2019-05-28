@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--to mana, return
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.tmop,EFFECT_FLAG_CARD_TARGET)
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,nil,scard.tmop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 function scard.tmfilter(c,e)
@@ -27,7 +27,7 @@ function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 		return
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_RTOHAND)
-	local g2=Duel.SelectMatchingCard(tp,dm.ManaZoneFilter(scard.retfilter),tp,0,DM_LOCATION_MANA,1,1,nil,e)
+	local g2=Duel.SelectMatchingCard(tp,dm.ManaZoneFilter(scard.retfilter),tp,0,DM_LOCATION_MZONE,1,1,nil,e)
 	if g2:GetCount()==0 then return end
 	Duel.SetTargetCard(g2)
 	Duel.SendtoHand(g2,PLAYER_OWNER,REASON_EFFECT)

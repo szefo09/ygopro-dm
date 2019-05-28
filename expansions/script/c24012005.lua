@@ -32,6 +32,6 @@ function scard.repop(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()==0 then return end
 	Duel.Hint(HINT_CARD,0,sid)
 	for tc in aux.Next(g) do
-		Duel.MoveToField(tc,tp,tp,DM_LOCATION_BATTLE,pos,true)
+		Duel.MoveToField(tc,tp,tp,DM_LOCATION_BZONE,pos,true)
 	end
 end

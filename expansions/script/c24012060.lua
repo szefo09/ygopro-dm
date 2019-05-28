@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	dm.AddEvolutionProcedure(c,scard.evofilter1,scard.evofilter2)
 	--confirm (to battle or to hand)
 	dm.AddSingleAttackTriggerEffect(c,0,nil,nil,scard.tbop)
-	dm.AddSingleLeaveBattleEffect(c,0,nil,nil,scard.tbop)
+	dm.AddSingleLeaveBZoneTriggerEffect(c,0,nil,nil,scard.tbop)
 	--triple breaker
 	dm.EnableBreaker(c,DM_EFFECT_TRIPLE_BREAKER)
 end

@@ -4,9 +4,9 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--return
-	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.rettg,scard.retop)
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,true,scard.rettg,scard.retop)
 	--power up
-	dm.EnableUpdatePower(c,2000,nil,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,scard.powtg)
+	dm.EnableUpdatePower(c,2000,nil,DM_LOCATION_BZONE,DM_LOCATION_BZONE,scard.powtg)
 end
 scard.duel_masters_card=true
 --return

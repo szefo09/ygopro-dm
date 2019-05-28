@@ -18,7 +18,7 @@ function scard.retfilter2(c,e)
 end
 function scard.retop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TARGET)
-	local g1=Duel.SelectMatchingCard(tp,scard.filter,tp,0,DM_LOCATION_BATTLE,2,2,nil,e)
+	local g1=Duel.SelectMatchingCard(tp,scard.filter,tp,0,DM_LOCATION_BZONE,2,2,nil,e)
 	if g1:GetCount()>0 then
 		Duel.SetTargetCard(g1)
 		Duel.Hint(HINT_SELECTMSG,1-tp,DM_HINTMSG_RTOHAND)
@@ -29,7 +29,7 @@ function scard.retop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Destroy(g1,REASON_EFFECT)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TARGET)
-	local g3=Duel.SelectMatchingCard(tp,dm.ManaZoneFilter(Card.IsCanBeEffectTarget),tp,0,DM_LOCATION_MANA,2,2,nil,e)
+	local g3=Duel.SelectMatchingCard(tp,dm.ManaZoneFilter(Card.IsCanBeEffectTarget),tp,0,DM_LOCATION_MZONE,2,2,nil,e)
 	if g3:GetCount()>0 then
 		Duel.BreakEffect()
 		Duel.SetTargetCard(g3)

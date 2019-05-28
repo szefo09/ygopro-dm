@@ -15,7 +15,7 @@ function scard.tbfilter(c,e,tp,cost)
 end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_DESTROY)
-	local tc=Duel.SelectMatchingCard(tp,scard.desfilter,tp,0,DM_LOCATION_BATTLE,1,1,nil):GetFirst()
+	local tc=Duel.SelectMatchingCard(tp,scard.desfilter,tp,0,DM_LOCATION_BZONE,1,1,nil):GetFirst()
 	if not tc then return end
 	Duel.HintSelection(Group.FromCards(tc))
 	if Duel.Destroy(tc,REASON_EFFECT)==0 then return end

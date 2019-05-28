@@ -4,6 +4,6 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
 	--to mana
-	dm.AddSpellCastEffect(c,0,nil,dm.SendtoManaOperation(PLAYER_SELF,Card.IsFaceup,DM_LOCATION_BATTLE,0,1))
+	dm.AddSpellCastEffect(c,0,nil,dm.SendtoManaOperation(PLAYER_SELF,Card.IsFaceup,DM_LOCATION_BZONE,0,1))
 end
 scard.duel_masters_card=true

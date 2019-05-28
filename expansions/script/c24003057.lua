@@ -14,14 +14,14 @@ function scard.cfilter(c)
 end
 --power up
 function scard.powval(e,c)
-	return Duel.GetMatchingGroupCount(scard.cfilter,c:GetControler(),DM_LOCATION_BATTLE,0,c)*1000
+	return Duel.GetMatchingGroupCount(scard.cfilter,c:GetControler(),DM_LOCATION_BZONE,0,c)*1000
 end
 --draw
 function scard.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,1)
-		and Duel.GetMatchingGroupCount(scard.cfilter,tp,DM_LOCATION_BATTLE,0,e:GetHandler())>0 end
+		and Duel.GetMatchingGroupCount(scard.cfilter,tp,DM_LOCATION_BZONE,0,e:GetHandler())>0 end
 end
 function scard.drop(e,tp,eg,ep,ev,re,r,rp)
-	local ct=Duel.GetMatchingGroupCount(scard.cfilter,tp,DM_LOCATION_BATTLE,0,e:GetHandler())
+	local ct=Duel.GetMatchingGroupCount(scard.cfilter,tp,DM_LOCATION_BZONE,0,e:GetHandler())
 	Duel.Draw(tp,ct,REASON_EFFECT)
 end

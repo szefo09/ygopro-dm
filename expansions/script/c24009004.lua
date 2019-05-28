@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_ARMORED_WYVERN))
 	--skip turn
-	dm.AddSingleUnblockedAttackEffect(c,0,nil,nil,scard.skipop,nil,scard.skipcon)
+	dm.AddSingleUnblockedAttackTriggerEffect(c,0,nil,nil,scard.skipop,nil,scard.skipcon)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--return

@@ -10,7 +10,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,DM_LOCATION_BATTLE,nil)
+	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,DM_LOCATION_BZONE,nil)
 	if g:GetCount()==0 then return end
 	local reset_count=(Duel.GetTurnPlayer()==tp and 2 or 1)
 	for tc in aux.Next(g) do

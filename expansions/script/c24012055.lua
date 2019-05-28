@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--wave striker (to mana, return)
 	dm.EnableWaveStriker(c)
 	dm.AddEffectDescription(c,1,dm.WaveStrikerCondition)
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.tmop,nil,dm.WaveStrikerCondition)
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,nil,scard.tmop,nil,dm.WaveStrikerCondition)
 end
 scard.duel_masters_card=true
 function scard.retfilter(c)
@@ -15,7 +15,7 @@ end
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SendDecktoptoMana(tp,1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_RTOHAND)
-	local g=Duel.SelectMatchingCard(tp,dm.ManaZoneFilter(scard.retfilter),tp,DM_LOCATION_MANA,0,1,1,nil)
+	local g=Duel.SelectMatchingCard(tp,dm.ManaZoneFilter(scard.retfilter),tp,DM_LOCATION_MZONE,0,1,1,nil)
 	if g:GetCount()==0 then return end
 	Duel.BreakEffect()
 	Duel.SendtoHand(g,PLAYER_OWNER,REASON_EFFECT)

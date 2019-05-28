@@ -12,7 +12,7 @@ end
 scard.duel_masters_card=true
 --power up
 function scard.powval(e,c)
-	return Duel.GetMatchingGroupCount(dm.ManaZoneFilter(Card.IsTapped),c:GetControler(),0,DM_LOCATION_MANA,nil)*2000
+	return Duel.GetMatchingGroupCount(dm.ManaZoneFilter(Card.IsTapped),c:GetControler(),0,DM_LOCATION_MZONE,nil)*2000
 end
 --double breaker
 function scard.dbcon(e)

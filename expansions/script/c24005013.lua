@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 	--return
-	dm.AddEnterGraveEffect(c,0,PLAYER_SELF,true,nil,scard.retop,nil,scard.retcon)
+	dm.AddEnterGraveTriggerEffect(c,0,PLAYER_SELF,true,nil,scard.retop,nil,scard.retcon)
 end
 scard.duel_masters_card=true
 scard.retcon=dm.ReasonPlayerCondition(PLAYER_OPPO)

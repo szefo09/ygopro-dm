@@ -14,11 +14,11 @@ function scard.tgfilter(c)
 	return c:IsFaceup() and c:DMIsAbleToGrave()
 end
 function scard.tgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(DM_LOCATION_BATTLE) and chkc:IsControler(tp) and scard.tgfilter(chkc) end
+	if chkc then return chkc:IsLocation(DM_LOCATION_BZONE) and chkc:IsControler(tp) and scard.tgfilter(chkc) end
 	if chk==0 then return true end
-	local ct=Duel.GetMatchingGroupCount(scard.tgfilter,tp,DM_LOCATION_BATTLE,0,nil)
+	local ct=Duel.GetMatchingGroupCount(scard.tgfilter,tp,DM_LOCATION_BZONE,0,nil)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOGRAVE)
-	Duel.SelectTarget(tp,scard.tgfilter,tp,DM_LOCATION_BATTLE,0,0,ct,nil)
+	Duel.SelectTarget(tp,scard.tgfilter,tp,DM_LOCATION_BZONE,0,0,ct,nil)
 end
 function scard.tgop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)

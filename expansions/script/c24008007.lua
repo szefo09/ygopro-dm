@@ -10,7 +10,7 @@ scard.duel_masters_card=true
 function scard.posfilter(c)
 	return c:IsFaceup() and c:IsAbleToTap()
 end
-scard.postg=dm.TargetCardFunction(PLAYER_SELF,scard.posfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TAP)
+scard.postg=dm.TargetCardFunction(PLAYER_SELF,scard.posfilter,0,DM_LOCATION_BZONE,1,1,DM_HINTMSG_TAP)
 function scard.abfilter(c,e)
 	return c:IsFaceup() and c:IsCanBeEffectTarget(e)
 end
@@ -20,7 +20,7 @@ function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Tap(tc,REASON_EFFECT)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TARGET)
-	local g=Duel.SelectMatchingCard(tp,scard.abfilter,tp,DM_LOCATION_BATTLE,0,0,1,nil,e)
+	local g=Duel.SelectMatchingCard(tp,scard.abfilter,tp,DM_LOCATION_BZONE,0,0,1,nil,e)
 	if g:GetCount()==0 then return end
 	Duel.BreakEffect()
 	Duel.SetTargetCard(g)

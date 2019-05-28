@@ -6,10 +6,10 @@ function scard.initial_effect(c)
 	--wave striker (destroy)
 	dm.EnableWaveStriker(c)
 	dm.AddEffectDescription(c,1,dm.WaveStrikerCondition)
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.desop,nil,dm.WaveStrikerCondition)
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,nil,scard.desop,nil,dm.WaveStrikerCondition)
 end
 scard.duel_masters_card=true
 function scard.desfilter(c)
 	return c:IsFaceup() and c:IsPowerBelow(2000)
 end
-scard.desop=dm.DestroyOperation(nil,scard.desfilter,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE)
+scard.desop=dm.DestroyOperation(nil,scard.desfilter,DM_LOCATION_BZONE,DM_LOCATION_BZONE)

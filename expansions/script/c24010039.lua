@@ -11,7 +11,7 @@ end
 scard.duel_masters_card=true
 function scard.retop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_RTOHAND)
-	local g1=Duel.SelectMatchingCard(tp,dm.ManaZoneFilter(Card.IsAbleToHand),tp,DM_LOCATION_MANA,0,1,1,nil)
+	local g1=Duel.SelectMatchingCard(tp,dm.ManaZoneFilter(Card.IsAbleToHand),tp,DM_LOCATION_MZONE,0,1,1,nil)
 	if g1:GetCount()>0 then
 		Duel.SendtoHand(g1,PLAYER_OWNER,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,g1)

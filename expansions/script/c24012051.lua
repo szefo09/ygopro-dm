@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--tap
-	dm.AddComeIntoPlayEffect(c,0,nil,nil,scard.posop,nil,scard.poscon)
+	dm.AddComeIntoPlayTriggerEffect(c,0,nil,nil,scard.posop,nil,scard.poscon)
 end
 scard.duel_masters_card=true
 function scard.poscon(e,tp,eg,ep,ev,re,r,rp)

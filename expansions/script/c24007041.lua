@@ -10,5 +10,5 @@ scard.duel_masters_card=true
 function scard.desfilter(c)
 	return c:IsFaceup() and c:IsPowerBelow(2000)
 end
-scard.destg=dm.CheckCardFunction(scard.desfilter,0,DM_LOCATION_BATTLE)
-scard.desop=dm.DestroyOperation(PLAYER_SELF,scard.desfilter,0,DM_LOCATION_BATTLE,1)
+scard.destg=dm.CheckCardFunction(scard.desfilter,0,DM_LOCATION_BZONE)
+scard.desop=dm.DestroyOperation(PLAYER_SELF,scard.desfilter,0,DM_LOCATION_BZONE,1)

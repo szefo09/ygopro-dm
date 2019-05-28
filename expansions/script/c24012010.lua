@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--discard
-	dm.AddTurnEndEffect(c,0,nil,nil,nil,dm.DiscardOperation(nil,aux.TRUE,0,LOCATION_HAND),scard.dhcon)
+	dm.AddTurnEndTriggerEffect(c,0,nil,nil,nil,dm.DiscardOperation(nil,aux.TRUE,0,LOCATION_HAND),scard.dhcon)
 	if not scard.global_check then
 		scard.global_check=true
 		scard[0]=0

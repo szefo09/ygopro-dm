@@ -7,7 +7,7 @@ function scard.initial_effect(c)
 	--blocker
 	dm.EnableBlocker(c)
 	--sort
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,dm.SortDecktopOperation(PLAYER_SELF,PLAYER_SELF,5))
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,nil,dm.SortDecktopOperation(PLAYER_SELF,PLAYER_SELF,5))
 	--cannot attack
 	dm.EnableCannotAttack(c)
 end

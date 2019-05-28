@@ -5,7 +5,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--to shield, to hand
-	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.tstg,scard.tsop,EFFECT_FLAG_CARD_TARGET)
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,true,scard.tstg,scard.tsop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 scard.tstg=dm.CheckCardFunction(Card.IsAbleToShield,LOCATION_HAND,0)
@@ -17,7 +17,7 @@ function scard.tsop(e,tp,eg,ep,ev,re,r,rp)
 	--local g1=Duel.SelectMatchingCard(tp,Card.IsAbleToShield,tp,LOCATION_HAND,0,1,2,nil)
 	--if g1:GetCount()==0 or Duel.SendtoShield(g1)==0 then return end
 	--Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_ATOHAND)
-	--local g2=Duel.SelectMatchingCard(tp,dm.ShieldZoneFilter(scard.thfilter),tp,DM_LOCATION_SHIELD,0,g1:GetCount(),g1:GetCount(),nil,e)
+	--local g2=Duel.SelectMatchingCard(tp,dm.ShieldZoneFilter(scard.thfilter),tp,DM_LOCATION_SZONE,0,g1:GetCount(),g1:GetCount(),nil,e)
 	--if g2:GetCount()==0 then return end
 	--Duel.SetTargetCard(g2)
 	--Duel.SendtoHand(g2,PLAYER_OWNER,REASON_EFFECT)
@@ -26,7 +26,7 @@ function scard.tsop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOSHIELD)
 	local sg1=g:Select(tp,1,2,nil)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_ATOHAND)
-	local sg2=Duel.SelectMatchingCard(tp,dm.ShieldZoneFilter(scard.thfilter),tp,DM_LOCATION_SHIELD,0,sg1:GetCount(),sg1:GetCount(),nil,e)
+	local sg2=Duel.SelectMatchingCard(tp,dm.ShieldZoneFilter(scard.thfilter),tp,DM_LOCATION_SZONE,0,sg1:GetCount(),sg1:GetCount(),nil,e)
 	if sg2:GetCount()==0 then return end
 	Duel.SetTargetCard(sg2)
 	Duel.SendtoHand(sg2,PLAYER_OWNER,REASON_EFFECT)

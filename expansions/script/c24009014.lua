@@ -25,7 +25,7 @@ function scard.posfilter(c,race)
 	return c:IsFaceup() and c:DMIsRace(race) and c:IsAbleToUntap()
 end
 function scard.posop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(scard.posfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,e:GetLabel())
+	local g=Duel.GetMatchingGroup(scard.posfilter,tp,DM_LOCATION_BZONE,DM_LOCATION_BZONE,nil,e:GetLabel())
 	if g:GetCount()==0 then return end
 	Duel.Hint(HINT_CARD,0,sid)
 	Duel.Untap(g,REASON_EFFECT)

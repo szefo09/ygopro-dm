@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--get ability (power attacker)
-	dm.AddStaticEffectPowerAttacker(c,2000,DM_LOCATION_BATTLE,0,scard.patg)
+	dm.AddStaticEffectPowerAttacker(c,2000,DM_LOCATION_BZONE,0,scard.patg)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_ARMORED_DRAGON,DM_RACE_DRAGON}

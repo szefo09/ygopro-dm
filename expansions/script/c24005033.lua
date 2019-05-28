@@ -21,7 +21,7 @@ function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e1,tp)
 end
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,DM_LOCATION_BATTLE,nil)
+	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,DM_LOCATION_BZONE,nil)
 	if g:GetCount()==0 then return end
 	Duel.Hint(HINT_CARD,0,sid)
 	for tc in aux.Next(g) do

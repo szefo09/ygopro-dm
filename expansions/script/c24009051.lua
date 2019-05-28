@@ -8,14 +8,14 @@ function scard.initial_effect(c)
 	--get ability
 	dm.AddSingleAttackTriggerEffect(c,0,true,scard.abtg,scard.abop1,EFFECT_FLAG_CARD_TARGET)
 	--get ability
-	dm.AddSingleBecomeBlockedEffect(c,1,nil,nil,scard.abop2)
+	dm.AddSingleBecomeBlockedTriggerEffect(c,1,nil,nil,scard.abop2)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_BEAST_FOLK}
 function scard.abfilter(c)
 	return c:IsFaceup() and c:IsUntapped() and c:IsHasEffect(DM_EFFECT_BLOCKER)
 end
-scard.abtg=dm.TargetCardFunction(PLAYER_SELF,scard.abfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TARGET)
+scard.abtg=dm.TargetCardFunction(PLAYER_SELF,scard.abfilter,0,DM_LOCATION_BZONE,1,1,DM_HINTMSG_TARGET)
 function scard.abop1(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if not tc or not tc:IsRelateToEffect(e) or not scard.abfilter(tc) then return end
