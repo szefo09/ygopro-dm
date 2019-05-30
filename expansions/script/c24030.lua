@@ -5,11 +5,11 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--get ability (power attacker)
-	dm.AddStaticEffectPowerAttacker(c,4000,DM_LOCATION_BATTLE,0,scard.abtg,dm.SelfTappedCondition)
+	dm.AddStaticEffectPowerAttacker(c,4000,DM_LOCATION_BZONE,0,dm.TargetBoolFunctionExceptSelf(),dm.SelfTappedCondition)
 	--get ability (double breaker)
-	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER,dm.SelfTappedCondition,DM_LOCATION_BATTLE,0,scard.abtg)
+	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER,dm.SelfTappedCondition,DM_LOCATION_BZONE,0,dm.TargetBoolFunctionExceptSelf())
 	--get ability
-	dm.AddTurnEndEffect(c,1,nil,nil,nil,scard.powop,dm.SelfTappedCondition)
+	dm.AddTurnEndTriggerEffect(c,1,nil,nil,nil,scard.powop,dm.SelfTappedCondition)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER,scard.dbcon)
 	dm.AddEffectDescription(c,2,scard.dbcon)
@@ -18,10 +18,6 @@ function scard.initial_effect(c)
 	dm.AddEffectDescription(c,3,scard.tbcon)
 end
 scard.duel_masters_card=true
---get ability (power attacker & double breaker)
-function scard.abtg(e,c)
-	return c~=e:GetHandler()
-end
 --get ability
 function scard.powop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

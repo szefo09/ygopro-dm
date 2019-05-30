@@ -5,8 +5,8 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--tap
-	dm.AddSingleUnblockedAttackEffect(c,0,nil,nil,scard.posop,nil,scard.poscon)
+	dm.AddSingleUnblockedAttackTriggerEffect(c,0,nil,nil,scard.posop,nil,scard.poscon)
 end
 scard.duel_masters_card=true
 scard.poscon=dm.AttackPlayerCondition
-scard.posop=dm.TapOperation(nil,Card.IsFaceup,0,DM_LOCATION_BATTLE)
+scard.posop=dm.TapOperation(nil,Card.IsFaceup,0,DM_LOCATION_BZONE)

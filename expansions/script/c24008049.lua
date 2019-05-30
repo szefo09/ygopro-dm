@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.repcon(e)
-	return Duel.IsExistingMatchingCard(dm.ManaZoneFilter(Card.DMIsRace),e:GetHandlerPlayer(),DM_LOCATION_MANA,0,1,nil,DM_RACE_DRAGON)
+	return Duel.IsExistingMatchingCard(dm.ManaZoneFilter(Card.DMIsRace),e:GetHandlerPlayer(),DM_LOCATION_MZONE,0,1,nil,DM_RACE_DRAGON)
 end
 scard.reptg=dm.SingleDestroyReplaceTarget(Card.IsAbleToMana)
 function scard.thfilter(c)
@@ -18,7 +18,7 @@ function scard.repop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_CARD,0,sid)
 	Duel.SendtoMana(e:GetHandler(),POS_FACEUP_UNTAPPED,REASON_EFFECT+REASON_REPLACE)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_RTOHAND)
-	local g=Duel.SelectMatchingCard(tp,dm.ManaZoneFilter(scard.thfilter),tp,DM_LOCATION_MANA,0,1,1,nil)
+	local g=Duel.SelectMatchingCard(tp,dm.ManaZoneFilter(scard.thfilter),tp,DM_LOCATION_MZONE,0,1,1,nil)
 	if g:GetCount()==0 then return end
 	Duel.BreakEffect()
 	Duel.SendtoHand(g,PLAYER_OWNER,REASON_EFFECT)

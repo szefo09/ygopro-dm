@@ -30,7 +30,7 @@ function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	end
 	Duel.ConfirmDecktop(tp,dcount-seq)
 	if crcard:IsCreature() then
-		local g2=Duel.GetMatchingGroup(scard.desfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,crcard:GetPower())
+		local g2=Duel.GetMatchingGroup(scard.desfilter,tp,DM_LOCATION_BZONE,DM_LOCATION_BZONE,nil,crcard:GetPower())
 		Duel.Destroy(g2,REASON_EFFECT)
 	end
 	Duel.DisableShuffleCheck()

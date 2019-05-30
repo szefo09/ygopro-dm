@@ -14,7 +14,7 @@ function scard.tbfilter(c,e,tp)
 end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_DESTROY)
-	local g1=Duel.SelectMatchingCard(tp,Card.IsFaceup,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,0,1,nil)
+	local g1=Duel.SelectMatchingCard(tp,Card.IsFaceup,tp,DM_LOCATION_BZONE,DM_LOCATION_BZONE,0,1,nil)
 	if g1:GetCount()==0 then return end
 	Duel.HintSelection(g1)
 	if Duel.Destroy(g1,REASON_EFFECT)==0 then return end

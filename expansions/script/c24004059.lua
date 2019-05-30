@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--destroy
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,dm.DestroyOperation(nil,scard.desfilter,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE))
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,nil,dm.DestroyOperation(nil,scard.desfilter,DM_LOCATION_BZONE,DM_LOCATION_BZONE))
 end
 scard.duel_masters_card=true
 function scard.desfilter(c)

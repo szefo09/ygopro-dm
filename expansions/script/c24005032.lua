@@ -16,6 +16,4 @@ function scard.dhtg1(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.SelectTarget(1-tp,aux.TRUE,1-tp,LOCATION_HAND,0,1,1,nil)
 end
 scard.dhop=dm.TargetDiscardOperation
-function scard.dhtg2(e,c)
-	return c~=e:GetHandler() and c:DMIsRace(DM_RACE_SURVIVOR)
-end
+scard.dhtg2=dm.TargetBoolFunctionExceptSelf(Card.DMIsRace,DM_RACE_SURVIVOR)

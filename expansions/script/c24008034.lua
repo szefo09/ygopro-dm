@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--destroy
-	dm.AddComeIntoPlayEffect(c,0,nil,nil,scard.desop,nil,scard.descon)
+	dm.AddComeIntoPlayTriggerEffect(c,0,nil,nil,scard.desop,nil,scard.descon)
 end
 scard.duel_masters_card=true
 function scard.cfilter(c,tp)
@@ -14,7 +14,7 @@ function scard.descon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(scard.cfilter,1,e:GetHandler(),tp)
 end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil)
+	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,DM_LOCATION_BZONE,DM_LOCATION_BZONE,nil)
 	if g:GetCount()==0 then return end
 	local dg=g:GetMinGroup(Card.GetPower)
 	if dg:GetCount()>1 then
@@ -22,7 +22,9 @@ function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 		local sg=dg:Select(tp,1,1,nil)
 		Duel.HintSelection(sg)
 		Duel.Destroy(sg,REASON_EFFECT)
-	else Duel.Destroy(dg,REASON_EFFECT) end
+	else
+		Duel.Destroy(dg,REASON_EFFECT)
+	end
 end
 --[[
 	References

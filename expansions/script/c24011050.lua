@@ -6,11 +6,11 @@ function scard.initial_effect(c)
 	--wave striker (to mana)
 	dm.EnableWaveStriker(c)
 	dm.AddEffectDescription(c,1,dm.WaveStrikerCondition)
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,scard.tmtg,scard.tmop,EFFECT_FLAG_CARD_TARGET,dm.WaveStrikerCondition)
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,scard.tmtg,scard.tmop,EFFECT_FLAG_CARD_TARGET,dm.WaveStrikerCondition)
 end
 scard.duel_masters_card=true
 function scard.tmfilter(c)
 	return c:IsFaceup() and c:IsAbleToMana()
 end
-scard.tmtg=dm.TargetCardFunction(PLAYER_OPPO,scard.tmfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TOMANA)
+scard.tmtg=dm.TargetCardFunction(PLAYER_OPPO,scard.tmfilter,0,DM_LOCATION_BZONE,1,1,DM_HINTMSG_TOMANA)
 scard.tmop=dm.TargetSendtoManaOperation

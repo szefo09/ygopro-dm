@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_COLONY_BEETLE))
 	--get ability (tap ability) (to mana)
-	dm.AddStaticEffectTapAbility(c,0,scard.tmtg1,scard.tmop,DM_LOCATION_BATTLE,0,scard.tmtg2)
+	dm.AddStaticEffectTapAbility(c,0,scard.tmtg1,scard.tmop,DM_LOCATION_BZONE,0,scard.tmtg2)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_COLONY_BEETLE}

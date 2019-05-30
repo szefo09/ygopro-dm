@@ -7,7 +7,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_SPIRIT_QUARTZ))
 	--confirm (to hand or to mana)
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.thop)
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,nil,scard.thop)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end
@@ -24,5 +24,7 @@ function scard.thop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SendtoHand(tc,PLAYER_OWNER,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,tc)
 		Duel.ShuffleHand(tp)
-	else Duel.SendtoMana(tc,POS_FACEUP_UNTAPPED,REASON_EFFECT) end
+	else
+		Duel.SendtoMana(tc,POS_FACEUP_UNTAPPED,REASON_EFFECT)
+	end
 end

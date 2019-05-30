@@ -4,12 +4,12 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--return
-	dm.AddSingleUnblockedAttackEffect(c,0,true,scard.rettg,scard.retop,EFFECT_FLAG_CARD_TARGET,scard.retcon)
+	dm.AddSingleUnblockedAttackTriggerEffect(c,0,true,scard.rettg,scard.retop,EFFECT_FLAG_CARD_TARGET,scard.retcon)
 end
 scard.duel_masters_card=true
 scard.retcon=dm.AttackPlayerCondition
 function scard.retfilter(c)
 	return c:IsFaceup() and c:IsAbleToHand()
 end
-scard.rettg=dm.TargetCardFunction(PLAYER_SELF,scard.retfilter,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_RTOHAND)
+scard.rettg=dm.TargetCardFunction(PLAYER_SELF,scard.retfilter,DM_LOCATION_BZONE,DM_LOCATION_BZONE,1,1,DM_HINTMSG_RTOHAND)
 scard.retop=dm.TargetSendtoHandOperation()

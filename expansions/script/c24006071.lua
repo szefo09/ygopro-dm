@@ -6,14 +6,14 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_HUMAN))
 	--destroy
-	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.destg,scard.desop,EFFECT_FLAG_CARD_TARGET)
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,true,scard.destg,scard.desop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_HUMAN}
 function scard.desfilter(c)
 	return c:IsFaceup() and c:IsPowerBelow(4000)
 end
-scard.destg=dm.TargetCardFunction(PLAYER_SELF,scard.desfilter,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_DESTROY)
+scard.destg=dm.TargetCardFunction(PLAYER_SELF,scard.desfilter,DM_LOCATION_BZONE,DM_LOCATION_BZONE,1,1,DM_HINTMSG_DESTROY)
 scard.desop=dm.TargetDestroyOperation
 --[[
 	Notes

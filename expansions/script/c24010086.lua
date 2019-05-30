@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--shield trigger
 	dm.EnableShieldTrigger(c)
 	--to mana
-	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.tmtg,scard.tmop)
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,true,scard.tmtg,scard.tmop)
 end
 scard.duel_masters_card=true
 scard.tmtg=dm.CheckCardFunction(Card.IsAbleToMana,LOCATION_HAND,0)

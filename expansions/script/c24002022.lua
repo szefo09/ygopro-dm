@@ -10,7 +10,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.drop(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.GetMatchingGroupCount(Card.IsFaceup,tp,0,DM_LOCATION_BATTLE,nil)>=3 then
+	if Duel.GetMatchingGroupCount(Card.IsFaceup,tp,0,DM_LOCATION_BZONE,nil)>=3 then
 		Duel.Draw(tp,3,REASON_EFFECT)
 	end
 end

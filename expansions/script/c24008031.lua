@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	--cannot attack
 	dm.EnableCannotAttack(c)
 	--destroy
-	dm.AddComeIntoPlayEffect(c,0,nil,nil,scard.desop,nil,scard.descon)
+	dm.AddComeIntoPlayTriggerEffect(c,0,nil,nil,scard.desop,nil,scard.descon)
 end
 scard.duel_masters_card=true
 function scard.cfilter(c,tp)

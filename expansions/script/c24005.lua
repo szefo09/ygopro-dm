@@ -9,7 +9,7 @@ function scard.initial_effect(c)
 	--speed attacker
 	dm.EnableEffectCustom(c,DM_EFFECT_SPEED_ATTACKER)
 	--to mana
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,dm.DecktopSendtoManaOperation(PLAYER_SELF,1),nil,scard.abcon(DM_CIVILIZATION_NATURE))
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,nil,dm.DecktopSendtoManaOperation(PLAYER_SELF,1),nil,scard.abcon(DM_CIVILIZATION_NATURE))
 	--cannot be blocked
 	dm.EnableCannotBeBlocked(c,nil,scard.abcon(DM_CIVILIZATION_WATER))
 	dm.AddEffectDescription(c,2,scard.abcon(DM_CIVILIZATION_WATER))
@@ -25,6 +25,6 @@ function scard.cfilter(c,civ)
 end
 function scard.abcon(civ)
 	return	function(e)
-				return Duel.IsExistingMatchingCard(scard.cfilter,e:GetHandlerPlayer(),0,DM_LOCATION_BATTLE,1,nil,civ)
+				return Duel.IsExistingMatchingCard(scard.cfilter,e:GetHandlerPlayer(),0,DM_LOCATION_BZONE,1,nil,civ)
 			end
 end

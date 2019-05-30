@@ -9,7 +9,7 @@ function scard.initial_effect(c)
 	--cannot attack
 	dm.EnableCannotAttack(c)
 	--draw
-	dm.AddSingleDestroyedEffect(c,0,nil,nil,scard.drop)
+	dm.AddSingleDestroyedTriggerEffect(c,0,nil,nil,scard.drop)
 end
 scard.duel_masters_card=true
 function scard.drop(e,tp,eg,ep,ev,re,r,rp)

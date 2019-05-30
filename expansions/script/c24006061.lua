@@ -10,9 +10,9 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
-	local ct1=Duel.GetMatchingGroupCount(Card.IsFaceup,tp,DM_LOCATION_BATTLE,0,nil)
+	local ct1=Duel.GetMatchingGroupCount(Card.IsFaceup,tp,DM_LOCATION_BZONE,0,nil)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_DESTROY)
-	local g=Duel.SelectMatchingCard(tp,Card.IsFaceup,tp,DM_LOCATION_BATTLE,0,0,ct1,nil)
+	local g=Duel.SelectMatchingCard(tp,Card.IsFaceup,tp,DM_LOCATION_BZONE,0,0,ct1,nil)
 	if g:GetCount()==0 then return end
 	Duel.HintSelection(g)
 	local ct2=Duel.Destroy(g,REASON_EFFECT)

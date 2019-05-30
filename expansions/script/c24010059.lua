@@ -14,7 +14,7 @@ function scard.retop(e,tp,eg,ep,ev,re,r,rp)
 	scard.return_card(1-tp)
 end
 function scard.return_card(tp)
-	local g1=Duel.GetMatchingGroup(dm.ManaZoneFilter(Card.IsAbleToHand),tp,DM_LOCATION_MANA,0,nil)
+	local g1=Duel.GetMatchingGroup(dm.ManaZoneFilter(Card.IsAbleToHand),tp,DM_LOCATION_MZONE,0,nil)
 	Duel.SendtoHand(g1,PLAYER_OWNER,REASON_EFFECT)
 	local g2=Duel.GetMatchingGroup(Card.IsAbleToMana,tp,LOCATION_HAND,0,nil)
 	g2:Sub(Duel.GetOperatedGroup())

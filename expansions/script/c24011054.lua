@@ -29,8 +29,8 @@ function scard.tgfilter(c,e)
 	return c:DMIsAbleToGrave() and c:IsCanBeEffectTarget(e)
 end
 function scard.tgop(e,tp,eg,ep,ev,re,r,rp)
-	local g1=Duel.GetMatchingGroup(dm.ManaZoneFilter(scard.tgfilter),tp,0,DM_LOCATION_MANA,nil,e)
-	local g2=Duel.GetMatchingGroup(dm.ShieldZoneFilter(scard.tgfilter),tp,0,DM_LOCATION_SHIELD,nil,e)
+	local g1=Duel.GetMatchingGroup(dm.ManaZoneFilter(scard.tgfilter),tp,0,DM_LOCATION_MZONE,nil,e)
+	local g2=Duel.GetMatchingGroup(dm.ShieldZoneFilter(scard.tgfilter),tp,0,DM_LOCATION_SZONE,nil,e)
 	if g1:GetCount()==0 and g2:GetCount()==0 then return end
 	Duel.Hint(HINT_CARD,0,sid)
 	scard.tograve(g1,1-tp)

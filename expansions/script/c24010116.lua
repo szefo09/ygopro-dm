@@ -14,12 +14,12 @@ function scard.cfilter(c)
 	return c:IsFaceup() and c:DMIsRace(DM_RACE_DRAGON)
 end
 function scard.powval(e,c)
-	return Duel.GetMatchingGroupCount(scard.cfilter,c:GetControler(),DM_LOCATION_BATTLE,0,c)*5000
+	return Duel.GetMatchingGroupCount(scard.cfilter,c:GetControler(),DM_LOCATION_BZONE,0,c)*5000
 end
 --crew breaker
 function scard.crew_breaker_count(c)
 	local f=function(c)
 		return c:IsFaceup() and c:DMIsRace(DM_RACE_DRAGON)
 	end
-	return Duel.GetMatchingGroupCount(f,c:GetControler(),DM_LOCATION_BATTLE,0,c)+1
+	return Duel.GetMatchingGroupCount(f,c:GetControler(),DM_LOCATION_BZONE,0,c)+1
 end

@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--survivor (return)
-	dm.AddSingleComeIntoPlayEffect(c,0,true,scard.rettg1,scard.retop)
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,true,scard.rettg1,scard.retop)
 	dm.AddStaticEffectSingleComeIntoPlay(c,0,true,scard.rettg1,scard.retop,LOCATION_ALL,0,scard.rettg2)
 end
 scard.duel_masters_card=true
@@ -16,6 +16,4 @@ function scard.rettg1(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
 end
 scard.retop=dm.SendtoHandOperation(PLAYER_SELF,dm.DMGraveFilter(scard.retfilter),DM_LOCATION_GRAVE,0,1)
-function scard.rettg2(e,c)
-	return c~=e:GetHandler() and c:DMIsRace(DM_RACE_SURVIVOR)
-end
+scard.rettg2=dm.TargetBoolFunctionExceptSelf(Card.DMIsRace,DM_RACE_SURVIVOR)

@@ -11,5 +11,5 @@ function scard.cfilter(c)
 	return c:IsFaceup() and c:IsTapped()
 end
 function scard.powval(e,c)
-	return Duel.GetMatchingGroupCount(scard.cfilter,c:GetControler(),DM_LOCATION_BATTLE,0,c)*2000
+	return Duel.GetMatchingGroupCount(scard.cfilter,c:GetControler(),DM_LOCATION_BZONE,0,c)*2000
 end

@@ -19,4 +19,4 @@ end
 function scard.desfilter(c)
 	return c:IsFaceup() and c:IsTapped()
 end
-scard.desop=dm.DestroyOperation(PLAYER_SELF,scard.desfilter,0,DM_LOCATION_BATTLE,1)
+scard.desop=dm.DestroyOperation(PLAYER_SELF,scard.desfilter,0,DM_LOCATION_BZONE,1)

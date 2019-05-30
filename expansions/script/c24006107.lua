@@ -13,7 +13,7 @@ scard.duel_masters_card=true
 function scard.tmfilter(c)
 	return c:IsFaceup() and c:IsEvolution() and c:IsHasSource() and c:IsAbleToMana()
 end
-scard.tmtg=dm.TargetCardFunction(PLAYER_SELF,scard.tmfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TOMANA)
+scard.tmtg=dm.TargetCardFunction(PLAYER_SELF,scard.tmfilter,0,DM_LOCATION_BZONE,1,1,DM_HINTMSG_TOMANA)
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	local tc1=Duel.GetFirstTarget()
 	local mg=tc1:GetSourceGroup()
@@ -27,7 +27,7 @@ function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SendtoMana(tc1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 	--workaround to keep stacked pile
 	local tc2=g:GetFirst()
-	Duel.MoveToField(tc2,tp,1-tp,DM_LOCATION_BATTLE,pos,true)
+	Duel.MoveToField(tc2,tp,1-tp,DM_LOCATION_BZONE,pos,true)
 	g:RemoveCard(tc2)
 	Duel.MoveSequence(tc2,seq)
 	if g:GetCount()>0 then

@@ -12,7 +12,7 @@ end
 scard.duel_masters_card=true
 --power up
 function scard.powval(e,c)
-	return Duel.GetMatchingGroupCount(dm.ManaZoneFilter(Card.IsCivilization),c:GetControler(),0,DM_LOCATION_MANA,nil,DM_CIVILIZATION_WATER)*1000
+	return Duel.GetMatchingGroupCount(dm.ManaZoneFilter(Card.IsCivilization),c:GetControler(),0,DM_LOCATION_MZONE,nil,DM_CIVILIZATION_WATER)*1000
 end
 --double breaker
 function scard.dbcon(e)

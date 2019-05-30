@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_GUARDIAN))
 	--tap
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,dm.TapOperation(nil,scard.posfilter,0,DM_LOCATION_BATTLE))
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,nil,dm.TapOperation(nil,scard.posfilter,0,DM_LOCATION_BZONE))
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_GUARDIAN}

@@ -11,12 +11,12 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.rettg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(dm.ManaZoneFilter(Card.IsAbleToHand),tp,DM_LOCATION_MANA,0,1,nil)
-		or Duel.IsExistingMatchingCard(dm.ShieldZoneFilter(Card.IsAbleToHand),tp,DM_LOCATION_SHIELD,0,1,nil) end
+	if chk==0 then return Duel.IsExistingMatchingCard(dm.ManaZoneFilter(Card.IsAbleToHand),tp,DM_LOCATION_MZONE,0,1,nil)
+		or Duel.IsExistingMatchingCard(dm.ShieldZoneFilter(Card.IsAbleToHand),tp,DM_LOCATION_SZONE,0,1,nil) end
 end
 function scard.retop(e,tp,eg,ep,ev,re,r,rp)
-	local g1=Duel.GetMatchingGroup(dm.ManaZoneFilter(Card.IsAbleToHand),tp,DM_LOCATION_MANA,0,nil)
-	local g2=Duel.GetMatchingGroup(dm.ShieldZoneFilter(Card.IsAbleToHand),tp,DM_LOCATION_SHIELD,0,nil)
+	local g1=Duel.GetMatchingGroup(dm.ManaZoneFilter(Card.IsAbleToHand),tp,DM_LOCATION_MZONE,0,nil)
+	local g2=Duel.GetMatchingGroup(dm.ShieldZoneFilter(Card.IsAbleToHand),tp,DM_LOCATION_SZONE,0,nil)
 	if g1:GetCount()==0 and g2:GetCount()==0 then return end
 	local ops={}
 	local t={}

@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--get ability
-	dm.AddComeIntoPlayEffect(c,0,nil,nil,scard.abop,nil,scard.abcon)
+	dm.AddComeIntoPlayTriggerEffect(c,0,nil,nil,scard.abop,nil,scard.abcon)
 end
 scard.duel_masters_card=true
 function scard.abcon(e,tp,eg,ep,ev,re,r,rp)

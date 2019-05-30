@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--get ability
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.abop)
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,nil,scard.abop)
 	--cannot be targeted
 	dm.EnableCannotBeTargeted(c)
 end
@@ -41,7 +41,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetValue(4000)
 	local e2=Effect.CreateEffect(e:GetHandler())
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
-	e2:SetTargetRange(DM_LOCATION_BATTLE,DM_LOCATION_BATTLE)
+	e2:SetTargetRange(DM_LOCATION_BZONE,DM_LOCATION_BZONE)
 	e2:SetTarget(aux.TargetBoolFunction(Card.DMIsRace,race))
 	e2:SetLabelObject(e1)
 	Duel.RegisterEffect(e2,tp)
@@ -58,7 +58,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 end
 function scard.rstcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return not c:IsLocation(DM_LOCATION_BATTLE) or not c:IsFaceup()
+	return not c:IsLocation(DM_LOCATION_BZONE) or not c:IsFaceup()
 end
 function scard.rstop(e,tp,eg,ep,ev,re,r,rp)
 	local e1=e:GetLabelObject()

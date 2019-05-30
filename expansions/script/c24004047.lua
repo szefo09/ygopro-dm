@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,DM_LOCATION_BATTLE,0,nil)
+	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,DM_LOCATION_BZONE,0,nil)
 	if g:GetCount()==0 then return end
 	for tc in aux.Next(g) do
 		--power up
@@ -16,5 +16,5 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function scard.powval(e,c)
-	return Duel.GetMatchingGroupCount(dm.ManaZoneFilter(Card.IsCivilization),c:GetControler(),DM_LOCATION_MANA,0,nil,DM_CIVILIZATION_DARKNESS)*1000
+	return Duel.GetMatchingGroupCount(dm.ManaZoneFilter(Card.IsCivilization),c:GetControler(),DM_LOCATION_MZONE,0,nil,DM_CIVILIZATION_DARKNESS)*1000
 end

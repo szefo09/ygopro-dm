@@ -13,5 +13,5 @@ end
 function scard.posfilter(c)
 	return c:IsFaceup() and c:IsAbleToTap()
 end
-scard.postg=dm.TargetCardFunction(PLAYER_SELF,scard.posfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TAP)
+scard.postg=dm.TargetCardFunction(PLAYER_SELF,scard.posfilter,0,DM_LOCATION_BZONE,1,1,DM_HINTMSG_TAP)
 scard.posop=dm.TargetTapOperation

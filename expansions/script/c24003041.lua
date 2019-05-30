@@ -14,12 +14,12 @@ function scard.tgfilter(c,e)
 	return c:DMIsAbleToGrave() and c:IsCanBeEffectTarget(e)
 end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
-	local g1=Duel.GetMatchingGroup(scard.desfilter,tp,0,DM_LOCATION_BATTLE,nil)
+	local g1=Duel.GetMatchingGroup(scard.desfilter,tp,0,DM_LOCATION_BZONE,nil)
 	if g1:GetCount()>0 then
 		Duel.Destroy(g1,REASON_EFFECT)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOGRAVE)
-	local g2=Duel.SelectMatchingCard(tp,dm.ShieldZoneFilter(scard.tgfilter),tp,DM_LOCATION_SHIELD,0,1,1,nil,e)
+	local g2=Duel.SelectMatchingCard(tp,dm.ShieldZoneFilter(scard.tgfilter),tp,DM_LOCATION_SZONE,0,1,1,nil,e)
 	if g2:GetCount()==0 then return end
 	Duel.SetTargetCard(g2)
 	Duel.DMSendtoGrave(g2,REASON_EFFECT)

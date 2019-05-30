@@ -12,7 +12,7 @@ function scard.desfilter(c,pwr)
 end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	local pwr=8000
-	local g=Duel.GetMatchingGroup(scard.desfilter,tp,0,DM_LOCATION_BATTLE,nil,pwr)
+	local g=Duel.GetMatchingGroup(scard.desfilter,tp,0,DM_LOCATION_BZONE,nil,pwr)
 	local dg=Group.CreateGroup()
 	repeat
 		Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_DESTROY)

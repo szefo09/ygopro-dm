@@ -8,5 +8,5 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.powval(e,c)
-	return Duel.GetMatchingGroupCount(Card.IsFaceup,c:GetControler(),DM_LOCATION_BATTLE,0,c)*1000
+	return Duel.GetMatchingGroupCount(Card.IsFaceup,c:GetControler(),DM_LOCATION_BZONE,0,c)*1000
 end

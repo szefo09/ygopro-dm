@@ -11,7 +11,7 @@ end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_GHOST}
 function scard.repfilter(c,tp)
-	return c:IsLocation(DM_LOCATION_BATTLE) and c:IsFaceup() and c:IsCivilization(DM_CIVILIZATION_DARKNESS)
+	return c:IsLocation(DM_LOCATION_BZONE) and c:IsFaceup() and c:IsCivilization(DM_CIVILIZATION_DARKNESS)
 		and c:IsControler(tp) and not c:IsReason(REASON_REPLACE) and c:IsAbleToHand()
 end
 function scard.reptg(e,tp,eg,ep,ev,re,r,rp,chk)

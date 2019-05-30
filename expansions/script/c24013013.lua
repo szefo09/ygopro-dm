@@ -9,11 +9,11 @@ function scard.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD)
 	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
-	e1:SetRange(DM_LOCATION_BATTLE)
+	e1:SetRange(DM_LOCATION_BZONE)
 	e1:SetCondition(scard.regcon)
 	e1:SetOperation(scard.regop)
 	c:RegisterEffect(e1)
-	dm.AddTurnEndEffect(c,0,nil,nil,nil,scard.desop,scard.descon,EFFECT_FLAG_CARD_TARGET)
+	dm.AddTurnEndTriggerEffect(c,0,nil,nil,nil,scard.desop,scard.descon,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 function scard.regcon(e,tp,eg,ep,ev,re,r,rp)
@@ -36,7 +36,7 @@ function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 end
 function scard.tograve(e,tp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOGRAVE)
-	local g=Duel.SelectMatchingCard(tp,dm.ManaZoneFilter(scard.tgfilter),tp,DM_LOCATION_MANA,0,1,1,nil,e)
+	local g=Duel.SelectMatchingCard(tp,dm.ManaZoneFilter(scard.tgfilter),tp,DM_LOCATION_MZONE,0,1,1,nil,e)
 	if g:GetCount()==0 then return end
 	Duel.SetTargetCard(g)
 	Duel.DMSendtoGrave(g,REASON_EFFECT)

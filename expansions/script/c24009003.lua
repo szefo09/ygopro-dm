@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_DARK_LORD))
 	--destroy
-	dm.AddComeIntoPlayEffect(c,0,true,scard.destg,scard.desop,EFFECT_FLAG_CARD_TARGET,scard.descon)
+	dm.AddComeIntoPlayTriggerEffect(c,0,true,scard.destg,scard.desop,EFFECT_FLAG_CARD_TARGET,scard.descon)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end
@@ -21,7 +21,7 @@ end
 function scard.desfilter(c)
 	return c:IsFaceup() and c:IsUntapped()
 end
-scard.destg=dm.TargetCardFunction(PLAYER_SELF,scard.desfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_DESTROY)
+scard.destg=dm.TargetCardFunction(PLAYER_SELF,scard.desfilter,0,DM_LOCATION_BZONE,1,1,DM_HINTMSG_DESTROY)
 scard.desop=dm.TargetDestroyOperation
 --[[
 	Notes

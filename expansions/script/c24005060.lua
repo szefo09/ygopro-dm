@@ -8,6 +8,6 @@ function scard.initial_effect(c)
 	--cannot attack creature
 	dm.EnableCannotAttackCreature(c)
 	--break
-	dm.AddSingleBecomeBlockedEffect(c,0,nil,nil,dm.BreakOperation(PLAYER_SELF,PLAYER_OPPO,1,1,c))
+	dm.AddSingleBecomeBlockedTriggerEffect(c,0,nil,nil,dm.BreakOperation(PLAYER_SELF,PLAYER_OPPO,1,1,c))
 end
 scard.duel_masters_card=true

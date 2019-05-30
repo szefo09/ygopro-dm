@@ -7,16 +7,16 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--get ability
-	dm.AddTurnStartEffect(c,0,nil,true,nil,scard.abop)
+	dm.AddTurnStartTriggerEffect(c,0,nil,true,nil,scard.abop)
 	--to shield
-	dm.AddSingleLeaveBattleEffect(c,1,nil,nil,dm.DecktopSendtoShieldOperation(PLAYER_SELF,1))
+	dm.AddSingleLeaveBZoneTriggerEffect(c,1,nil,nil,dm.DecktopSendtoShieldOperation(PLAYER_SELF,1))
 	--tap
-	dm.AddSingleComeIntoPlayEffect(c,2,true,scard.postg,scard.posop)
+	dm.AddSingleComeIntoPlayTriggerEffect(c,2,true,scard.postg,scard.posop)
 end
 scard.duel_masters_card=true
 --get ability
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,DM_LOCATION_BATTLE,0,nil)
+	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,DM_LOCATION_BZONE,0,nil)
 	if g:GetCount()==0 then return end
 	for tc in aux.Next(g) do
 		--blocker
@@ -27,5 +27,5 @@ end
 function scard.posfilter(c)
 	return c:IsFaceup() and c:IsAbleToTap()
 end
-scard.postg=dm.CheckCardFunction(scard.posfilter,0,DM_LOCATION_BATTLE)
-scard.posop=dm.TapOperation(nil,scard.posfilter,0,DM_LOCATION_BATTLE)
+scard.postg=dm.CheckCardFunction(scard.posfilter,0,DM_LOCATION_BZONE)
+scard.posop=dm.TapOperation(nil,scard.posfilter,0,DM_LOCATION_BZONE)

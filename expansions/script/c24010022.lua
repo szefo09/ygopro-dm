@@ -6,11 +6,8 @@ function scard.initial_effect(c)
 	--blocker
 	dm.EnableBlocker(c)
 	--power up
-	dm.EnableUpdatePower(c,2000,dm.TurnPlayerCondition(PLAYER_OPPO),DM_LOCATION_BATTLE,0,scard.powtg)
+	dm.EnableUpdatePower(c,2000,dm.TurnPlayerCondition(PLAYER_OPPO),DM_LOCATION_BZONE,0,dm.TargetBoolFunctionExceptSelf())
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 end
 scard.duel_masters_card=true
-function scard.powtg(e,c)
-	return c~=e:GetHandler()
-end

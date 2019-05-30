@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	dm.AddEvolutionProcedure(c,scard.evofilter1,scard.evofilter2)
 	--to shield
 	dm.AddSingleAttackTriggerEffect(c,0,nil,nil,dm.DecktopSendtoShieldOperation(PLAYER_SELF,1))
-	dm.AddSingleLeaveBattleEffect(c,0,nil,nil,dm.DecktopSendtoShieldOperation(PLAYER_SELF,1))
+	dm.AddSingleLeaveBZoneTriggerEffect(c,0,nil,nil,dm.DecktopSendtoShieldOperation(PLAYER_SELF,1))
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end

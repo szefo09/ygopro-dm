@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--destroy
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.desop)
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,nil,scard.desop)
 	--speed attacker
 	dm.EnableEffectCustom(c,DM_EFFECT_SPEED_ATTACKER)
 	--double breaker
@@ -16,7 +16,7 @@ function scard.desfilter(c)
 end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local g=Duel.GetMatchingGroup(scard.desfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,c)
+	local g=Duel.GetMatchingGroup(scard.desfilter,tp,DM_LOCATION_BZONE,DM_LOCATION_BZONE,c)
 	Duel.Destroy(g,REASON_EFFECT)
 	--skip turn
 	local e1=Effect.CreateEffect(c)

@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_CYBER_CLUSTER))
 	--get ability (tap ability) (draw)
-	dm.AddStaticEffectTapAbility(c,0,scard.drtg1,scard.drop,DM_LOCATION_BATTLE,0,scard.drtg2)
+	dm.AddStaticEffectTapAbility(c,0,scard.drtg1,scard.drop,DM_LOCATION_BZONE,0,scard.drtg2)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_CYBER_CLUSTER,DM_RACE_CYBER}

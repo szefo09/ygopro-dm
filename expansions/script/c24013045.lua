@@ -13,5 +13,5 @@ function scard.cfilter(c)
 	return c:IsFaceup() and c:IsUntapped()
 end
 function scard.atcon(e)
-	return Duel.IsExistingMatchingCard(scard.cfilter,e:GetHandlerPlayer(),DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,1,e:GetHandler())
+	return Duel.IsExistingMatchingCard(scard.cfilter,e:GetHandlerPlayer(),DM_LOCATION_BZONE,DM_LOCATION_BZONE,1,e:GetHandler())
 end

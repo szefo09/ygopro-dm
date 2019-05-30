@@ -14,7 +14,7 @@ function scard.abfilter(c)
 end
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_CREATURE)
-	local g=Duel.SelectMatchingCard(tp,scard.abfilter,tp,DM_LOCATION_BATTLE,0,1,1,nil)
+	local g=Duel.SelectMatchingCard(tp,scard.abfilter,tp,DM_LOCATION_BZONE,0,1,1,nil)
 	if g:GetCount()==0 then return end
 	Duel.HintSelection(g)
 	--power up

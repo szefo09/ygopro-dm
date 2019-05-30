@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.savefilter(c,tp)
-	return c:IsLocation(DM_LOCATION_BATTLE) and c:IsFaceup() and c:DMIsRace(DM_RACE_ARMORED_DRAGON)
+	return c:IsLocation(DM_LOCATION_BZONE) and c:IsFaceup() and c:DMIsRace(DM_RACE_ARMORED_DRAGON)
 		and c:IsControler(tp) and not c:IsReason(REASON_BATTLE) and not c:IsReason(REASON_REPLACE)
 end
 function scard.savetg(e,tp,eg,ep,ev,re,r,rp,chk)

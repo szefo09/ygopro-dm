@@ -13,7 +13,7 @@ end
 scard.duel_masters_card=true
 --power up
 function scard.powval(e,c)
-	local g=Duel.GetMatchingGroup(Card.IsFaceup,c:GetControler(),DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil)
+	local g=Duel.GetMatchingGroup(Card.IsFaceup,c:GetControler(),DM_LOCATION_BZONE,DM_LOCATION_BZONE,nil)
 	local ct=g:GetClassCount(Card.GetCivilization)
 	return ct*2000
 end

@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_CYBER_LORD))
 	--return
-	dm.AddComeIntoPlayEffect(c,0,nil,nil,scard.retop1,nil,scard.retcon)
+	dm.AddComeIntoPlayTriggerEffect(c,0,nil,nil,scard.retop1,nil,scard.retcon)
 	--no battle (return)
 	dm.EnableEffectCustom(c,DM_EFFECT_NO_BE_BLOCKED_BATTLE)
 	local e1=Effect.CreateEffect(c)

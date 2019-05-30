@@ -7,7 +7,7 @@ function scard.initial_effect(c)
 	--sympathy (gel fish, snow faerie)
 	dm.EnableSympathy(c,DM_RACE_GEL_FISH,DM_RACE_SNOW_FAERIE)
 	--tap
-	dm.AddComeIntoPlayEffect(c,0,nil,nil,scard.posop,nil,scard.poscon)
+	dm.AddComeIntoPlayTriggerEffect(c,0,nil,nil,scard.posop,nil,scard.poscon)
 end
 scard.duel_masters_card=true
 function scard.cfilter(c)
@@ -19,4 +19,4 @@ end
 function scard.posfilter(c)
 	return c:IsFaceup() and c:IsEvolution() and c:IsUntapped()
 end
-scard.posop=dm.TapOperation(nil,scard.posfilter,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE)
+scard.posop=dm.TapOperation(nil,scard.posfilter,DM_LOCATION_BZONE,DM_LOCATION_BZONE)

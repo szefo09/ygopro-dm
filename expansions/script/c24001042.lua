@@ -8,5 +8,5 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.actcon(e)
-	return Duel.IsExistingMatchingCard(Card.IsFaceup,e:GetHandlerPlayer(),DM_LOCATION_BATTLE,0,2,e:GetHandler())
+	return Duel.IsExistingMatchingCard(Card.IsFaceup,e:GetHandlerPlayer(),DM_LOCATION_BZONE,0,2,e:GetHandler())
 end

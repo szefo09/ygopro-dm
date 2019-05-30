@@ -11,14 +11,14 @@ function scard.desfilter(c)
 	return c:IsFaceup() and c:IsPowerBelow(3000)
 end
 function scard.destg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(scard.desfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,1,nil)
+	if chk==0 then return Duel.IsExistingMatchingCard(scard.desfilter,tp,DM_LOCATION_BZONE,DM_LOCATION_BZONE,1,nil)
 		or Duel.IsExistingMatchingCard(aux.TRUE,tp,0,LOCATION_HAND,1,nil) end
 end
 function scard.dhfilter(c)
 	return c:IsPowerBelow(3000)
 end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
-	local g1=Duel.GetMatchingGroup(scard.desfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil)
+	local g1=Duel.GetMatchingGroup(scard.desfilter,tp,DM_LOCATION_BZONE,DM_LOCATION_BZONE,nil)
 	Duel.Destroy(g1,REASON_EFFECT)
 	local g2=Duel.GetFieldGroup(tp,0,LOCATION_HAND)
 	if g2:GetCount()==0 then return end

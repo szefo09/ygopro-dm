@@ -7,7 +7,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_DARK_LORD))
 	--to grave
-	dm.AddComeIntoPlayEffect(c,0,nil,scard.tgtg,scard.tgop,EFFECT_FLAG_CARD_TARGET,scard.tgcon)
+	dm.AddComeIntoPlayTriggerEffect(c,0,nil,scard.tgtg,scard.tgop,EFFECT_FLAG_CARD_TARGET,scard.tgcon)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end
@@ -19,9 +19,9 @@ end
 function scard.tgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local p=eg:GetFirst():GetOwner()
 	local f=dm.ManaZoneFilter(Card.DMIsAbleToGrave)
-	if chkc then return chkc:IsLocation(DM_LOCATION_MANA) and chkc:IsControler(p) and f(chkc) end
+	if chkc then return chkc:IsLocation(DM_LOCATION_MZONE) and chkc:IsControler(p) and f(chkc) end
 	if chk==0 then return true end
 	Duel.Hint(HINT_SELECTMSG,p,DM_HINTMSG_TOGRAVE)
-	Duel.SelectTarget(p,f,p,DM_LOCATION_MANA,0,1,1,nil)
+	Duel.SelectTarget(p,f,p,DM_LOCATION_MZONE,0,1,1,nil)
 end
 scard.tgop=dm.TargetSendtoGraveOperation

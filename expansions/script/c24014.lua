@@ -4,8 +4,8 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
-	--mana cost down
-	dm.EnableUpdateManaCost(c,-3,LOCATION_ALL,0,aux.TargetBoolFunction(Card.IsSpell))
+	--cost down
+	dm.EnableUpdatePlayCost(c,-3,LOCATION_ALL,0,aux.TargetBoolFunction(Card.IsSpell))
 	--tap ability (return)
 	dm.EnableTapAbility(c,0,scard.rettg,scard.retop,EFFECT_FLAG_CARD_TARGET)
 end
@@ -18,9 +18,9 @@ function scard.retfilter2(c,e)
 end
 function scard.rettg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local f=dm.ManaZoneFilter(scard.retfilter1)
-	if chkc then return chkc:IsLocation(DM_LOCATION_MANA) and chkc:IsControler(tp) and f(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(f,DM_LOCATION_MANA,0,1,nil) end
-	local g=Duel.GetMatchingGroup(dm.ManaZoneFilter(scard.retfilter2),tp,DM_LOCATION_MANA,0,nil,e):RandomSelect(tp,1)
+	if chkc then return chkc:IsLocation(DM_LOCATION_MZONE) and chkc:IsControler(tp) and f(chkc) end
+	if chk==0 then return Duel.IsExistingTarget(f,DM_LOCATION_MZONE,0,1,nil) end
+	local g=Duel.GetMatchingGroup(dm.ManaZoneFilter(scard.retfilter2),tp,DM_LOCATION_MZONE,0,nil,e):RandomSelect(tp,1)
 	Duel.SetTargetCard(g)
 end
 scard.retop=dm.TargetSendtoHandOperation()

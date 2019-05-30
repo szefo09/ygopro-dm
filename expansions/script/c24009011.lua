@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--tap
-	dm.AddComeIntoPlayEffect(c,0,true,scard.postg,scard.posop,EFFECT_FLAG_CARD_TARGET,scard.poscon)
+	dm.AddComeIntoPlayTriggerEffect(c,0,true,scard.postg,scard.posop,EFFECT_FLAG_CARD_TARGET,scard.poscon)
 end
 scard.duel_masters_card=true
 function scard.cfilter(c,tp)
@@ -16,5 +16,5 @@ end
 function scard.posfilter(c)
 	return c:IsFaceup() and c:IsAbleToTap()
 end
-scard.postg=dm.TargetCardFunction(PLAYER_SELF,scard.posfilter,0,DM_LOCATION_BATTLE,1,1,DM_HINTMSG_TAP)
+scard.postg=dm.TargetCardFunction(PLAYER_SELF,scard.posfilter,0,DM_LOCATION_BZONE,1,1,DM_HINTMSG_TAP)
 scard.posop=dm.TargetTapOperation

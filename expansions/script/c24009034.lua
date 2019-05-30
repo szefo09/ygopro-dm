@@ -13,7 +13,7 @@ end
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_RACE)
 	local race=Duel.DMAnnounceRace(tp)
-	local g=Duel.GetMatchingGroup(scard.abfilter,tp,DM_LOCATION_BATTLE,DM_LOCATION_BATTLE,nil,race)
+	local g=Duel.GetMatchingGroup(scard.abfilter,tp,DM_LOCATION_BZONE,DM_LOCATION_BZONE,nil,race)
 	if g:GetCount()==0 then return end
 	for tc in aux.Next(g) do
 		--slayer

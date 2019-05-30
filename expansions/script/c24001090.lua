@@ -4,6 +4,6 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--to mana
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,dm.DecktopSendtoManaOperation(PLAYER_SELF,1))
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,nil,dm.DecktopSendtoManaOperation(PLAYER_SELF,1))
 end
 scard.duel_masters_card=true

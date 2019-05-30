@@ -11,7 +11,7 @@ function scard.tgfilter(c,e)
 	return c:DMIsAbleToGrave() and c:IsCanBeEffectTarget(e)
 end
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
-	local g1=Duel.GetMatchingGroup(Card.IsFaceup,tp,DM_LOCATION_BATTLE,0,nil)
+	local g1=Duel.GetMatchingGroup(Card.IsFaceup,tp,DM_LOCATION_BZONE,0,nil)
 	if g1:GetCount()>0 then
 		for tc in aux.Next(g1) do
 			--double breaker
@@ -19,7 +19,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 		end
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOGRAVE)
-	local g2=Duel.SelectMatchingCard(tp,dm.ShieldZoneFilter(scard.tgfilter),tp,DM_LOCATION_SHIELD,0,1,1,nil,e)
+	local g2=Duel.SelectMatchingCard(tp,dm.ShieldZoneFilter(scard.tgfilter),tp,DM_LOCATION_SZONE,0,1,1,nil,e)
 	if g2:GetCount()==0 then return end
 	Duel.SetTargetCard(g2)
 	Duel.DMSendtoGrave(g2,REASON_EFFECT)

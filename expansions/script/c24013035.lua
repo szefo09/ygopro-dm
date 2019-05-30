@@ -24,7 +24,7 @@ function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 end
 function scard.repfilter(c,tp)
 	if c:GetDestination()==LOCATION_REMOVED and c:IsLocation(LOCATION_GRAVE) then return false end
-	if c:GetDestination()==LOCATION_GRAVE and not c:IsLocation(DM_LOCATION_BATTLE) then return false end
+	if c:GetDestination()==LOCATION_GRAVE and not c:IsLocation(DM_LOCATION_BZONE) then return false end
 	return c:IsControler(tp) and not c:IsReason(REASON_REPLACE)
 end
 function scard.reptg(e,tp,eg,ep,ev,re,r,rp,chk)

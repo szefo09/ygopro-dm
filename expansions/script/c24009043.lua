@@ -5,7 +5,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--to grave
-	dm.AddDestroyedEffect(c,0,nil,scard.tgtg,scard.tgop,EFFECT_FLAG_CARD_TARGET,scard.tgcon)
+	dm.AddDestroyedTriggerEffect(c,0,nil,scard.tgtg,scard.tgop,EFFECT_FLAG_CARD_TARGET,scard.tgcon)
 end
 scard.duel_masters_card=true
 function scard.tgcon(e,tp,eg,ep,ev,re,r,rp)
@@ -13,10 +13,10 @@ function scard.tgcon(e,tp,eg,ep,ev,re,r,rp)
 end
 function scard.tgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local f=dm.ManaZoneFilter(Card.DMIsAbleToGrave)
-	if chkc then return chkc:IsLocation(DM_LOCATION_MANA) and chkc:IsControler(1-tp) and f(chkc) end
+	if chkc then return chkc:IsLocation(DM_LOCATION_MZONE) and chkc:IsControler(1-tp) and f(chkc) end
 	if chk==0 then return true end
 	Duel.Hint(HINT_SELECTMSG,1-tp,DM_HINTMSG_TOGRAVE)
-	Duel.SelectTarget(1-tp,f,1-tp,DM_LOCATION_MANA,0,eg:GetCount(),eg:GetCount(),nil)
+	Duel.SelectTarget(1-tp,f,1-tp,DM_LOCATION_MZONE,0,eg:GetCount(),eg:GetCount(),nil)
 end
 scard.tgop=dm.TargetSendtoGraveOperation
 --[[

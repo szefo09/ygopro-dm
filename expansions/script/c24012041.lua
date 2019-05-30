@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--blocker
 	dm.EnableBlocker(c)
 	--draw
-	dm.AddSingleComeIntoPlayEffect(c,0,nil,nil,scard.drop)
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,nil,scard.drop)
 end
 scard.duel_masters_card=true
 function scard.drop(e,tp,eg,ep,ev,re,r,rp)
