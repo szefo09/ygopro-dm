@@ -335,6 +335,18 @@ function Card.GetFifthCivilization(c)
 		return DM_CIVILIZATION_NATURE
 	else return DM_CIVILIZATION_NONE end
 end
+--check if a card's mana cost is equal to a given value
+function Card.IsManaCost(c,lv)
+	return c:GetManaCost()==lv
+end
+--check if a card's mana cost is less than or equal to a given value
+function Card.IsManaCostBelow(c,lv)
+	return c:GetManaCost()<=lv
+end
+--check if a card's mana cost is greater than or equal to a given value
+function Card.IsManaCostAbove(c,lv)
+	return c:GetManaCost()>=lv
+end
 --check if a creature has a race
 function Card.IsHasRace(c)
 	local race=false
@@ -385,18 +397,12 @@ Card.IsOriginalNameCategory=Card.IsOriginalSetCard
 --check if a card was included in a particular name category when it was in the battle zone
 Card.IsPreviousNameCategory=Card.IsPreviousSetCard
 ]]
---return a card's current mana cost
-Card.GetManaCost=Card.GetLevel
---return a card's original mana cost
-Card.GetOriginalManaCost=Card.GetOriginalLevel
+--return the cost required for playing a card
+Card.GetPlayCost=Card.GetLevel
+--return a card's mana cost
+Card.GetManaCost=Card.GetOriginalLevel
 --return the mana cost a card had when it was in the battle zone
 --Card.GetPreviousManaCostOnField=Card.GetPreviousLevelOnField --reserved
---check if a card's mana cost is equal to a given value
-Card.IsManaCost=Card.IsLevel
---check if a card's mana cost is less than or equal to a given value
-Card.IsManaCostBelow=Card.IsLevelBelow
---check if a card's mana cost is greater than or equal to a given value
-Card.IsManaCostAbove=Card.IsLevelAbove
 --return a card's current civilization
 Card.GetCivilization=Card.GetAttribute
 --reserved
@@ -1265,7 +1271,7 @@ function Auxiliary.NonEvolutionSummonCondition(e,c)
 	if c==nil then return true end
 	if c:IsEvolution() or not c:DMIsSummonable() then return false end
 	local tp=c:GetControler()
-	local cost=c:GetManaCost()
+	local cost=c:GetPlayCost()
 	local civ_count=c:GetCivilizationCount()
 	local g=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MZONE,0,nil)
 	if Duel.GetLocationCount(tp,DM_LOCATION_BZONE)<=0 or g:GetCount()<cost or civ_count>cost then return false end
@@ -1324,7 +1330,7 @@ function Auxiliary.PayManaSelect(g,sel_player,c,mana_cost,civ_count)
 end
 function Auxiliary.NonEvolutionSummonOperation(e,tp,eg,ep,ev,re,r,rp,c)
 	local g=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MZONE,0,nil)
-	Auxiliary.PayManaSelect(g,tp,c,c:GetManaCost(),c:GetCivilizationCount())
+	Auxiliary.PayManaSelect(g,tp,c,c:GetPlayCost(),c:GetCivilizationCount())
 end
 --function to prevent multiple "shield trigger" abilities from chaining
 function Auxiliary.AddShieldTriggerChainLimit(c,effect,con_func,prop)
@@ -1472,7 +1478,7 @@ function Auxiliary.EvolutionCondition(f1,f2)
 				local tp=c:GetControler()
 				local g1=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MZONE,0,nil)
 				local g2=Duel.GetFieldGroup(tp,DM_LOCATION_BZONE,0)
-				local cost=c:GetManaCost()
+				local cost=c:GetPlayCost()
 				local civ_count=c:GetCivilizationCount()
 				local field_count=-1
 				if f2 then field_count=-2 end
@@ -1505,7 +1511,7 @@ function Auxiliary.EvolutionTarget(f1,f2)
 end
 function Auxiliary.EvolutionOperation(e,tp,eg,ep,ev,re,r,rp,c)
 	local g1=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MZONE,0,nil)
-	Auxiliary.PayManaSelect(g1,tp,c,c:GetManaCost(),c:GetCivilizationCount())
+	Auxiliary.PayManaSelect(g1,tp,c,c:GetPlayCost(),c:GetCivilizationCount())
 	local g2=e:GetLabelObject()
 	for tc in aux.Next(g2) do
 		local sg=tc:GetSourceGroup()
@@ -1588,7 +1594,7 @@ end
 function Auxiliary.CastSpellCost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	if c:IsCanCastFree() then return true end
-	local cost=c:GetManaCost()
+	local cost=c:GetPlayCost()
 	local civ_count=c:GetCivilizationCount()
 	local g=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MZONE,0,nil)
 	if g:GetCount()<cost or civ_count>cost then return false end

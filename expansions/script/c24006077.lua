@@ -8,6 +8,6 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.mcval(e,c)
-	if c:GetOriginalManaCost()<=2 then return 0
+	if c:GetManaCost()<=2 then return 0
 	else return -2 end
 end

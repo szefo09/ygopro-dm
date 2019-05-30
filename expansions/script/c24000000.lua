@@ -316,14 +316,14 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	ye18:SetCode(EVENT_CHAINING)
 	ye18:SetOperation(scard.chop)
 	Duel.RegisterEffect(ye18,tp)
-	--set mana cost equal to civilization sum
+	--set cost equal to civilization sum
 	local ye19=Effect.CreateEffect(c)
 	ye19:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_IGNORE_RANGE)
 	ye19:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	ye19:SetCode(EVENT_ADJUST)
 	ye19:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
 		local f=function(c)
-			return c:GetManaCost()<c:GetCivilizationCount()
+			return c:GetPlayCost()<c:GetCivilizationCount()
 		end
 		local g=Duel.GetMatchingGroup(f,0,LOCATION_ALL,LOCATION_ALL,nil)
 		if g:GetCount()==0 then return end
@@ -332,7 +332,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 			e1:SetType(EFFECT_TYPE_SINGLE)
 			e1:SetCode(DM_EFFECT_UPDATE_MANA_COST)
 			e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
-			e1:SetValue(tc:GetCivilizationCount()-tc:GetManaCost())
+			e1:SetValue(tc:GetCivilizationCount()-tc:GetPlayCost())
 			tc:RegisterEffect(e1)
 		end
 		Duel.Readjust()
