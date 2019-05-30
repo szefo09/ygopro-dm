@@ -167,7 +167,7 @@ function Card.IsGrave(c)
 end
 --check if a spell can be cast for no cost
 function Card.IsCanCastFree(c)
-	return c:GetLevel()<=0
+	return c:GetPlayCost()<=0
 end
 --check if a creature has become blocked
 function Card.IsBlocked(c)
@@ -2824,7 +2824,7 @@ Auxiliary.wscon=Auxiliary.WaveStrikerCondition
 --Not fully implemented: If a creature in the battle zone has both specified races listed, it can't count as both 
 --https://duelmasters.fandom.com/wiki/Dolgeza,_Veteran_of_Hard_Battle/Rulings
 function Auxiliary.EnableSympathy(c,race1,race2)
-	Auxiliary.EnableUpdateManaCost(c,Auxiliary.SympathyValue(race1,race2))
+	Auxiliary.EnableUpdatePlayCost(c,Auxiliary.SympathyValue(race1,race2))
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_SYMPATHY)
 end
 function Auxiliary.SympathyValue(race1,race2)
@@ -3176,7 +3176,7 @@ end
 --"A player's creatures/spells each cost N more/less to summon/cast."
 --"Each creature costs N more/less to summon and each spell costs N more/less to cast."
 --e.g. "Elf-X" (DM-02 46/55), "Milieus, the Daystretcher" (DM-04 12/55)
-function Auxiliary.EnableUpdateManaCost(c,val,s_range,o_range,targ_func)
+function Auxiliary.EnableUpdatePlayCost(c,val,s_range,o_range,targ_func)
 	local e1=Effect.CreateEffect(c)
 	if s_range or o_range then
 		e1:SetType(EFFECT_TYPE_FIELD)
@@ -3188,7 +3188,7 @@ function Auxiliary.EnableUpdateManaCost(c,val,s_range,o_range,targ_func)
 		e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
 		e1:SetRange(LOCATION_HAND+DM_LOCATION_BZONE)
 	end
-	e1:SetCode(DM_EFFECT_UPDATE_MANA_COST)
+	e1:SetCode(DM_EFFECT_UPDATE_PLAY_COST)
 	e1:SetValue(val)
 	c:RegisterEffect(e1)
 end
@@ -4157,9 +4157,11 @@ Auxiliary.szfilt=Auxiliary.ShieldZoneFilter
 return Auxiliary
 --[[
 	References
-		1. Prevent multiple "shield trigger" abilities from chaining
+		1. Cost Reduction and Cost Increase abilities don't increase or decrease the cost written on the card
+		https://duelmasters.fandom.com/wiki/Mana_Cost#Rules
+		2. Prevent multiple "shield trigger" abilities from chaining
 			- Voltanis the Adjudicator
 			https://github.com/Fluorohydride/ygopro-scripts/blob/967a2fe/c20951752.lua#L12
-		2. Auxiliary.mana_cost_list
+		3. Auxiliary.mana_cost_list
 		https://duelmasters.fandom.com/wiki/Category:Cards_by_Mana_Cost
 ]]

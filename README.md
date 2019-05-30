@@ -104,7 +104,7 @@ If you do not build your deck according to the following rules, you will lose th
 - `0x200	Search Deck` = Look at a player's deck
 - `0x400	GY to Hand/Field` = ～Reserved～
 - `0x800	Change Battle Position` = Untap or tap a card
-- `0x1000	Get Control` = Increase or decrease a card's mana cost
+- `0x1000	Get Control` = Increase or decrease the cost required for playing a card
 - `0x2000	Increase/Decrease ATK/DEF` = Increase or decrease a creature's power
 - `0x4000	Piercing` = No summoning sickness
 - `0x8000	Attack Multiple Times` = Can attack untapped creatures

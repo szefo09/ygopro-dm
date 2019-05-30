@@ -330,7 +330,7 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 		for tc in aux.Next(g) do
 			local e1=Effect.CreateEffect(e:GetHandler())
 			e1:SetType(EFFECT_TYPE_SINGLE)
-			e1:SetCode(DM_EFFECT_UPDATE_MANA_COST)
+			e1:SetCode(DM_EFFECT_UPDATE_PLAY_COST)
 			e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 			e1:SetValue(tc:GetCivilizationCount()-tc:GetPlayCost())
 			tc:RegisterEffect(e1)
