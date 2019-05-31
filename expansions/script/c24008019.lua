@@ -4,6 +4,6 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--confirm
-	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,nil,dm.ConfirmOperation(PLAYER_SELF,aux.NOT(Card.IsPublic),0,LOCATION_HAND))
+	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,nil,nil,dm.ConfirmOperation(PLAYER_SELF,aux.NOT(Card.IsPublic),0,LOCATION_HAND))
 end
 scard.duel_masters_card=true

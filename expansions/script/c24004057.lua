@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--return
-	dm.AddSingleComeIntoPlayTriggerEffect(c,0,true,scard.rettg,scard.retop)
+	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,true,scard.rettg,scard.retop)
 	--power up
 	dm.EnableUpdatePower(c,2000,nil,DM_LOCATION_BZONE,DM_LOCATION_BZONE,aux.TargetBoolFunction(Card.DMIsRace,DM_RACE_ANGEL_COMMAND,DM_RACE_DEMON_COMMAND))
 end

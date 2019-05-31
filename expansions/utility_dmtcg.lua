@@ -1772,9 +1772,10 @@ function Auxiliary.AddSingleLeaveReplaceEffect(c,desc_id,op_func)
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_EVOLUTION_SOURCE_REMAIN)
 end
 --function for EFFECT_TYPE_SINGLE trigger abilities
---code: EVENT_BE_BATTLE_TARGET for "Whenever this creature is attacked, ABILITY." (e.g. "Scalpel Spider" DM-07 32/55)
---code: EVENT_DESTROYED for "When this creature is destroyed, ABILITY." (e.g. "Bombersaur" DM-02 36/55)
---code: EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED for "Whenever this creature becomes blocked, ABILITY." (e.g. "Avalanche Giant" DM-05 S5/S5)
+--code: DM_EVENT_COME_INTO_PLAY for "When you put this creature into the battle zone" (e.g. "Miele, Vizier of Lightning" DM-01 13/110)
+--code: EVENT_DESTROYED for "When this creature is destroyed" (e.g. "Bombersaur" DM-02 36/55)
+--code: EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED for "Whenever this creature becomes blocked" (e.g. "Avalanche Giant" DM-05 S5/S5)
+--code: EVENT_BE_BATTLE_TARGET for "Whenever this creature is attacked" (e.g. "Scalpel Spider" DM-07 32/55)
 function Auxiliary.AddSingleTriggerEffectCustom(c,desc_id,code,optional,targ_func,op_func,prop,con_func)
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
@@ -1794,9 +1795,10 @@ function Auxiliary.AddSingleTriggerEffectCustom(c,desc_id,code,optional,targ_fun
 	c:RegisterEffect(e1)
 end
 --function for EFFECT_TYPE_FIELD trigger abilities
---code: EVENT_BE_BATTLE_TARGET for "Whenever your creatures are attacked, ABILITY." (e.g. "Polaris, the Oracle" DM-13 21/55)
---code: EVENT_DESTROYED for "Whenever another creature is destroyed, ABILITY." (e.g. "Mongrel Man" DM-04 33/55) 
---code: EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD for "Whenever this creature breaks a shield, ABILITY." (e.g. "Bolblaze Dragon" Game Original)
+--code: DM_EVENT_COME_INTO_PLAY for "Whenever another creature is put into the battle zone" (e.g. "Mist Rias, Sonic Guardian" DM-04 13/55)
+--code: EVENT_DESTROYED for "Whenever another creature is destroyed" (e.g. "Mongrel Man" DM-04 33/55)
+--code: EVENT_BE_BATTLE_TARGET for "Whenever your creatures are attacked" (e.g. "Polaris, the Oracle" DM-13 21/55)
+--code: EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD for "Whenever this creature breaks a shield" (e.g. "Bolblaze Dragon" Game Original)
 function Auxiliary.AddTriggerEffectCustom(c,desc_id,code,optional,targ_func,op_func,prop,con_func)
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
@@ -1834,47 +1836,6 @@ function Auxiliary.AddTurnEndTriggerEffect(c,desc_id,p,optional,targ_func,op_fun
 	else
 		e1:SetCondition(con_func)
 	end
-	if targ_func then e1:SetTarget(targ_func) end
-	e1:SetOperation(op_func)
-	c:RegisterEffect(e1)
-end
---"When you put this creature into the battle zone, ABILITY."
---e.g. "Miele, Vizier of Lightning" (DM-01 13/110)
-function Auxiliary.AddSingleComeIntoPlayTriggerEffect(c,desc_id,optional,targ_func,op_func,prop,con_func)
-	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	e1:SetType(EFFECT_TYPE_SINGLE+typ)
-	e1:SetCode(DM_EVENT_COME_INTO_PLAY)
-	if typ==EFFECT_TYPE_TRIGGER_O and prop then
-		e1:SetProperty(EFFECT_FLAG_DELAY+prop)
-	elseif typ==EFFECT_TYPE_TRIGGER_O then
-		e1:SetProperty(EFFECT_FLAG_DELAY)
-	elseif prop then
-		e1:SetProperty(prop)
-	end
-	if con_func then e1:SetCondition(con_func) end
-	if targ_func then e1:SetTarget(targ_func) end
-	e1:SetOperation(op_func)
-	c:RegisterEffect(e1)
-end
---"Whenever another creature is put into the battle zone, ABILITY."
---e.g. "Mist Rias, Sonic Guardian" (DM-04 13/55)
-function Auxiliary.AddComeIntoPlayTriggerEffect(c,desc_id,optional,targ_func,op_func,prop,con_func)
-	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	e1:SetType(EFFECT_TYPE_FIELD+typ)
-	e1:SetCode(DM_EVENT_COME_INTO_PLAY)
-	if typ==EFFECT_TYPE_TRIGGER_O and prop then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY+prop)
-	elseif typ==EFFECT_TYPE_TRIGGER_O then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY)
-	elseif prop then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
-	end
-	e1:SetRange(DM_LOCATION_BZONE)
-	if con_func then e1:SetCondition(con_func) end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)

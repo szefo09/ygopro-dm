@@ -5,7 +5,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--draw
-	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,nil,dm.DrawOperation(PLAYER_SELF,1))
+	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,nil,nil,dm.DrawOperation(PLAYER_SELF,1))
 	--return
 	dm.AddTurnEndTriggerEffect(c,1,PLAYER_SELF,nil,nil,scard.retop)
 end

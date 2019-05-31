@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--tap
-	dm.AddSingleComeIntoPlayTriggerEffect(c,0,true,scard.postg,scard.posop,EFFECT_FLAG_CARD_TARGET)
+	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,true,scard.postg,scard.posop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 function scard.posfilter(c)

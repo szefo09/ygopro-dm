@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_PARASITE_WORM))
 	--destroy
-	dm.AddSingleComeIntoPlayTriggerEffect(c,0,true,scard.destg,scard.desop)
+	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,true,scard.destg,scard.desop)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_PARASITE_WORM}

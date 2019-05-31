@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--wave striker (to mana, return)
 	dm.EnableWaveStriker(c)
 	dm.AddEffectDescription(c,1,dm.WaveStrikerCondition)
-	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,nil,scard.tmop,nil,dm.WaveStrikerCondition)
+	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,nil,nil,scard.tmop,nil,dm.WaveStrikerCondition)
 end
 scard.duel_masters_card=true
 function scard.retfilter(c)
