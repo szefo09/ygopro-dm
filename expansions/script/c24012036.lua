@@ -10,7 +10,7 @@ scard.duel_masters_card=true
 function scard.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	if chk==0 then return c:IsReason(REASON_DISCARD) and not c:IsReason(REASON_REPLACE)
-		and c:IsCanSendtoBattle(e,0,tp,false,false) end
+		and c:IsAbleToBZone(e,0,tp,false,false) end
 	return Duel.SelectYesNo(tp,aux.Stringid(sid,1))
 end
 function scard.repop(e,tp,eg,ep,ev,re,r,rp)

@@ -11,7 +11,7 @@ function scard.desfilter(c)
 	return c:IsFaceup() and c:IsPowerBelow(5000)
 end
 function scard.tbfilter(c,e,tp,cost)
-	return c:IsCreature() and c:IsManaCost(cost) and c:IsCanSendtoBattle(e,0,tp,false,false)
+	return c:IsCreature() and c:IsManaCost(cost) and c:IsAbleToBZone(e,0,tp,false,false)
 end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_DESTROY)
@@ -20,7 +20,7 @@ function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.HintSelection(Group.FromCards(tc))
 	if Duel.Destroy(tc,REASON_EFFECT)==0 then return end
 	local cost=tc:GetManaCost()
-	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOBATTLE)
+	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOBZONE)
 	local g=Duel.SelectMatchingCard(tp,scard.tbfilter,tp,LOCATION_DECK,0,0,1,nil,e,tp,cost)
 	if g:GetCount()==0 then return end
 	Duel.SendtoBattle(g,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)

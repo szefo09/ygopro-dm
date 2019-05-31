@@ -394,7 +394,7 @@ function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	local turnp=Duel.GetTurnPlayer()
 	local g=Duel.GetMatchingGroup(Card.IsAbleToMana,turnp,LOCATION_HAND,0,nil)
 	if g:GetCount()==0 then return end
-	Duel.Hint(HINT_SELECTMSG,turnp,DM_HINTMSG_TOMANA)
+	Duel.Hint(HINT_SELECTMSG,turnp,DM_HINTMSG_TOMZONE)
 	local sg=g:Select(turnp,0,1,nil)
 	Duel.SendtoMana(sg,POS_FACEUP_UNTAPPED,REASON_RULE)
 end
@@ -476,7 +476,14 @@ function scard.desop2(e,tp,eg,ep,ev,re,r,rp)
 		--raise event for "Whenever one of your creatures loses a battle"
 		--Duel.RaiseEvent(lc,EVENT_CUSTOM+DM_EVENT_LOSE_BATTLE,e,0,0,0,0) --reserved
 	end
-	Duel.Destroy(g,REASON_BATTLE+REASON_RULE)
+	Duel.Destroy(g,REASON_BATTLE+REASON_RULE) --EVENT_DESTROYED will not trigger if REASON_BATTLE is included
+	local og=Duel.GetOperatedGroup()
+	for oc in aux.Next(og) do
+		--raise event for "When this creature is destroyed"
+		Duel.RaiseSingleEvent(oc,EVENT_DESTROYED,e,REASON_BATTLE,0,0,0)
+	end
+	--raise event for "Whenever another creature is destroyed"
+	Duel.RaiseEvent(og,EVENT_DESTROYED,e,REASON_BATTLE,0,0,0)
 end
 --to grave redirect
 function scard.tgtg(e,c)

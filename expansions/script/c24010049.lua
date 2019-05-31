@@ -17,7 +17,7 @@ function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	local g1=Duel.GetFieldGroup(tp,0,LOCATION_HAND)
 	if g1:GetCount()==0 then return end
 	Duel.ConfirmCards(tp,g1)
-	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOMANA)
+	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOMZONE)
 	local sg=g1:FilterSelect(tp,scard.tmfilter,0,1,nil,e)
 	if sg:GetCount()>0 then
 		Duel.SetTargetCard(sg)

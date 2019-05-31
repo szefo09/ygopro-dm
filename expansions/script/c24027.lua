@@ -31,7 +31,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 			--shield trigger
 			dm.RegisterEffectCustom(e:GetHandler(),tc,3,DM_EFFECT_SHIELD_TRIGGER)
 			Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER,e,0,0,0,0)
-			if tc:IsCreature() and tc:IsCanSendtoBattle(e,0,tp,false,false) then
+			if tc:IsCreature() and tc:IsAbleToBZone(e,0,tp,false,false) then
 				Duel.SendtoBattle(tc,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
 			end
 		end

@@ -26,7 +26,7 @@ function scard.tsop(e,tp,eg,ep,ev,re,r,rp)
 		table.insert(t,2)
 	end
 	local opt=t[Duel.SelectOption(tp,table.unpack(ops))+1]
-	local desc=(opt==1 and DM_HINTMSG_TOSHIELD) or (opt==2 and DM_HINTMSG_TOMANA)
+	local desc=(opt==1 and DM_HINTMSG_TOSZONE) or (opt==2 and DM_HINTMSG_TOMZONE)
 	local g=(opt==1 and g1) or (opt==2 and g2)
 	Duel.Hint(HINT_SELECTMSG,tp,desc)
 	local sg=g:Select(tp,1,1,nil)
