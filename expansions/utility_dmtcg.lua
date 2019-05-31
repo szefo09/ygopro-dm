@@ -843,7 +843,7 @@ end
 --[[
 function Duel.SendDecktoptoManaUpTo(player,count,pos,reason)
 	local ct=Duel.GetFieldGroupCount(player,LOCATION_DECK,0)
-	if ct>0 and Duel.IsPlayerCanSendDecktoptoMana(player,1) and Duel.SelectYesNo(player,DM_QHINTMSG_TOMANA) then
+	if ct>0 and Duel.IsPlayerCanSendDecktoptoMana(player,1) and Duel.SelectYesNo(player,DM_QHINTMSG_TOMZONE) then
 		if ct>count then ct=count end
 		local t={}
 		for i=1,ct do t[i]=i end
@@ -927,7 +927,7 @@ end
 function Duel.SendDecktoptoShieldUpTo(player,count)
 	local ct=Duel.GetFieldGroupCount(player,LOCATION_DECK,0)
 	if ct==0 or not Duel.IsPlayerCanSendDecktoptoShield(player,1)
-		or not Duel.SelectYesNo(player,DM_QHINTMSG_TOSHIELD) then return 0 end
+		or not Duel.SelectYesNo(player,DM_QHINTMSG_TOSZONE) then return 0 end
 	if ct>count then ct=count end
 	local t={}
 	for i=1,ct do t[i]=i end
