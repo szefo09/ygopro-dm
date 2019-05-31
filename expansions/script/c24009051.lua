@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	--get ability
 	dm.AddSingleAttackTriggerEffect(c,0,true,scard.abtg,scard.abop1,EFFECT_FLAG_CARD_TARGET)
 	--get ability
-	dm.AddSingleBecomeBlockedTriggerEffect(c,1,nil,nil,scard.abop2)
+	dm.AddSingleTriggerEffectCustom(c,1,EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED,nil,nil,scard.abop2)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_BEAST_FOLK}

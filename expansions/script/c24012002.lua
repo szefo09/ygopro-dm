@@ -4,8 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--return
-	local op_func=dm.SendtoHandOperation(nil,Card.IsFaceup,DM_LOCATION_BZONE,DM_LOCATION_BZONE,nil,nil,nil,c)
-	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,nil,op_func)
+	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,nil,dm.SendtoHandOperation(nil,Card.IsFaceup,DM_LOCATION_BZONE,DM_LOCATION_BZONE,nil,nil,nil,c))
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end

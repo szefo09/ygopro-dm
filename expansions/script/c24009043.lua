@@ -5,7 +5,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--to grave
-	dm.AddDestroyedTriggerEffect(c,0,nil,scard.tgtg,scard.tgop,EFFECT_FLAG_CARD_TARGET,scard.tgcon)
+	dm.AddTriggerEffectCustom(c,0,EVENT_DESTROYED,nil,scard.tgtg,scard.tgop,EFFECT_FLAG_CARD_TARGET,scard.tgcon)
 end
 scard.duel_masters_card=true
 function scard.tgcon(e,tp,eg,ep,ev,re,r,rp)

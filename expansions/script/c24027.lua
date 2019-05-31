@@ -9,7 +9,7 @@ function scard.initial_effect(c)
 	--cannot be blocked
 	dm.EnableCannotBeBlocked(c)
 	--get ability
-	dm.AddBreakShieldTriggerEffect(c,0,true,nil,scard.abop,nil,scard.abcon)
+	dm.AddTriggerEffectCustom(c,0,EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD,true,nil,scard.abop,nil,scard.abcon)
 	--destroy replace (return)
 	dm.AddSingleDestroyReplaceEffect(c,1,scard.reptg,scard.repop)
 end
