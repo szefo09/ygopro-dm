@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--survivor (discard)
-	dm.AddSingleAttackTriggerEffect(c,0,nil,scard.dhtg1,scard.dhop,EFFECT_FLAG_CARD_TARGET)
+	dm.AddSingleTriggerEffectCustom(c,0,EVENT_ATTACK_ANNOUNCE,nil,scard.dhtg1,scard.dhop,EFFECT_FLAG_CARD_TARGET)
 	dm.AddStaticEffectSingleAttackTrigger(c,0,nil,scard.dhtg1,scard.dhop,LOCATION_ALL,0,scard.dhtg2,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true

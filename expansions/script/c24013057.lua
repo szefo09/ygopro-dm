@@ -7,7 +7,7 @@ function scard.initial_effect(c)
 	--sympathy (angel command, demon command)
 	dm.EnableSympathy(c,DM_RACE_ANGEL_COMMAND,DM_RACE_DEMON_COMMAND)
 	--destroy
-	dm.AddAttackTriggerEffect(c,0,nil,nil,scard.desop,nil,scard.descon)
+	dm.AddTriggerEffectCustom(c,0,EVENT_ATTACK_ANNOUNCE,nil,nil,scard.desop,nil,scard.descon)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end

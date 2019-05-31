@@ -1773,22 +1773,20 @@ function Auxiliary.AddSingleLeaveReplaceEffect(c,desc_id,op_func)
 end
 --function for EFFECT_TYPE_SINGLE trigger abilities
 --code: DM_EVENT_COME_INTO_PLAY for "When you put this creature into the battle zone" (e.g. "Miele, Vizier of Lightning" DM-01 13/110)
+--code: EVENT_ATTACK_ANNOUNCE for "Whenever this creature attacks" (e.g. "Laguna, Lightning Enforcer" DM-02 4/55)
 --code: EVENT_DESTROYED for "When this creature is destroyed" (e.g. "Bombersaur" DM-02 36/55)
 --code: EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED for "Whenever this creature becomes blocked" (e.g. "Avalanche Giant" DM-05 S5/S5)
 --code: EVENT_BE_BATTLE_TARGET for "Whenever this creature is attacked" (e.g. "Scalpel Spider" DM-07 32/55)
 function Auxiliary.AddSingleTriggerEffectCustom(c,desc_id,code,optional,targ_func,op_func,prop,con_func)
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
+	local prop=prop or 0
+	if typ==EFFECT_TYPE_TRIGGER_O then prop=prop+EFFECT_FLAG_DELAY end
+	if code==DM_EFFECT_FLAG_CHAIN_LIMIT then prop=prop+DM_EFFECT_FLAG_CHAIN_LIMIT end
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE+typ)
 	e1:SetCode(code)
-	if typ==EFFECT_TYPE_TRIGGER_O and prop then
-		e1:SetProperty(EFFECT_FLAG_DELAY+prop)
-	elseif typ==EFFECT_TYPE_TRIGGER_O then
-		e1:SetProperty(EFFECT_FLAG_DELAY)
-	elseif prop then
-		e1:SetProperty(prop)
-	end
+	e1:SetProperty(prop)
 	if con_func then e1:SetCondition(con_func) end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
@@ -1797,21 +1795,19 @@ end
 --function for EFFECT_TYPE_FIELD trigger abilities
 --code: DM_EVENT_COME_INTO_PLAY for "Whenever another creature is put into the battle zone" (e.g. "Mist Rias, Sonic Guardian" DM-04 13/55)
 --code: EVENT_DESTROYED for "Whenever another creature is destroyed" (e.g. "Mongrel Man" DM-04 33/55)
+--code: EVENT_ATTACK_ANNOUNCE for "Whenever any of your creatures attacks" (e.g. "Thrumiss, Zephyr Guardian" DM-08 15/55)
 --code: EVENT_BE_BATTLE_TARGET for "Whenever your creatures are attacked" (e.g. "Polaris, the Oracle" DM-13 21/55)
 --code: EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD for "Whenever this creature breaks a shield" (e.g. "Bolblaze Dragon" Game Original)
 function Auxiliary.AddTriggerEffectCustom(c,desc_id,code,optional,targ_func,op_func,prop,con_func)
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
+	local prop=prop or 0
+	if typ==EFFECT_TYPE_TRIGGER_O then prop=prop+EFFECT_FLAG_DELAY end
+	if code==DM_EFFECT_FLAG_CHAIN_LIMIT then prop=prop+DM_EFFECT_FLAG_CHAIN_LIMIT end
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_FIELD+typ)
 	e1:SetCode(code)
-	if typ==EFFECT_TYPE_TRIGGER_O and prop then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY+prop)
-	elseif typ==EFFECT_TYPE_TRIGGER_O then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY)
-	elseif prop then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
-	end
+	e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
 	e1:SetRange(DM_LOCATION_BZONE)
 	if con_func then e1:SetCondition(con_func) end
 	if targ_func then e1:SetTarget(targ_func) end
@@ -1864,24 +1860,6 @@ function Auxiliary.AddStaticEffectSingleComeIntoPlay(c,desc_id,optional,targ_fun
 	e2:SetLabelObject(e1)
 	c:RegisterEffect(e2)
 end
---"Whenever this creature attacks, ABILITY."
---e.g. "Laguna, Lightning Enforcer" (DM-02 4/55)
-function Auxiliary.AddSingleAttackTriggerEffect(c,desc_id,optional,targ_func,op_func,prop,con_func)
-	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	e1:SetType(EFFECT_TYPE_SINGLE+typ)
-	e1:SetCode(EVENT_ATTACK_ANNOUNCE)
-	if prop then
-		e1:SetProperty(DM_EFFECT_FLAG_CHAIN_LIMIT+prop)
-	else
-		e1:SetProperty(DM_EFFECT_FLAG_CHAIN_LIMIT)
-	end
-	if con_func then e1:SetCondition(con_func) end
-	if targ_func then e1:SetTarget(targ_func) end
-	e1:SetOperation(op_func)
-	c:RegisterEffect(e1)
-end
 --"Each of your creatures has "Whenever this creature attacks, ABILITY"."
 --e.g. "Split-Head Hydroturtle Q" (DM-05 24/55)
 function Auxiliary.AddStaticEffectSingleAttackTrigger(c,desc_id,optional,targ_func1,op_func,s_range,o_range,targ_func2,prop)
@@ -1909,32 +1887,6 @@ function Auxiliary.AddStaticEffectSingleAttackTrigger(c,desc_id,optional,targ_fu
 	e2:SetTarget(targ_func2)
 	e2:SetLabelObject(e1)
 	c:RegisterEffect(e2)
-end
---"Whenever any of your creatures attacks, ABILITY."
---e.g. "Thrumiss, Zephyr Guardian" (DM-08 15/55)
-function Auxiliary.AddAttackTriggerEffect(c,desc_id,optional,targ_func,op_func,prop,con_func)
-	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	e1:SetType(EFFECT_TYPE_FIELD+typ)
-	e1:SetCode(EVENT_ATTACK_ANNOUNCE)
-	if prop then
-		e1:SetProperty(DM_EFFECT_FLAG_CHAIN_LIMIT+prop)
-	else
-		e1:SetProperty(DM_EFFECT_FLAG_CHAIN_LIMIT)
-	end
-	e1:SetRange(DM_LOCATION_BZONE)
-	if con_func then e1:SetCondition(con_func) end
-	if targ_func then e1:SetTarget(targ_func) end
-	e1:SetOperation(op_func)
-	c:RegisterEffect(e1)
-end
---"Whenever this creature battles, ABILITY."
---e.g. "Akashic Third, the Electro-Bandit" (DM-13 19/55)
-function Auxiliary.AddSingleBattleTriggerEffect(c,desc_id,optional,targ_func,op_func,prop,con_func)
-	local con_func=con_func or aux.TRUE
-	Auxiliary.AddSingleAttackTriggerEffect(c,desc_id,optional,targ_func,op_func,prop,aux.AND(Auxiliary.AttackTargetCondition(),con_func))
-	Auxiliary.AddSingleTriggerEffectCustom(c,desc_id,EVENT_BE_BATTLE_TARGET,optional,targ_func,op_func,prop,con_func)
 end
 --"Whenever this creature blocks, ABILITY."
 --e.g. "Spiral Grass" (DM-02 10/55)

@@ -5,7 +5,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--return
-	dm.AddSingleAttackTriggerEffect(c,0,true,scard.rettg,scard.retop)
+	dm.AddSingleTriggerEffectCustom(c,0,EVENT_ATTACK_ANNOUNCE,true,scard.rettg,scard.retop)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end
