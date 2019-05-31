@@ -20,15 +20,20 @@ function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e1,tp)
 end
 function scard.tbfilter(c,e,tp,code)
-	return c:IsCreature() and c:IsCode(code) and c:IsCanSendtoBattle(e,0,tp,false,false)
+	return c:IsCreature() and c:IsCode(code) and c:IsAbleToBZone(e,0,tp,false,false)
 end
 function scard.tbop(e,tp,eg,ep,ev,re,r,rp)
 	local code=eg:GetFirst():GetCode()
 	local g=Duel.GetMatchingGroup(scard.tbfilter,tp,LOCATION_DECK,0,nil,e,tp,code)
 	if g:GetCount()==0 then return end
 	Duel.Hint(HINT_CARD,0,sid)
-	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOBATTLE)
+	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOBZONE)
 	local sg=g:Select(tp,0,1,nil)
 	if sg:GetCount()==0 then return end
 	Duel.SendtoBattle(sg,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
 end
+--[[
+	Notes
+		1. The effect of putting a creature into the battle zone does not trigger
+		https://duelmasters.fandom.com/wiki/Live_and_Breathe/Rulings
+]]

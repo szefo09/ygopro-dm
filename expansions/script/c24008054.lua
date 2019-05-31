@@ -9,5 +9,5 @@ function scard.initial_effect(c)
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end
 scard.duel_masters_card=true
-scard.tbtg=dm.TargetCardFunction(PLAYER_OPPO,nil,0,LOCATION_HAND,0,1,DM_HINTMSG_TOBATTLE)
+scard.tbtg=dm.TargetCardFunction(PLAYER_OPPO,nil,0,LOCATION_HAND,0,1,DM_HINTMSG_TOBZONE)
 scard.tbop=dm.TargetSendtoBattleOperation(PLAYER_OPPO,PLAYER_OPPO,POS_FACEUP_UNTAPPED)

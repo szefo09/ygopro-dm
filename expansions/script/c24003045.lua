@@ -12,7 +12,7 @@ function scard.tmfilter(c,e)
 end
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	local ct=Duel.GetMatchingGroupCount(dm.ShieldZoneFilter(scard.tmfilter),tp,DM_LOCATION_SZONE,0,nil,e)
-	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOMANA)
+	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOMZONE)
 	local g=Duel.SelectMatchingCard(tp,dm.ShieldZoneFilter(scard.tmfilter),tp,DM_LOCATION_SZONE,0,0,ct,nil,e)
 	if g:GetCount()==0 then return end
 	Duel.SetTargetCard(g)

@@ -17,7 +17,7 @@ function scard.retop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.ConfirmCards(1-tp,g1)
 		Duel.ShuffleHand(tp)
 	end
-	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOMANA)
+	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOMZONE)
 	local g2=Duel.SelectMatchingCard(tp,Card.IsAbleToMana,tp,LOCATION_HAND,0,1,1,e:GetHandler())
 	if g2:GetCount()>0 then
 		Duel.BreakEffect()

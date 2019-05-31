@@ -394,7 +394,7 @@ function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	local turnp=Duel.GetTurnPlayer()
 	local g=Duel.GetMatchingGroup(Card.IsAbleToMana,turnp,LOCATION_HAND,0,nil)
 	if g:GetCount()==0 then return end
-	Duel.Hint(HINT_SELECTMSG,turnp,DM_HINTMSG_TOMANA)
+	Duel.Hint(HINT_SELECTMSG,turnp,DM_HINTMSG_TOMZONE)
 	local sg=g:Select(turnp,0,1,nil)
 	Duel.SendtoMana(sg,POS_FACEUP_UNTAPPED,REASON_RULE)
 end

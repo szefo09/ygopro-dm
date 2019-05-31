@@ -73,7 +73,7 @@ function Card.IsCanBeSpecialSummoned(c,...)
 	if c:IsLocation(LOCATION_REMOVED) and c:IsFacedown() then return true end
 	return card_is_can_be_special_summoned(c,...)
 end
-Card.IsCanSendtoBattle=Card.IsCanBeSpecialSummoned
+Card.IsAbleToBZone=Card.IsCanBeSpecialSummoned
 --check if a card can be discarded from a player's hand
 --reserved
 --[[
@@ -570,6 +570,10 @@ function Duel.SpecialSummon(targets,sumtype,sumplayer,target_player,nocheck,noli
 		if Duel.GetLocationCount(target_player,DM_LOCATION_BZONE)>0 then
 			--check for "This creature is put into the battle zone tapped."
 			if tc:IsHasEffect(DM_EFFECT_ENTER_BZONE_TAPPED) then pos=POS_FACEUP_TAPPED end
+			--check for an evolution creature
+			if tc:IsEvolution() then
+				Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_EVOLUTION_TO_BZONE,Effect.GlobalEffect(),0,0,0,0)
+			end
 			if Duel.SpecialSummonStep(tc,sumtype,sumplayer,target_player,nocheck,nolimit,pos,zone) then
 				ct=ct+1
 			end
@@ -1452,6 +1456,7 @@ end
 
 --add procedure to evolution creature
 function Auxiliary.AddEvolutionProcedure(c,f1,f2)
+	--summon
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(DM_DESC_EVOLUTION)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -1459,11 +1464,26 @@ function Auxiliary.AddEvolutionProcedure(c,f1,f2)
 	e1:SetProperty(DM_EFFECT_FLAG_SUMMON_PARAM+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	e1:SetRange(LOCATION_HAND)
 	e1:SetTargetRange(POS_FACEUP_UNTAPPED,0)
-	e1:SetCondition(Auxiliary.EvolutionCondition(f1,f2))
+	e1:SetCondition(Auxiliary.EvolutionCondition1(f1,f2))
 	e1:SetTarget(Auxiliary.EvolutionTarget(f1,f2))
-	e1:SetOperation(Auxiliary.EvolutionOperation)
+	e1:SetOperation(Auxiliary.EvolutionOperation1)
 	e1:SetValue(DM_SUMMON_TYPE_EVOLUTION)
 	c:RegisterEffect(e1)
+	--put into battle zone by effect
+	local e2=Effect.CreateEffect(c)
+	e2:SetDescription(DM_DESC_EVOLUTION)
+	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
+	e2:SetCode(EVENT_CUSTOM+DM_EVENT_EVOLUTION_TO_BZONE)
+	e2:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+	e2:SetCondition(Auxiliary.EvolutionCondition2(f1,f2))
+	e2:SetOperation(Auxiliary.EvolutionOperation2(f1,f2))
+	c:RegisterEffect(e2)
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_SINGLE)
+	e3:SetCode(DM_EFFECT_TO_BZONE_CONDITION)
+	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+	e3:SetCondition(aux.NOT(Auxiliary.EvolutionCondition2(f1,f2)))
+	c:RegisterEffect(e3)
 end
 function Auxiliary.EvolutionFilter1(c,g,f1,f2)
 	return c:IsFaceup() and (not f1 or f1(c)) and (not f2 or g:IsExists(Auxiliary.EvolutionFilter2,1,c,f2))
@@ -1471,7 +1491,7 @@ end
 function Auxiliary.EvolutionFilter2(c,f)
 	return c:IsFaceup() and (not f or f(c))
 end
-function Auxiliary.EvolutionCondition(f1,f2)
+function Auxiliary.EvolutionCondition1(f1,f2)
 	return	function(e,c)
 				if c==nil then return true end
 				if not c:DMIsSummonable() then return false end
@@ -1509,7 +1529,7 @@ function Auxiliary.EvolutionTarget(f1,f2)
 				else return false end
 			end
 end
-function Auxiliary.EvolutionOperation(e,tp,eg,ep,ev,re,r,rp,c)
+function Auxiliary.EvolutionOperation1(e,tp,eg,ep,ev,re,r,rp,c)
 	local g1=Duel.GetMatchingGroup(Auxiliary.PayManaFilter,tp,DM_LOCATION_MZONE,0,nil)
 	Auxiliary.PayManaSelect(g1,tp,c,c:GetPlayCost(),c:GetCivilizationCount())
 	local g2=e:GetLabelObject()
@@ -1522,6 +1542,42 @@ function Auxiliary.EvolutionOperation(e,tp,eg,ep,ev,re,r,rp,c)
 	c:SetMaterial(g2)
 	Duel.PutOnTop(c,g2)
 	g2:DeleteGroup()
+end
+function Auxiliary.EvolutionCondition2(f1,f2)
+	return	function(e)
+				local tp=e:GetHandler():GetControler()
+				local field_count=-1
+				if f2 then field_count=-2 end
+				local g=Duel.GetFieldGroup(tp,DM_LOCATION_BZONE,0)
+				if Duel.GetLocationCount(tp,DM_LOCATION_BZONE)<field_count
+					or not g:IsExists(Auxiliary.EvolutionFilter1,1,nil,g,f1,f2) then return false end
+				return true
+			end
+end
+function Auxiliary.EvolutionOperation2(f1,f2)
+	return	function(e,tp,eg,ep,ev,re,r,rp)
+				local g1=Duel.GetFieldGroup(tp,DM_LOCATION_BZONE,0)
+				Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_EVOLVE)
+				local sg1=g1:FilterSelect(tp,Auxiliary.EvolutionFilter1,1,1,nil,g1,f1,f2)
+				Duel.HintSelection(sg1)
+				local tc=sg1:GetFirst()
+				local pos=tc:GetPosition()
+				if f2 then
+					Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_EVOLVE)
+					local sg2=g1:FilterSelect(tp,Auxiliary.EvolutionFilter2,1,1,tc,f2)
+					Duel.HintSelection(sg2)
+					sg1:Merge(sg2)
+				end
+				local c=e:GetHandler()
+				for tc in aux.Next(sg1) do
+					local g2=tc:GetSourceGroup()
+					if g2:GetCount()>0 then
+						Duel.PutOnTop(c,g2)
+					end
+				end
+				Duel.PutOnTop(c,sg1)
+				Duel.SendtoBattle(c,0,tp,tp,true,false,pos)
+			end
 end
 
 --add rules to spell
@@ -1697,6 +1753,29 @@ function Auxiliary.AddSingleDiscardReplaceEffect(c,desc_id,targ_func,op_func,con
 	e1:SetTarget(targ_func)
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
+end
+--"Whenever this creature would break a shield, BREAK REPLACE ABILITY." 
+--e.g. "Bolmeteus Steel Dragon" (DM-06 S7/S10)
+function Auxiliary.AddBreakShieldReplaceEffect(c,location)
+	--location: where to put the shield (e.g. DM_LOCATION_GRAVE)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetCode(DM_EFFECT_BREAK_SHIELD_REPLACE)
+	e1:SetValue(location)
+	c:RegisterEffect(e1)
+end
+--"When this creature would leave the battle zone, ABILITY."
+--e.g. "Soul Phoenix, Avatar of Unity" (DM-12 5/55)
+--Not fully implemented: The effect of leaving the battle zone is not replaced 
+function Auxiliary.AddSingleLeaveReplaceEffect(c,desc_id,targ_func,op_func)
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
+	e1:SetCode(DM_EVENT_LEAVE_BZONE)
+	e1:SetCondition(Auxiliary.PreviousLocationCondition(DM_LOCATION_BZONE))
+	e1:SetOperation(op_func)
+	c:RegisterEffect(e1)
+	Auxiliary.EnableEffectCustom(c,DM_EFFECT_EVOLUTION_SOURCE_REMAIN)
 end
 --"At the end of the turn, ABILITY."
 --e.g. "Frei, Vizier of Air" (DM-01 4/110)
@@ -2186,16 +2265,6 @@ function Auxiliary.AddAttackCost(c,cost_func,op_func)
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
 end
---"Whenever this creature would break a shield, BREAK REPLACE ABILITY." 
---e.g. "Bolmeteus Steel Dragon" (DM-06 S7/S10)
-function Auxiliary.AddBreakShieldReplaceEffect(c,location)
-	--location: where to put the shield (e.g. DM_LOCATION_GRAVE)
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_SINGLE)
-	e1:SetCode(DM_EFFECT_BREAK_SHIELD_REPLACE)
-	e1:SetValue(location)
-	c:RegisterEffect(e1)
-end
 --"Whenever you draw a card, ABILITY."
 --"Whenever your opponent draws a card, ABILITY."
 --e.g. "Cosmic Nebula" (DM-07 S2/S5), "Asteria, Spirit of Heaven's Blessing" (DM-13 7/55)
@@ -2257,22 +2326,9 @@ function Auxiliary.AddUnblockedAttackTriggerEffect(c,desc_id,optional,targ_func,
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
 end
---"When this creature would leave the battle zone, ABILITY."
---Not fully implemented: The effect of leaving the battle zone is not replaced 
---e.g. "Soul Phoenix, Avatar of Unity" (DM-12 5/55)
-function Auxiliary.AddSingleLeaveReplaceEffect(c,desc_id,targ_func,op_func)
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
-	e1:SetCode(DM_EVENT_LEAVE_BZONE)
-	e1:SetCondition(Auxiliary.PreviousLocationCondition(DM_LOCATION_BZONE))
-	e1:SetOperation(op_func)
-	c:RegisterEffect(e1)
-	Auxiliary.EnableEffectCustom(c,DM_EFFECT_EVOLUTION_SOURCE_REMAIN)
-end
 --"When this creature leaves the battle zone, ABILITY."
---Not fully implemented: Ability does not trigger when the creature is added to the shields face down
 --e.g. "Wise Starnoid, Avatar of Hope" (DM-12 S2/S5)
+--Not fully implemented: Ability does not trigger when the creature is added to the shields face down
 function Auxiliary.AddSingleLeaveBZoneTriggerEffect(c,desc_id,optional,targ_func,op_func,prop,con_func,cost_func,cate)
 	local con_func=con_func or aux.TRUE
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
@@ -3176,6 +3232,7 @@ end
 --"A player's creatures/spells each cost N more/less to summon/cast."
 --"Each creature costs N more/less to summon and each spell costs N more/less to cast."
 --e.g. "Elf-X" (DM-02 46/55), "Milieus, the Daystretcher" (DM-04 12/55)
+--Not fully implemented: "They can't cost less than 2+"
 function Auxiliary.EnableUpdatePlayCost(c,val,s_range,o_range,targ_func)
 	local e1=Effect.CreateEffect(c)
 	if s_range or o_range then
@@ -3536,7 +3593,7 @@ end
 --========== SendtoBattle ==========
 --target and operation functions for abilities that put creatures into the battle zone
 function Auxiliary.SendtoBattleFilter(c,e,tp,f,...)
-	return c:IsCanSendtoBattle(e,0,tp,false,false) and (not f or f(c,e,tp,...))
+	return c:IsAbleToBZone(e,0,tp,false,false) and (not f or f(c,e,tp,...))
 end
 function Auxiliary.SendtoBattleTarget(f,s,o,ex,...)
 	local funs={...}
@@ -3563,7 +3620,7 @@ function Auxiliary.SendtoBattleOperation(p,f,s,o,min,max,pos,ex,...)
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(Auxiliary.SendtoBattleFilter,tp,s,o,ex,e,tp,f,table.unpack(funs))
 				if min and max then
-					Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOBATTLE)
+					Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOBZONE)
 					local sg=g:Select(player,min,ft,ex,table.unpack(funs))
 					Duel.SendtoBattle(sg,0,player,player,false,false,pos)
 				else
@@ -3684,7 +3741,7 @@ function Auxiliary.SendtoManaOperation(p,f,s,o,min,max,ex,...)
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToMana,f),tp,s,o,ex,table.unpack(funs))
 				if min and max then
-					Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOMANA)
+					Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOMZONE)
 					local sg=g:Select(player,min,max,ex,table.unpack(funs))
 					local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BZONE+DM_LOCATION_SZONE)
 					Duel.HintSelection(hg)
@@ -3748,7 +3805,7 @@ function Auxiliary.SendtoShieldOperation(p,f,s,o,min,max,ex,...)
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
 				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToShield,f),player,s,o,ex,table.unpack(funs))
 				if min and max then
-					Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOSHIELD)
+					Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOSZONE)
 					local sg=g:Select(player,min,ft,ex,table.unpack(funs))
 					local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BZONE)
 					Duel.HintSelection(hg)

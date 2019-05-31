@@ -16,5 +16,5 @@ end
 function scard.tmfilter(c)
 	return c:IsFaceup() and c:IsPowerBelow(5000) and c:IsAbleToMana()
 end
-scard.tmtg=dm.TargetCardFunction(PLAYER_SELF,scard.tmfilter,0,DM_LOCATION_BZONE,1,1,DM_HINTMSG_TOMANA)
+scard.tmtg=dm.TargetCardFunction(PLAYER_SELF,scard.tmfilter,0,DM_LOCATION_BZONE,1,1,DM_HINTMSG_TOMZONE)
 scard.tmop=dm.TargetSendtoManaOperation

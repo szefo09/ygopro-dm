@@ -9,10 +9,10 @@ end
 scard.duel_masters_card=true
 scard.tbtg=dm.CheckDeckFunction(PLAYER_SELF)
 function scard.tbfilter(c,e,tp)
-	return c:DMIsRace(DM_RACE_DRAGON) and c:IsCanSendtoBattle(e,0,tp,false,false)
+	return c:DMIsRace(DM_RACE_DRAGON) and c:IsAbleToBZone(e,0,tp,false,false)
 end
 function scard.tbop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOBATTLE)
+	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOBZONE)
 	local tc=Duel.SelectMatchingCard(tp,scard.tbfilter,tp,LOCATION_DECK,0,0,1,nil,e,tp):GetFirst()
 	if not tc or not Duel.SendtoBattleStep(tc,0,tp,tp,false,false,POS_FACEUP_UNTAPPED) then return end
 	local c=e:GetHandler()
@@ -36,3 +36,8 @@ function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_CARD,0,sid)
 	Duel.Destroy(c,REASON_EFFECT)
 end
+--[[
+	Notes
+		1. An evolution creature may only be put into the battle zone if there is a compatible creature to evolve onto
+		https://duelmasters.fandom.com/wiki/Kachua,_Keeper_of_the_Icegate/Rulings
+]]

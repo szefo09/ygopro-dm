@@ -10,7 +10,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.tbfilter(c,e,tp)
-	return c:IsCreature() and not c:IsEvolution() and c:IsCanSendtoBattle(e,0,tp,false,false)
+	return c:IsCreature() and not c:IsEvolution() and c:IsAbleToBZone(e,0,tp,false,false)
 end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_DESTROY)
@@ -36,7 +36,7 @@ function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 		return
 	end
 	Duel.ConfirmDecktop(p,dcount-seq)
-	if tbcard:IsCanSendtoBattle(e,0,p,false,false) then
+	if tbcard:IsAbleToBZone(e,0,p,false,false) then
 		Duel.DisableShuffleCheck()
 		if dcount-seq==1 then Duel.SendtoBattle(tbcard,0,p,p,false,false,POS_FACEUP_UNTAPPED)
 		else
