@@ -476,7 +476,13 @@ function scard.desop2(e,tp,eg,ep,ev,re,r,rp)
 		--raise event for "Whenever one of your creatures loses a battle"
 		--Duel.RaiseEvent(lc,EVENT_CUSTOM+DM_EVENT_LOSE_BATTLE,e,0,0,0,0) --reserved
 	end
-	Duel.Destroy(g,REASON_BATTLE+REASON_RULE)
+	Duel.Destroy(g,REASON_BATTLE+REASON_RULE) --EVENT_DESTROYED will not trigger if REASON_BATTLE is included
+	if lc then
+		--raise event for "When this creature is destroyed"
+		Duel.RaiseSingleEvent(lc,EVENT_DESTROYED,e,REASON_BATTLE,0,0,0)
+		--raise event for "Whenever another creature is destroyed"
+		Duel.RaiseEvent(lc,EVENT_DESTROYED,e,REASON_BATTLE,0,0,0)
+	end
 end
 --to grave redirect
 function scard.tgtg(e,c)
