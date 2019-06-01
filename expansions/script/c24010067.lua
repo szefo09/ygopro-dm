@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--destroy
-	dm.AddSingleComeIntoPlayTriggerEffect(c,0,true,scard.destg,scard.desop,nil,scard.descon)
+	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,true,scard.destg,scard.desop,nil,scard.descon)
 end
 scard.duel_masters_card=true
 function scard.descon(e,tp,eg,ep,ev,re,r,rp)

@@ -11,7 +11,7 @@ function scard.initial_effect(c)
 	--to shield
 	dm.AddSingleLeaveBZoneTriggerEffect(c,1,nil,nil,dm.DecktopSendtoShieldOperation(PLAYER_SELF,1))
 	--tap
-	dm.AddSingleComeIntoPlayTriggerEffect(c,2,true,scard.postg,scard.posop)
+	dm.AddSingleTriggerEffectCustom(c,2,DM_EVENT_COME_INTO_PLAY,true,scard.postg,scard.posop)
 end
 scard.duel_masters_card=true
 --get ability

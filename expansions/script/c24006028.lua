@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--blocker
 	dm.EnableBlocker(c)
 	--confirm
-	dm.AddSingleComeIntoPlayTriggerEffect(c,0,true,scard.conftg,scard.confop)
+	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,true,scard.conftg,scard.confop)
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 end

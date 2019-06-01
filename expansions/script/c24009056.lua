@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--get ability
-	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,nil,scard.abop)
+	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,nil,nil,scard.abop)
 	--cannot be targeted
 	dm.EnableCannotBeTargeted(c)
 end

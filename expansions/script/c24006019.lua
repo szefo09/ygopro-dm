@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--survivor (search) (to hand)
-	dm.AddSingleComeIntoPlayTriggerEffect(c,0,nil,dm.HintTarget,scard.thop)
+	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,nil,dm.HintTarget,scard.thop)
 	dm.AddStaticEffectSingleComeIntoPlay(c,0,nil,dm.HintTarget,scard.thop,LOCATION_ALL,0,scard.thtg)
 end
 scard.duel_masters_card=true
