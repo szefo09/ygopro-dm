@@ -6,6 +6,6 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--destroy
-	dm.AddSingleDestroyedTriggerEffect(c,0,nil,nil,dm.DestroyOperation(nil,Card.IsFaceup,DM_LOCATION_BZONE,DM_LOCATION_BZONE))
+	dm.AddSingleTriggerEffectCustom(c,0,EVENT_DESTROYED,nil,nil,dm.DestroyOperation(nil,Card.IsFaceup,DM_LOCATION_BZONE,DM_LOCATION_BZONE))
 end
 scard.duel_masters_card=true

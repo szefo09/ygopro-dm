@@ -5,7 +5,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--get ability
-	dm.AddBeAttackedTriggerEffect(c,0,nil,nil,scard.abop,nil,scard.abcon)
+	dm.AddTriggerEffectCustom(c,0,EVENT_BE_BATTLE_TARGET,nil,nil,scard.abop,nil,scard.abcon)
 end
 scard.duel_masters_card=true
 function scard.abcon(e,tp,eg,ep,ev,re,r,rp)

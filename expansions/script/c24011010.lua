@@ -7,7 +7,7 @@ function scard.initial_effect(c)
 	--wave striker (draw)
 	dm.EnableWaveStriker(c)
 	dm.AddEffectDescription(c,1,dm.WaveStrikerCondition)
-	dm.AddDestroyedTriggerEffect(c,0,true,dm.DrawTarget(PLAYER_SELF),scard.drop,nil,aux.AND(dm.WaveStrikerCondition,scard.drcon))
+	dm.AddTriggerEffectCustom(c,0,EVENT_DESTROYED,true,dm.DrawTarget(PLAYER_SELF),scard.drop,nil,aux.AND(dm.WaveStrikerCondition,scard.drcon))
 end
 scard.duel_masters_card=true
 function scard.cfilter(c,tp)

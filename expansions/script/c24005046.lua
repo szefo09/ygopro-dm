@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--power attacker
 	dm.EnablePowerAttacker(c,3000)
 	--to battle
-	dm.AddSingleDestroyedTriggerEffect(c,0,true,scard.tbtg,scard.tbop,EFFECT_FLAG_CARD_TARGET)
+	dm.AddSingleTriggerEffectCustom(c,0,EVENT_DESTROYED,true,scard.tbtg,scard.tbop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 function scard.tbfilter(c)

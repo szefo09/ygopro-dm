@@ -4,9 +4,10 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
 	--get ability
-	dm.AddSpellCastEffect(c,0,nil,scard.abop,nil,nil,dm.MZoneExclusiveCondition(Card.IsCivilization,DM_CIVILIZATION_FIRE))
+	dm.AddSpellCastEffect(c,0,nil,scard.abop,nil,scard.abcon)
 end
 scard.duel_masters_card=true
+scard.abcon=dm.MZoneExclusiveCondition(Card.IsCivilization,DM_CIVILIZATION_FIRE)
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,DM_LOCATION_BZONE,0,nil)
 	if g:GetCount()==0 then return end

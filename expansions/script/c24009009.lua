@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 	--tap
-	dm.AddSingleDestroyedTriggerEffect(c,0,nil,scard.postg,scard.posop,EFFECT_FLAG_CARD_TARGET)
+	dm.AddSingleTriggerEffectCustom(c,0,EVENT_DESTROYED,nil,scard.postg,scard.posop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 function scard.posfilter(c)

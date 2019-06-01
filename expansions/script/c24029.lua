@@ -11,7 +11,7 @@ function scard.initial_effect(c)
 	--to grave (mana)
 	dm.AddSingleAttackTriggerEffect(c,0,true,scard.tgtg1,scard.tgop1)
 	--to grave (shield)
-	dm.AddBreakShieldTriggerEffect(c,1,true,scard.tgtg2,scard.tgop2,nil,scard.tgcon)
+	dm.AddTriggerEffectCustom(c,1,EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD,true,scard.tgtg2,scard.tgop2,nil,scard.tgcon)
 	--attack untapped
 	dm.EnableAttackUntapped(c)
 end
