@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--get ability (enter tapped)
 	dm.EnableEffectCustom(c,DM_EFFECT_ENTER_BZONE_TAPPED,nil,LOCATION_ALL,0,aux.TargetBoolFunction(Card.IsHasEffect,DM_EFFECT_SILENT_SKILL))
 	--destroy replace (return)
-	dm.AddDestroyReplaceEffect(c,0,scard.reptg,scard.repop,scard.repval)
+	dm.AddReplaceEffectDestroy(c,0,scard.reptg,scard.repop,scard.repval)
 end
 scard.duel_masters_card=true
 function scard.repfilter(c,tp)

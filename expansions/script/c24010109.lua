@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--blocker
 	dm.EnableBlocker(c)
 	--discard replace (to battle)
-	dm.AddSingleDiscardReplaceEffect(c,0,scard.reptg,scard.repop,dm.TurnPlayerCondition(PLAYER_OPPO))
+	dm.AddSingleReplaceEffectDiscard(c,0,scard.reptg,scard.repop,dm.TurnPlayerCondition(PLAYER_OPPO))
 end
 scard.duel_masters_card=true
 function scard.reptg(e,tp,eg,ep,ev,re,r,rp,chk)

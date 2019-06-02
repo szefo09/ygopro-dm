@@ -9,9 +9,9 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--break replace (to grave)
-	dm.AddBreakShieldReplaceEffect(c,DM_LOCATION_GRAVE)
+	dm.AddReplaceEffectBreakShield(c,DM_LOCATION_GRAVE)
 	--discard
-	dm.AddSingleLeaveBZoneTriggerEffect(c,0,nil,nil,dm.DiscardOperation(nil,aux.TRUE,0,LOCATION_HAND))
+	dm.AddSingleTriggerEffectLeaveBZone(c,0,nil,nil,dm.DiscardOperation(nil,aux.TRUE,0,LOCATION_HAND))
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_ZOMBIE_DRAGON,DM_RACE_DRAGON,DM_RACE_FIRE_BIRD}

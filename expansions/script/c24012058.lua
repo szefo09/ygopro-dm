@@ -11,7 +11,7 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--destroy
-	dm.AddSingleLeaveBZoneTriggerEffect(c,0,nil,nil,dm.DestroyOperation(nil,Card.IsFaceup,DM_LOCATION_BZONE,DM_LOCATION_BZONE))
+	dm.AddSingleTriggerEffectLeaveBZone(c,0,nil,nil,dm.DestroyOperation(nil,Card.IsFaceup,DM_LOCATION_BZONE,DM_LOCATION_BZONE))
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_MERFOLK,DM_RACE_CHIMERA}

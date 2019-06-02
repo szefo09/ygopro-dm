@@ -4,13 +4,13 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--destroy replace (to mana, return)
-	dm.AddSingleDestroyReplaceEffect(c,0,scard.reptg,scard.repop,scard.repcon)
+	dm.AddReplaceEffectSingleDestroy(c,0,scard.reptg,scard.repop,scard.repcon)
 end
 scard.duel_masters_card=true
 function scard.repcon(e)
 	return Duel.IsExistingMatchingCard(dm.ManaZoneFilter(Card.DMIsRace),e:GetHandlerPlayer(),DM_LOCATION_MZONE,0,1,nil,DM_RACE_DRAGON)
 end
-scard.reptg=dm.SingleDestroyReplaceTarget(Card.IsAbleToMana)
+scard.reptg=dm.SingleReplaceDestroyTarget(Card.IsAbleToMana)
 function scard.thfilter(c)
 	return c:DMIsRace(DM_RACE_DRAGON) and c:IsAbleToHand()
 end

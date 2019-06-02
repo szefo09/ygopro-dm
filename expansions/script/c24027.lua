@@ -11,7 +11,7 @@ function scard.initial_effect(c)
 	--get ability
 	dm.AddTriggerEffectCustom(c,0,EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD,true,nil,scard.abop,nil,scard.abcon)
 	--destroy replace (return)
-	dm.AddSingleDestroyReplaceEffect(c,1,scard.reptg,scard.repop)
+	dm.AddReplaceEffectSingleDestroy(c,1,scard.reptg,scard.repop)
 end
 scard.duel_masters_card=true
 --get ability
@@ -38,5 +38,5 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 --destroy replace (return)
-scard.reptg=dm.SingleDestroyReplaceTarget2(2,Card.IsAbleToHand)
-scard.repop=dm.SingleDestroyReplaceOperation(Duel.SendtoHand,PLAYER_OWNER,REASON_EFFECT+REASON_REPLACE)
+scard.reptg=dm.SingleReplaceDestroyTarget2(2,Card.IsAbleToHand)
+scard.repop=dm.SingleReplaceDestroyOperation(Duel.SendtoHand,PLAYER_OWNER,REASON_EFFECT+REASON_REPLACE)
