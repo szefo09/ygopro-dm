@@ -5,7 +5,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--confirm (to hand)
-	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,true,scard.thtg,scard.thop)
+	dm.AddSingleTriggerEffect(c,0,DM_EVENT_COME_INTO_PLAY,true,scard.thtg,scard.thop)
 end
 scard.duel_masters_card=true
 scard.thtg=dm.CheckDeckFunction(PLAYER_SELF)

@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--to battle
-	dm.AddSingleTriggerEffectCustom(c,0,EVENT_DESTROYED,true,scard.tbtg,scard.tbop)
+	dm.AddSingleTriggerEffect(c,0,EVENT_DESTROYED,true,scard.tbtg,scard.tbop)
 end
 scard.duel_masters_card=true
 function scard.tbfilter(c)

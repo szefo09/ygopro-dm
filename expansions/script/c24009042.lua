@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--speed attacker
 	dm.EnableEffectCustom(c,DM_EFFECT_SPEED_ATTACKER)
 	--destroy
-	dm.AddSingleTriggerEffectCustom(c,0,EVENT_BATTLE_CONFIRM,true,scard.destg,scard.desop,EFFECT_FLAG_CARD_TARGET,scard.descon)
+	dm.AddSingleTriggerEffect(c,0,EVENT_BATTLE_CONFIRM,true,scard.destg,scard.desop,EFFECT_FLAG_CARD_TARGET,scard.descon)
 end
 scard.duel_masters_card=true
 scard.descon=aux.AND(dm.UnblockedCondition,dm.AttackPlayerCondition)

@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_DRAGON))
 	--to grave
-	dm.AddSingleTriggerEffectCustom(c,0,EVENT_ATTACK_ANNOUNCE,nil,scard.tgtg,scard.tgop,EFFECT_FLAG_CARD_TARGET)
+	dm.AddSingleTriggerEffect(c,0,EVENT_ATTACK_ANNOUNCE,nil,scard.tgtg,scard.tgop,EFFECT_FLAG_CARD_TARGET)
 	--triple breaker
 	dm.EnableBreaker(c,DM_EFFECT_TRIPLE_BREAKER)
 end

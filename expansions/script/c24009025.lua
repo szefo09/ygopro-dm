@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	--cannot attack
 	dm.EnableCannotAttack(c)
 	--to hand
-	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_BATTLE_END,nil,nil,scard.thop,nil,dm.SelfBlockCondition)
+	dm.AddSingleTriggerEffect(c,0,DM_EVENT_BATTLE_END,nil,nil,scard.thop,nil,dm.SelfBlockCondition)
 end
 scard.duel_masters_card=true
 function scard.thop(e,tp,eg,ep,ev,re,r,rp)

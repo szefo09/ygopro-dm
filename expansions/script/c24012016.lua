@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	--power up
 	dm.EnableUpdatePower(c,2000,nil,DM_LOCATION_BZONE,0,dm.TargetBoolFunctionExceptSelf(Card.DMIsRace,DM_RACE_GLADIATOR,DM_RACE_EARTH_EATER))
 	--draw
-	dm.AddTriggerEffectCustom(c,0,DM_EVENT_BATTLE_END,true,scard.drtg,scard.drop,nil,scard.drcon)
+	dm.AddTriggerEffect(c,0,DM_EVENT_BATTLE_END,true,scard.drtg,scard.drop,nil,scard.drcon)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_GLADIATOR,DM_RACE_EARTH_EATER}

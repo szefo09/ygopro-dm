@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--blocker
 	dm.EnableBlocker(c)
 	--to hand
-	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,nil,scard.thtg,scard.thop,EFFECT_FLAG_CARD_TARGET)
+	dm.AddSingleTriggerEffect(c,0,DM_EVENT_COME_INTO_PLAY,nil,scard.thtg,scard.thop,EFFECT_FLAG_CARD_TARGET)
 	--cannot attack
 	dm.EnableCannotAttack(c)
 end

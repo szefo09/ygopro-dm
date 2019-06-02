@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--wave striker (tap)
 	dm.EnableWaveStriker(c)
 	dm.AddEffectDescription(c,1,dm.WaveStrikerCondition)
-	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,nil,scard.postg,scard.posop,EFFECT_FLAG_CARD_TARGET,dm.WaveStrikerCondition)
+	dm.AddSingleTriggerEffect(c,0,DM_EVENT_COME_INTO_PLAY,nil,scard.postg,scard.posop,EFFECT_FLAG_CARD_TARGET,dm.WaveStrikerCondition)
 end
 scard.duel_masters_card=true
 function scard.posfilter(c)

@@ -5,8 +5,8 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--confirm (copy, to grave)
-	dm.AddSingleTriggerEffectCustom(c,0,EVENT_ATTACK_ANNOUNCE,nil,nil,scard.copyop,nil,dm.AttackTargetCondition())
-	dm.AddSingleTriggerEffectCustom(c,0,EVENT_BE_BATTLE_TARGET,nil,nil,scard.copyop)
+	dm.AddSingleTriggerEffect(c,0,EVENT_ATTACK_ANNOUNCE,nil,nil,scard.copyop,nil,dm.AttackTargetCondition())
+	dm.AddSingleTriggerEffect(c,0,EVENT_BE_BATTLE_TARGET,nil,nil,scard.copyop)
 end
 scard.duel_masters_card=true
 function scard.copyop(e,tp,eg,ep,ev,re,r,rp)

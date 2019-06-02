@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 	--return
-	dm.AddTriggerEffectCustom(c,0,DM_EVENT_TO_GRAVE,true,scard.rettg,scard.retop,nil,scard.retcon)
+	dm.AddTriggerEffect(c,0,DM_EVENT_TO_GRAVE,true,scard.rettg,scard.retop,nil,scard.retcon)
 end
 scard.duel_masters_card=true
 function scard.cfilter(c,tp)

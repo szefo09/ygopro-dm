@@ -9,7 +9,7 @@ function scard.initial_effect(c)
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 	--get ability
-	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_BATTLE_END,nil,nil,scard.abop,nil,scard.abcon)
+	dm.AddSingleTriggerEffect(c,0,DM_EVENT_BATTLE_END,nil,nil,scard.abop,nil,scard.abcon)
 end
 scard.duel_masters_card=true
 function scard.cfilter(c)

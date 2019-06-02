@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--untap
-	dm.AddTriggerEffectCustom(c,0,EVENT_PHASE+PHASE_END,true,scard.postg,scard.posop,nil,scard.poscon)
+	dm.AddTriggerEffect(c,0,EVENT_PHASE+PHASE_END,true,scard.postg,scard.posop,nil,scard.poscon)
 end
 scard.duel_masters_card=true
 scard.poscon=dm.TurnPlayerCondition(PLAYER_SELF)

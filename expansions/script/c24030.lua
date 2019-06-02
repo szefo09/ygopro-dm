@@ -9,7 +9,7 @@ function scard.initial_effect(c)
 	--get ability (double breaker)
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER,dm.SelfTappedCondition,DM_LOCATION_BZONE,0,dm.TargetBoolFunctionExceptSelf())
 	--get ability
-	dm.AddTriggerEffectCustom(c,1,EVENT_PHASE+PHASE_END,nil,nil,scard.powop,nil,dm.SelfTappedCondition)
+	dm.AddTriggerEffect(c,1,EVENT_PHASE+PHASE_END,nil,nil,scard.powop,nil,dm.SelfTappedCondition)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER,scard.dbcon)
 	dm.AddEffectDescription(c,2,scard.dbcon)

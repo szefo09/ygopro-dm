@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--to hand
-	dm.AddSingleTriggerEffectCustom(c,0,EVENT_DESTROYED,true,scard.thtg,scard.thop,EFFECT_FLAG_CARD_TARGET)
+	dm.AddSingleTriggerEffect(c,0,EVENT_DESTROYED,true,scard.thtg,scard.thop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 scard.thtg=dm.TargetCardFunction(PLAYER_SELF,dm.ShieldZoneFilter(Card.IsAbleToHand),DM_LOCATION_SZONE,0,1,1,DM_HINTMSG_ATOHAND)

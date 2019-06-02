@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--destroy, get ability
-	dm.AddSingleTriggerEffectCustom(c,0,EVENT_ATTACK_ANNOUNCE,true,scard.destg,scard.desop)
+	dm.AddSingleTriggerEffect(c,0,EVENT_ATTACK_ANNOUNCE,true,scard.destg,scard.desop)
 end
 scard.duel_masters_card=true
 scard.destg=dm.CheckCardFunction(Card.IsFaceup,DM_LOCATION_BZONE,0)

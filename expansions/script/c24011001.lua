@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_DEVIL_MASK))
 	--destroy
-	dm.AddTriggerEffectCustom(c,0,DM_EVENT_UNTAP_STEP,nil,nil,scard.desop,EFFECT_FLAG_CARD_TARGET)
+	dm.AddTriggerEffect(c,0,DM_EVENT_UNTAP_STEP,nil,nil,scard.desop,EFFECT_FLAG_CARD_TARGET)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end

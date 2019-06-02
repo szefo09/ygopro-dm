@@ -9,7 +9,7 @@ function scard.initial_effect(c)
 	--speed attacker
 	dm.EnableEffectCustom(c,DM_EFFECT_SPEED_ATTACKER)
 	--to mana
-	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,nil,nil,scard.tmop,nil,scard.abcon(DM_CIVILIZATION_NATURE))
+	dm.AddSingleTriggerEffect(c,0,DM_EVENT_COME_INTO_PLAY,nil,nil,scard.tmop,nil,scard.abcon(DM_CIVILIZATION_NATURE))
 	--cannot be blocked
 	dm.EnableCannotBeBlocked(c,nil,scard.abcon(DM_CIVILIZATION_WATER))
 	dm.AddEffectDescription(c,2,scard.abcon(DM_CIVILIZATION_WATER))

@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--discard
-	dm.AddTriggerEffectCustom(c,0,EVENT_PHASE+PHASE_END,nil,nil,dm.DiscardOperation(nil,aux.TRUE,0,LOCATION_HAND),nil,scard.dhcon)
+	dm.AddTriggerEffect(c,0,EVENT_PHASE+PHASE_END,nil,nil,dm.DiscardOperation(nil,aux.TRUE,0,LOCATION_HAND),nil,scard.dhcon)
 	if not scard.global_check then
 		scard.global_check=true
 		scard[0]=0

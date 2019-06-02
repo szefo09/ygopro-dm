@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_CYBER_VIRUS))
 	--draw
-	dm.AddTriggerEffectCustom(c,0,EVENT_DRAW,true,scard.drtg,scard.drop,nil,scard.drcon)
+	dm.AddTriggerEffect(c,0,EVENT_DRAW,true,scard.drtg,scard.drop,nil,scard.drcon)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_CYBER_VIRUS,DM_RACE_CYBER}
