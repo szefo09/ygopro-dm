@@ -4,8 +4,8 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--search (to hand)
-	dm.AddSingleUnblockedAttackTriggerEffect(c,0,nil,nil,scard.thop,nil,scard.thcon)
+	dm.AddSingleTriggerEffectCustom(c,0,EVENT_BATTLE_CONFIRM,nil,nil,scard.thop,nil,scard.thcon)
 end
 scard.duel_masters_card=true
-scard.thcon=dm.AttackPlayerCondition
+scard.thcon=aux.AND(dm.UnblockedCondition,dm.AttackPlayerCondition)
 scard.thop=dm.SendtoHandOperation(PLAYER_SELF,Card.IsSpell,LOCATION_DECK,0,0,1,true)

@@ -863,6 +863,7 @@ function Duel.DMSendtoGrave(targets,reason)
 		if tc:IsCanSourceLeave() then targets:Merge(g) end
 		if tc:IsLocation(LOCATION_REMOVED) and tc:IsFacedown() then
 			--workaround to banish a banished card
+			--Note: Remove this if YGOPro can flip a face-down banished card face-down
 			if Duel.SendtoHand(tc,PLAYER_OWNER,REASON_RULE+REASON_TEMPORARY)>0 then
 				Duel.ConfirmCards(1-tc:GetControler(),tc)
 			end
@@ -1780,7 +1781,9 @@ end
 --code: EVENT_DESTROYED for "When this creature is destroyed" (e.g. "Bombersaur" DM-02 36/55)
 --code: EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED for "Whenever this creature becomes blocked" (e.g. "Avalanche Giant" DM-05 S5/S5)
 --code: EVENT_BE_BATTLE_TARGET for "Whenever this creature is attacked" (e.g. "Scalpel Spider" DM-07 32/55)
+--code: EVENT_BATTLE_CONFIRM for "Whenever this creature is attacking and isn't blocked" (e.g. "Balesk Baj, the Timeburner" DM-09 4/55)
 --con_func: dm.SelfBlockCondition for "Whenever this creature blocks" (e.g. "Spiral Grass" DM-02 10/55)
+--con_func: dm.UnblockedCondition for "Whenever this creature is attacking and isn't blocked" (e.g. "Balesk Baj, the Timeburner" DM-09 4/55)
 function Auxiliary.AddSingleTriggerEffectCustom(c,desc_id,code,optional,targ_func,op_func,prop,con_func)
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local prop=prop or 0
@@ -1801,13 +1804,18 @@ end
 --code: DM_EVENT_COME_INTO_PLAY for "Whenever another creature is put into the battle zone" (e.g. "Mist Rias, Sonic Guardian" DM-04 13/55)
 --code: EVENT_DESTROYED for "Whenever another creature is destroyed" (e.g. "Mongrel Man" DM-04 33/55)
 --code: DM_EVENT_TO_GRAVE for "Whenever a card is put into your graveyard" (e.g. "Snork La, Shrine Guardian" DM-05 13/55)
+--code: DM_EVENT_SUMMON for "Whenever a player summons a creature" (e.g. "Aqua Rider" DM-06 31/110)
+--code: EVENT_DRAW for "Whenever a player draws a card" (e.g. "Cosmic Nebula" DM-07 S2/S5)
 --code: EVENT_ATTACK_ANNOUNCE for "Whenever any of your creatures attacks" (e.g. "Thrumiss, Zephyr Guardian" DM-08 15/55)
 --code: DM_EVENT_BATTLE_END for "Whenever one of your creatures blocks" (e.g. "Agira, the Warlord Crawler" DM-12 16/55)
+--code: EVENT_BATTLE_CONFIRM for "Whenever any of your creatures is attacking and isn't blocked" (e.g. "Nemonex, Bajula's Robomantis" DM-12 19/55)
 --code: EVENT_BE_BATTLE_TARGET for "Whenever your creatures are attacked" (e.g. "Polaris, the Oracle" DM-13 21/55)
 --code: DM_EVENT_UNTAP_STEP for "At the start of the turn" (e.g. "Altimeth, Holy Divine Dragon" Game Original)
 --code: EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD for "Whenever this creature breaks a shield" (e.g. "Bolblaze Dragon" Game Original)
 --con_func: dm.EnterGraveCondition for "Whenever a card is put into your graveyard" (e.g. "Snork La, Shrine Guardian" DM-05 13/55)
+--con_func: dm.PlayerSummonCreatureCondition for "Whenever a player summons a creature" (e.g. "Aqua Rider" DM-06 31/110)
 --con_func: dm.BlockCondition for "Whenever one of your creatures blocks" (e.g. "Agira, the Warlord Crawler" DM-12 16/55)
+--con_func: dm.UnblockedCondition for "Whenever any of your creatures is attacking and isn't blocked" (e.g. "Nemonex, Bajula's Robomantis" DM-12 19/55)
 function Auxiliary.AddTriggerEffectCustom(c,desc_id,code,optional,targ_func,op_func,prop,con_func,count)
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local prop=prop or 0
@@ -1852,41 +1860,9 @@ function Auxiliary.AddSingleGrantEffectCustom(c,desc_id,code,optional,targ_func1
 	e2:SetLabelObject(e1)
 	c:RegisterEffect(e2)
 end
---"Whenever a player summons a creature, ABILITY."
---e.g. "Aqua Rider" (DM-06 31/110)
-function Auxiliary.AddPlayerSummonCreatureTriggerEffect(c,desc_id,p,optional,targ_func,op_func,prop)
-	--p: PLAYER_SELF if you summon, PLAYER_OPPO if your opponent does, or nil if either player does
-	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	e1:SetType(EFFECT_TYPE_FIELD+typ)
-	e1:SetCode(DM_EVENT_SUMMON)
-	if typ==EFFECT_TYPE_TRIGGER_O and prop then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY+prop)
-	elseif typ==EFFECT_TYPE_TRIGGER_O then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DELAY)
-	elseif prop then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+prop)
-	end
-	e1:SetRange(DM_LOCATION_BZONE)
-	e1:SetCondition(Auxiliary.PlayerSummonCreatureCondition(p))
-	if targ_func then e1:SetTarget(targ_func) end
-	e1:SetOperation(op_func)
-	c:RegisterEffect(e1)
-end
-function Auxiliary.PlayerSummonCreatureCondition(p)
-	return	function(e,tp,eg,ep,ev,re,r,rp)
-				local sumplayer=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
-				local f=function(c,sp)
-					if not c:IsSummonType(DM_SUMMON_TYPE_NORMAL) then return false end
-					return sp and c:GetSummonPlayer()==sp
-				end
-				return eg:IsExists(f,1,nil,sumplayer)
-			end
-end
 --"Whenever a player uses the "shield trigger" ability of one of their shields, ABILITY."
 --e.g. "Emperor Quazla" (DM-08 S2/S5), "Glena Vuele, the Hypnotic" (DM-09 1/55)
-function Auxiliary.AddPlayerUseShieldTriggerEffect(c,desc_id,p,optional,targ_func,op_func)
+function Auxiliary.AddTriggerEffectPlayerUseShieldTrigger(c,desc_id,p,optional,targ_func,op_func)
 	--p: PLAYER_SELF if you use "shield trigger", PLAYER_OPPO if your opponent does, or nil if either player does
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
@@ -1931,7 +1907,7 @@ function Auxiliary.STChainSolvedOperation(p)
 end
 --"Whenever a player casts a spell, ABILITY."
 --e.g. "Natalia, Channeler of Suns" (Game Original)
-function Auxiliary.AddPlayerCastSpellTriggerEffect(c,desc_id,p,f,optional,targ_func,op_func,prop)
+function Auxiliary.AddTriggerEffectPlayerCastSpell(c,desc_id,p,f,optional,targ_func,op_func,prop)
 	--p: PLAYER_SELF if you cast a spell, PLAYER_OPPO if your opponent does, or nil if either player does
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
@@ -1985,61 +1961,6 @@ function Auxiliary.AddAttackCost(c,cost_func,op_func)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(EFFECT_ATTACK_COST)
 	e1:SetCost(cost_func)
-	e1:SetOperation(op_func)
-	c:RegisterEffect(e1)
-end
---"Whenever you draw a card, ABILITY."
---"Whenever your opponent draws a card, ABILITY."
---e.g. "Cosmic Nebula" (DM-07 S2/S5), "Asteria, Spirit of Heaven's Blessing" (DM-13 7/55)
-function Auxiliary.AddPlayerDrawTriggerEffect(c,desc_id,p,optional,targ_func,op_func,prop,con_func)
-	--p: PLAYER_SELF if you draw a card, PLAYER_OPPO if your opponent does, or nil if either player does
-	local con_func=con_func or aux.TRUE
-	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	e1:SetType(EFFECT_TYPE_FIELD+typ)
-	e1:SetCode(EVENT_DRAW)
-	if typ==EFFECT_TYPE_TRIGGER_O and prop then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY+prop)
-	elseif typ==EFFECT_TYPE_TRIGGER_O then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY)
-	elseif prop then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
-	end
-	e1:SetRange(DM_LOCATION_BZONE)
-	e1:SetCondition(aux.AND(Auxiliary.EventPlayerCondition(p),con_func))
-	if targ_func then e1:SetTarget(targ_func) end
-	e1:SetOperation(op_func)
-	c:RegisterEffect(e1)
-end
---"Whenever this creature is attacking and isn't blocked, ABILITY."
---e.g. "Balesk Baj, the Timeburner" (DM-09 4/55)
-function Auxiliary.AddSingleUnblockedAttackTriggerEffect(c,desc_id,optional,targ_func,op_func,prop,con_func)
-	local con_func=con_func or aux.TRUE
-	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	e1:SetType(EFFECT_TYPE_SINGLE+typ)
-	e1:SetCode(EVENT_BATTLE_CONFIRM)
-	if prop then e1:SetProperty(prop) end
-	e1:SetCondition(aux.AND(Auxiliary.UnblockedCondition,con_func))
-	if targ_func then e1:SetTarget(targ_func) end
-	e1:SetOperation(op_func)
-	c:RegisterEffect(e1)
-end
---"Whenever any of your creatures is attacking and isn't blocked, ABILITY."
---e.g. "Nemonex, Bajula's Robomantis" (DM-12 19/55)
-function Auxiliary.AddUnblockedAttackTriggerEffect(c,desc_id,optional,targ_func,op_func,prop,con_func)
-	local con_func=con_func or aux.TRUE
-	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	e1:SetType(EFFECT_TYPE_FIELD+typ)
-	e1:SetCode(EVENT_BATTLE_CONFIRM)
-	if prop then e1:SetProperty(prop) end
-	e1:SetRange(DM_LOCATION_BZONE)
-	e1:SetCondition(aux.AND(Auxiliary.UnblockedCondition,con_func))
-	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
 end
@@ -3756,6 +3677,18 @@ function Auxiliary.NoHandCondition(p)
 			end
 end
 Auxiliary.nhcon=Auxiliary.NoHandCondition
+--condition to check which player summoned the summoned creature
+--e.g. "Aqua Rider" (DM-06 31/110)
+function Auxiliary.PlayerSummonCreatureCondition(p)
+	return	function(e,tp,eg,ep,ev,re,r,rp)
+				local sumplayer=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
+				local f=function(c,sp)
+					if not c:IsSummonType(DM_SUMMON_TYPE_NORMAL) then return false end
+					return sp and c:GetSummonPlayer()==sp
+				end
+				return eg:IsExists(f,1,nil,sumplayer)
+			end
+end
 --condition to check if a creature is attacking a player
 --e.g. "Solar Grass" (DM-08 14/55)
 function Auxiliary.AttackPlayerCondition(e,tp,eg,ep,ev,re,r,rp)
@@ -3881,11 +3814,13 @@ function Auxiliary.ShieldZoneFilter(f)
 			end
 end
 Auxiliary.szfilt=Auxiliary.ShieldZoneFilter
---filter to check if a card was put into the graveyard from a player's mana zone
+--filter to check if a card was put into the graveyard from the mana zone
+--Note: Remove this if YGOPro can flip a face-down banished card face-down
 function Auxiliary.PreviousLocationMZoneCheck(c)
 	return c:IsPreviousLocation(DM_LOCATION_MZONE)
 		or (c:IsPreviousLocation(LOCATION_HAND) and c:IsReason(REASON_TEMPORARY))
 end
+Auxiliary.plmzchk=Auxiliary.PreviousLocationMZoneCheck
 return Auxiliary
 --[[
 	References
