@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--slayer
 	dm.EnableSlayer(c)
 	--destroy replace (return)
-	dm.AddReplaceEffectSingleDestroy(c,0,scard.reptg,scard.repop)
+	dm.AddSingleReplaceEffectDestroy(c,0,scard.reptg,scard.repop)
 end
 scard.duel_masters_card=true
 scard.reptg=dm.SingleReplaceDestroyTarget(Card.IsAbleToHand)

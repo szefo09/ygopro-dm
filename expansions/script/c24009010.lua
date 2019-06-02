@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--destroy replace (return)
-	dm.AddReplaceEffectSingleDestroy(c,0,scard.reptg,scard.repop,scard.repcon)
+	dm.AddSingleReplaceEffectDestroy(c,0,scard.reptg,scard.repop,scard.repcon)
 end
 scard.duel_masters_card=true
 function scard.cfilter(c)

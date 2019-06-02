@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--destroy replace (return)
-	dm.AddReplaceEffectSingleDestroy(c,0,scard.reptg,scard.repop)
+	dm.AddSingleReplaceEffectDestroy(c,0,scard.reptg,scard.repop)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_LIQUID_PEOPLE}

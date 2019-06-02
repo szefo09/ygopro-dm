@@ -1673,7 +1673,7 @@ end
 
 --"When this creature would be destroyed, ABILITY."
 --e.g. "Chilias, the Oracle" (DM-01 1/110), "Coiling Vines" (DM-01 92/110), "Aless, the Oracle" (DM-03 2/55)
-function Auxiliary.AddReplaceEffectSingleDestroy(c,desc_id,targ_func,op_func,con_func)
+function Auxiliary.AddSingleReplaceEffectDestroy(c,desc_id,targ_func,op_func,con_func)
 	--targ_func: targ_func or Auxiliary.SingleReplaceDestroyTarget
 	--op_func: op_func or Auxiliary.SingleReplaceDestroyOperation
 	local e1=Effect.CreateEffect(c)

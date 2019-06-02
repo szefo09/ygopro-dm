@@ -7,7 +7,7 @@ function scard.initial_effect(c)
 	--must attack
 	dm.EnableEffectCustom(c,EFFECT_MUST_ATTACK)
 	--destroy replace (return)
-	dm.AddReplaceEffectSingleDestroy(c,0,scard.reptg,scard.repop)
+	dm.AddSingleReplaceEffectDestroy(c,0,scard.reptg,scard.repop)
 end
 scard.duel_masters_card=true
 scard.reptg=dm.SingleReplaceDestroyTarget(Card.IsAbleToHand)

@@ -9,7 +9,7 @@ function scard.initial_effect(c)
 	dm.EnableUpdatePower(c,4000,dm.WaveStrikerCondition)
 	dm.AddEffectDescription(c,2,dm.WaveStrikerCondition)
 	--wave striker (destroy replace) (return)
-	dm.AddReplaceEffectSingleDestroy(c,0,scard.reptg,scard.repop,dm.WaveStrikerCondition)
+	dm.AddSingleReplaceEffectDestroy(c,0,scard.reptg,scard.repop,dm.WaveStrikerCondition)
 end
 scard.duel_masters_card=true
 scard.reptg=dm.SingleReplaceDestroyTarget(Card.IsAbleToHand)

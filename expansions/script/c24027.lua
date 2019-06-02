@@ -11,7 +11,7 @@ function scard.initial_effect(c)
 	--get ability
 	dm.AddTriggerEffectCustom(c,0,EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD,true,nil,scard.abop,nil,scard.abcon)
 	--destroy replace (return)
-	dm.AddReplaceEffectSingleDestroy(c,1,scard.reptg,scard.repop)
+	dm.AddSingleReplaceEffectDestroy(c,1,scard.reptg,scard.repop)
 end
 scard.duel_masters_card=true
 --get ability
