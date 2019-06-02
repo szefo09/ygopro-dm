@@ -863,7 +863,9 @@ function Duel.DMSendtoGrave(targets,reason)
 		if tc:IsCanSourceLeave() then targets:Merge(g) end
 		if tc:IsLocation(LOCATION_REMOVED) and tc:IsFacedown() then
 			--workaround to banish a banished card
-			if Duel.SendtoHand(tc,PLAYER_OWNER,REASON_RULE)>0 then Duel.ConfirmCards(1-tc:GetControler(),tc) end
+			if Duel.SendtoHand(tc,PLAYER_OWNER,REASON_RULE+REASON_TEMPORARY)>0 then
+				Duel.ConfirmCards(1-tc:GetControler(),tc)
+			end
 		end
 		ct=ct+Duel.Remove(tc,POS_FACEUP,reason)
 	end
@@ -1774,9 +1776,11 @@ end
 --function for EFFECT_TYPE_SINGLE trigger abilities
 --code: DM_EVENT_COME_INTO_PLAY for "When you put this creature into the battle zone" (e.g. "Miele, Vizier of Lightning" DM-01 13/110)
 --code: EVENT_ATTACK_ANNOUNCE for "Whenever this creature attacks" (e.g. "Laguna, Lightning Enforcer" DM-02 4/55)
+--code: DM_EVENT_BATTLE_END for "Whenever this creature blocks" (e.g. "Spiral Grass" DM-02 10/55)
 --code: EVENT_DESTROYED for "When this creature is destroyed" (e.g. "Bombersaur" DM-02 36/55)
 --code: EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED for "Whenever this creature becomes blocked" (e.g. "Avalanche Giant" DM-05 S5/S5)
 --code: EVENT_BE_BATTLE_TARGET for "Whenever this creature is attacked" (e.g. "Scalpel Spider" DM-07 32/55)
+--con_func: dm.SelfBlockCondition for "Whenever this creature attacks" (e.g. "Laguna, Lightning Enforcer" DM-02 4/55)
 function Auxiliary.AddSingleTriggerEffectCustom(c,desc_id,code,optional,targ_func,op_func,prop,con_func)
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local prop=prop or 0
@@ -1793,166 +1797,60 @@ function Auxiliary.AddSingleTriggerEffectCustom(c,desc_id,code,optional,targ_fun
 	c:RegisterEffect(e1)
 end
 --function for EFFECT_TYPE_FIELD trigger abilities
+--code: EVENT_PHASE+PHASE_END for "At the end of the turn" (e.g. "Frei, Vizier of Air" DM-01 4/110)
 --code: DM_EVENT_COME_INTO_PLAY for "Whenever another creature is put into the battle zone" (e.g. "Mist Rias, Sonic Guardian" DM-04 13/55)
 --code: EVENT_DESTROYED for "Whenever another creature is destroyed" (e.g. "Mongrel Man" DM-04 33/55)
+--code: DM_EVENT_TO_GRAVE for "Whenever a card is put into your graveyard" (e.g. "Snork La, Shrine Guardian" DM-05 13/55)
 --code: EVENT_ATTACK_ANNOUNCE for "Whenever any of your creatures attacks" (e.g. "Thrumiss, Zephyr Guardian" DM-08 15/55)
+--code: DM_EVENT_BATTLE_END for "Whenever one of your creatures blocks" (e.g. "Agira, the Warlord Crawler" DM-12 16/55)
 --code: EVENT_BE_BATTLE_TARGET for "Whenever your creatures are attacked" (e.g. "Polaris, the Oracle" DM-13 21/55)
+--code: DM_EVENT_UNTAP_STEP for "At the start of the turn" (e.g. "Altimeth, Holy Divine Dragon" Game Original)
 --code: EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD for "Whenever this creature breaks a shield" (e.g. "Bolblaze Dragon" Game Original)
-function Auxiliary.AddTriggerEffectCustom(c,desc_id,code,optional,targ_func,op_func,prop,con_func)
+--con_func: dm.EnterGraveCondition for "Whenever a card is put into your graveyard" (e.g. "Snork La, Shrine Guardian" DM-05 13/55)
+--con_func: dm.BlockCondition for "Whenever one of your creatures blocks" (e.g. "Agira, the Warlord Crawler" DM-12 16/55)
+function Auxiliary.AddTriggerEffectCustom(c,desc_id,code,optional,targ_func,op_func,prop,con_func,count)
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local prop=prop or 0
 	if typ==EFFECT_TYPE_TRIGGER_O then prop=prop+EFFECT_FLAG_DELAY end
 	if code==EVENT_ATTACK_ANNOUNCE then prop=prop+DM_EFFECT_FLAG_CHAIN_LIMIT end
+	if code==EVENT_PHASE+PHASE_END or code==DM_EVENT_UNTAP_STEP then count=1 end
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_FIELD+typ)
 	e1:SetCode(code)
 	e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
 	e1:SetRange(DM_LOCATION_BZONE)
+	if count then e1:SetCountLimit(count) end
 	if con_func then e1:SetCondition(con_func) end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
 end
---"At the end of the turn, ABILITY."
---e.g. "Frei, Vizier of Air" (DM-01 4/110)
-function Auxiliary.AddTurnEndTriggerEffect(c,desc_id,p,optional,targ_func,op_func,con_func,prop)
-	--p: PLAYER_SELF for your turn, PLAYER_OPPO for your opponent's, or nil for either player's
-	local con_func=con_func or aux.TRUE
-	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	e1:SetType(EFFECT_TYPE_FIELD+typ)
-	e1:SetCode(EVENT_PHASE+PHASE_END)
-	if prop then e1:SetProperty(prop) end
-	e1:SetRange(DM_LOCATION_BZONE)
-	e1:SetCountLimit(1)
-	if p then
-		e1:SetCondition(aux.AND(Auxiliary.TurnPlayerCondition(p),con_func))
-	else
-		e1:SetCondition(con_func)
-	end
-	if targ_func then e1:SetTarget(targ_func) end
-	e1:SetOperation(op_func)
-	c:RegisterEffect(e1)
-end
---"Each of your creatures has "When you put this creature into the battle zone, ABILITY"."
---e.g. "Forbos, Sanctum Guardian Q" (DM-06 19/110) 
-function Auxiliary.AddStaticEffectSingleComeIntoPlay(c,desc_id,optional,targ_func1,op_func,s_range,o_range,targ_func2,prop)
+--function for EFFECT_TYPE_SINGLE static abilities
+--code: EVENT_ATTACK_ANNOUNCE for "Whenever this creature attacks" (e.g. "Split-Head Hydroturtle Q" DM-05 24/55)
+--code: DM_EVENT_COME_INTO_PLAY for "When you put this creature into the battle zone" (e.g. "Forbos, Sanctum Guardian Q" DM-06 19/110)
+function Auxiliary.AddSingleGrantEffectCustom(c,desc_id,code,optional,targ_func1,op_func,prop,s_range,o_range,targ_func2)
 	--targ_func1: include dm.HintTarget
-	local desc_id=desc_id or 0
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
+	local prop=prop or 0
+	if typ==EFFECT_TYPE_TRIGGER_O then prop=prop+EFFECT_FLAG_DELAY end
+	if code==EVENT_ATTACK_ANNOUNCE then prop=prop+DM_EFFECT_FLAG_CHAIN_LIMIT end
 	local s_range=s_range or LOCATION_ALL
 	local o_range=o_range or 0
-	local targ_func2=targ_func2 or aux.TRUE
-	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE+typ)
-	e1:SetCode(DM_EVENT_COME_INTO_PLAY)
-	if prop then e1:SetProperty(prop) end
+	e1:SetCode(code)
+	e1:SetProperty(prop)
 	if targ_func1 then e1:SetTarget(targ_func1) end
 	e1:SetOperation(op_func)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
 	e2:SetRange(DM_LOCATION_BZONE)
 	e2:SetTargetRange(s_range,o_range)
-	e2:SetTarget(targ_func2)
+	if targ_func2 then e2:SetTarget(targ_func2) end
 	e2:SetLabelObject(e1)
 	c:RegisterEffect(e2)
-end
---"Each of your creatures has "Whenever this creature attacks, ABILITY"."
---e.g. "Split-Head Hydroturtle Q" (DM-05 24/55)
-function Auxiliary.AddStaticEffectSingleAttackTrigger(c,desc_id,optional,targ_func1,op_func,s_range,o_range,targ_func2,prop)
-	--targ_func1: include dm.HintTarget
-	local desc_id=desc_id or 0
-	local s_range=s_range or LOCATION_ALL
-	local o_range=o_range or 0
-	local targ_func2=targ_func2 or aux.TRUE
-	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	e1:SetType(EFFECT_TYPE_SINGLE+typ)
-	e1:SetCode(EVENT_ATTACK_ANNOUNCE)
-	if prop then
-		e1:SetProperty(DM_EFFECT_FLAG_CHAIN_LIMIT+prop)
-	else
-		e1:SetProperty(DM_EFFECT_FLAG_CHAIN_LIMIT)
-	end
-	if targ_func1 then e1:SetTarget(targ_func1) end
-	e1:SetOperation(op_func)
-	local e2=Effect.CreateEffect(c)
-	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
-	e2:SetRange(DM_LOCATION_BZONE)
-	e2:SetTargetRange(s_range,o_range)
-	e2:SetTarget(targ_func2)
-	e2:SetLabelObject(e1)
-	c:RegisterEffect(e2)
-end
---"Whenever this creature blocks, ABILITY."
---e.g. "Spiral Grass" (DM-02 10/55)
-function Auxiliary.AddSingleBlockTriggerEffect(c,desc_id,optional,targ_func,op_func,prop,con_func)
-	local con_func=con_func or aux.TRUE
-	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	e1:SetType(EFFECT_TYPE_SINGLE+typ)
-	e1:SetCode(DM_EVENT_BATTLE_END)
-	if typ==EFFECT_TYPE_TRIGGER_O and prop then
-		e1:SetProperty(EFFECT_FLAG_DELAY+prop)
-	elseif typ==EFFECT_TYPE_TRIGGER_O then
-		e1:SetProperty(EFFECT_FLAG_DELAY)
-	elseif prop then
-		e1:SetProperty(prop)
-	end
-	e1:SetCondition(aux.AND(Auxiliary.SelfBlockCondition,con_func))
-	if targ_func then e1:SetTarget(targ_func) end
-	e1:SetOperation(op_func)
-	c:RegisterEffect(e1)
-end
---"Whenever one of your creatures blocks, ABILITY."
---e.g. "Agira, the Warlord Crawler" (DM-12 16/55)
-function Auxiliary.AddBlockTriggerEffect(c,desc_id,optional,targ_func,op_func,prop,con_func)
-	local con_func=con_func or aux.TRUE
-	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	e1:SetType(EFFECT_TYPE_FIELD+typ)
-	e1:SetCode(DM_EVENT_BATTLE_END)
-	if typ==EFFECT_TYPE_TRIGGER_O and prop then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY+prop)
-	elseif typ==EFFECT_TYPE_TRIGGER_O then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY)
-	elseif prop then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
-	end
-	e1:SetRange(DM_LOCATION_BZONE)
-	e1:SetCondition(aux.AND(Auxiliary.BlockCondition,con_func))
-	if targ_func then e1:SetTarget(targ_func) end
-	e1:SetOperation(op_func)
-	c:RegisterEffect(e1)
-end
---"Whenever a card is put into your graveyard, ABILITY."
---e.g. "Snork La, Shrine Guardian" (DM-05 13/55)
-function Auxiliary.AddEnterGraveTriggerEffect(c,desc_id,p,optional,targ_func,op_func,prop,con_func)
-	--p: PLAYER_SELF for your graveyard, PLAYER_OPPO for your opponent's, or nil for either player's
-	local con_func=con_func or aux.TRUE
-	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	e1:SetType(EFFECT_TYPE_FIELD+typ)
-	e1:SetCode(DM_EVENT_TO_GRAVE)
-	if typ==EFFECT_TYPE_TRIGGER_O and prop then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY+prop)
-	elseif typ==EFFECT_TYPE_TRIGGER_O then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+EFFECT_FLAG_DELAY)
-	elseif prop then
-		e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
-	end
-	e1:SetRange(DM_LOCATION_BZONE)
-	e1:SetCondition(aux.AND(Auxiliary.EnterGraveCondition(p),con_func))
-	if targ_func then e1:SetTarget(targ_func) end
-	e1:SetOperation(op_func)
-	c:RegisterEffect(e1)
 end
 --"Whenever a player summons a creature, ABILITY."
 --e.g. "Aqua Rider" (DM-06 31/110)
@@ -2163,28 +2061,6 @@ function Auxiliary.AddSingleLeaveBZoneTriggerEffect(c,desc_id,optional,targ_func
 		e1:SetProperty(prop)
 	end
 	e1:SetCondition(Auxiliary.PreviousLocationCondition(DM_LOCATION_BZONE),con_func)
-	if targ_func then e1:SetTarget(targ_func) end
-	e1:SetOperation(op_func)
-	c:RegisterEffect(e1)
-end
---"At the start of the turn, ABILITY."
---e.g. "Altimeth, Holy Divine Dragon" (Game Original)
-function Auxiliary.AddTurnStartTriggerEffect(c,desc_id,p,optional,targ_func,op_func,con_func,prop)
-	--p: PLAYER_SELF for your turn, PLAYER_OPPO for your opponent's, or nil for either player's
-	local con_func=con_func or aux.TRUE
-	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
-	e1:SetType(EFFECT_TYPE_FIELD+typ)
-	e1:SetCode(DM_EVENT_UNTAP_STEP)
-	if prop then e1:SetProperty(prop) end
-	e1:SetRange(DM_LOCATION_BZONE)
-	e1:SetCountLimit(1)
-	if p then
-		e1:SetCondition(aux.AND(Auxiliary.TurnPlayerCondition(p),con_func))
-	else
-		e1:SetCondition(con_func)
-	end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
 	c:RegisterEffect(e1)
@@ -4005,6 +3881,11 @@ function Auxiliary.ShieldZoneFilter(f)
 			end
 end
 Auxiliary.szfilt=Auxiliary.ShieldZoneFilter
+--filter to check if a card was put into the graveyard from a player's mana zone
+function Auxiliary.PreviousLocationMZoneCheck(c)
+	return c:IsPreviousLocation(DM_LOCATION_MANA)
+		or (c:IsPreviousLocation(LOCATION_HAND) and c:IsReason(REASON_TEMPORARY))
+end
 return Auxiliary
 --[[
 	References

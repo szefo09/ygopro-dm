@@ -5,7 +5,7 @@ function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--survivor (confirm) (to hand or to grave)
 	dm.AddSingleTriggerEffectCustom(c,0,EVENT_ATTACK_ANNOUNCE,nil,dm.HintTarget,scard.thop)
-	dm.AddStaticEffectSingleAttackTrigger(c,0,nil,dm.HintTarget,scard.thop,LOCATION_ALL,0,scard.thtg)
+	dm.AddSingleGrantEffectCustom(c,0,EVENT_ATTACK_ANNOUNCE,nil,dm.HintTarget,scard.thop,nil,LOCATION_ALL,0,scard.thtg)
 end
 scard.duel_masters_card=true
 function scard.thop(e,tp,eg,ep,ev,re,r,rp)

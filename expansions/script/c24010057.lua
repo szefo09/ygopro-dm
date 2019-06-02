@@ -4,9 +4,10 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--get ability
-	dm.AddTurnStartTriggerEffect(c,0,PLAYER_OPPO,nil,scard.abtg,scard.abop,nil,EFFECT_FLAG_CARD_TARGET)
+	dm.AddTriggerEffectCustom(c,0,DM_EVENT_UNTAP_STEP,nil,scard.abtg,scard.abop,EFFECT_FLAG_CARD_TARGET,scard.abcon)
 end
 scard.duel_masters_card=true
+scard.abcon=dm.TurnPlayerCondition(PLAYER_OPPO)
 function scard.abfilter(c)
 	return c:IsFaceup() and c:IsCanAttack()
 end

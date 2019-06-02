@@ -8,10 +8,11 @@ function scard.initial_effect(c)
 	--power up
 	dm.EnableUpdatePower(c,2000,nil,DM_LOCATION_BZONE,0,dm.TargetBoolFunctionExceptSelf(Card.DMIsRace,DM_RACE_WILD_VEGGIES,DM_RACE_RAINBOW_PHANTOM))
 	--untap
-	dm.AddTurnEndTriggerEffect(c,0,PLAYER_SELF,true,scard.postg,scard.posop)
+	dm.AddTriggerEffectCustom(c,0,EVENT_PHASE+PHASE_END,true,scard.postg,scard.posop,nil,scard.poscon)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_WILD_VEGGIES,DM_RACE_RAINBOW_PHANTOM}
+scard.poscon=dm.TurnPlayerCondition(PLAYER_SELF)
 function scard.posfilter(c)
 	return c:IsFaceup() and c:DMIsRace(DM_RACE_WILD_VEGGIES,DM_RACE_RAINBOW_PHANTOM) and c:IsAbleToUntap()
 end

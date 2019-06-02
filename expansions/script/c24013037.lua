@@ -9,14 +9,15 @@ function scard.initial_effect(c)
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 	--get ability
-	dm.AddSingleBlockTriggerEffect(c,0,nil,nil,scard.abop,nil,scard.abcon)
+	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_BATTLE_END,nil,nil,scard.abop,nil,scard.abcon)
 end
 scard.duel_masters_card=true
 function scard.cfilter(c)
 	return c:IsFaceup() and c:IsEvolution()
 end
 function scard.abcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.IsExistingMatchingCard(scard.cfilter,tp,0,DM_LOCATION_BZONE,1,nil)
+	return dm.SelfBlockCondition(e,tp,eg,ep,ev,re,r,rp)
+		and Duel.IsExistingMatchingCard(scard.cfilter,tp,0,DM_LOCATION_BZONE,1,nil)
 end
 function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

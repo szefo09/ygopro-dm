@@ -17,7 +17,7 @@ function scard.initial_effect(c)
 	e1:SetCondition(scard.regcon)
 	e1:SetOperation(scard.regop)
 	c:RegisterEffect(e1)
-	dm.AddTurnEndTriggerEffect(c,0,nil,nil,nil,dm.SelfDestroyOperation(),scard.descon)
+	dm.AddTriggerEffectCustom(c,0,EVENT_PHASE+PHASE_END,nil,nil,dm.SelfDestroyOperation(),nil,scard.descon)
 end
 scard.duel_masters_card=true
 function scard.regcon(e,tp,eg,ep,ev,re,r,rp)
