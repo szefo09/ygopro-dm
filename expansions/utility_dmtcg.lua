@@ -1780,7 +1780,7 @@ end
 --code: EVENT_DESTROYED for "When this creature is destroyed" (e.g. "Bombersaur" DM-02 36/55)
 --code: EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED for "Whenever this creature becomes blocked" (e.g. "Avalanche Giant" DM-05 S5/S5)
 --code: EVENT_BE_BATTLE_TARGET for "Whenever this creature is attacked" (e.g. "Scalpel Spider" DM-07 32/55)
---con_func: dm.SelfBlockCondition for "Whenever this creature attacks" (e.g. "Laguna, Lightning Enforcer" DM-02 4/55)
+--con_func: dm.SelfBlockCondition for "Whenever this creature blocks" (e.g. "Spiral Grass" DM-02 10/55)
 function Auxiliary.AddSingleTriggerEffectCustom(c,desc_id,code,optional,targ_func,op_func,prop,con_func)
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local prop=prop or 0
@@ -3883,7 +3883,7 @@ end
 Auxiliary.szfilt=Auxiliary.ShieldZoneFilter
 --filter to check if a card was put into the graveyard from a player's mana zone
 function Auxiliary.PreviousLocationMZoneCheck(c)
-	return c:IsPreviousLocation(DM_LOCATION_MANA)
+	return c:IsPreviousLocation(DM_LOCATION_MZONE)
 		or (c:IsPreviousLocation(LOCATION_HAND) and c:IsReason(REASON_TEMPORARY))
 end
 return Auxiliary
