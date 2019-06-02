@@ -1781,7 +1781,7 @@ function Auxiliary.AddSingleTriggerEffectCustom(c,desc_id,code,optional,targ_fun
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local prop=prop or 0
 	if typ==EFFECT_TYPE_TRIGGER_O then prop=prop+EFFECT_FLAG_DELAY end
-	if code==DM_EFFECT_FLAG_CHAIN_LIMIT then prop=prop+DM_EFFECT_FLAG_CHAIN_LIMIT end
+	if code==EVENT_ATTACK_ANNOUNCE then prop=prop+DM_EFFECT_FLAG_CHAIN_LIMIT end
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE+typ)
@@ -1802,7 +1802,7 @@ function Auxiliary.AddTriggerEffectCustom(c,desc_id,code,optional,targ_func,op_f
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local prop=prop or 0
 	if typ==EFFECT_TYPE_TRIGGER_O then prop=prop+EFFECT_FLAG_DELAY end
-	if code==DM_EFFECT_FLAG_CHAIN_LIMIT then prop=prop+DM_EFFECT_FLAG_CHAIN_LIMIT end
+	if code==EVENT_ATTACK_ANNOUNCE then prop=prop+DM_EFFECT_FLAG_CHAIN_LIMIT end
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_FIELD+typ)
