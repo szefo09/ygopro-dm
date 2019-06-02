@@ -9,11 +9,11 @@ function scard.initial_effect(c)
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 	--draw
-	dm.AddPlayerDrawTriggerEffect(c,0,PLAYER_OPPO,nil,nil,scard.drop,nil,scard.drcon)
+	dm.AddTriggerEffectCustom(c,0,EVENT_DRAW,nil,nil,scard.drop,nil,scard.drcon)
 end
 scard.duel_masters_card=true
 function scard.drcon(e,tp,eg,ep,ev,re,r,rp)
-	return r~=REASON_RULE
+	return ep~=tp and r~=REASON_RULE
 end
 function scard.drop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Draw(tp,eg:GetCount(),REASON_EFFECT)

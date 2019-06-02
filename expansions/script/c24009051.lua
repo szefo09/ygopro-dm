@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_BEAST_FOLK))
 	--get ability
-	dm.AddSingleAttackTriggerEffect(c,0,true,scard.abtg,scard.abop1,EFFECT_FLAG_CARD_TARGET)
+	dm.AddSingleTriggerEffectCustom(c,0,EVENT_ATTACK_ANNOUNCE,true,scard.abtg,scard.abop1,EFFECT_FLAG_CARD_TARGET)
 	--get ability
 	dm.AddSingleTriggerEffectCustom(c,1,EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED,nil,nil,scard.abop2)
 end

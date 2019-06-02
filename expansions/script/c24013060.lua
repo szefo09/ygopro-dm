@@ -7,7 +7,7 @@ function scard.initial_effect(c)
 	--sympathy (death puppet, beast folk)
 	dm.EnableSympathy(c,DM_RACE_DEATH_PUPPET,DM_RACE_BEAST_FOLK)
 	--cannot use shield trigger
-	dm.AddSingleAttackTriggerEffect(c,0,nil,nil,scard.regop)
+	dm.AddSingleTriggerEffectCustom(c,0,EVENT_ATTACK_ANNOUNCE,nil,nil,scard.regop)
 end
 scard.duel_masters_card=true
 function scard.regop(e,tp,eg,ep,ev,re,r,rp)

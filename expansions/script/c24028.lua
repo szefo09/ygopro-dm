@@ -7,7 +7,7 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--choose one (to grave or discard or destroy)
-	dm.AddSingleAttackTriggerEffect(c,0,true,scard.opttg,scard.optop)
+	dm.AddSingleTriggerEffectCustom(c,0,EVENT_ATTACK_ANNOUNCE,true,scard.opttg,scard.optop)
 	dm.AddSingleTriggerEffectCustom(c,0,EVENT_DESTROYED,true,scard.opttg,scard.optop)
 end
 scard.duel_masters_card=true

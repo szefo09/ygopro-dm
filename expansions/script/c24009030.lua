@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--discard, to grave
-	dm.AddPlayerCastSpellTriggerEffect(c,0,PLAYER_OPPO,nil,nil,nil,scard.dhop,EFFECT_FLAG_CARD_TARGET)
+	dm.AddTriggerEffectPlayerCastSpell(c,0,PLAYER_OPPO,nil,nil,nil,scard.dhop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 function scard.dhfilter(c,e)

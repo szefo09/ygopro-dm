@@ -5,9 +5,10 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--to mana
-	dm.AddTurnEndTriggerEffect(c,0,PLAYER_SELF,nil,nil,scard.tmop)
+	dm.AddTriggerEffectCustom(c,0,EVENT_PHASE+PHASE_END,nil,nil,scard.tmop,nil,scard.tmcon)
 end
 scard.duel_masters_card=true
+scard.tmcon=dm.TurnPlayerCondition(PLAYER_SELF)
 function scard.tmfilter(c)
 	return c:IsFaceup() and c:IsAbleToMana()
 end

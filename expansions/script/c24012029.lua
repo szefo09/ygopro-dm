@@ -4,14 +4,14 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--draw
-	dm.AddPlayerDrawTriggerEffect(c,0,PLAYER_SELF,true,scard.drtg,scard.drop,nil,scard.drcon)
+	dm.AddTriggerEffectCustom(c,0,EVENT_DRAW,true,scard.drtg,scard.drop,nil,scard.drcon)
 end
 scard.duel_masters_card=true
 function scard.drcon(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,DM_LOCATION_BZONE,DM_LOCATION_BZONE,nil)
 	if g:GetCount()==0 then return false end
 	local tg=g:GetMaxGroup(Card.GetPower)
-	return r==REASON_RULE and tg:IsExists(Card.IsControler,1,nil,tp)
+	return ep==tp and r==REASON_RULE and tg:IsExists(Card.IsControler,1,nil,tp)
 end
 scard.drtg=dm.DrawTarget(PLAYER_SELF)
 scard.drop=dm.DrawOperation(PLAYER_SELF,1)

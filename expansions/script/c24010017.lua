@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--blocker
 	dm.EnableBlocker(c)
 	--untap
-	dm.AddSingleBlockTriggerEffect(c,0,nil,scard.postg,scard.posop,EFFECT_FLAG_CARD_TARGET)
+	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_BATTLE_END,nil,scard.postg,scard.posop,EFFECT_FLAG_CARD_TARGET,dm.SelfBlockCondition)
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 end
