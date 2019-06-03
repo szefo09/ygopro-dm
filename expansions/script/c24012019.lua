@@ -18,4 +18,4 @@ function scard.tgcon(e,tp,eg,ep,ev,re,r,rp)
 		and a:IsControler(tp) and a:DMIsRace(DM_RACE_XENOPARTS,DM_RACE_GIANT_INSECT) and Duel.GetAttackTarget()==nil
 end
 scard.tgtg=dm.TargetCardFunction(PLAYER_OPPO,dm.ManaZoneFilter(Card.DMIsAbleToGrave),0,DM_LOCATION_MZONE,1,1,DM_HINTMSG_TOGRAVE)
-scard.tgop=dm.TargetSendtoGraveOperation
+scard.tgop=dm.TargetCardsOperation(Duel.DMSendtoGrave,REASON_EFFECT)

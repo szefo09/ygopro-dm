@@ -26,4 +26,4 @@ function scard.tgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local sg=g1:Select(1-tp,1,1,nil)
 	Duel.SetTargetCard(sg)
 end
-scard.tgop=dm.TargetSendtoGraveOperation
+scard.tgop=dm.TargetCardsOperation(Duel.DMSendtoGrave,REASON_EFFECT)

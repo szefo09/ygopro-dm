@@ -11,4 +11,4 @@ function scard.tmfilter(c)
 	return c:IsFaceup() and c:IsCivilization(DM_CIVILIZATIONS_WD) and c:IsAbleToMZone()
 end
 scard.tmtg=dm.TargetCardFunction(PLAYER_SELF,scard.tmfilter,0,DM_LOCATION_BZONE,1,1,DM_HINTMSG_TOMZONE)
-scard.tmop=dm.TargetSendtoMZoneOperation
+scard.tmop=dm.TargetCardsOperation(Duel.SendtoMZone,POS_FACEUP_UNTAPPED,REASON_EFFECT)

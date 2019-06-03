@@ -18,7 +18,7 @@ function scard.tgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.Hint(HINT_SELECTMSG,1-tp,DM_HINTMSG_TOGRAVE)
 	Duel.SelectTarget(1-tp,f,1-tp,DM_LOCATION_MZONE,0,eg:GetCount(),eg:GetCount(),nil)
 end
-scard.tgop=dm.TargetSendtoGraveOperation
+scard.tgop=dm.TargetCardsOperation(Duel.DMSendtoGrave,REASON_EFFECT)
 --[[
 	References
 		1. Performapal Sellshell Crab

@@ -13,7 +13,7 @@ function scard.desfilter(c)
 	return c:IsFaceup() and c:IsHasEffect(DM_EFFECT_BLOCKER)
 end
 scard.destg=dm.TargetCardFunction(PLAYER_SELF,scard.desfilter,DM_LOCATION_BZONE,DM_LOCATION_BZONE,1,1,DM_HINTMSG_DESTROY)
-scard.desop=dm.TargetDestroyOperation
+scard.desop=dm.TargetCardsOperation(Duel.Destroy,REASON_EFFECT)
 --[[
 	Notes
 		1. Script is based on the Japanese rules text

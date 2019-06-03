@@ -9,4 +9,4 @@ end
 scard.duel_masters_card=true
 scard.tgcon=aux.AND(dm.UnblockedCondition,dm.AttackPlayerCondition)
 scard.tgtg=dm.TargetCardFunction(PLAYER_OPPO,dm.ManaZoneFilter(Card.DMIsAbleToGrave),0,DM_LOCATION_MZONE,1,1,DM_HINTMSG_TOGRAVE)
-scard.tgop=dm.TargetSendtoGraveOperation
+scard.tgop=dm.TargetCardsOperation(Duel.DMSendtoGrave,REASON_EFFECT)

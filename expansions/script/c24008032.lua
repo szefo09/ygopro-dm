@@ -10,4 +10,4 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 scard.tgtg=dm.TargetCardFunction(PLAYER_SELF,dm.ShieldZoneFilter(Card.DMIsAbleToGrave),DM_LOCATION_SZONE,0,1,1,DM_HINTMSG_TOGRAVE)
-scard.tgop=dm.TargetSendtoGraveOperation
+scard.tgop=dm.TargetCardsOperation(Duel.DMSendtoGrave,REASON_EFFECT)

@@ -24,4 +24,4 @@ function scard.tgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.Hint(HINT_SELECTMSG,p,DM_HINTMSG_TOGRAVE)
 	Duel.SelectTarget(p,f,p,DM_LOCATION_MZONE,0,1,1,nil)
 end
-scard.tgop=dm.TargetSendtoGraveOperation
+scard.tgop=dm.TargetCardsOperation(Duel.DMSendtoGrave,REASON_EFFECT)

@@ -20,7 +20,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetCode(EVENT_ATTACK_ANNOUNCE)
 	e1:SetProperty(DM_EFFECT_FLAG_CHAIN_LIMIT+EFFECT_FLAG_CARD_TARGET)
 	e1:SetTarget(dm.TargetCardFunction(tp,scard.desfilter,DM_LOCATION_BZONE,DM_LOCATION_BZONE,1,1,DM_HINTMSG_DESTROY))
-	e1:SetOperation(dm.TargetDestroyOperation)
+	e1:SetOperation(dm.TargetCardsOperation(Duel.Destroy,REASON_EFFECT))
 	e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
 	c:RegisterEffect(e1)
 end

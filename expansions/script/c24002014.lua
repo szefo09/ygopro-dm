@@ -11,4 +11,4 @@ function scard.tdfilter(c)
 	return c:IsFaceup() and c:IsAbleToDeck()
 end
 scard.tdtg=dm.TargetCardFunction(PLAYER_SELF,scard.tdfilter,0,DM_LOCATION_BZONE,1,1,DM_HINTMSG_TODECK)
-scard.tdop=dm.TargetSendtoDeckOperation(DECK_SEQUENCE_TOP)
+scard.tdop=dm.TargetCardsOperation(Duel.SendtoDeck,PLAYER_OWNER,DECK_SEQUENCE_TOP,REASON_EFFECT)

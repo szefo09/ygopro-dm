@@ -8,4 +8,4 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 scard.destg=dm.TargetCardFunction(PLAYER_OPPO,Card.IsFaceup,0,DM_LOCATION_BZONE,1,1,DM_HINTMSG_DESTROY)
-scard.desop=dm.TargetDestroyOperation
+scard.desop=dm.TargetCardsOperation(Duel.Destroy,REASON_EFFECT)

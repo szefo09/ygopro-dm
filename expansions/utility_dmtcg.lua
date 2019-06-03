@@ -111,6 +111,10 @@ end
 function Card.IsShield(c)
 	return c:IsLocation(DM_LOCATION_SZONE) and c:GetSequence()<5
 end
+--check if a card is a broken shield
+function Card.IsBrokenShield(c)
+	return c:GetFlagEffect(DM_EFFECT_BROKEN_SHIELD)>0
+end
 --check if a card is untapped
 function Card.IsUntapped(c)
 	if c:IsLocation(LOCATION_GRAVE) then
@@ -149,14 +153,6 @@ function Card.IsAbleToTap(c)
 		return c:IsAttackPos()
 	else return false end
 end
---check if a card can be added to a player's shields face down
-function Card.IsAbleToSZone(c)
-	return true--not c:IsHasEffect(DM_EFFECT_CANNOT_TO_SZONE) --reserved
-end
---check if a card is a broken shield
-function Card.IsBrokenShield(c)
-	return c:GetFlagEffect(DM_EFFECT_BROKEN_SHIELD)>0
-end
 --check if a card is in the mana zone
 function Card.IsMana(c)
 	return (c:IsUntapped() or c:IsTapped()) and c:IsLocation(DM_LOCATION_MZONE)
@@ -164,6 +160,10 @@ end
 --check if a card is in the graveyard
 function Card.IsGrave(c)
 	return c:IsFaceup() and c:IsLocation(DM_LOCATION_GRAVE)
+end
+--check if a card can be added to a player's shields face down
+function Card.IsAbleToSZone(c)
+	return true--not c:IsHasEffect(DM_EFFECT_CANNOT_TO_SZONE) --reserved
 end
 --check if a spell can be cast for no cost
 function Card.IsCanCastFree(c)
@@ -3009,6 +3009,23 @@ function Auxiliary.SelfReturnOperation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SendtoHand(c,PLAYER_OWNER,REASON_EFFECT)
 	end
 end
+--operation function for abilities that targeted cards
+--f: Duel.Destroy to destroy cards
+--f: Duel.SendtoDeck to put cards into the deck
+--f: Duel.DMSendtoGrave to discard cards (REASON_DISCARD+REASON_EFFECT)
+--f: Duel.DMSendtoGrave to put cards into the graveyard
+--f: Duel.SendtoMZone to put cards into the mana zone
+--f: Duel.Tap to tap cards
+--f: Duel.Untap to untap cards
+function Auxiliary.TargetCardsOperation(f,...)
+	local ext_params={...}
+	return	function(e,tp,eg,ep,ev,re,r,rp)
+				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
+				if g:GetCount()>0 then
+					f(g,table.unpack(ext_params))
+				end
+			end
+end
 --Shield Break
 --operation function for abilities that break shields
 function Auxiliary.BreakOperation(sp,tgp,min,max,rc,ignore_breaker)
@@ -3102,13 +3119,6 @@ function Auxiliary.DestroyOperation(p,f,s,o,min,max,ram,ex,...)
 				end
 			end
 end
---operation function for abilities that target cards to destroy
-function Auxiliary.TargetDestroyOperation(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
-	if g:GetCount()>0 then
-		Duel.Destroy(g,REASON_EFFECT)
-	end
-end
 --Card Discard
 --operation function for abilities that discard cards
 function Auxiliary.DiscardOperation(p,f,s,o,min,max,ram,ex,...)
@@ -3136,13 +3146,6 @@ function Auxiliary.DiscardOperation(p,f,s,o,min,max,ram,ex,...)
 					Duel.DMSendtoGrave(g,REASON_EFFECT+REASON_DISCARD)
 				end
 			end
-end
---operation function for abilities that target cards to discard
-function Auxiliary.TargetDiscardOperation(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
-	if g:GetCount()>0 then
-		Duel.DMSendtoGrave(g,REASON_EFFECT+REASON_DISCARD)
-	end
 end
 --Card Draw
 --target and operation functions for abilities that draw a specified number of cards
@@ -3227,17 +3230,6 @@ function Auxiliary.TargetSendtoBZoneOperation(p,pos)
 				end
 			end
 end
---Deck Feed
---operation function for abilities that target cards to put into a player's deck
-function Auxiliary.TargetSendtoDeckOperation(seq)
-	--seq: where to put the cards (DECK_SEQUENCE_TOP|BOTTOM|SHUFFLE)
-	return	function(e,tp,eg,ep,ev,re,r,rp)
-				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
-				if g:GetCount()>0 then
-					Duel.SendtoDeck(g,PLAYER_OWNER,seq,REASON_EFFECT)
-				end
-			end
-end
 --Graveyard Feed
 --operation function for abilities that put cards into the graveyard
 function Auxiliary.SendtoGraveOperation(p,f,s,o,min,max,ex,...)
@@ -3261,13 +3253,6 @@ function Auxiliary.SendtoGraveOperation(p,f,s,o,min,max,ex,...)
 					Duel.DMSendtoGrave(g,REASON_EFFECT)
 				end
 			end
-end
---operation function for abilities that target cards to put into the graveyard
-function Auxiliary.TargetSendtoGraveOperation(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
-	if g:GetCount()>0 then
-		Duel.DMSendtoGrave(g,REASON_EFFECT)
-	end
 end
 --Put Into Hand
 --operation function for abilities that put cards into a player's hand
@@ -3352,13 +3337,6 @@ function Auxiliary.SendtoMZoneOperation(p,f,s,o,min,max,ex,...)
 					Duel.SendtoMZone(g,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 				end
 			end
-end
---operation function for abilities that target cards to put into the mana zone (untapped)
-function Auxiliary.TargetSendtoMZoneOperation(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
-	if g:GetCount()>0 then
-		Duel.SendtoMZone(g,POS_FACEUP_UNTAPPED,REASON_EFFECT)
-	end
 end
 --target and operation functions for abilities that put cards from the top of a player's deck into the mana zone (untapped)
 function Auxiliary.DecktopSendtoMZoneTarget(p)
@@ -3536,20 +3514,6 @@ function Auxiliary.UntapOperation(p,f,s,o,min,max,ram,ex,...)
 					Duel.Untap(g,REASON_EFFECT)
 				end
 			end
-end
---operation function for abilities that target cards to tap
-function Auxiliary.TargetTapOperation(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
-	if g:GetCount()>0 then
-		Duel.Tap(g,REASON_EFFECT)
-	end
-end
---operation function for abilities that target cards to untap
-function Auxiliary.TargetUntapOperation(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
-	if g:GetCount()>0 then
-		Duel.Untap(g,REASON_EFFECT)
-	end
 end
 
 --condition to check if the current phase is the battle phase

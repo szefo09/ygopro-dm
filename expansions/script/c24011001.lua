@@ -22,7 +22,7 @@ function scard.destg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.Hint(HINT_SELECTMSG,turnp,DM_HINTMSG_DESTROY)
 	Duel.SelectTarget(turnp,Card.IsFaceup,turnp,DM_LOCATION_BZONE,0,1,1,nil)
 end
-scard.desop=dm.TargetDestroyOperation
+scard.desop=dm.TargetCardsOperation(Duel.Destroy,REASON_EFFECT)
 ]]
 function scard.desfilter(c,e)
 	return c:IsFaceup() and c:IsCanBeEffectTarget(e)

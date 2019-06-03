@@ -9,4 +9,4 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 scard.tdtg=dm.TargetCardFunction(PLAYER_SELF,dm.DMGraveFilter(Card.IsAbleToDeck),DM_LOCATION_GRAVE,0,0,3,DM_HINTMSG_TODECK)
-scard.tdop=dm.TargetSendtoDeckOperation(DECK_SEQUENCE_SHUFFLE)
+scard.tdop=dm.TargetCardsOperation(Duel.SendtoDeck,PLAYER_OWNER,DECK_SEQUENCE_SHUFFLE,REASON_EFFECT)

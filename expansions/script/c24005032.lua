@@ -15,5 +15,5 @@ function scard.dhtg1(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.Hint(HINT_SELECTMSG,1-tp,DM_HINTMSG_DISCARD)
 	Duel.SelectTarget(1-tp,aux.TRUE,1-tp,LOCATION_HAND,0,1,1,nil)
 end
-scard.dhop=dm.TargetDiscardOperation
+scard.dhop=dm.TargetCardsOperation(Duel.DMSendtoGrave,REASON_EFFECT+REASON_DISCARD)
 scard.dhtg2=dm.TargetBoolFunctionExceptSelf(Card.DMIsRace,DM_RACE_SURVIVOR)
