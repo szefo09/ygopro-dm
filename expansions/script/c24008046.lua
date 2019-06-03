@@ -13,4 +13,4 @@ end
 function scard.tmcon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(scard.cfilter,1,e:GetHandler(),tp)
 end
-scard.tmop=dm.DecktopSendtoManaOperation(PLAYER_SELF,1)
+scard.tmop=dm.DecktopSendtoMZoneOperation(PLAYER_SELF,1)

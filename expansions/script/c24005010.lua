@@ -10,4 +10,4 @@ scard.duel_masters_card=true
 function scard.tmcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetManaCount(1-tp)>Duel.GetManaCount(tp)
 end
-scard.tmop=dm.DecktopSendtoManaOperation(PLAYER_SELF,1)
+scard.tmop=dm.DecktopSendtoMZoneOperation(PLAYER_SELF,1)

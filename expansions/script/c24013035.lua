@@ -39,5 +39,5 @@ function scard.repval(e,c)
 end
 function scard.repop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_CARD,0,sid)
-	Duel.SendtoMana(e:GetLabelObject(),POS_FACEUP_TAPPED,REASON_EFFECT+REASON_REPLACE)
+	Duel.SendtoMZone(e:GetLabelObject(),POS_FACEUP_TAPPED,REASON_EFFECT+REASON_REPLACE)
 end

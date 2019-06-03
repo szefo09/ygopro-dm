@@ -11,8 +11,8 @@ end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_COLONY_BEETLE}
 function scard.tmtg1(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsPlayerCanSendDecktoptoMana(tp,1) end
+	if chk==0 then return Duel.IsPlayerCanSendDecktoptoMZone(tp,1) end
 	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
 end
-scard.tmop=dm.DecktopSendtoManaOperation(PLAYER_SELF,1)
+scard.tmop=dm.DecktopSendtoMZoneOperation(PLAYER_SELF,1)
 scard.tmtg2=aux.TargetBoolFunction(Card.IsCivilization,DM_CIVILIZATION_NATURE)

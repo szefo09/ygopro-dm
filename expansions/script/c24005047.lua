@@ -22,10 +22,10 @@ function scard.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 scard.duel_masters_card=true
-scard.reptg=dm.SingleReplaceDestroyTarget(Card.IsAbleToMana)
+scard.reptg=dm.SingleReplaceDestroyTarget(Card.IsAbleToMZone)
 function scard.repop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	Duel.Hint(HINT_CARD,0,c:GetOriginalCode())
 	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
-	Duel.SendtoMana(c,POS_FACEUP_UNTAPPED,REASON_EFFECT+REASON_REPLACE)
+	Duel.SendtoMZone(c,POS_FACEUP_UNTAPPED,REASON_EFFECT+REASON_REPLACE)
 end

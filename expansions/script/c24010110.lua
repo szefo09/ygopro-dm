@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.SendDecktoptoMana(tp,1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
+	Duel.SendDecktoptoMZone(tp,1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 	Duel.BreakEffect()
-	Duel.SendDecktoptoShield(tp,1)
+	Duel.SendDecktoptoSZone(tp,1)
 end

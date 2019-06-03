@@ -15,7 +15,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetDescription(aux.Stringid(sid,0))
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
 	e1:SetCode(EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED)
-	e1:SetOperation(dm.BreakOperation(tp,1-tp,1,1,c))
+	e1:SetOperation(dm.BreakOperation(PLAYER_SELF,PLAYER_OPPO,1))
 	e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
 	c:RegisterEffect(e1)
 end

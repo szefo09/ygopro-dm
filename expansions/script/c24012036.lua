@@ -15,5 +15,5 @@ function scard.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function scard.repop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_CARD,0,sid)
-	Duel.SendtoBattle(e:GetHandler(),0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
+	Duel.SendtoBZone(e:GetHandler(),0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
 end

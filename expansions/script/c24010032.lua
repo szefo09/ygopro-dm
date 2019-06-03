@@ -8,20 +8,20 @@ function scard.initial_effect(c)
 	dm.EnableSilentSkill(c,0,scard.tstg,scard.tsop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
-scard.tstg=dm.CheckCardFunction(Card.IsAbleToShield,LOCATION_HAND,0)
+scard.tstg=dm.CheckCardFunction(Card.IsAbleToSZone,LOCATION_HAND,0)
 function scard.thfilter(c,e)
 	return c:IsAbleToHand() and c:IsCanBeEffectTarget(e)
 end
 function scard.tsop(e,tp,eg,ep,ev,re,r,rp)
 	--Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOSZONE)
-	--local g1=Duel.SelectMatchingCard(tp,Card.IsAbleToShield,tp,LOCATION_HAND,0,1,1,nil)
-	--if g1:GetCount()==0 or Duel.SendtoShield(g1)==0 then return end
+	--local g1=Duel.SelectMatchingCard(tp,Card.IsAbleToSZone,tp,LOCATION_HAND,0,1,1,nil)
+	--if g1:GetCount()==0 or Duel.SendtoSZone(g1)==0 then return end
 	--Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_ATOHAND)
 	--local g2=Duel.SelectMatchingCard(tp,dm.ShieldZoneFilter(scard.thfilter),tp,DM_LOCATION_SZONE,0,1,1,nil,e)
 	--if g2:GetCount()==0 then return end
 	--Duel.SetTargetCard(g2)
 	--Duel.SendtoHand(g2,PLAYER_OWNER,REASON_EFFECT)
-	local g=Duel.GetMatchingGroup(Card.IsAbleToShield,tp,LOCATION_HAND,0,nil)
+	local g=Duel.GetMatchingGroup(Card.IsAbleToSZone,tp,LOCATION_HAND,0,nil)
 	if g:GetCount()==0 then return end
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOSZONE)
 	local sg1=g:Select(tp,1,1,nil)
@@ -31,5 +31,5 @@ function scard.tsop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SetTargetCard(sg2)
 	Duel.SendtoHand(sg2,PLAYER_OWNER,REASON_EFFECT)
 	Duel.ShuffleHand(tp)
-	Duel.SendtoShield(sg1)
+	Duel.SendtoSZone(sg1)
 end

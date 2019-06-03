@@ -7,5 +7,5 @@ function scard.initial_effect(c)
 	dm.EnableTapAbility(c,0,scard.tmtg,scard.tmop)
 end
 scard.duel_masters_card=true
-scard.tmtg=dm.CheckCardFunction(dm.DMGraveFilter(Card.IsAbleToMana),DM_LOCATION_GRAVE,0)
-scard.tmop=dm.SendtoManaOperation(PLAYER_SELF,dm.DMGraveFilter(),DM_LOCATION_GRAVE,0,0,3)
+scard.tmtg=dm.CheckCardFunction(dm.DMGraveFilter(Card.IsAbleToMZone),DM_LOCATION_GRAVE,0)
+scard.tmop=dm.SendtoMZoneOperation(PLAYER_SELF,dm.DMGraveFilter(),DM_LOCATION_GRAVE,0,0,3)

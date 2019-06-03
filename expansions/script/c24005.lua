@@ -20,7 +20,7 @@ function scard.initial_effect(c)
 	dm.EnableTurnEndSelfUntap(c,1,scard.abcon(DM_CIVILIZATION_LIGHT))
 end
 scard.duel_masters_card=true
-scard.tmop=dm.DecktopSendtoManaOperation(PLAYER_SELF,1)
+scard.tmop=dm.DecktopSendtoMZoneOperation(PLAYER_SELF,1)
 function scard.cfilter(c,civ)
 	return c:IsFaceup() and c:IsCivilization(civ)
 end

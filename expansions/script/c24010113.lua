@@ -8,9 +8,9 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
-	local g1=Duel.GetMatchingGroup(Card.IsAbleToMana,tp,LOCATION_HAND,0,nil)
+	local g1=Duel.GetMatchingGroup(Card.IsAbleToMZone,tp,LOCATION_HAND,0,nil)
 	if g1:GetCount()==0 then return end
-	local ct=Duel.SendtoMana(g1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
+	local ct=Duel.SendtoMZone(g1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_RTOHAND)
 	local g2=Duel.SelectMatchingCard(tp,dm.ManaZoneFilter(Card.IsAbleToHand),tp,DM_LOCATION_MZONE,0,ct,ct,nil)
 	if g2:GetCount()==0 then return end

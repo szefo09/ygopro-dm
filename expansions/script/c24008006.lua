@@ -18,6 +18,6 @@ function scard.posop(e,tp,eg,ep,ev,re,r,rp)
 	if not tc or not tc:IsRelateToEffect(e) or not scard.posfilter(tc) then return end
 	Duel.Tap(tc,REASON_EFFECT)
 	if tc:DMIsRace(DM_RACE_DRAGON) then
-		Duel.SendDecktoptoShield(tp,1)
+		Duel.SendDecktoptoSZone(tp,1)
 	end
 end

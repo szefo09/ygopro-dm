@@ -11,7 +11,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.tmfilter(c)
-	return c:IsFaceup() and c:IsEvolution() and c:IsHasSource() and c:IsAbleToMana()
+	return c:IsFaceup() and c:IsEvolution() and c:IsHasSource() and c:IsAbleToMZone()
 end
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	local g1=Duel.GetMatchingGroup(scard.tmfilter,tp,DM_LOCATION_BZONE,DM_LOCATION_BZONE,nil)
@@ -24,7 +24,7 @@ function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 		for mc in aux.Next(mg) do
 			g2:AddCard(mc)
 		end
-		Duel.SendtoMana(tc1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
+		Duel.SendtoMZone(tc1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 		--workaround to keep stacked pile
 		local tc2=g2:GetFirst()
 		Duel.MoveToField(tc2,tp,tc1:GetControler(),DM_LOCATION_BZONE,pos,true)

@@ -13,7 +13,7 @@ function scard.retfilter(c)
 	return c:IsCreature() and c:IsAbleToHand()
 end
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.SendDecktoptoMana(tp,1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
+	Duel.SendDecktoptoMZone(tp,1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_RTOHAND)
 	local g=Duel.SelectMatchingCard(tp,dm.ManaZoneFilter(scard.retfilter),tp,DM_LOCATION_MZONE,0,1,1,nil)
 	if g:GetCount()==0 then return end

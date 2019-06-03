@@ -10,5 +10,5 @@ function scard.initial_effect(c)
 	dm.AddSingleReplaceEffectDestroy(c,1,scard.reptg,scard.repop)
 end
 scard.duel_masters_card=true
-scard.reptg=dm.SingleReplaceDestroyTarget(Card.IsAbleToMana)
-scard.repop=dm.SingleReplaceDestroyOperation(Duel.SendtoMana,POS_FACEUP_UNTAPPED,REASON_EFFECT+REASON_REPLACE)
+scard.reptg=dm.SingleReplaceDestroyTarget(Card.IsAbleToMZone)
+scard.repop=dm.SingleReplaceDestroyOperation(Duel.SendtoMZone,POS_FACEUP_UNTAPPED,REASON_EFFECT+REASON_REPLACE)

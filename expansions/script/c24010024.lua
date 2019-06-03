@@ -24,7 +24,7 @@ function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	local g2=Duel.SelectMatchingCard(tp,scard.tbfilter,tp,LOCATION_HAND,0,1,1,nil,e,tp,cost)
 	if g2:GetCount()==0 then return end
 	Duel.SetTargetCard(g2)
-	Duel.SendtoBattle(g2,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
+	Duel.SendtoBZone(g2,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
 end
 --[[
 	Notes

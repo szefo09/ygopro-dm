@@ -10,10 +10,10 @@ function scard.initial_effect(c)
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end
 scard.duel_masters_card=true
-scard.tstg=dm.CheckCardFunction(aux.OR(Card.IsAbleToShield,Card.IsAbleToMana),LOCATION_HAND,0)
+scard.tstg=dm.CheckCardFunction(aux.OR(Card.IsAbleToSZone,Card.IsAbleToMZone),LOCATION_HAND,0)
 function scard.tsop(e,tp,eg,ep,ev,re,r,rp)
-	local g1=Duel.GetMatchingGroup(Card.IsAbleToShield,tp,LOCATION_HAND,0,nil)
-	local g2=Duel.GetMatchingGroup(Card.IsAbleToMana,tp,LOCATION_HAND,0,nil)
+	local g1=Duel.GetMatchingGroup(Card.IsAbleToSZone,tp,LOCATION_HAND,0,nil)
+	local g2=Duel.GetMatchingGroup(Card.IsAbleToMZone,tp,LOCATION_HAND,0,nil)
 	if g1:GetCount()==0 and g2:GetCount()==0 then return end
 	local ops={}
 	local t={}
@@ -31,8 +31,8 @@ function scard.tsop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,desc)
 	local sg=g:Select(tp,1,1,nil)
 	if opt==1 then
-		Duel.SendtoShield(sg)
+		Duel.SendtoSZone(sg)
 	elseif opt==2 then
-		Duel.SendtoMana(sg,POS_FACEUP_UNTAPPED,REASON_EFFECT)
+		Duel.SendtoMZone(sg,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 	end
 end

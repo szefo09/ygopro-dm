@@ -35,7 +35,7 @@ function scard.tmcon2(e,tp,eg,ep,ev,re,r,rp)
 end
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_CARD,0,sid)
-	Duel.SendtoMana(e:GetLabelObject(),POS_FACEUP_UNTAPPED,REASON_EFFECT)
+	Duel.SendtoMZone(e:GetLabelObject(),POS_FACEUP_UNTAPPED,REASON_EFFECT)
 end
 --[[
 	References

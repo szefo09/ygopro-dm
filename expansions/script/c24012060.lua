@@ -24,7 +24,7 @@ function scard.tbop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetDecktopGroup(tp,1):GetFirst()
 	Duel.DisableShuffleCheck()
 	if tc:IsCreature() and not tc:IsEvolution() and tc:IsAbleToBZone(e,0,tp,false,false) then
-		Duel.SendtoBattle(tc,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
+		Duel.SendtoBZone(tc,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
 	else
 		Duel.SendtoHand(tc,PLAYER_OWNER,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,tc)

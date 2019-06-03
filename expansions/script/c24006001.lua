@@ -4,6 +4,6 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
 	--to shield
-	dm.AddSpellCastEffect(c,0,nil,dm.DecktopSendtoShieldUpToOperation(PLAYER_SELF,3))
+	dm.AddSpellCastEffect(c,0,nil,dm.DecktopSendtoSZoneUpToOperation(PLAYER_SELF,3))
 end
 scard.duel_masters_card=true

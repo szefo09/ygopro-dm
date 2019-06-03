@@ -10,4 +10,4 @@ scard.duel_masters_card=true
 function scard.tscon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetShieldCount(tp)>=5
 end
-scard.tsop=dm.DecktopSendtoShieldOperation(PLAYER_SELF,1)
+scard.tsop=dm.DecktopSendtoSZoneOperation(PLAYER_SELF,1)

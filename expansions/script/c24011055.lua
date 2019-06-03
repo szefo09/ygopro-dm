@@ -14,5 +14,5 @@ function scard.tgop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.DMSendtoGrave(tc,REASON_EFFECT)
 	end
 	Duel.BreakEffect()
-	Duel.SendDecktoptoMana(tp,1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
+	Duel.SendDecktoptoMZone(tp,1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 end

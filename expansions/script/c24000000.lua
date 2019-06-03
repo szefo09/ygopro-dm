@@ -72,9 +72,9 @@ function scard.operation(e,tp,eg,ep,ev,re,r,rp)
 	--set opponent's life
 	Duel.SetLP(1-tp,1)
 	--set your shields
-	Duel.SendDecktoptoShield(tp,5)
+	Duel.SendDecktoptoSZone(tp,5)
 	--set opponent's shields
-	Duel.SendDecktoptoShield(1-tp,5)
+	Duel.SendDecktoptoSZone(1-tp,5)
 	--draw your starting hand
 	Duel.Draw(tp,5,REASON_RULE)
 	--draw opponent's starting hand
@@ -392,11 +392,11 @@ end
 --charge
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	local turnp=Duel.GetTurnPlayer()
-	local g=Duel.GetMatchingGroup(Card.IsAbleToMana,turnp,LOCATION_HAND,0,nil)
+	local g=Duel.GetMatchingGroup(Card.IsAbleToMZone,turnp,LOCATION_HAND,0,nil)
 	if g:GetCount()==0 then return end
 	Duel.Hint(HINT_SELECTMSG,turnp,DM_HINTMSG_TOMZONE)
 	local sg=g:Select(turnp,0,1,nil)
-	Duel.SendtoMana(sg,POS_FACEUP_UNTAPPED,REASON_RULE)
+	Duel.SendtoMZone(sg,POS_FACEUP_UNTAPPED,REASON_RULE)
 end
 --summoning sickness
 function scard.attg(e,c)
@@ -427,10 +427,10 @@ function scard.tgop1(e,tp,eg,ep,ev,re,r,rp)
 	local rc=re:GetHandler()
 	if not rc:IsSpell() or not rc:IsLocation(LOCATION_HAND) or e:GetHandler():GetFlagEffect(1)==0 then return end
 	if re:IsHasCategory(DM_CATEGORY_SHIELD_TRIGGER) and Duel.IsPlayerAffectedByEffect(rp,DM_EFFECT_DONOT_DISCARD_SHIELD_TRIGGER) then return end
-	if (re:IsHasProperty(DM_EFFECT_FLAG_CHARGE) or rc:IsHasEffect(DM_EFFECT_CHARGER)) and rc:IsAbleToMana() then
-		Duel.SendtoMana(rc,POS_FACEUP_UNTAPPED,REASON_RULE)
-	elseif rc:IsHasEffect(DM_EFFECT_CHARGE_TAPPED) and rc:IsAbleToMana() then
-		Duel.SendtoMana(rc,POS_FACEUP_TAPPED,REASON_RULE)
+	if (re:IsHasProperty(DM_EFFECT_FLAG_CHARGE) or rc:IsHasEffect(DM_EFFECT_CHARGER)) and rc:IsAbleToMZone() then
+		Duel.SendtoMZone(rc,POS_FACEUP_UNTAPPED,REASON_RULE)
+	elseif rc:IsHasEffect(DM_EFFECT_CHARGE_TAPPED) and rc:IsAbleToMZone() then
+		Duel.SendtoMZone(rc,POS_FACEUP_TAPPED,REASON_RULE)
 	else
 		Duel.DMSendtoGrave(rc,REASON_RULE)
 	end

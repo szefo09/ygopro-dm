@@ -674,5 +674,5 @@ DECK_SEQUENCE_BOTTOM				=1		--seq=DECK_SEQUENCE_BOTTOM in Duel.SendtoDeck(target
 DECK_SEQUENCE_SHUFFLE				=2		--seq=DECK_SEQUENCE_SHUFFLE in Duel.SendtoDeck(targets, player, seq, reason)
 DECK_SEQUENCE_UNEXIST				=-2		--seq=DECK_SEQUENCE_UNEXIST in Duel.SendtoDeck(targets, player, seq, reason)
 --Zone (Location + Sequence)
-ZONE_ANY							=0xff	--zone=ZONE_ANY in Duel.SendtoBattle(targets, sumtype, sumplayer, target_player, nocheck, nolimit, pos, zone)
+ZONE_ANY							=0xff	--zone=ZONE_ANY in Duel.SendtoBZone(targets, sumtype, sumplayer, target_player, nocheck, nolimit, pos, zone)
 return DMTCG

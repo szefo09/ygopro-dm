@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.tmfilter(c,e)
-	return c:IsAbleToMana() and c:IsCanBeEffectTarget(e)
+	return c:IsAbleToMZone() and c:IsCanBeEffectTarget(e)
 end
 function scard.retfilter(c,e)
 	return c:IsAbleToHand() and c:IsCanBeEffectTarget(e)
@@ -21,7 +21,7 @@ function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	local sg=g1:FilterSelect(tp,scard.tmfilter,0,1,nil,e)
 	if sg:GetCount()>0 then
 		Duel.SetTargetCard(sg)
-		Duel.SendtoMana(sg,POS_FACEUP_UNTAPPED,REASON_EFFECT)
+		Duel.SendtoMZone(sg,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 	else
 		Duel.ShuffleHand(1-tp)
 		return

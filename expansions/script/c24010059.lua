@@ -16,9 +16,9 @@ end
 function scard.return_card(tp)
 	local g1=Duel.GetMatchingGroup(dm.ManaZoneFilter(Card.IsAbleToHand),tp,DM_LOCATION_MZONE,0,nil)
 	Duel.SendtoHand(g1,PLAYER_OWNER,REASON_EFFECT)
-	local g2=Duel.GetMatchingGroup(Card.IsAbleToMana,tp,LOCATION_HAND,0,nil)
+	local g2=Duel.GetMatchingGroup(Card.IsAbleToMZone,tp,LOCATION_HAND,0,nil)
 	g2:Sub(Duel.GetOperatedGroup())
-	Duel.SendtoMana(g2,POS_FACEUP_TAPPED,REASON_EFFECT)
+	Duel.SendtoMZone(g2,POS_FACEUP_TAPPED,REASON_EFFECT)
 end
 --[[
 	References

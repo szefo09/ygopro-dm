@@ -14,5 +14,5 @@ scard.duel_masters_card=true
 function scard.tbfilter(c)
 	return c:IsCode(CARD_OBSIDIAN_SCARAB)
 end
-scard.tbtg=dm.SendtoBattleTarget(dm.ManaZoneFilter(scard.tbfilter),DM_LOCATION_MZONE,0)
-scard.tbop=dm.SendtoBattleOperation(PLAYER_SELF,dm.ManaZoneFilter(scard.tbfilter),DM_LOCATION_MZONE,0,1)
+scard.tbtg=dm.SendtoBZoneTarget(dm.ManaZoneFilter(scard.tbfilter),DM_LOCATION_MZONE,0)
+scard.tbop=dm.SendtoBZoneOperation(PLAYER_SELF,dm.ManaZoneFilter(scard.tbfilter),DM_LOCATION_MZONE,0,1)

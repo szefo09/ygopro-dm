@@ -25,6 +25,6 @@ function scard.thop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.ConfirmCards(1-tp,tc)
 		Duel.ShuffleHand(tp)
 	else
-		Duel.SendtoMana(tc,POS_FACEUP_UNTAPPED,REASON_EFFECT)
+		Duel.SendtoMZone(tc,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 	end
 end

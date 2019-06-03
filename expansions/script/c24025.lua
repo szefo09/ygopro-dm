@@ -10,10 +10,10 @@ end
 scard.duel_masters_card=true
 scard.tmcon=dm.TurnPlayerCondition(PLAYER_SELF)
 function scard.tmfilter(c)
-	return c:IsFaceup() and c:IsAbleToMana()
+	return c:IsFaceup() and c:IsAbleToMZone()
 end
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(scard.tmfilter,tp,DM_LOCATION_BZONE,DM_LOCATION_BZONE,nil):RandomSelect(tp,1)
 	Duel.HintSelection(g)
-	Duel.SendtoMana(g,POS_FACEUP_UNTAPPED,REASON_EFFECT)
+	Duel.SendtoMZone(g,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 end
