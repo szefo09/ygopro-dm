@@ -5,7 +5,7 @@ function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_GIANT_INSECT))
-	--destroy replace (to mana)
+	--destroy replace (to mana zone)
 	dm.AddReplaceEffectDestroy(c,0,scard.reptg,scard.repop,scard.repval)
 end
 scard.duel_masters_card=true

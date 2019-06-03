@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--get ability
 	dm.AddTriggerEffect(c,0,DM_EVENT_UNTAP_STEP,true,nil,scard.abop)
-	--to shield
+	--to shield zone
 	dm.AddSingleTriggerEffectLeaveBZone(c,1,nil,nil,dm.DecktopSendtoSZoneOperation(PLAYER_SELF,1))
 	--tap
 	dm.AddSingleTriggerEffect(c,2,DM_EVENT_COME_INTO_PLAY,true,scard.postg,scard.posop)

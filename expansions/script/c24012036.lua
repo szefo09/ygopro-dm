@@ -3,7 +3,7 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
-	--discard replace (to battle)
+	--discard replace (to battle zone)
 	dm.AddSingleReplaceEffectDiscard(c,0,scard.reptg,scard.repop,dm.TurnPlayerCondition(PLAYER_OPPO))
 end
 scard.duel_masters_card=true

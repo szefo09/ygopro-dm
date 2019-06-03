@@ -5,7 +5,7 @@ function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
 	--shield trigger
 	dm.EnableShieldTrigger(c)
-	--to mana
+	--to mana zone
 	dm.AddSpellCastEffect(c,0,nil,scard.tmop)
 end
 scard.duel_masters_card=true

@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--speed attacker
 	dm.EnableEffectCustom(c,DM_EFFECT_SPEED_ATTACKER)
-	--to mana
+	--to mana zone
 	dm.AddSingleTriggerEffect(c,0,DM_EVENT_COME_INTO_PLAY,nil,nil,scard.tmop,nil,scard.abcon(DM_CIVILIZATION_NATURE))
 	--cannot be blocked
 	dm.EnableCannotBeBlocked(c,nil,scard.abcon(DM_CIVILIZATION_WATER))

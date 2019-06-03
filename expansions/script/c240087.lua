@@ -3,7 +3,7 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
-	--to mana
+	--to mana zone
 	dm.AddTriggerEffect(c,0,EVENT_ATTACK_ANNOUNCE,true,scard.tmtg,scard.tmop,EFFECT_FLAG_CARD_TARGET,scard.tmcon)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)

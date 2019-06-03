@@ -5,7 +5,7 @@ function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--power attacker
 	dm.EnablePowerAttacker(c,3000)
-	--to battle
+	--to battle zone
 	dm.AddSingleTriggerEffect(c,0,EVENT_DESTROYED,true,scard.tbtg,scard.tbop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true

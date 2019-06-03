@@ -7,7 +7,7 @@ function scard.initial_effect(c)
 	dm.EnablePowerAttacker(c,3000)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
-	--to battle
+	--to battle zone
 	dm.AddSingleTriggerEffect(c,0,EVENT_DESTROYED,true,scard.tbtg,scard.tbop)
 end
 scard.duel_masters_card=true

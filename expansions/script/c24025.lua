@@ -4,7 +4,7 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
-	--to mana
+	--to mana zone
 	dm.AddTriggerEffect(c,0,EVENT_PHASE+PHASE_END,nil,nil,scard.tmop,nil,scard.tmcon)
 end
 scard.duel_masters_card=true

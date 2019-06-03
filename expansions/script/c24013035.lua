@@ -7,7 +7,7 @@ function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
 	--shield trigger
 	dm.EnableShieldTrigger(c)
-	--send replace (to mana)
+	--send replace (to mana zone)
 	dm.AddSpellCastEffect(c,0,nil,scard.regop)
 end
 scard.duel_masters_card=true

@@ -3,7 +3,7 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
-	--survivor (destroy replace) (to mana)
+	--survivor (destroy replace) (to mana zone)
 	dm.AddSingleReplaceEffectDestroy(c,0,scard.reptg,scard.repop)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(sid,0))

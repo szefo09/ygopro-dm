@@ -5,7 +5,7 @@ function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
 	--shield trigger
 	dm.EnableShieldTrigger(c)
-	--destroy, confirm (to battle, to grave)
+	--destroy, confirm (to battle zone, to grave)
 	dm.AddSpellCastEffect(c,0,nil,scard.desop)
 end
 scard.duel_masters_card=true

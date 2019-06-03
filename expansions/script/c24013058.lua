@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	dm.EnableSympathy(c,DM_RACE_ANGEL_COMMAND,DM_RACE_ARMORED_DRAGON)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
-	--destroy replace (to shield)
+	--destroy replace (to shield zone)
 	dm.AddSingleReplaceEffectDestroy(c,0,scard.reptg,scard.repop)
 end
 scard.duel_masters_card=true
