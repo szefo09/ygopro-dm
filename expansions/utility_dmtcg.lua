@@ -3219,7 +3219,7 @@ function Auxiliary.TargetSendtoBZoneOperation(p,pos)
 				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
 				if g:GetCount()==0 then return end
 				for tc in aux.Next(g) do
-					Duel.SendtoBZone(g,0,player,tc:GetOwner(),false,false,pos)
+					Duel.SendtoBZone(tc,0,player,tc:GetOwner(),false,false,pos)
 				end
 			end
 end
