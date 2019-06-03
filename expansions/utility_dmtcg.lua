@@ -3205,9 +3205,13 @@ function Auxiliary.SendtoBZoneOperation(p,f,s,o,min,max,pos,ex,...)
 				if min and max then
 					Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOBZONE)
 					local sg=g:Select(player,min,max,ex,table.unpack(funs))
-					Duel.SendtoBZone(sg,0,player,player,false,false,pos)
+					for sc in aux.Next(sg) do
+						Duel.SendtoBZone(sc,0,player,sc:GetOwner(),false,false,pos)
+					end
 				else
-					Duel.SendtoBZone(g,0,player,player,false,false,pos)
+					for tc in aux.Next(g) do
+						Duel.SendtoBZone(tc,0,player,tc:GetOwner(),false,false,pos)
+					end
 				end
 			end
 end
