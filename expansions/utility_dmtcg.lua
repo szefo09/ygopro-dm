@@ -151,7 +151,7 @@ function Card.IsAbleToTap(c)
 end
 --check if a card can be added to a player's shields face down
 function Card.IsAbleToSZone(c)
-	return true--not c:IsHasEffect(DM_EFFECT_CANNOT_TO_SHIELD) --reserved
+	return true--not c:IsHasEffect(DM_EFFECT_CANNOT_TO_SZONE) --reserved
 end
 --check if a card is a broken shield
 function Card.IsBrokenShield(c)
@@ -3065,7 +3065,7 @@ function Auxiliary.DecktopConfirmOperation(p,ct)
 	--p: the player whose cards to look at (PLAYER_SELF or PLAYER_OPPO)
 	--ct: the number of cards to look at
 	return	function(e,tp,eg,ep,ev,re,r,rp)
-				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp) or (p==PLAYER_ALL and tp)
+				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
 				local g=Duel.GetDecktopGroup(player,ct)
 				if g:GetCount()==0 then return end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
@@ -3212,15 +3212,14 @@ function Auxiliary.SendtoBZoneOperation(p,f,s,o,min,max,pos,ex,...)
 			end
 end
 --operation function for abilities that target creatures to put into the battle zone
-function Auxiliary.TargetSendtoBZoneOperation(sump,tgp,pos)
-	--sump: the player who puts the creature into the battle zone (PLAYER_SELF or PLAYER_OPPO)
-	--tgp: the player whose battle zone to put the creature into (PLAYER_SELF or PLAYER_OPPO)
+function Auxiliary.TargetSendtoBZoneOperation(p,pos)
+	--p: the player who puts the creature into the battle zone (PLAYER_SELF or PLAYER_OPPO)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
-				local sumplayer=(sump==PLAYER_SELF and tp) or (sump==PLAYER_OPPO and 1-tp)
-				local target_player=(tgp==PLAYER_SELF and tp) or (tgp==PLAYER_OPPO and 1-tp)
+				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
 				local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
-				if g:GetCount()>0 then
-					Duel.SendtoBZone(g,0,sumplayer,target_player,false,false,pos)
+				if g:GetCount()==0 then return end
+				for tc in aux.Next(g) do
+					Duel.SendtoBZone(g,0,player,tc:GetOwner(),false,false,pos)
 				end
 			end
 end
@@ -3403,7 +3402,7 @@ function Auxiliary.SendtoSZoneOperation(p,f,s,o,min,max,ex,...)
 				end
 				local og1=Duel.GetOperatedGroup():Filter(cffilter,nil,tp,LOCATION_GRAVE+LOCATION_REMOVED)
 				local og2=Duel.GetOperatedGroup():Filter(cffilter,nil,1-tp,LOCATION_GRAVE+LOCATION_REMOVED)
-				--show cards taken from the mana zone or discard pile by default
+				--show cards taken from the mana zone or graveyard by default
 				if og1:GetCount()>0 then Duel.ConfirmCards(1-tp,og1) end
 				if og2:GetCount()>0 then Duel.ConfirmCards(tp,og2) end
 			end
@@ -3417,7 +3416,7 @@ function Auxiliary.TargetSendtoSZoneOperation(e,tp,eg,ep,ev,re,r,rp)
 	end
 	local og1=Duel.GetOperatedGroup():Filter(cffilter,nil,tp,LOCATION_GRAVE+LOCATION_REMOVED)
 	local og2=Duel.GetOperatedGroup():Filter(cffilter,nil,1-tp,LOCATION_GRAVE+LOCATION_REMOVED)
-	--show cards taken from the mana zone or discard pile by default
+	--show cards taken from the mana zone or graveyard by default
 	if og1:GetCount()>0 then Duel.ConfirmCards(1-tp,og1) end
 	if og2:GetCount()>0 then Duel.ConfirmCards(tp,og2) end
 end
