@@ -12,7 +12,7 @@ function scard.initial_effect(c)
 	--get ability (attack untapped)
 	dm.EnableAttackUntapped(c,nil,nil,DM_LOCATION_BZONE,0,aux.TargetBoolFunction(Card.DMIsRace,DM_RACE_PHOENIX,DM_RACE_DRAGON))
 	--return
-	dm.AddSingleLeaveBZoneTriggerEffect(c,0,nil,nil,dm.SendtoHandOperation(nil,dm.DMGraveFilter(scard.retfilter),DM_LOCATION_GRAVE,0))
+	dm.AddSingleTriggerEffectLeaveBZone(c,0,nil,nil,dm.SendtoHandOperation(nil,dm.DMGraveFilter(scard.retfilter),DM_LOCATION_GRAVE,0))
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_FIRE_BIRD,DM_RACE_ARMORED_DRAGON,DM_RACE_DRAGON}

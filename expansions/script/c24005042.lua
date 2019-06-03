@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--saver (armored dragon)
-	dm.AddDestroyReplaceEffect(c,0,scard.savetg,scard.saveop,scard.saveval)
+	dm.AddReplaceEffectDestroy(c,0,scard.savetg,scard.saveop,scard.saveval)
 end
 scard.duel_masters_card=true
 function scard.savefilter(c,tp)

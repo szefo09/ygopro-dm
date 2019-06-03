@@ -6,6 +6,6 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--break replace (to grave)
-	dm.AddBreakShieldReplaceEffect(c,DM_LOCATION_GRAVE)
+	dm.AddReplaceEffectBreakShield(c,DM_LOCATION_GRAVE)
 end
 scard.duel_masters_card=true
