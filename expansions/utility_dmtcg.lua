@@ -3673,6 +3673,12 @@ function Auxiliary.SelfTappedCondition(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsTapped()
 end
 Auxiliary.stapcon=Auxiliary.SelfTappedCondition
+--condition of "While this creature is untapped"
+--e.g. "Ulex, the Dauntless" (DM-10 104/110)
+function Auxiliary.SelfUntappedCondition(e,tp,eg,ep,ev,re,r,rp)
+	return e:GetHandler():IsUntapped()
+end
+Auxiliary.suntcon=Auxiliary.SelfUntappedCondition
 --condition of "While all the cards in your mana zone are CIVILIZATION cards"
 --e.g. "Sparkle Flower" (DM-03 9/55)
 function Auxiliary.MZoneExclusiveCondition(f,...)

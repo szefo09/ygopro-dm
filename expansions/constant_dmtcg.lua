@@ -468,6 +468,7 @@ DM_EFFECT_SUMMON_PROC				=EFFECT_SPSUMMON_PROC			--Summon creature procedure
 DM_EFFECT_TO_GRAVE_REDIRECT			=EFFECT_REMOVE_REDIRECT			--Put a card into another zone instead of the graveyard
 DM_EFFECT_CANNOT_ATTACK_PLAYER		=EFFECT_CANNOT_DIRECT_ATTACK	--Cannot attack player
 DM_EFFECT_ATTACK_PLAYER				=EFFECT_DIRECT_ATTACK			--Attack player
+DM_EFFECT_CANNOT_BE_TAPPED			=EFFECT_CANNOT_CHANGE_POS_E		--Cannot be tapped by a player's spell or ability
 DM_EFFECT_UPDATE_POWER				=EFFECT_UPDATE_ATTACK			--Increase or decrease a creature's power
 DM_EFFECT_SET_POWER					=EFFECT_SET_ATTACK				--Creature's power becomes a particular value
 DM_EFFECT_UPDATE_PLAY_COST			=EFFECT_UPDATE_LEVEL			--Increase or decrease the cost required for playing a card
