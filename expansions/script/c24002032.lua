@@ -6,11 +6,6 @@ function scard.initial_effect(c)
 	--blocker
 	dm.EnableBlocker(c)
 	--destroy
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(sid,0))
-	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
-	e1:SetCode(EVENT_CUSTOM+DM_EVENT_ATTACK_PLAYER)
-	e1:SetOperation(dm.SelfDestroyOperation())
-	c:RegisterEffect(e1)
+	dm.AddSingleTriggerEffect(c,0,EVENT_CUSTOM+DM_EVENT_ATTACK_PLAYER,nil,nil,dm.SelfDestroyOperation())
 end
 scard.duel_masters_card=true
