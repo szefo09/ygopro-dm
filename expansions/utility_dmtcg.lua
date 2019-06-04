@@ -1201,12 +1201,13 @@ Auxiliary.race_value_list={
 --list of all existing mana costs for Duel.AnnounceNumber
 Auxiliary.mana_cost_list={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,20,24,25,30,39,40,50,71,99,999,DM_MAX_MANA_COST}
 --cast a spell immediately for no cost
-function Duel.CastFree(targets)
+function Duel.CastFree(targets,player,reason)
+	--player: the player who casts the spell
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
 	local ct=0
 	for tc in aux.Next(targets) do
 		Duel.DisableShuffleCheck(true)
-		Duel.SendtoHand(tc,PLAYER_OWNER,REASON_RULE)
+		Duel.SendtoHand(tc,player,reason)
 		Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_CAST_FREE,tc:GetReasonEffect(),0,0,0,0)
 		Duel.DisableShuffleCheck(false)
 		ct=ct+1
