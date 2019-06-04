@@ -4,15 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--discard, get ability
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(sid,0))
-	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
-	e1:SetCode(EVENT_BE_BATTLE_TARGET)
-	e1:SetRange(DM_LOCATION_BZONE)
-	e1:SetCondition(scard.dhcon)
-	e1:SetTarget(scard.dhtg)
-	e1:SetOperation(scard.dhop)
-	c:RegisterEffect(e1)
+	dm.AddTriggerEffect(c,0,EVENT_BE_BATTLE_TARGET,true,scard.dhtg,scard.dhop,nil,scard.dhcon)
 end
 scard.duel_masters_card=true
 function scard.dhcon(e,tp,eg,ep,ev,re,r,rp)

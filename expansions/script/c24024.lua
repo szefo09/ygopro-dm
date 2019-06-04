@@ -7,12 +7,6 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--untap
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(sid,0))
-	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
-	e1:SetCode(DM_EVENT_ATTACK_END)
-	e1:SetCondition(dm.SelfAttackerCondition)
-	e1:SetOperation(dm.SelfUntapOperation(true))
-	c:RegisterEffect(e1)
+	dm.AddSingleTriggerEffect(c,0,DM_EVENT_ATTACK_END,nil,dm.SelfAttackerCondition,dm.SelfUntapOperation(true))
 end
 scard.duel_masters_card=true

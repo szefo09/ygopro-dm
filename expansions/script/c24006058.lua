@@ -5,7 +5,7 @@ function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--survivor (return)
 	dm.AddSingleTriggerEffect(c,0,DM_EVENT_COME_INTO_PLAY,true,scard.rettg1,scard.retop)
-	dm.AddSingleGrantEffect(c,0,DM_EVENT_COME_INTO_PLAY,true,scard.rettg1,scard.retop,nil,LOCATION_ALL,0,scard.rettg2)
+	dm.AddSingleGrantTriggerEffect(c,0,DM_EVENT_COME_INTO_PLAY,true,scard.rettg1,scard.retop,nil,LOCATION_ALL,0,scard.rettg2)
 end
 scard.duel_masters_card=true
 function scard.retfilter(c)
