@@ -673,6 +673,8 @@ function Duel.Tap(targets,reason)
 				ct=ct+Duel.ChangePosition(tc,POS_FACEUP_TAPPED,reason)
 			elseif tc:IsLocation(LOCATION_GRAVE) then
 				ct=ct+Duel.Remove(tc,POS_FACEDOWN,reason)
+				Duel.RaiseSingleEvent(tc,EVENT_CHANGE_POS,Effect.GlobalEffect(),reason,0,0,0)
+				Duel.RaiseEvent(tc,EVENT_CHANGE_POS,Effect.GlobalEffect(),reason,0,0,0)
 			end
 		end
 	end
@@ -688,6 +690,8 @@ function Duel.Untap(targets,reason)
 				ct=ct+Duel.ChangePosition(tc,POS_FACEUP_UNTAPPED,reason)
 			elseif tc:IsLocation(LOCATION_REMOVED) then
 				ct=ct+Duel.SendtoGrave(tc,reason)
+				Duel.RaiseSingleEvent(tc,EVENT_CHANGE_POS,Effect.GlobalEffect(),reason,0,0,0)
+				Duel.RaiseEvent(tc,EVENT_CHANGE_POS,Effect.GlobalEffect(),reason,0,0,0)
 			end
 		end
 	end
@@ -969,7 +973,7 @@ function Duel.RandomDiscardHand(player,count,reason,ex)
 end
 --check if a player can untap the cards in their mana zone at the start of each of their turns
 function Duel.IsPlayerCanUntapStartStep(player)
-	return not Duel.IsPlayerAffectedByEffect(player,DM_EFFECT_CANNOT_UNTAP_START_STEP)
+	return not Duel.IsPlayerAffectedByEffect(player,DM_EFFECT_PLAYER_CANNOT_UNTAP_START_STEP)
 end
 --check if a player can use the "blocker" ability of their creatures
 function Duel.IsPlayerCanBlock(player)
@@ -1777,7 +1781,7 @@ end
 --code: EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED for "Whenever this creature becomes blocked" (e.g. "Avalanche Giant" DM-05 S5/S5)
 --code: EVENT_BE_BATTLE_TARGET for "Whenever this creature is attacked" (e.g. "Scalpel Spider" DM-07 32/55)
 --code: EVENT_BATTLE_CONFIRM for "Whenever this creature is attacking and isn't blocked" (e.g. "Balesk Baj, the Timeburner" DM-09 4/55)
---code: DM_EVENT_BATTLE_END for "after the battle" (e.g. "Bye Bye Amoeba" DM-13 40/55)
+--code: DM_EVENT_BATTLE_END for "after the battle [that includes this creature]" (e.g. "Bye Bye Amoeba" DM-13 40/55)
 --code: DM_EVENT_ATTACK_END for "after this creature attacks" (e.g. "Entropy Giant" Game Original)
 --con_func: dm.SelfBlockCondition for "Whenever this creature blocks" (e.g. "Spiral Grass" DM-02 10/55)
 --con_func: dm.UnblockedCondition for "Whenever this creature is attacking and isn't blocked" (e.g. "Balesk Baj, the Timeburner" DM-09 4/55)

@@ -376,6 +376,8 @@ function scard.posop1(e,tp,eg,ep,ev,re,r,rp)
 	local g2=Duel.GetMatchingGroup(dm.ManaZoneFilter(scard.posfilter2),turnp,DM_LOCATION_MZONE,0,nil)
 	g1:Merge(g2)
 	Duel.Untap(g1,REASON_RULE)
+	--raise event for "When each player untaps his cards at the start of his turn"
+	Duel.RaiseEvent(g1,EVENT_CUSTOM+DM_EVENT_UNTAP_START_STEP,e,0,0,0,0)
 end
 --check for creatures that did not use "silent skill"
 function scard.posfilter3(c)
@@ -388,6 +390,8 @@ end
 function scard.posop2(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(scard.posfilter3,Duel.GetTurnPlayer(),DM_LOCATION_BZONE,0,nil)
 	Duel.Untap(g,REASON_RULE)
+	--raise event for "When each player untaps his cards at the start of his turn"
+	Duel.RaiseEvent(g,EVENT_CUSTOM+DM_EVENT_UNTAP_START_STEP,e,0,0,0,0)
 end
 --charge
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
