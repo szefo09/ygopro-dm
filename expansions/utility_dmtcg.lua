@@ -446,6 +446,11 @@ Card.GetSourceCount=Card.GetOverlayCount
 --select a specified card from a group
 local group_filter_select=Group.FilterSelect
 function Group.FilterSelect(g,player,f,min,max,ex,...)
+	--check for "Whenever you would choose one of your opponent's shields, your opponent chooses instead."
+	if g:IsExists(aux.AND(Auxiliary.ShieldZoneFilter(Card.IsControler),f),1,nil,1-player)
+		and Duel.IsPlayerAffectedByEffect(1-player,DM_EFFECT_CHANGE_SHIELD_CHOOSE_PLAYER) then
+		player=1-player
+	end
 	--Note: Remove this if YGOPro can forbid players to look at their face-down cards
 	local sg1=g:Filter(Auxiliary.ShieldZoneFilter(f),ex,...)
 	local sg2=Group.CreateGroup()
@@ -464,6 +469,11 @@ end
 --select a card from a group
 local group_select=Group.Select
 function Group.Select(g,player,min,max,ex)
+	--check for "Whenever you would choose one of your opponent's shields, your opponent chooses instead."
+	if g:IsExists(Auxiliary.ShieldZoneFilter(Card.IsControler),1,nil,1-player)
+		and Duel.IsPlayerAffectedByEffect(1-player,DM_EFFECT_CHANGE_SHIELD_CHOOSE_PLAYER) then
+		player=1-player
+	end
 	--Note: Remove this if YGOPro can forbid players to look at their face-down cards
 	local sg1=g:Filter(Auxiliary.ShieldZoneFilter(),ex)
 	local sg2=Group.CreateGroup()
@@ -483,6 +493,11 @@ end
 --Note: Remove max_count if YGOPro can forbid players to look at their face-down cards
 local group_random_select=Group.RandomSelect
 function Group.RandomSelect(g,player,count,max_count)
+	--check for "Whenever you would choose one of your opponent's shields, your opponent chooses instead."
+	if g:IsExists(Auxiliary.ShieldZoneFilter(Card.IsControler),1,nil,1-player)
+		and Duel.IsPlayerAffectedByEffect(1-player,DM_EFFECT_CHANGE_SHIELD_CHOOSE_PLAYER) then
+		player=1-player
+	end
 	local ct=g:GetCount()
 	local max_count=max_count or count
 	if ct>0 then
@@ -634,6 +649,11 @@ end
 --Note: Shields are selected at random for abilities that select either player's shields
 local duel_select_matching_card=Duel.SelectMatchingCard
 function Duel.SelectMatchingCard(sel_player,f,player,s,o,min,max,ex,...)
+	--check for "Whenever you would choose one of your opponent's shields, your opponent chooses instead."
+	if sel_player==player and o==DM_LOCATION_SZONE
+		and Duel.IsPlayerAffectedByEffect(1-sel_player,DM_EFFECT_CHANGE_SHIELD_CHOOSE_PLAYER) then
+		sel_player=1-sel_player
+	end
 	if sel_player==player and s==DM_LOCATION_SZONE then
 		--Note: Remove this if YGOPro can forbid players to look at their face-down cards
 		local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(f),player,s,o,ex,...)
@@ -649,6 +669,11 @@ end
 --Note: Shields are selected at random for abilities that select either player's shields
 local duel_select_target=Duel.SelectTarget
 function Duel.SelectTarget(sel_player,f,player,s,o,min,max,ex,...)
+	--check for "Whenever you would choose one of your opponent's shields, your opponent chooses instead."
+	if sel_player==player and o==DM_LOCATION_SZONE
+		and Duel.IsPlayerAffectedByEffect(1-sel_player,DM_EFFECT_CHANGE_SHIELD_CHOOSE_PLAYER) then
+		sel_player=1-sel_player
+	end
 	if sel_player==player and s==DM_LOCATION_SZONE then
 		--Note: Remove this if YGOPro can forbid players to look at their face-down cards
 		local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(f),player,s,o,ex,...)
