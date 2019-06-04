@@ -726,6 +726,11 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason,ignore_br
 	--rc: the creature that breaks a shield
 	--reason: the reason for breaking a shield (generally REASON_EFFECT)
 	--ignore_breaker: true to not break a number of shields according to the breaker abilities a creature may have
+	--check for "Whenever an opponent's creature would break a shield, you choose the shield instead of your opponent."
+	if sel_player~=target_player and rc:IsCreature()
+		and Duel.IsPlayerAffectedByEffect(target_player,DM_EFFECT_CHANGE_SHIELD_BREAK_PLAYER) then
+		sel_player=target_player
+	end
 	local reason=reason or REASON_EFFECT
 	Duel.Tap(rc,REASON_RULE) --fix creature not being tapped when attacking
 	local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(),target_player,DM_LOCATION_SZONE,0,nil)
@@ -1442,10 +1447,7 @@ function Auxiliary.AttackShieldOperation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RaiseSingleEvent(c,EVENT_CUSTOM+DM_EVENT_ATTACK_PLAYER,e,0,0,0,0)
 	--raise event for "Whenever any of your creatures attacks a player"
 	--Duel.RaiseEvent(c,EVENT_CUSTOM+DM_EVENT_ATTACK_PLAYER,e,0,0,0,0) --reserved
-	local sel_player=tp
-	--check for "Whenever an opponent's creature would break a shield, you choose the shield instead of your opponent."
-	if Duel.IsPlayerAffectedByEffect(1-tp,DM_EFFECT_CHANGE_SHIELD_BREAK_PLAYER) then sel_player=1-tp end
-	Duel.BreakShield(e,sel_player,1-tp,1,1,c)
+	Duel.BreakShield(e,tp,1-tp,1,1,c)
 	--ignore yugioh rules
 	--no battle damage
 	local e1=Effect.CreateEffect(c)
