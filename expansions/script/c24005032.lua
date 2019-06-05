@@ -4,8 +4,8 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--survivor (discard)
-	dm.AddSingleTriggerEffectCustom(c,0,EVENT_ATTACK_ANNOUNCE,nil,scard.dhtg1,scard.dhop,EFFECT_FLAG_CARD_TARGET)
-	dm.AddSingleGrantEffectCustom(c,0,EVENT_ATTACK_ANNOUNCE,nil,scard.dhtg1,scard.dhop,EFFECT_FLAG_CARD_TARGET,LOCATION_ALL,0,scard.dhtg2)
+	dm.AddSingleTriggerEffect(c,0,EVENT_ATTACK_ANNOUNCE,nil,scard.dhtg1,scard.dhop,EFFECT_FLAG_CARD_TARGET)
+	dm.AddSingleGrantEffect(c,0,EVENT_ATTACK_ANNOUNCE,nil,scard.dhtg1,scard.dhop,EFFECT_FLAG_CARD_TARGET,LOCATION_ALL,0,scard.dhtg2)
 end
 scard.duel_masters_card=true
 function scard.dhtg1(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
@@ -15,5 +15,5 @@ function scard.dhtg1(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.Hint(HINT_SELECTMSG,1-tp,DM_HINTMSG_DISCARD)
 	Duel.SelectTarget(1-tp,aux.TRUE,1-tp,LOCATION_HAND,0,1,1,nil)
 end
-scard.dhop=dm.TargetDiscardOperation
+scard.dhop=dm.TargetCardsOperation(Duel.DMSendtoGrave,REASON_EFFECT+REASON_DISCARD)
 scard.dhtg2=dm.TargetBoolFunctionExceptSelf(Card.DMIsRace,DM_RACE_SURVIVOR)

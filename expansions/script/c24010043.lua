@@ -5,7 +5,7 @@ function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
 	--shield trigger
 	dm.EnableShieldTrigger(c)
-	--destroy, confirm (to battle, to grave)
+	--destroy, confirm (to battle zone, to grave)
 	dm.AddSpellCastEffect(c,0,nil,scard.desop)
 end
 scard.duel_masters_card=true
@@ -38,11 +38,11 @@ function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.ConfirmDecktop(p,dcount-seq)
 	if tbcard:IsAbleToBZone(e,0,p,false,false) then
 		Duel.DisableShuffleCheck()
-		if dcount-seq==1 then Duel.SendtoBattle(tbcard,0,p,p,false,false,POS_FACEUP_UNTAPPED)
+		if dcount-seq==1 then Duel.SendtoBZone(tbcard,0,p,p,false,false,POS_FACEUP_UNTAPPED)
 		else
-			Duel.SendtoBattleStep(tbcard,0,p,p,false,false,POS_FACEUP_UNTAPPED)
+			Duel.SendtoBZoneStep(tbcard,0,p,p,false,false,POS_FACEUP_UNTAPPED)
 			Duel.DMSendDecktoptoGrave(p,dcount-seq-1,REASON_EFFECT)
-			Duel.SendtoBattleComplete()
+			Duel.SendtoBZoneComplete()
 		end
 	else Duel.DMSendDecktoptoGrave(p,dcount-seq,REASON_EFFECT) end
 end

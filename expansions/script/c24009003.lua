@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_DARK_LORD))
 	--destroy
-	dm.AddTriggerEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,true,scard.destg,scard.desop,EFFECT_FLAG_CARD_TARGET,scard.descon)
+	dm.AddTriggerEffect(c,0,DM_EVENT_COME_INTO_PLAY,true,scard.destg,scard.desop,EFFECT_FLAG_CARD_TARGET,scard.descon)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end
@@ -22,7 +22,7 @@ function scard.desfilter(c)
 	return c:IsFaceup() and c:IsUntapped()
 end
 scard.destg=dm.TargetCardFunction(PLAYER_SELF,scard.desfilter,0,DM_LOCATION_BZONE,1,1,DM_HINTMSG_DESTROY)
-scard.desop=dm.TargetDestroyOperation
+scard.desop=dm.TargetCardsOperation(Duel.Destroy,REASON_EFFECT)
 --[[
 	Notes
 		1. Script is based on the Japanese rules text

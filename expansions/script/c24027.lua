@@ -9,7 +9,7 @@ function scard.initial_effect(c)
 	--cannot be blocked
 	dm.EnableCannotBeBlocked(c)
 	--get ability
-	dm.AddTriggerEffectCustom(c,0,EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD,true,nil,scard.abop,nil,scard.abcon)
+	dm.AddTriggerEffect(c,0,EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD,true,nil,scard.abop,nil,scard.abcon)
 	--destroy replace (return)
 	dm.AddSingleReplaceEffectDestroy(c,1,scard.reptg,scard.repop)
 end
@@ -32,7 +32,7 @@ function scard.abop(e,tp,eg,ep,ev,re,r,rp)
 			dm.RegisterEffectCustom(e:GetHandler(),tc,3,DM_EFFECT_SHIELD_TRIGGER)
 			Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_BECOME_SHIELD_TRIGGER,e,0,0,0,0)
 			if tc:IsCreature() and tc:IsAbleToBZone(e,0,tp,false,false) then
-				Duel.SendtoBattle(tc,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
+				Duel.SendtoBZone(tc,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
 			end
 		end
 	end

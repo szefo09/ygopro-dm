@@ -5,7 +5,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--to grave
-	dm.AddTriggerEffectCustom(c,0,EVENT_DESTROYED,nil,scard.tgtg,scard.tgop,EFFECT_FLAG_CARD_TARGET,scard.tgcon)
+	dm.AddTriggerEffect(c,0,EVENT_DESTROYED,nil,scard.tgtg,scard.tgop,EFFECT_FLAG_CARD_TARGET,scard.tgcon)
 end
 scard.duel_masters_card=true
 function scard.tgcon(e,tp,eg,ep,ev,re,r,rp)
@@ -18,7 +18,7 @@ function scard.tgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.Hint(HINT_SELECTMSG,1-tp,DM_HINTMSG_TOGRAVE)
 	Duel.SelectTarget(1-tp,f,1-tp,DM_LOCATION_MZONE,0,eg:GetCount(),eg:GetCount(),nil)
 end
-scard.tgop=dm.TargetSendtoGraveOperation
+scard.tgop=dm.TargetCardsOperation(Duel.DMSendtoGrave,REASON_EFFECT)
 --[[
 	References
 		1. Performapal Sellshell Crab

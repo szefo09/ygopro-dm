@@ -22,4 +22,4 @@ function scard.dhtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local sg2=g:RandomSelect(tp,0,ct)
 	Duel.SetTargetCard(sg2)
 end
-scard.dhop=dm.TargetDiscardOperation
+scard.dhop=dm.TargetCardsOperation(Duel.DMSendtoGrave,REASON_EFFECT+REASON_DISCARD)

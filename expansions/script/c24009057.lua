@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--confirm
-	dm.AddSingleTriggerEffectCustom(c,0,EVENT_BATTLE_CONFIRM,nil,scard.conftg,scard.confop,EFFECT_FLAG_CARD_TARGET,scard.confcon)
+	dm.AddSingleTriggerEffect(c,0,EVENT_BATTLE_CONFIRM,nil,scard.conftg,scard.confop,EFFECT_FLAG_CARD_TARGET,scard.confcon)
 end
 scard.duel_masters_card=true
 scard.confcon=aux.AND(dm.UnblockedCondition,dm.AttackPlayerCondition)

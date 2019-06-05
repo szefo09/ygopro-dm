@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--destroy
-	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,true,scard.destg,scard.desop)
+	dm.AddSingleTriggerEffect(c,0,DM_EVENT_COME_INTO_PLAY,true,scard.destg,scard.desop)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_ROCK_BEAST}

@@ -9,7 +9,7 @@ function scard.initial_effect(c)
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 	--draw
-	dm.AddTriggerEffectCustom(c,0,EVENT_DRAW,nil,nil,scard.drop,nil,scard.drcon)
+	dm.AddTriggerEffect(c,0,EVENT_DRAW,nil,nil,scard.drop,nil,scard.drcon)
 end
 scard.duel_masters_card=true
 function scard.drcon(e,tp,eg,ep,ev,re,r,rp)

@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--blocker
 	dm.EnableBlocker(c)
 	--return
-	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_BATTLE_END,nil,scard.rettg,scard.retop,EFFECT_FLAG_CARD_TARGET,dm.SelfBlockCondition)
+	dm.AddSingleTriggerEffect(c,0,DM_EVENT_BATTLE_END,nil,scard.rettg,scard.retop,EFFECT_FLAG_CARD_TARGET,dm.SelfBlockCondition)
 	--cannot attack
 	dm.EnableCannotAttack(c)
 end

@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--return
-	dm.AddSingleTriggerEffectCustom(c,0,EVENT_DESTROYED,true,scard.rettg,scard.retop)
+	dm.AddSingleTriggerEffect(c,0,EVENT_DESTROYED,true,scard.rettg,scard.retop)
 end
 scard.duel_masters_card=true
 function scard.retfilter(c)

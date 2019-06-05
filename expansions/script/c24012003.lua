@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--blocker
 	dm.EnableBlocker(c)
 	--destroy
-	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_BATTLE_END,nil,nil,dm.SelfDestroyOperation(),nil,dm.SelfBlockCondition)
+	dm.AddSingleTriggerEffect(c,0,DM_EVENT_BATTLE_END,nil,nil,dm.SelfDestroyOperation(),nil,dm.SelfBlockCondition)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end

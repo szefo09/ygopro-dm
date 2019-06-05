@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--untap
-	dm.AddTriggerEffectCustom(c,0,EVENT_DESTROYED,true,dm.SelfUntapTarget,scard.posop,nil,scard.poscon)
+	dm.AddTriggerEffect(c,0,EVENT_DESTROYED,true,dm.SelfUntapTarget,scard.posop,nil,scard.poscon)
 end
 scard.duel_masters_card=true
 function scard.cfilter(c,tp)

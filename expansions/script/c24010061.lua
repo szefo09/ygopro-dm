@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_GHOST))
 	--discard
-	dm.AddTriggerEffectCustom(c,0,EVENT_ATTACK_ANNOUNCE,nil,nil,scard.dhop,nil,scard.dhcon)
+	dm.AddTriggerEffect(c,0,EVENT_ATTACK_ANNOUNCE,nil,nil,scard.dhop,nil,scard.dhcon)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end

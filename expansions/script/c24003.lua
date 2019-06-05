@@ -7,6 +7,6 @@ function scard.initial_effect(c)
 	--wins all battles (guardian)
 	dm.EnableWinsAllBattles(c,0,aux.FilterBoolFunction(Card.DMIsRace,DM_RACE_GUARDIAN))
 	--discard
-	dm.AddSingleTriggerEffectCustom(c,1,DM_EVENT_COME_INTO_PLAY,nil,nil,dm.DiscardOperation(PLAYER_OPPO,aux.TRUE,0,LOCATION_HAND,1))
+	dm.AddSingleTriggerEffect(c,1,DM_EVENT_COME_INTO_PLAY,nil,nil,dm.DiscardOperation(PLAYER_OPPO,aux.TRUE,0,LOCATION_HAND,1))
 end
 scard.duel_masters_card=true

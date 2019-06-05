@@ -8,13 +8,13 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.regop(e,tp,eg,ep,ev,re,r,rp)
-	--search (to battle)
+	--search (to battle zone)
 	local e1=Effect.CreateEffect(e:GetHandler())
 	e1:SetDescription(aux.Stringid(sid,1))
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(DM_EVENT_SUMMON)
 	e1:SetProperty(EFFECT_FLAG_DELAY)
-	e1:SetCondition(dm.PlayerSummonCreatureCondition(tp))
+	e1:SetCondition(dm.PlayerSummonCreatureCondition(PLAYER_SELF))
 	e1:SetOperation(scard.tbop)
 	e1:SetReset(RESET_PHASE+PHASE_END)
 	Duel.RegisterEffect(e1,tp)
@@ -30,7 +30,7 @@ function scard.tbop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOBZONE)
 	local sg=g:Select(tp,0,1,nil)
 	if sg:GetCount()==0 then return end
-	Duel.SendtoBattle(sg,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
+	Duel.SendtoBZone(sg,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
 end
 --[[
 	Notes

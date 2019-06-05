@@ -9,9 +9,9 @@ function scard.initial_effect(c)
 	--speed attacker
 	dm.EnableEffectCustom(c,DM_EFFECT_SPEED_ATTACKER)
 	--to grave (mana)
-	dm.AddSingleTriggerEffectCustom(c,0,EVENT_ATTACK_ANNOUNCE,true,scard.tgtg1,scard.tgop1)
+	dm.AddSingleTriggerEffect(c,0,EVENT_ATTACK_ANNOUNCE,true,scard.tgtg1,scard.tgop1)
 	--to grave (shield)
-	dm.AddTriggerEffectCustom(c,1,EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD,true,scard.tgtg2,scard.tgop2,nil,scard.tgcon)
+	dm.AddTriggerEffect(c,1,EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD,true,scard.tgtg2,scard.tgop2,nil,scard.tgcon)
 	--attack untapped
 	dm.EnableAttackUntapped(c)
 end

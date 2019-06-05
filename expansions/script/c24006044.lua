@@ -4,8 +4,8 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--survivor (tap)
-	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,true,scard.postg1,scard.posop,EFFECT_FLAG_CARD_TARGET)
-	dm.AddSingleGrantEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,true,scard.postg1,scard.posop,EFFECT_FLAG_CARD_TARGET,LOCATION_ALL,0,scard.postg2)
+	dm.AddSingleTriggerEffect(c,0,DM_EVENT_COME_INTO_PLAY,true,scard.postg1,scard.posop,EFFECT_FLAG_CARD_TARGET)
+	dm.AddSingleGrantEffect(c,0,DM_EVENT_COME_INTO_PLAY,true,scard.postg1,scard.posop,EFFECT_FLAG_CARD_TARGET,LOCATION_ALL,0,scard.postg2)
 end
 scard.duel_masters_card=true
 function scard.posfilter(c)
@@ -18,5 +18,5 @@ function scard.postg1(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TAP)
 	Duel.SelectTarget(tp,scard.posfilter,tp,0,DM_LOCATION_BZONE,1,1,nil)
 end
-scard.posop=dm.TargetTapOperation
+scard.posop=dm.TargetCardsOperation(Duel.Tap,REASON_EFFECT)
 scard.postg2=dm.TargetBoolFunctionExceptSelf(Card.DMIsRace,DM_RACE_SURVIVOR)

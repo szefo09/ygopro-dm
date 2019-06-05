@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	--power up
 	dm.EnableUpdatePower(c,2000,nil,DM_LOCATION_BZONE,0,dm.TargetBoolFunctionExceptSelf(Card.DMIsRace,DM_RACE_XENOPARTS,DM_RACE_GIANT_INSECT))
 	--to grave
-	dm.AddTriggerEffectCustom(c,0,EVENT_BATTLE_CONFIRM,nil,scard.tgtg,scard.tgop,EFFECT_FLAG_CARD_TARGET,scard.tgcon)
+	dm.AddTriggerEffect(c,0,EVENT_BATTLE_CONFIRM,nil,scard.tgtg,scard.tgop,EFFECT_FLAG_CARD_TARGET,scard.tgcon)
 end
 scard.duel_masters_card=true
 scard.evolution_race_list={DM_RACE_XENOPARTS,DM_RACE_GIANT_INSECT,DM_RACE_GIANT}
@@ -18,4 +18,4 @@ function scard.tgcon(e,tp,eg,ep,ev,re,r,rp)
 		and a:IsControler(tp) and a:DMIsRace(DM_RACE_XENOPARTS,DM_RACE_GIANT_INSECT) and Duel.GetAttackTarget()==nil
 end
 scard.tgtg=dm.TargetCardFunction(PLAYER_OPPO,dm.ManaZoneFilter(Card.DMIsAbleToGrave),0,DM_LOCATION_MZONE,1,1,DM_HINTMSG_TOGRAVE)
-scard.tgop=dm.TargetSendtoGraveOperation
+scard.tgop=dm.TargetCardsOperation(Duel.DMSendtoGrave,REASON_EFFECT)

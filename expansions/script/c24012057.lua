@@ -6,9 +6,9 @@ function scard.initial_effect(c)
 	--vortex evolution
 	dm.EnableEffectCustom(c,DM_EFFECT_VORTEX_EVOLUTION)
 	dm.AddEvolutionProcedure(c,scard.evofilter1,scard.evofilter2)
-	--to shield
-	dm.AddSingleTriggerEffectCustom(c,0,EVENT_ATTACK_ANNOUNCE,nil,nil,dm.DecktopSendtoShieldOperation(PLAYER_SELF,1))
-	dm.AddSingleTriggerEffectLeaveBZone(c,0,nil,nil,dm.DecktopSendtoShieldOperation(PLAYER_SELF,1))
+	--to shield zone
+	dm.AddSingleTriggerEffect(c,0,EVENT_ATTACK_ANNOUNCE,nil,nil,dm.DecktopSendtoSZoneOperation(PLAYER_SELF,1))
+	dm.AddSingleTriggerEffectLeaveBZone(c,0,nil,nil,dm.DecktopSendtoSZoneOperation(PLAYER_SELF,1))
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end

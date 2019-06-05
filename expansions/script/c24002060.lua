@@ -5,8 +5,8 @@ function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--evolution
 	dm.AddEvolutionProcedure(c,aux.FilterBoolFunction(Card.DMIsEvolutionRace,DM_RACE_BEAST_FOLK))
-	--to mana
-	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,nil,nil,dm.DecktopSendtoManaOperation(PLAYER_SELF,2))
+	--to mana zone
+	dm.AddSingleTriggerEffect(c,0,DM_EVENT_COME_INTO_PLAY,nil,nil,dm.DecktopSendtoMZoneOperation(PLAYER_SELF,2))
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 end

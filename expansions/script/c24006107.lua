@@ -6,12 +6,12 @@ function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
 	--shield trigger
 	dm.EnableShieldTrigger(c)
-	--to mana
+	--to mana zone
 	dm.AddSpellCastEffect(c,0,scard.tmtg,scard.tmop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 function scard.tmfilter(c)
-	return c:IsFaceup() and c:IsEvolution() and c:IsHasSource() and c:IsAbleToMana()
+	return c:IsFaceup() and c:IsEvolution() and c:IsHasSource() and c:IsAbleToMZone()
 end
 scard.tmtg=dm.TargetCardFunction(PLAYER_SELF,scard.tmfilter,0,DM_LOCATION_BZONE,1,1,DM_HINTMSG_TOMZONE)
 function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
@@ -24,7 +24,7 @@ function scard.tmop(e,tp,eg,ep,ev,re,r,rp)
 	for mc in aux.Next(mg) do
 		g:AddCard(mc)
 	end
-	Duel.SendtoMana(tc1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
+	Duel.SendtoMZone(tc1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 	--workaround to keep stacked pile
 	local tc2=g:GetFirst()
 	Duel.MoveToField(tc2,tp,1-tp,DM_LOCATION_BZONE,pos,true)

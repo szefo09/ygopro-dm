@@ -17,4 +17,4 @@ function scard.dhtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.Hint(HINT_SELECTMSG,1-tp,DM_HINTMSG_DISCARD)
 	Duel.SelectTarget(1-tp,aux.TRUE,1-tp,LOCATION_HAND,0,ct,ct,nil)
 end
-scard.dhop=dm.TargetDiscardOperation
+scard.dhop=dm.TargetCardsOperation(Duel.DMSendtoGrave,REASON_EFFECT+REASON_DISCARD)

@@ -4,7 +4,7 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
 	--to grave
-	dm.AddSingleTriggerEffectCustom(c,0,EVENT_DESTROYED,nil,scard.tgtg,scard.tgop,EFFECT_FLAG_CARD_TARGET)
+	dm.AddSingleTriggerEffect(c,0,EVENT_DESTROYED,nil,scard.tgtg,scard.tgop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
 function scard.tgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
@@ -15,4 +15,4 @@ function scard.tgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.Hint(HINT_SELECTMSG,1-tp,DM_HINTMSG_TOGRAVE)
 	Duel.SelectTarget(1-tp,dm.ManaZoneFilter(Card.DMIsAbleToGrave),1-tp,DM_LOCATION_MZONE,0,2,2,nil)
 end
-scard.tgop=dm.TargetSendtoGraveOperation
+scard.tgop=dm.TargetCardsOperation(Duel.DMSendtoGrave,REASON_EFFECT)

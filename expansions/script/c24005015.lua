@@ -20,4 +20,4 @@ function scard.postg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TAP)
 	Duel.SelectTarget(tp,scard.posfilter,tp,0,DM_LOCATION_BZONE,0,ct,nil)
 end
-scard.posop=dm.TargetTapOperation
+scard.posop=dm.TargetCardsOperation(Duel.Tap,REASON_EFFECT)

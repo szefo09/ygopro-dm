@@ -3,7 +3,7 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
-	--tap ability (search) (to battle)
+	--tap ability (search) (to battle zone)
 	dm.EnableTapAbility(c,0,scard.tbtg,scard.tbop)
 end
 scard.duel_masters_card=true
@@ -14,7 +14,7 @@ end
 function scard.tbop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOBZONE)
 	local tc=Duel.SelectMatchingCard(tp,scard.tbfilter,tp,LOCATION_DECK,0,0,1,nil,e,tp):GetFirst()
-	if not tc or not Duel.SendtoBattleStep(tc,0,tp,tp,false,false,POS_FACEUP_UNTAPPED) then return end
+	if not tc or not Duel.SendtoBZoneStep(tc,0,tp,tp,false,false,POS_FACEUP_UNTAPPED) then return end
 	local c=e:GetHandler()
 	--speed attacker
 	dm.RegisterEffectCustom(c,tc,2,DM_EFFECT_SPEED_ATTACKER)
@@ -28,7 +28,7 @@ function scard.tbop(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetOperation(scard.desop)
 	e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
 	tc:RegisterEffect(e1)
-	Duel.SendtoBattleComplete()
+	Duel.SendtoBZoneComplete()
 end
 function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

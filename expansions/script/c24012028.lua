@@ -20,4 +20,4 @@ function scard.destg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_DESTROY)
 	Duel.SelectTarget(tp,scard.desfilter,tp,0,DM_LOCATION_BZONE,0,ct,g)
 end
-scard.desop=dm.TargetDestroyOperation
+scard.desop=dm.TargetCardsOperation(Duel.Destroy,REASON_EFFECT)

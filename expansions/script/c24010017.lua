@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--blocker
 	dm.EnableBlocker(c)
 	--untap
-	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_BATTLE_END,nil,scard.postg,scard.posop,EFFECT_FLAG_CARD_TARGET,dm.SelfBlockCondition)
+	dm.AddSingleTriggerEffect(c,0,DM_EVENT_BATTLE_END,nil,scard.postg,scard.posop,EFFECT_FLAG_CARD_TARGET,dm.SelfBlockCondition)
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 end
@@ -15,4 +15,4 @@ function scard.posfilter(c)
 	return c:IsFaceup() and c:IsAbleToUntap()
 end
 scard.postg=dm.TargetCardFunction(PLAYER_SELF,scard.posfilter,DM_LOCATION_BZONE,0,1,1,DM_HINTMSG_UNTAP)
-scard.posop=dm.TargetUntapOperation
+scard.posop=dm.TargetCardsOperation(Duel.Untap,REASON_EFFECT)

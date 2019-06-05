@@ -3,7 +3,7 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
-	--destroy, search (to battle)
+	--destroy, search (to battle zone)
 	dm.AddSpellCastEffect(c,0,nil,scard.desop)
 end
 scard.duel_masters_card=true
@@ -23,5 +23,5 @@ function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TOBZONE)
 	local g=Duel.SelectMatchingCard(tp,scard.tbfilter,tp,LOCATION_DECK,0,0,1,nil,e,tp,cost)
 	if g:GetCount()==0 then return end
-	Duel.SendtoBattle(g,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
+	Duel.SendtoBZone(g,0,tp,tp,false,false,POS_FACEUP_UNTAPPED)
 end

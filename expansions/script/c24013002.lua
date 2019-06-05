@@ -9,7 +9,7 @@ function scard.initial_effect(c)
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 	--destroy
-	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_BATTLE_END,nil,scard.destg,scard.desop,nil,scard.descon)
+	dm.AddSingleTriggerEffect(c,0,DM_EVENT_BATTLE_END,nil,scard.destg,scard.desop,nil,scard.descon)
 end
 scard.duel_masters_card=true
 scard.descon=aux.AND(dm.SelfBlockCondition,dm.SelfBattleWinCondition)

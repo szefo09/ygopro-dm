@@ -3,8 +3,8 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableCreatureAttribute(c)
-	--destroy, to mana
-	dm.AddSingleTriggerEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,nil,nil,scard.desop)
+	--destroy, to mana zone
+	dm.AddSingleTriggerEffect(c,0,DM_EVENT_COME_INTO_PLAY,nil,nil,scard.desop)
 end
 scard.duel_masters_card=true
 function scard.desfilter(c)
@@ -18,5 +18,5 @@ function scard.desop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Destroy(g,REASON_EFFECT)
 	end
 	Duel.BreakEffect()
-	Duel.SendDecktoptoMana(tp,1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
+	Duel.SendDecktoptoMZone(tp,1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 end

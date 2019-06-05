@@ -8,6 +8,6 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--break
-	dm.AddSingleTriggerEffectCustom(c,0,EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED,nil,nil,dm.BreakOperation(PLAYER_SELF,PLAYER_OPPO,1,1,c))
+	dm.AddSingleTriggerEffect(c,0,EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED,nil,nil,dm.BreakOperation(PLAYER_SELF,PLAYER_OPPO,1))
 end
 scard.duel_masters_card=true

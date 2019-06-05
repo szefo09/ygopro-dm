@@ -3,7 +3,7 @@ local dm=require "expansions.utility_dmtcg"
 local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
-	--to grave, to mana
+	--to grave, to mana zone
 	dm.AddSpellCastEffect(c,0,scard.tgtg,scard.tgop,EFFECT_FLAG_CARD_TARGET)
 end
 scard.duel_masters_card=true
@@ -14,5 +14,5 @@ function scard.tgop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.DMSendtoGrave(tc,REASON_EFFECT)
 	end
 	Duel.BreakEffect()
-	Duel.SendDecktoptoMana(tp,1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
+	Duel.SendDecktoptoMZone(tp,1,POS_FACEUP_UNTAPPED,REASON_EFFECT)
 end

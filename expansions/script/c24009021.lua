@@ -6,7 +6,7 @@ function scard.initial_effect(c)
 	--blocker
 	dm.EnableBlocker(c)
 	--return
-	dm.AddTriggerEffectCustom(c,0,DM_EVENT_COME_INTO_PLAY,nil,nil,scard.retop,nil,scard.retcon)
+	dm.AddTriggerEffect(c,0,DM_EVENT_COME_INTO_PLAY,nil,nil,scard.retop,nil,scard.retcon)
 end
 scard.duel_masters_card=true
 function scard.cfilter(c,tp)

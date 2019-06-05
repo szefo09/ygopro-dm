@@ -10,13 +10,13 @@ function scard.initial_effect(c)
 end
 scard.duel_masters_card=true
 function scard.regop(e,tp,eg,ep,ev,re,r,rp)
-	--destroy replace (to mana)
+	--destroy replace (to mana zone)
 	local e1=Effect.CreateEffect(e:GetHandler())
 	e1:SetDescription(aux.Stringid(sid,1))
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EFFECT_DESTROY_REPLACE)
 	e1:SetRange(DM_LOCATION_BZONE)
-	e1:SetTarget(dm.SingleReplaceDestroyTarget(Card.IsAbleToMana))
+	e1:SetTarget(dm.SingleReplaceDestroyTarget(Card.IsAbleToMZone))
 	e1:SetOperation(scard.repop)
 	local e2=Effect.CreateEffect(e:GetHandler())
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
@@ -27,5 +27,5 @@ function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 end
 function scard.repop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_CARD,0,sid)
-	Duel.SendtoMana(e:GetHandler(),POS_FACEUP_UNTAPPED,REASON_EFFECT+REASON_REPLACE)
+	Duel.SendtoMZone(e:GetHandler(),POS_FACEUP_UNTAPPED,REASON_EFFECT+REASON_REPLACE)
 end
