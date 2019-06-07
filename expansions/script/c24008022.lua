@@ -4,10 +4,10 @@ local scard,sid=dm.GetID()
 function scard.initial_effect(c)
 	dm.EnableSpellAttribute(c)
 	--get ability
-	dm.AddSpellCastEffect(c,0,nil,scard.abop)
+	dm.AddSpellCastEffect(c,0,nil,scard.regop)
 end
 scard.duel_masters_card=true
-function scard.abop(e,tp,eg,ep,ev,re,r,rp)
+function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	--cannot be blocked
 	local e1=Effect.CreateEffect(e:GetHandler())
 	e1:SetType(EFFECT_TYPE_FIELD)
