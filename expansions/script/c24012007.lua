@@ -13,6 +13,6 @@ function scard.confop(e,tp,eg,ep,ev,re,r,rp)
 	if not tc or not tc:IsRelateToEffect(e) then return end
 	if tc:IsFacedown() then Duel.ConfirmCards(tp,tc) end
 	if tc:IsSpell() then
-		Duel.CastFree(tc)
+		Duel.CastFree(tc,tp,REASON_EFFECT)
 	end
 end

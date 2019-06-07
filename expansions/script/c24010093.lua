@@ -8,7 +8,7 @@ function scard.initial_effect(c)
 	--double breaker
 	dm.EnableBreaker(c,DM_EFFECT_DOUBLE_BREAKER)
 	--cannot untap
-	dm.EnablePlayerEffectCustom(c,DM_EFFECT_CANNOT_UNTAP_START_STEP,1,0)
+	dm.EnablePlayerEffectCustom(c,DM_EFFECT_PLAYER_CANNOT_UNTAP_START_STEP,1,0)
 end
 scard.duel_masters_card=true
 --[[

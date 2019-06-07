@@ -446,6 +446,11 @@ Card.GetSourceCount=Card.GetOverlayCount
 --select a specified card from a group
 local group_filter_select=Group.FilterSelect
 function Group.FilterSelect(g,player,f,min,max,ex,...)
+	--check for "Whenever you would choose one of your opponent's shields, your opponent chooses instead."
+	if g:IsExists(aux.AND(Auxiliary.ShieldZoneFilter(Card.IsControler),f),1,nil,1-player)
+		and Duel.IsPlayerAffectedByEffect(1-player,DM_EFFECT_CHANGE_SHIELD_CHOOSE_PLAYER) then
+		player=1-player
+	end
 	--Note: Remove this if YGOPro can forbid players to look at their face-down cards
 	local sg1=g:Filter(Auxiliary.ShieldZoneFilter(f),ex,...)
 	local sg2=Group.CreateGroup()
@@ -464,6 +469,11 @@ end
 --select a card from a group
 local group_select=Group.Select
 function Group.Select(g,player,min,max,ex)
+	--check for "Whenever you would choose one of your opponent's shields, your opponent chooses instead."
+	if g:IsExists(Auxiliary.ShieldZoneFilter(Card.IsControler),1,nil,1-player)
+		and Duel.IsPlayerAffectedByEffect(1-player,DM_EFFECT_CHANGE_SHIELD_CHOOSE_PLAYER) then
+		player=1-player
+	end
 	--Note: Remove this if YGOPro can forbid players to look at their face-down cards
 	local sg1=g:Filter(Auxiliary.ShieldZoneFilter(),ex)
 	local sg2=Group.CreateGroup()
@@ -483,6 +493,11 @@ end
 --Note: Remove max_count if YGOPro can forbid players to look at their face-down cards
 local group_random_select=Group.RandomSelect
 function Group.RandomSelect(g,player,count,max_count)
+	--check for "Whenever you would choose one of your opponent's shields, your opponent chooses instead."
+	if g:IsExists(Auxiliary.ShieldZoneFilter(Card.IsControler),1,nil,1-player)
+		and Duel.IsPlayerAffectedByEffect(1-player,DM_EFFECT_CHANGE_SHIELD_CHOOSE_PLAYER) then
+		player=1-player
+	end
 	local ct=g:GetCount()
 	local max_count=max_count or count
 	if ct>0 then
@@ -634,6 +649,11 @@ end
 --Note: Shields are selected at random for abilities that select either player's shields
 local duel_select_matching_card=Duel.SelectMatchingCard
 function Duel.SelectMatchingCard(sel_player,f,player,s,o,min,max,ex,...)
+	--check for "Whenever you would choose one of your opponent's shields, your opponent chooses instead."
+	if sel_player==player and o==DM_LOCATION_SZONE
+		and Duel.IsPlayerAffectedByEffect(1-sel_player,DM_EFFECT_CHANGE_SHIELD_CHOOSE_PLAYER) then
+		sel_player=1-sel_player
+	end
 	if sel_player==player and s==DM_LOCATION_SZONE then
 		--Note: Remove this if YGOPro can forbid players to look at their face-down cards
 		local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(f),player,s,o,ex,...)
@@ -649,6 +669,11 @@ end
 --Note: Shields are selected at random for abilities that select either player's shields
 local duel_select_target=Duel.SelectTarget
 function Duel.SelectTarget(sel_player,f,player,s,o,min,max,ex,...)
+	--check for "Whenever you would choose one of your opponent's shields, your opponent chooses instead."
+	if sel_player==player and o==DM_LOCATION_SZONE
+		and Duel.IsPlayerAffectedByEffect(1-sel_player,DM_EFFECT_CHANGE_SHIELD_CHOOSE_PLAYER) then
+		sel_player=1-sel_player
+	end
 	if sel_player==player and s==DM_LOCATION_SZONE then
 		--Note: Remove this if YGOPro can forbid players to look at their face-down cards
 		local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(f),player,s,o,ex,...)
@@ -673,6 +698,8 @@ function Duel.Tap(targets,reason)
 				ct=ct+Duel.ChangePosition(tc,POS_FACEUP_TAPPED,reason)
 			elseif tc:IsLocation(LOCATION_GRAVE) then
 				ct=ct+Duel.Remove(tc,POS_FACEDOWN,reason)
+				Duel.RaiseSingleEvent(tc,EVENT_CHANGE_POS,Effect.GlobalEffect(),reason,0,0,0)
+				Duel.RaiseEvent(tc,EVENT_CHANGE_POS,Effect.GlobalEffect(),reason,0,0,0)
 			end
 		end
 	end
@@ -688,6 +715,8 @@ function Duel.Untap(targets,reason)
 				ct=ct+Duel.ChangePosition(tc,POS_FACEUP_UNTAPPED,reason)
 			elseif tc:IsLocation(LOCATION_REMOVED) then
 				ct=ct+Duel.SendtoGrave(tc,reason)
+				Duel.RaiseSingleEvent(tc,EVENT_CHANGE_POS,Effect.GlobalEffect(),reason,0,0,0)
+				Duel.RaiseEvent(tc,EVENT_CHANGE_POS,Effect.GlobalEffect(),reason,0,0,0)
 			end
 		end
 	end
@@ -722,6 +751,11 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason,ignore_br
 	--rc: the creature that breaks a shield
 	--reason: the reason for breaking a shield (generally REASON_EFFECT)
 	--ignore_breaker: true to not break a number of shields according to the breaker abilities a creature may have
+	--check for "Whenever an opponent's creature would break a shield, you choose the shield instead of your opponent."
+	if sel_player~=target_player and rc:IsCreature()
+		and Duel.IsPlayerAffectedByEffect(target_player,DM_EFFECT_CHANGE_SHIELD_BREAK_PLAYER) then
+		sel_player=target_player
+	end
 	local reason=reason or REASON_EFFECT
 	Duel.Tap(rc,REASON_RULE) --fix creature not being tapped when attacking
 	local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(),target_player,DM_LOCATION_SZONE,0,nil)
@@ -969,7 +1003,7 @@ function Duel.RandomDiscardHand(player,count,reason,ex)
 end
 --check if a player can untap the cards in their mana zone at the start of each of their turns
 function Duel.IsPlayerCanUntapStartStep(player)
-	return not Duel.IsPlayerAffectedByEffect(player,DM_EFFECT_CANNOT_UNTAP_START_STEP)
+	return not Duel.IsPlayerAffectedByEffect(player,DM_EFFECT_PLAYER_CANNOT_UNTAP_START_STEP)
 end
 --check if a player can use the "blocker" ability of their creatures
 function Duel.IsPlayerCanBlock(player)
@@ -1167,12 +1201,13 @@ Auxiliary.race_value_list={
 --list of all existing mana costs for Duel.AnnounceNumber
 Auxiliary.mana_cost_list={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,20,24,25,30,39,40,50,71,99,999,DM_MAX_MANA_COST}
 --cast a spell immediately for no cost
-function Duel.CastFree(targets)
+function Duel.CastFree(targets,player,reason)
+	--player: the player who casts the spell
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
 	local ct=0
 	for tc in aux.Next(targets) do
 		Duel.DisableShuffleCheck(true)
-		Duel.SendtoHand(tc,PLAYER_OWNER,REASON_RULE)
+		Duel.SendtoHand(tc,player,reason)
 		Duel.RaiseSingleEvent(tc,EVENT_CUSTOM+DM_EVENT_CAST_FREE,tc:GetReasonEffect(),0,0,0,0)
 		Duel.DisableShuffleCheck(false)
 		ct=ct+1
@@ -1438,10 +1473,7 @@ function Auxiliary.AttackShieldOperation(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RaiseSingleEvent(c,EVENT_CUSTOM+DM_EVENT_ATTACK_PLAYER,e,0,0,0,0)
 	--raise event for "Whenever any of your creatures attacks a player"
 	--Duel.RaiseEvent(c,EVENT_CUSTOM+DM_EVENT_ATTACK_PLAYER,e,0,0,0,0) --reserved
-	local sel_player=tp
-	--check for "Whenever an opponent's creature would break a shield, you choose the shield instead of your opponent."
-	if Duel.IsPlayerAffectedByEffect(1-tp,DM_EFFECT_CHANGE_SHIELD_BREAK_PLAYER) then sel_player=1-tp end
-	Duel.BreakShield(e,sel_player,1-tp,1,1,c)
+	Duel.BreakShield(e,tp,1-tp,1,1,c)
 	--ignore yugioh rules
 	--no battle damage
 	local e1=Effect.CreateEffect(c)
@@ -1772,10 +1804,13 @@ end
 --code: DM_EVENT_COME_INTO_PLAY for "When you put this creature into the battle zone" (e.g. "Miele, Vizier of Lightning" DM-01 13/110)
 --code: EVENT_ATTACK_ANNOUNCE for "Whenever this creature attacks" (e.g. "Laguna, Lightning Enforcer" DM-02 4/55)
 --code: DM_EVENT_BATTLE_END for "Whenever this creature blocks" (e.g. "Spiral Grass" DM-02 10/55)
+--code: EVENT_CUSTOM+DM_EVENT_ATTACK_PLAYER for "When this creature attacks a player" (e.g. "Marrow Ooze, the Twister" DM-02 32/55)
 --code: EVENT_DESTROYED for "When this creature is destroyed" (e.g. "Bombersaur" DM-02 36/55)
 --code: EVENT_CUSTOM+DM_EVENT_BECOME_BLOCKED for "Whenever this creature becomes blocked" (e.g. "Avalanche Giant" DM-05 S5/S5)
 --code: EVENT_BE_BATTLE_TARGET for "Whenever this creature is attacked" (e.g. "Scalpel Spider" DM-07 32/55)
 --code: EVENT_BATTLE_CONFIRM for "Whenever this creature is attacking and isn't blocked" (e.g. "Balesk Baj, the Timeburner" DM-09 4/55)
+--code: DM_EVENT_BATTLE_END for "after the battle [that includes this creature]" (e.g. "Bye Bye Amoeba" DM-13 40/55)
+--code: DM_EVENT_ATTACK_END for "after this creature attacks" (e.g. "Entropy Giant" Game Original)
 --con_func: dm.SelfBlockCondition for "Whenever this creature blocks" (e.g. "Spiral Grass" DM-02 10/55)
 --con_func: dm.UnblockedCondition for "Whenever this creature is attacking and isn't blocked" (e.g. "Balesk Baj, the Timeburner" DM-09 4/55)
 function Auxiliary.AddSingleTriggerEffect(c,desc_id,code,optional,targ_func,op_func,prop,con_func)
@@ -1794,35 +1829,37 @@ function Auxiliary.AddSingleTriggerEffect(c,desc_id,code,optional,targ_func,op_f
 	c:RegisterEffect(e1)
 end
 --function for EFFECT_TYPE_FIELD trigger abilities
---code: EVENT_PHASE+PHASE_END for "At the end of the turn" (e.g. "Frei, Vizier of Air" DM-01 4/110)
+--code: EVENT_PHASE+PHASE_END for "At the end of [the] turn" (e.g. "Frei, Vizier of Air" DM-01 4/110)
 --code: DM_EVENT_COME_INTO_PLAY for "Whenever another creature is put into the battle zone" (e.g. "Mist Rias, Sonic Guardian" DM-04 13/55)
 --code: EVENT_DESTROYED for "Whenever another creature is destroyed" (e.g. "Mongrel Man" DM-04 33/55)
 --code: DM_EVENT_TO_GRAVE for "Whenever a card is put into your graveyard" (e.g. "Snork La, Shrine Guardian" DM-05 13/55)
---code: DM_EVENT_SUMMON for "Whenever a player summons a creature" (e.g. "Aqua Rider" DM-06 31/110)
---code: EVENT_DRAW for "Whenever a player draws a card" (e.g. "Cosmic Nebula" DM-07 S2/S5)
+--code: DM_EVENT_SUMMON for "Whenever [a player] summons a creature" (e.g. "Aqua Rider" DM-06 31/110)
+--code: EVENT_DRAW for "Whenever [a player] draws a card" (e.g. "Cosmic Nebula" DM-07 S2/S5)
 --code: EVENT_ATTACK_ANNOUNCE for "Whenever any of your creatures attacks" (e.g. "Thrumiss, Zephyr Guardian" DM-08 15/55)
+--code: EVENT_BE_BATTLE_TARGET "Whenever one of your creatures is attacked" (e.g. "Bubble Scarab" DM-10 81/110)
 --code: DM_EVENT_BATTLE_END for "Whenever one of your creatures blocks" (e.g. "Agira, the Warlord Crawler" DM-12 16/55)
 --code: EVENT_BATTLE_CONFIRM for "Whenever any of your creatures is attacking and isn't blocked" (e.g. "Nemonex, Bajula's Robomantis" DM-12 19/55)
---code: EVENT_BE_BATTLE_TARGET for "Whenever your creatures are attacked" (e.g. "Polaris, the Oracle" DM-13 21/55)
---code: DM_EVENT_UNTAP_STEP for "At the start of the turn" (e.g. "Altimeth, Holy Divine Dragon" Game Original)
+--code: EVENT_DISCARD for "Whenever [a player] discards cards" (e.g. "Dorothea, the Explorer" DM-13 6/55)
+--code: DM_EVENT_UNTAP_STEP for "At the start of [the] turn" (e.g. "Altimeth, Holy Divine Dragon" Game Original)
 --code: EVENT_CUSTOM+DM_EVENT_BREAK_SHIELD for "Whenever this creature breaks a shield" (e.g. "Bolblaze Dragon" Game Original)
 --con_func: dm.EnterGraveCondition for "Whenever a card is put into your graveyard" (e.g. "Snork La, Shrine Guardian" DM-05 13/55)
---con_func: dm.PlayerSummonCreatureCondition for "Whenever a player summons a creature" (e.g. "Aqua Rider" DM-06 31/110)
+--con_func: dm.PlayerSummonCreatureCondition(PLAYER_OPPO) for "Whenever your opponent summons a creature" (e.g. "Aqua Rider" DM-06 31/110)
+--con_func: dm.EventPlayerCondition(PLAYER_SELF) for "Whenever you draw the card" (e.g. "Cosmic Nebula" DM-07 S2/S5)
 --con_func: dm.BlockCondition for "Whenever one of your creatures blocks" (e.g. "Agira, the Warlord Crawler" DM-12 16/55)
 --con_func: dm.UnblockedCondition for "Whenever any of your creatures is attacking and isn't blocked" (e.g. "Nemonex, Bajula's Robomantis" DM-12 19/55)
-function Auxiliary.AddTriggerEffect(c,desc_id,code,optional,targ_func,op_func,prop,con_func,count)
+--con_func: dm.EventPlayerCondition(PLAYER_SELF) for "Whenever you discard cards" (e.g. "Dorothea, the Explorer" DM-13 6/55)
+function Auxiliary.AddTriggerEffect(c,desc_id,code,optional,targ_func,op_func,prop,con_func)
 	local prop=prop or 0
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	if typ==EFFECT_TYPE_TRIGGER_O then prop=prop+EFFECT_FLAG_DELAY end
 	if code==EVENT_ATTACK_ANNOUNCE then prop=prop+DM_EFFECT_FLAG_CHAIN_LIMIT end
-	if code==EVENT_PHASE+PHASE_END or code==DM_EVENT_UNTAP_STEP then count=1 end
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_FIELD+typ)
 	e1:SetCode(code)
 	e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
 	e1:SetRange(DM_LOCATION_BZONE)
-	if count then e1:SetCountLimit(count) end
+	if code==EVENT_PHASE+PHASE_END or code==DM_EVENT_UNTAP_STEP then e1:SetCountLimit(1) end
 	if con_func then e1:SetCondition(con_func) end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
@@ -1831,7 +1868,7 @@ end
 --function for EFFECT_TYPE_SINGLE static abilities
 --code: EVENT_ATTACK_ANNOUNCE for "Whenever this creature attacks" (e.g. "Split-Head Hydroturtle Q" DM-05 24/55)
 --code: DM_EVENT_COME_INTO_PLAY for "When you put this creature into the battle zone" (e.g. "Forbos, Sanctum Guardian Q" DM-06 19/110)
-function Auxiliary.AddSingleGrantEffect(c,desc_id,code,optional,targ_func1,op_func,prop,s_range,o_range,targ_func2)
+function Auxiliary.AddSingleGrantTriggerEffect(c,desc_id,code,optional,targ_func1,op_func,prop,s_range,o_range,targ_func2)
 	--targ_func1: include dm.HintTarget
 	local prop=prop or 0
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
@@ -1844,6 +1881,34 @@ function Auxiliary.AddSingleGrantEffect(c,desc_id,code,optional,targ_func1,op_fu
 	e1:SetType(EFFECT_TYPE_SINGLE+typ)
 	e1:SetCode(code)
 	e1:SetProperty(prop)
+	if targ_func1 then e1:SetTarget(targ_func1) end
+	e1:SetOperation(op_func)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
+	e2:SetRange(DM_LOCATION_BZONE)
+	e2:SetTargetRange(s_range,o_range)
+	if targ_func2 then e2:SetTarget(targ_func2) end
+	e2:SetLabelObject(e1)
+	c:RegisterEffect(e2)
+end
+--function for EFFECT_TYPE_FIELD static abilities
+--code: EVENT_PHASE+PHASE_END for "At the end of [the] turn" (e.g. "Ballus, Dogfight Enforcer Q" DM-05 6/55)
+function Auxiliary.AddGrantTriggerEffect(c,desc_id,code,optional,targ_func1,op_func,prop,s_range,o_range,targ_func2,con_func)
+	--targ_func1: include dm.HintTarget
+	local prop=prop or 0
+	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
+	if typ==EFFECT_TYPE_TRIGGER_O then prop=prop+EFFECT_FLAG_DELAY end
+	if code==EVENT_ATTACK_ANNOUNCE then prop=prop+DM_EFFECT_FLAG_CHAIN_LIMIT end
+	local s_range=s_range or LOCATION_ALL
+	local o_range=o_range or 0
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
+	e1:SetType(EFFECT_TYPE_FIELD+typ)
+	e1:SetCode(code)
+	e1:SetProperty(prop)
+	e1:SetRange(DM_LOCATION_BZONE)
+	if code==EVENT_PHASE+PHASE_END then e1:SetCountLimit(1) end
+	if con_func then e1:SetCondition(con_func) end
 	if targ_func1 then e1:SetTarget(targ_func1) end
 	e1:SetOperation(op_func)
 	local e2=Effect.CreateEffect(c)
@@ -3608,6 +3673,12 @@ function Auxiliary.SelfTappedCondition(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsTapped()
 end
 Auxiliary.stapcon=Auxiliary.SelfTappedCondition
+--condition of "While this creature is untapped"
+--e.g. "Ulex, the Dauntless" (DM-10 104/110)
+function Auxiliary.SelfUntappedCondition(e,tp,eg,ep,ev,re,r,rp)
+	return e:GetHandler():IsUntapped()
+end
+Auxiliary.suntcon=Auxiliary.SelfUntappedCondition
 --condition of "While all the cards in your mana zone are CIVILIZATION cards"
 --e.g. "Sparkle Flower" (DM-03 9/55)
 function Auxiliary.MZoneExclusiveCondition(f,...)
