@@ -11,21 +11,21 @@ function scard.initial_effect(c)
 	e0:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
 	e0:SetRange(DM_LOCATION_BZONE)
 	e0:SetCondition(scard.regcon)
-	e0:SetOperation(scard.regop)
+	e0:SetOperation(scard.regop1)
 	c:RegisterEffect(e0)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EVENT_CHAINING)
 	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	e1:SetRange(DM_LOCATION_BZONE)
-	e1:SetOperation(scard.chop1)
+	e1:SetOperation(scard.regop2)
 	c:RegisterEffect(e1)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e2:SetCode(EVENT_CHAIN_SOLVED)
 	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	e2:SetRange(DM_LOCATION_BZONE)
-	e2:SetOperation(scard.chop2)
+	e2:SetOperation(scard.regop3)
 	c:RegisterEffect(e2)
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(sid,0))
@@ -44,15 +44,15 @@ scard.duel_masters_card=true
 function scard.regcon(e,tp,eg,ep,ev,re,r,rp)
 	return re:GetHandler()==e:GetHandler()
 end
-function scard.regop(e,tp,eg,ep,ev,re,r,rp)
+function scard.regop1(e,tp,eg,ep,ev,re,r,rp)
 	for ec in aux.Next(eg) do
 		ec:RegisterFlagEffect(sid,RESET_EVENT+RESETS_STANDARD,0,1)
 	end
 end
-function scard.chop1(e,tp,eg,ep,ev,re,r,rp)
+function scard.regop2(e,tp,eg,ep,ev,re,r,rp)
 	e:GetLabelObject():SetLabel(0)
 end
-function scard.chop2(e,tp,eg,ep,ev,re,r,rp)
+function scard.regop3(e,tp,eg,ep,ev,re,r,rp)
 	if rp==tp or not re:IsHasCategory(DM_CATEGORY_SHIELD_TRIGGER) or re:GetHandler():GetFlagEffect(sid)==0 then return end
 	e:GetLabelObject():SetLabel(1)
 end

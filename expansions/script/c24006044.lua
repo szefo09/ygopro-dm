@@ -13,7 +13,7 @@ function scard.posfilter(c)
 end
 function scard.postg1(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(DM_LOCATION_BZONE) and chkc:IsControler(1-tp) and scard.posfilter(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(scard.posfilter,0,DM_LOCATION_BZONE,1,nil) end
+	if chk==0 then return Duel.IsExistingTarget(scard.posfilter,tp,0,DM_LOCATION_BZONE,1,nil) end
 	Duel.Hint(HINT_OPSELECTED,1-tp,e:GetDescription())
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_TAP)
 	Duel.SelectTarget(tp,scard.posfilter,tp,0,DM_LOCATION_BZONE,1,1,nil)

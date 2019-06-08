@@ -6,10 +6,10 @@ function scard.initial_effect(c)
 	--shield trigger
 	dm.EnableShieldTrigger(c)
 	--get ability
-	dm.AddSpellCastEffect(c,0,nil,scard.abop)
+	dm.AddSpellCastEffect(c,0,nil,scard.regop)
 end
 scard.duel_masters_card=true
-function scard.abop(e,tp,eg,ep,ev,re,r,rp)
+function scard.regop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,DM_HINTMSG_CIVILIZATION)
 	local civ=Duel.AnnounceCivilization(tp,1,DM_CIVILIZATION_ALL)
 	local reset_count=(Duel.GetTurnPlayer()==tp and 2 or 1)
