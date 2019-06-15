@@ -14,7 +14,7 @@ EFFECT_INDESTRUCTIBLE=EFFECT_INDESTRUCTABLE
 EFFECT_INDESTRUCTIBLE_EFFECT=EFFECT_INDESTRUCTABLE_EFFECT
 EFFECT_INDESTRUCTIBLE_BATTLE=EFFECT_INDESTRUCTABLE_BATTLE
 
---return a card script's name and id
+--get a card script's name and id
 --include in each script: local scard,sid=dm.GetID()
 function Auxiliary.GetID()
 	local str=string.match(debug.getinfo(2,'S')['source'],"c%d+%.lua")
@@ -25,7 +25,7 @@ function Auxiliary.GetID()
 end
 --========== Lua ==========
 --Overwritten Lua functions
---return the value type of a variable
+--get the value type of a variable
 local lua_type=type
 function type(o)
 	local m=getmetatable(o)
@@ -202,7 +202,7 @@ end
 function Card.IsCanBreakShield(c)
 	return true--and not c:IsHasEffect(DM_EFFECT_CANNOT_BREAK_SHIELD) --reserved
 end
---return the number of shields a creature broke during the current turn
+--get the number of shields a creature broke during the current turn
 function Card.GetBrokenShieldCount(c)
 	return c:GetFlagEffect(DM_EFFECT_BREAK_SHIELD)
 end
@@ -248,7 +248,7 @@ function Card.IsHasCivilization(c)
 	return c:GetCivilization()~=DM_CIVILIZATION_NONE
 end
 ]]
---return the amount of civilizations a card has
+--get the amount of civilizations a card has
 function Card.GetCivilizationCount(c)
 	local civ=c:GetCivilization()
 	if civ==DM_CIVILIZATION_LIGHT or civ==DM_CIVILIZATION_WATER or civ==DM_CIVILIZATION_DARKNESS
@@ -270,7 +270,7 @@ function Card.GetCivilizationCount(c)
 		return 5
 	else return 0 end
 end
---return the first or only civilization a card has
+--get the first or only civilization a card has
 function Card.GetFirstCivilization(c)
 	local civ=c:GetCivilization()
 	if civ==DM_CIVILIZATION_LIGHT or civ==DM_CIVILIZATIONS_LW or civ==DM_CIVILIZATIONS_LD
@@ -292,7 +292,7 @@ function Card.GetFirstCivilization(c)
 		return DM_CIVILIZATION_NATURE
 	else return DM_CIVILIZATION_NONE end
 end
---return the second civilization a multicolored card has
+--get the second civilization a multicolored card has
 function Card.GetSecondCivilization(c)
 	local civ=c:GetCivilization()
 	if civ==DM_CIVILIZATIONS_LW or civ==DM_CIVILIZATIONS_LWD or civ==DM_CIVILIZATIONS_LWN
@@ -309,7 +309,7 @@ function Card.GetSecondCivilization(c)
 		return DM_CIVILIZATION_NATURE
 	else return DM_CIVILIZATION_NONE end
 end
---return the third civilization a multicolored card has
+--get the third civilization a multicolored card has
 function Card.GetThirdCivilization(c)
 	local civ=c:GetCivilization()
 	if civ==DM_CIVILIZATIONS_LWD or civ==DM_CIVILIZATIONS_LWDF or civ==DM_CIVILIZATIONS_LWDFN then
@@ -321,14 +321,14 @@ function Card.GetThirdCivilization(c)
 		return DM_CIVILIZATION_NATURE
 	else return DM_CIVILIZATION_NONE end
 end
---return the fourth civilization a multicolored card has
+--get the fourth civilization a multicolored card has
 function Card.GetFourthCivilization(c)
 	local civ=c:GetCivilization()
 	if civ==DM_CIVILIZATIONS_LWDF or civ==DM_CIVILIZATIONS_LWDFN then
 		return DM_CIVILIZATION_FIRE
 	else return DM_CIVILIZATION_NONE end
 end
---return the fifth civilization a multicolored card has
+--get the fifth civilization a multicolored card has
 function Card.GetFifthCivilization(c)
 	local civ=c:GetCivilization()
 	if civ==DM_CIVILIZATIONS_LWDFN then
@@ -359,7 +359,7 @@ function Card.IsHasRace(c)
 	end
 	return race
 end
---return the race a creature has
+--get the race a creature has
 function Card.DMGetRace(c)
 	local race=0
 	local ct=1
@@ -381,50 +381,18 @@ end
 --Renamed Card functions
 --check if a card has a particular race
 Card.DMIsRace=Card.IsSetCard
---reserved
---[[
---check if a card originally had a particular race
-Card.DMIsOriginalRace=Card.IsOriginalSetCard
-]]
---check if a card had a particular race when it was in the battle zone
+--check if a card had a particular race before it left the battle zone
 Card.DMIsPreviousRace=Card.IsPreviousSetCard
---reserved
---[[
---check if a card is included in a particular name category
-Card.IsNameCategory=Card.IsSetCard
---check if a card was originally included in a particular name category
-Card.IsOriginalNameCategory=Card.IsOriginalSetCard
---check if a card was included in a particular name category when it was in the battle zone
-Card.IsPreviousNameCategory=Card.IsPreviousSetCard
-]]
---return the cost required for playing a card
+--get the cost required for playing a card
 Card.GetPlayCost=Card.GetLevel
---return a card's mana cost
+--get a card's mana cost
 Card.GetManaCost=Card.GetOriginalLevel
---return the mana cost a card had when it was in the battle zone
---Card.GetPreviousManaCostOnField=Card.GetPreviousLevelOnField --reserved
---return a card's current civilization
+--get a card's current civilization
 Card.GetCivilization=Card.GetAttribute
---reserved
---[[
---return a card's original civilization
-Card.GetOriginalCivilization=Card.GetOriginalAttribute
---return the civilization a card had when it was in the battle zone
-Card.GetPreviousCivilizationOnField=Card.GetPreviousAttributeOnField
-]]
 --check what a card's current civilization is
 Card.IsCivilization=Card.IsAttribute
---return a creature's current power
+--get a creature's current power
 Card.GetPower=Card.GetAttack
---reserved
---[[
---return a creature's original power
-Card.GetBasePower=Card.GetBaseAttack
---return the power printed on a card
-Card.GetTextPower=Card.GetTextAttack
---return the power a creature had when it was in the battle zone
-Card.GetPreviousPowerOnField=Card.GetPreviousAttackOnField
-]]
 --check if a creature's power is equal to a given value
 Card.IsPower=Card.IsAttack
 --check if a creature's power is less than or equal to a given value
@@ -435,11 +403,9 @@ Card.IsPowerAbove=Card.IsAttackAbove
 Card.IsAbleToMZone=Card.IsAbleToGrave
 --check if a card can be put into the graveyard
 Card.DMIsAbleToGrave=Card.IsAbleToRemove
---check if a card can be put into the graveyard as a cost
---Card.DMIsAbleToGraveAsCost=Card.IsAbleToRemoveAsCost --reserved
---return the cards under a card
+--get the cards under a card
 Card.GetSourceGroup=Card.GetOverlayGroup
---return the number of cards under a card
+--get the number of cards under a card
 Card.GetSourceCount=Card.GetOverlayCount
 --========== Group ==========
 --Overwritten Group functions
@@ -605,7 +571,7 @@ Duel.SendtoBZone=Duel.SpecialSummon
 Duel.SendtoBZoneStep=Duel.SpecialSummonStep
 Duel.SendtoBZoneComplete=Duel.SpecialSummonComplete
 --change the position of a card
---Note: Added reason parameter
+--Note: Added reason parameter (not fully implemented)
 local duel_change_position=Duel.ChangePosition
 function Duel.ChangePosition(targets,pos,reason)
 	local reason=reason or REASON_EFFECT
@@ -1009,22 +975,22 @@ end
 function Duel.IsPlayerCanBlock(player)
 	return true--not Duel.IsPlayerAffectedByEffect(player,DM_EFFECT_CANNOT_BLOCK) --reserved
 end
---return the creature that is blocking
+--get the creature that is blocking
 function Duel.GetBlocker()
 	local f=function(c)
 		return c:GetFlagEffect(DM_EFFECT_BLOCKER)>0
 	end
 	return Duel.GetFirstMatchingCard(f,0,DM_LOCATION_BZONE,DM_LOCATION_BZONE,nil)
 end
---return the number of shields a player has
+--get the number of shields a player has
 function Duel.GetShieldCount(player)
 	return Duel.GetMatchingGroupCount(Auxiliary.ShieldZoneFilter(),player,DM_LOCATION_SZONE,0,nil)
 end
---return the number of shields a player's creatures broke during the current turn
+--get the number of shields a player's creatures broke during the current turn
 function Duel.GetBrokenShieldCount(player)
 	return Duel.GetFlagEffect(player,DM_EFFECT_BREAK_SHIELD)
 end
---return the number of cards a player has in their mana zone
+--get the number of cards a player has in their mana zone
 function Duel.GetManaCount(player)
 	return Duel.GetMatchingGroupCount(Auxiliary.ManaZoneFilter(),player,DM_LOCATION_MZONE,0,nil)
 end
@@ -1223,8 +1189,6 @@ Duel.PutOnTop=Duel.Overlay
 Duel.AnnounceCivilization=Duel.AnnounceAttribute
 --check if a player can put a card from the top of their deck into the mana zone
 Duel.IsPlayerCanSendDecktoptoMZone=Duel.IsPlayerCanDiscardDeck
---check if a player can put a card from the top of their deck into the mana zone as a cost
---Duel.IsPlayerCanSendDecktoptoMZoneAsCost=Duel.IsPlayerCanDiscardDeckAsCost --reserved
 --========== Auxiliary ==========
 --add a description to a card that lists the effects it gained
 --the description is removed if con_func returns false
@@ -1822,7 +1786,7 @@ function Auxiliary.AddSingleTriggerEffect(c,desc_id,code,optional,targ_func,op_f
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE+typ)
 	e1:SetCode(code)
-	e1:SetProperty(prop)
+	e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL+prop)
 	if con_func then e1:SetCondition(con_func) end
 	if targ_func then e1:SetTarget(targ_func) end
 	e1:SetOperation(op_func)
@@ -2081,17 +2045,14 @@ end
 function Auxiliary.RegisterEffectCustom(c,tc,desc_id,code,reset_flag,reset_count)
 	--code: DM_EFFECT_UNTAPPED_BE_ATTACKED, DM_EFFECT_IGNORE_SUMMONING_SICKNESS, DM_EFFECT_ATTACK_UNTAPPED, etc.
 	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
+	if tc==c then reset_flag=reset_flag+RESET_DISABLE end
 	local reset_count=reset_count or 1
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(code)
 	e1:SetProperty(EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_CLIENT_HINT)
-	if tc==c then
-		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_DISABLE+reset_flag,reset_count)
-	else
-		e1:SetReset(RESET_EVENT+RESETS_STANDARD+reset_flag,reset_count)
-	end
+	e1:SetReset(RESET_EVENT+RESETS_STANDARD+reset_flag,reset_count)
 	tc:RegisterEffect(e1)
 end
 --"Blocker (Whenever an opponent's creature attacks, you may tap this creature to stop the attack. Then the 2 creatures battle.)"
@@ -2216,6 +2177,7 @@ end
 --e.g. "Full Defensor" (DM-04 9/55)
 function Auxiliary.RegisterEffectBlocker(c,tc,desc_id,reset_flag,reset_count)
 	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
+	if tc==c then reset_flag=reset_flag+RESET_DISABLE end
 	local reset_count=reset_count or 1
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(DM_DESC_BLOCKER)
@@ -2227,11 +2189,7 @@ function Auxiliary.RegisterEffectBlocker(c,tc,desc_id,reset_flag,reset_count)
 	e1:SetCondition(aux.AND(Auxiliary.BlockerCondition1(),aux.NOT(Auxiliary.BlockerCondition2)))
 	e1:SetTarget(Auxiliary.BlockerTarget)
 	e1:SetOperation(Auxiliary.BlockerOperation)
-	if tc==c then
-		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_DISABLE+reset_flag,reset_count)
-	else
-		e1:SetReset(RESET_EVENT+RESETS_STANDARD+reset_flag,reset_count)
-	end
+	e1:SetReset(RESET_EVENT+RESETS_STANDARD+reset_flag,reset_count)
 	tc:RegisterEffect(e1)
 	--must block
 	local e2=e1:Clone()
@@ -2363,6 +2321,7 @@ end
 --e.g. "Creeping Plague" (DM-01 49/110)
 function Auxiliary.RegisterEffectSlayer(c,tc,desc_id,reset_flag,reset_count)
 	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
+	if tc==c then reset_flag=reset_flag+RESET_DISABLE end
 	local reset_count=reset_count or 1
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(DM_DESC_SLAYER)
@@ -2371,11 +2330,7 @@ function Auxiliary.RegisterEffectSlayer(c,tc,desc_id,reset_flag,reset_count)
 	e1:SetCondition(Auxiliary.SlayerCondition())
 	e1:SetTarget(Auxiliary.HintTarget)
 	e1:SetOperation(Auxiliary.SlayerOperation)
-	if tc==c then
-		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_DISABLE-RESET_REMOVE-RESET_LEAVE+reset_flag,reset_count)
-	else
-		e1:SetReset(RESET_EVENT+RESETS_STANDARD-RESET_REMOVE-RESET_LEAVE+reset_flag,reset_count)
-	end
+	e1:SetReset(RESET_EVENT+RESETS_STANDARD-RESET_REMOVE-RESET_LEAVE+reset_flag,reset_count)
 	tc:RegisterEffect(e1)
 	Auxiliary.RegisterEffectCustom(c,tc,desc_id,DM_EFFECT_SLAYER,-RESET_REMOVE-RESET_LEAVE+reset_flag,reset_count)
 end
@@ -2638,6 +2593,7 @@ end
 --e.g. "Rumble Gate" (DM-02 44/55)
 function Auxiliary.RegisterEffectUpdatePower(c,tc,desc_id,val,reset_flag,reset_count,con_func)
 	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
+	if tc==c then reset_flag=reset_flag+RESET_DISABLE end
 	local reset_count=reset_count or 1
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
@@ -2646,11 +2602,7 @@ function Auxiliary.RegisterEffectUpdatePower(c,tc,desc_id,val,reset_flag,reset_c
 	e1:SetProperty(EFFECT_FLAG_CLIENT_HINT)
 	if con_func then e1:SetCondition(con_func) end
 	e1:SetValue(val)
-	if tc==c then
-		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_DISABLE+reset_flag,reset_count)
-	else
-		e1:SetReset(RESET_EVENT+RESETS_STANDARD+reset_flag,reset_count)
-	end
+	e1:SetReset(RESET_EVENT+RESETS_STANDARD+reset_flag,reset_count)
 	tc:RegisterEffect(e1)
 end
 --"At the end of each of your turns, you may untap this creature."
@@ -2748,6 +2700,7 @@ end
 function Auxiliary.RegisterEffectCannotBeBlocked(c,tc,desc_id,val,con_func,reset_flag,reset_count)
 	local con_func=con_func or aux.TRUE
 	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
+	if tc==c then reset_flag=reset_flag+RESET_DISABLE end
 	local reset_count=reset_count or 1
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -2757,11 +2710,7 @@ function Auxiliary.RegisterEffectCannotBeBlocked(c,tc,desc_id,val,con_func,reset
 	e1:SetTargetRange(1,1)
 	e1:SetCondition(aux.AND(Auxiliary.SelfAttackerCondition,con_func))
 	e1:SetValue(Auxiliary.CannotBeBlockedValue(val))
-	if tc==c then
-		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_DISABLE+reset_flag,reset_count)
-	else
-		e1:SetReset(RESET_EVENT+RESETS_STANDARD+reset_flag,reset_count)
-	end
+	e1:SetReset(RESET_EVENT+RESETS_STANDARD+reset_flag,reset_count)
 	tc:RegisterEffect(e1)
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
@@ -2769,11 +2718,7 @@ function Auxiliary.RegisterEffectCannotBeBlocked(c,tc,desc_id,val,con_func,reset
 	e2:SetCode(DM_EFFECT_UNBLOCKABLE)
 	e2:SetProperty(EFFECT_FLAG_CLIENT_HINT)
 	e2:SetCondition(con_func)
-	if tc==c then
-		e2:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_DISABLE+reset_flag,reset_count)
-	else
-		e2:SetReset(RESET_EVENT+RESETS_STANDARD+reset_flag,reset_count)
-	end
+	e2:SetReset(RESET_EVENT+RESETS_STANDARD+reset_flag,reset_count)
 	tc:RegisterEffect(e2)
 end
 --"This creature can't attack."
