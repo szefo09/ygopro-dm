@@ -121,7 +121,8 @@ function Card.IsUntapped(c)
 		return c:IsFaceup()
 	elseif c:IsLocation(LOCATION_MZONE) then
 		return c:IsAttackPos()
-	else return false end
+	end
+	return false
 end
 --check if a card is tapped
 function Card.IsTapped(c)
@@ -129,7 +130,8 @@ function Card.IsTapped(c)
 		return c:IsFacedown()
 	elseif c:IsLocation(LOCATION_MZONE) then
 		return c:IsDefensePos()
-	else return false end
+	end
+	return false
 end
 --check if a card can be untapped
 function Card.IsAbleToUntap(c)
@@ -137,7 +139,8 @@ function Card.IsAbleToUntap(c)
 		return c:IsAbleToGrave()
 	elseif c:IsLocation(LOCATION_MZONE) then
 		return c:IsDefensePos()
-	else return false end
+	end
+	return false
 end
 --check if a card can be untapped at the start of the turn
 function Card.IsAbleToUntapStartStep(c)
@@ -151,7 +154,8 @@ function Card.IsAbleToTap(c)
 		return c:IsAbleToRemove()
 	elseif c:IsLocation(LOCATION_MZONE) then
 		return c:IsAttackPos()
-	else return false end
+	end
+	return false
 end
 --check if a card is in the mana zone
 function Card.IsMana(c)
@@ -465,7 +469,7 @@ function Group.RandomSelect(g,player,count,max_count)
 		player=1-player
 	end
 	local ct=g:GetCount()
-	local max_count=max_count or count
+	max_count=max_count or count
 	if ct>0 then
 		if max_count>count then
 			if count==0 and not Duel.SelectYesNo(player,DM_QHINTMSG_CHOOSE) then
@@ -545,7 +549,7 @@ end
 local duel_special_summon=Duel.SpecialSummon
 function Duel.SpecialSummon(targets,sumtype,sumplayer,target_player,nocheck,nolimit,pos,zone)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
-	local zone=zone or ZONE_ANY
+	zone=zone or ZONE_ANY
 	local ct=0
 	for tc in aux.Next(targets) do
 		if Duel.GetLocationCount(target_player,DM_LOCATION_BZONE)>0 then
@@ -574,7 +578,7 @@ Duel.SendtoBZoneComplete=Duel.SpecialSummonComplete
 --Note: Added reason parameter (not fully implemented)
 local duel_change_position=Duel.ChangePosition
 function Duel.ChangePosition(targets,pos,reason)
-	local reason=reason or REASON_EFFECT
+	reason=reason or REASON_EFFECT
 	return duel_change_position(targets,pos,reason)
 end
 --show a player a card
@@ -597,15 +601,15 @@ end
 --check if a player can draw equal to or less than a number of cards
 local duel_is_player_can_draw=Duel.IsPlayerCanDraw
 function Duel.IsPlayerCanDraw(player,count)
-	local count=count or 0
+	count=count or 0
 	local ct=Duel.GetFieldGroupCount(player,LOCATION_DECK,0)
 	if ct>0 and count>ct then count=ct end
 	return duel_is_player_can_draw(player,count)
 end
 --discard a card
 function Duel.DiscardHand(player,f,min,max,reason,ex,...)
-	local max=max or min
-	local reason=reason or REASON_EFFECT
+	max=max or min
+	reason=reason or REASON_EFFECT
 	Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_DISCARD)
 	local g=Duel.SelectMatchingCard(player,f,player,LOCATION_HAND,0,min,max,ex,...)
 	if g:GetCount()==0 then return 0 end
@@ -722,7 +726,7 @@ function Duel.BreakShield(e,sel_player,target_player,min,max,rc,reason,ignore_br
 		and Duel.IsPlayerAffectedByEffect(target_player,DM_EFFECT_CHANGE_SHIELD_BREAK_PLAYER) then
 		sel_player=target_player
 	end
-	local reason=reason or REASON_EFFECT
+	reason=reason or REASON_EFFECT
 	Duel.Tap(rc,REASON_RULE) --fix creature not being tapped when attacking
 	local g=Duel.GetMatchingGroup(Auxiliary.ShieldZoneFilter(),target_player,DM_LOCATION_SZONE,0,nil)
 	if g:GetCount()==0 or not rc:IsCanBreakShield() then return 0 end
@@ -958,7 +962,7 @@ function Duel.DrawUpTo(player,count,reason)
 end
 --discard a card at random
 function Duel.RandomDiscardHand(player,count,reason,ex)
-	local reason=reason or REASON_EFFECT
+	reason=reason or REASON_EFFECT
 	local g=Duel.GetFieldGroup(player,LOCATION_HAND,0)
 	local extype=type(ex)
 	if extype=="Card" then g:RemoveCard(ex)
@@ -1340,8 +1344,8 @@ function Auxiliary.NonEvolutionSummonOperation(e,tp,eg,ep,ev,re,r,rp,c)
 end
 --function to prevent multiple "shield trigger" abilities from chaining
 function Auxiliary.AddShieldTriggerChainLimit(c,effect,prop,con_func)
-	local prop=prop or 0
-	local con_func=con_func or aux.TRUE
+	prop=prop or 0
+	con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EVENT_CHAINING)
@@ -1585,8 +1589,8 @@ end
 --prop: include EFFECT_FLAG_CARD_TARGET for a targeting ability
 function Auxiliary.AddSpellCastEffect(c,desc_id,targ_func,op_func,prop,con_func,cost_func)
 	--cost_func: include dm.CastSpellCost for a spell without "shield trigger"
-	local prop=prop or 0
-	local con_func=con_func or aux.TRUE
+	prop=prop or 0
+	con_func=con_func or aux.TRUE
 	--cast for cost
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
@@ -1778,7 +1782,7 @@ end
 --con_func: dm.SelfBlockCondition for "Whenever this creature blocks" (e.g. "Spiral Grass" DM-02 10/55)
 --con_func: dm.UnblockedCondition for "Whenever this creature is attacking and isn't blocked" (e.g. "Balesk Baj, the Timeburner" DM-09 4/55)
 function Auxiliary.AddSingleTriggerEffect(c,desc_id,code,optional,targ_func,op_func,prop,con_func)
-	local prop=prop or 0
+	prop=prop or 0
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	if typ==EFFECT_TYPE_TRIGGER_O then prop=prop+EFFECT_FLAG_DELAY end
 	if code==EVENT_ATTACK_ANNOUNCE then prop=prop+DM_EFFECT_FLAG_CHAIN_LIMIT end
@@ -1813,7 +1817,7 @@ end
 --con_func: dm.UnblockedCondition for "Whenever any of your creatures is attacking and isn't blocked" (e.g. "Nemonex, Bajula's Robomantis" DM-12 19/55)
 --con_func: dm.EventPlayerCondition(PLAYER_SELF) for "Whenever you discard cards" (e.g. "Dorothea, the Explorer" DM-13 6/55)
 function Auxiliary.AddTriggerEffect(c,desc_id,code,optional,targ_func,op_func,prop,con_func)
-	local prop=prop or 0
+	prop=prop or 0
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	if typ==EFFECT_TYPE_TRIGGER_O then prop=prop+EFFECT_FLAG_DELAY end
 	if code==EVENT_ATTACK_ANNOUNCE then prop=prop+DM_EFFECT_FLAG_CHAIN_LIMIT end
@@ -1834,12 +1838,12 @@ end
 --code: DM_EVENT_COME_INTO_PLAY for "When you put this creature into the battle zone" (e.g. "Forbos, Sanctum Guardian Q" DM-06 19/110)
 function Auxiliary.AddSingleGrantTriggerEffect(c,desc_id,code,optional,targ_func1,op_func,prop,s_range,o_range,targ_func2)
 	--targ_func1: include dm.HintTarget
-	local prop=prop or 0
+	prop=prop or 0
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	if typ==EFFECT_TYPE_TRIGGER_O then prop=prop+EFFECT_FLAG_DELAY end
 	if code==EVENT_ATTACK_ANNOUNCE then prop=prop+DM_EFFECT_FLAG_CHAIN_LIMIT end
-	local s_range=s_range or LOCATION_ALL
-	local o_range=o_range or 0
+	s_range=s_range or LOCATION_ALL
+	o_range=o_range or 0
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE+typ)
@@ -1859,12 +1863,12 @@ end
 --code: EVENT_PHASE+PHASE_END for "At the end of [the] turn" (e.g. "Ballus, Dogfight Enforcer Q" DM-05 6/55)
 function Auxiliary.AddGrantTriggerEffect(c,desc_id,code,optional,targ_func1,op_func,prop,s_range,o_range,targ_func2,con_func)
 	--targ_func1: include dm.HintTarget
-	local prop=prop or 0
+	prop=prop or 0
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	if typ==EFFECT_TYPE_TRIGGER_O then prop=prop+EFFECT_FLAG_DELAY end
 	if code==EVENT_ATTACK_ANNOUNCE then prop=prop+DM_EFFECT_FLAG_CHAIN_LIMIT end
-	local s_range=s_range or LOCATION_ALL
-	local o_range=o_range or 0
+	s_range=s_range or LOCATION_ALL
+	o_range=o_range or 0
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_FIELD+typ)
@@ -1932,7 +1936,7 @@ end
 --e.g. "Natalia, Channeler of Suns" (Game Original)
 function Auxiliary.AddTriggerEffectPlayerCastSpell(c,desc_id,p,f,optional,targ_func,op_func,prop)
 	--p: the player who casts the spell (PLAYER_SELF, PLAYER_OPPO, or nil for either player)
-	local prop=prop or 0
+	prop=prop or 0
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -1988,10 +1992,10 @@ end
 --e.g. "Wise Starnoid, Avatar of Hope" (DM-12 S2/S5)
 --Not fully implemented: Ability does not trigger when the creature is added to the shields face down
 function Auxiliary.AddSingleTriggerEffectLeaveBZone(c,desc_id,optional,targ_func,op_func,prop,con_func)
-	local prop=prop or 0
+	prop=prop or 0
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	if typ==EFFECT_TYPE_TRIGGER_O then prop=prop+EFFECT_FLAG_DELAY end
-	local con_func=con_func or aux.TRUE
+	con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE+typ)
@@ -2044,9 +2048,9 @@ end
 --e.g. "Chaos Strike" (DM-01 72/110), "Diamond Cutter" (DM-02 1/55), "Rumble Gate" (DM-02 44/55)
 function Auxiliary.RegisterEffectCustom(c,tc,desc_id,code,reset_flag,reset_count)
 	--code: DM_EFFECT_UNTAPPED_BE_ATTACKED, DM_EFFECT_IGNORE_SUMMONING_SICKNESS, DM_EFFECT_ATTACK_UNTAPPED, etc.
-	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
+	reset_flag=reset_flag or RESET_PHASE+PHASE_END
 	if tc==c then reset_flag=reset_flag+RESET_DISABLE end
-	local reset_count=reset_count or 1
+	reset_count=reset_count or 1
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE)
@@ -2061,7 +2065,7 @@ end
 function Auxiliary.EnableBlocker(c,con_func,desc,f)
 	--desc: DM_DESC_FN_BLOCKER for "Fire and nature blocker", DM_DESC_DRAGON_BLOCKER for "Dragon blocker", etc.
 	--f: function for "CIVILIZATION blocker" or "RACE blocker"
-	local con_func=con_func or aux.TRUE
+	con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	if desc then
 		e1:SetDescription(desc)
@@ -2136,9 +2140,9 @@ end
 --"Each of your creatures has "Blocker"."
 --e.g. "Sieg Balicula, the Intense" (DM-03 8/55), "Gallia Zohl, Iron Guardian Q" (DM-05 8/55)
 function Auxiliary.AddStaticEffectBlocker(c,s_range,o_range,targ_func,con_func)
-	local s_range=s_range or LOCATION_ALL
-	local o_range=o_range or 0
-	local targ_func=targ_func or aux.TRUE
+	s_range=s_range or LOCATION_ALL
+	o_range=o_range or 0
+	targ_func=targ_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(DM_DESC_BLOCKER)
 	e1:SetCategory(DM_CATEGORY_BLOCKER)
@@ -2176,9 +2180,9 @@ end
 --Give a card "Blocker"
 --e.g. "Full Defensor" (DM-04 9/55)
 function Auxiliary.RegisterEffectBlocker(c,tc,desc_id,reset_flag,reset_count)
-	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
+	reset_flag=reset_flag or RESET_PHASE+PHASE_END
 	if tc==c then reset_flag=reset_flag+RESET_DISABLE end
-	local reset_count=reset_count or 1
+	reset_count=reset_count or 1
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(DM_DESC_BLOCKER)
 	e1:SetCategory(DM_CATEGORY_BLOCKER)
@@ -2226,16 +2230,16 @@ end
 --"Power attacker +N000 (While attacking, this creature gets +N000 power.)"
 --e.g. "Brawler Zyler" (DM-01 70/110)
 function Auxiliary.EnablePowerAttacker(c,val,con_func)
-	local con_func=con_func or aux.TRUE
+	con_func=con_func or aux.TRUE
 	Auxiliary.EnableUpdatePower(c,val,aux.AND(Auxiliary.SelfAttackerCondition,con_func))
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_POWER_ATTACKER,con_func)
 end
 --"Each of your creatures has "Power attacker +N000"."
 --e.g. "Überdragon Jabaha" (DM-03 43/55), "Terradragon Hulcoon Berga" (Game Original)
 function Auxiliary.AddStaticEffectPowerAttacker(c,val,s_range,o_range,targ_func,con_func)
-	local s_range=s_range or LOCATION_ALL
-	local o_range=o_range or 0
-	local targ_func=targ_func or aux.TRUE
+	s_range=s_range or LOCATION_ALL
+	o_range=o_range or 0
+	targ_func=targ_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(DM_EFFECT_UPDATE_POWER)
@@ -2256,8 +2260,8 @@ end
 --Give a card "Power attacker +N000"
 --e.g. "Burning Power" (DM-01 71/110)
 function Auxiliary.RegisterEffectPowerAttacker(c,tc,desc_id,val,reset_flag,reset_count)
-	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
-	local reset_count=reset_count or 1
+	reset_flag=reset_flag or RESET_PHASE+PHASE_END
+	reset_count=reset_count or 1
 	Auxiliary.RegisterEffectUpdatePower(c,tc,desc_id,val,reset_flag,reset_count,Auxiliary.SelfAttackerCondition)
 	Auxiliary.RegisterEffectCustom(c,tc,desc_id,DM_EFFECT_POWER_ATTACKER,reset_flag,reset_count)
 end
@@ -2267,7 +2271,7 @@ end
 function Auxiliary.EnableSlayer(c,con_func,desc,f)
 	--desc: DM_DESC_NL_SLAYER for "Nature and light slayer", etc.
 	--f: function for "CIVILIZATION slayer"
-	local con_func=con_func or aux.TRUE
+	con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	if desc then
 		e1:SetDescription(desc)
@@ -2298,9 +2302,9 @@ end
 --"Each of your creatures has "Slayer"."
 --e.g. "Gigaling Q" (DM-05 27/55), "Frost Specter, Shadow of Age" (DM-06 54/110)
 function Auxiliary.AddStaticEffectSlayer(c,s_range,o_range,targ_func)
-	local s_range=s_range or LOCATION_ALL
-	local o_range=o_range or 0
-	local targ_func=targ_func or aux.TRUE
+	s_range=s_range or LOCATION_ALL
+	o_range=o_range or 0
+	targ_func=targ_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(DM_DESC_SLAYER)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
@@ -2320,9 +2324,9 @@ end
 --Give a card "Slayer"
 --e.g. "Creeping Plague" (DM-01 49/110)
 function Auxiliary.RegisterEffectSlayer(c,tc,desc_id,reset_flag,reset_count)
-	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
+	reset_flag=reset_flag or RESET_PHASE+PHASE_END
 	if tc==c then reset_flag=reset_flag+RESET_DISABLE end
-	local reset_count=reset_count or 1
+	reset_count=reset_count or 1
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(DM_DESC_SLAYER)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
@@ -2339,15 +2343,15 @@ end
 --e.g. "Gigaberos" (DM-01 55/110), "Chaotic Skyterror" (DM-04 41/55)
 function Auxiliary.EnableBreaker(c,code,con_func,s_range,o_range,targ_func)
 	--code: DM_EFFECT_DOUBLE_BREAKER, DM_EFFECT_TRIPLE_BREAKER, DM_EFFECT_QUATTRO_BREAKER, etc.
-	local con_func=con_func or aux.TRUE
+	con_func=con_func or aux.TRUE
 	Auxiliary.EnableEffectCustom(c,DM_EFFECT_BREAKER,con_func,s_range,o_range,targ_func)
 	Auxiliary.EnableEffectCustom(c,code,con_func,s_range,o_range,targ_func)
 end
 --Give a card "Breaker"
 --e.g. "Magma Gazer" (DM-01 81/110)
 function Auxiliary.RegisterEffectBreaker(c,tc,desc_id,code,reset_flag,reset_count)
-	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
-	local reset_count=reset_count or 1
+	reset_flag=reset_flag or RESET_PHASE+PHASE_END
+	reset_count=reset_count or 1
 	Auxiliary.RegisterEffectCustom(c,tc,desc_id,DM_EFFECT_BREAKER,reset_flag,reset_count)
 	Auxiliary.RegisterEffectCustom(c,tc,desc_id,code,reset_flag,reset_count)
 end
@@ -2376,10 +2380,10 @@ end
 --e.g. "Arc Bine, the Astounding" (DM-06 12/110)
 function Auxiliary.AddStaticEffectTapAbility(c,desc_id,targ_func1,op_func,s_range,o_range,targ_func2,prop)
 	--targ_func1: include dm.HintTarget
-	local desc_id=desc_id or 0
-	local s_range=s_range or LOCATION_ALL
-	local o_range=o_range or 0
-	local targ_func2=targ_func2 or aux.TRUE
+	desc_id=desc_id or 0
+	s_range=s_range or LOCATION_ALL
+	o_range=o_range or 0
+	targ_func2=targ_func2 or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_QUICK_O)
@@ -2438,7 +2442,7 @@ function Auxiliary.TurboRushCondition(e,tp,eg,ep,ev,re,r,rp)
 end
 --"Silent skill (After your other creatures untap, if this creature is tapped, you may keep it tapped instead and use its Silentskill ability.)"
 --e.g. "Kejila, the Hidden Horror" (DM-10 5/110)
-function Auxiliary.EnableSilentSkill(c,desc_id,targ_func,op_func,prop)
+function Auxiliary.EnableSilentEffect(c,desc_id,targ_func,op_func,prop)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
@@ -2572,9 +2576,9 @@ end
 --"Each of your creatures has "This creature gets +/-N000 power"." 
 --e.g. "Smash Horn Q" (DM-05 55/55)
 function Auxiliary.AddStaticEffectUpdatePower(c,val,s_range,o_range,targ_func)
-	local s_range=s_range or LOCATION_ALL
-	local o_range=o_range or 0
-	local targ_func=targ_func or aux.TRUE
+	s_range=s_range or LOCATION_ALL
+	o_range=o_range or 0
+	targ_func=targ_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
 	e1:SetCode(DM_EFFECT_UPDATE_POWER)
@@ -2592,9 +2596,9 @@ end
 --Give a card "+/-N000 power"
 --e.g. "Rumble Gate" (DM-02 44/55)
 function Auxiliary.RegisterEffectUpdatePower(c,tc,desc_id,val,reset_flag,reset_count,con_func)
-	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
+	reset_flag=reset_flag or RESET_PHASE+PHASE_END
 	if tc==c then reset_flag=reset_flag+RESET_DISABLE end
-	local reset_count=reset_count or 1
+	reset_count=reset_count or 1
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE)
@@ -2608,7 +2612,7 @@ end
 --"At the end of each of your turns, you may untap this creature."
 --e.g. "Ruby Grass" (DM-01 17/110)
 function Auxiliary.EnableTurnEndSelfUntap(c,desc_id,con_func,forced)
-	local desc_id=desc_id or 0
+	desc_id=desc_id or 0
 	local typ=forced and EFFECT_TYPE_TRIGGER_F or EFFECT_TYPE_TRIGGER_O
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
@@ -2647,7 +2651,7 @@ end
 --"This creature can't be blocked."
 --e.g. "Candy Drop" (DM-01 28/110)
 function Auxiliary.EnableCannotBeBlocked(c,f,con_func)
-	local con_func=con_func or aux.TRUE
+	con_func=con_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetCode(EFFECT_CANNOT_ACTIVATE)
@@ -2675,9 +2679,9 @@ end
 --"Each of your creatures has "This creature can't be blocked"."
 --e.g. "King Nautilus" (DM-02 17/55)
 function Auxiliary.AddStaticEffectCannotBeBlocked(c,s_range,o_range,targ_func)
-	local s_range=s_range or LOCATION_ALL
-	local o_range=o_range or 0
-	local targ_func=targ_func or aux.TRUE
+	s_range=s_range or LOCATION_ALL
+	o_range=o_range or 0
+	targ_func=targ_func or aux.TRUE
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetCode(EFFECT_CANNOT_ACTIVATE)
@@ -2698,10 +2702,10 @@ end
 --Give a card "Can't be blocked"
 --e.g. "Laser Wing" (DM-01 11/110)
 function Auxiliary.RegisterEffectCannotBeBlocked(c,tc,desc_id,val,con_func,reset_flag,reset_count)
-	local con_func=con_func or aux.TRUE
-	local reset_flag=reset_flag or RESET_PHASE+PHASE_END
+	con_func=con_func or aux.TRUE
+	reset_flag=reset_flag or RESET_PHASE+PHASE_END
 	if tc==c then reset_flag=reset_flag+RESET_DISABLE end
-	local reset_count=reset_count or 1
+	reset_count=reset_count or 1
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetCode(EFFECT_CANNOT_ACTIVATE)
@@ -2725,7 +2729,7 @@ end
 --"Creatures can't attack."
 --e.g. "Hunter Fish" (DM-01 31/110), "Nariel, the Oracle" (DM-08 11/55)
 function Auxiliary.EnableCannotAttack(c,con_func,s_range,o_range,tg)
-	local con_func=con_func or aux.TRUE
+	con_func=con_func or aux.TRUE
 	local targ_func=aux.AND(Auxiliary.CannotAttackTarget,tg)
 	if s_range or o_range then
 		Auxiliary.EnableEffectCustom(c,EFFECT_CANNOT_ATTACK,con_func,s_range,o_range,targ_func)
@@ -2744,7 +2748,7 @@ end
 --e.g. "Bloody Squito" (DM-01 46/110), "Hanakage, Shadow of Transience" (Game Original)
 function Auxiliary.EnableBattleWinSelfDestroy(c,desc_id,ram)
 	--ram: true for "This creature is destroyed at random"
-	local desc_id=desc_id or 0
+	desc_id=desc_id or 0
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
@@ -2776,7 +2780,7 @@ end
 --"Whenever this creature wins a battle, [you may] untap this creature."
 --e.g. "Mobile Saint Meermax" (DM-13 17/55)
 function Auxiliary.EnableBattleWinSelfUntap(c,desc_id,forced)
-	local desc_id=desc_id or 0
+	desc_id=desc_id or 0
 	local typ=forced and EFFECT_TYPE_TRIGGER_F or EFFECT_TYPE_TRIGGER_O
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
@@ -2867,7 +2871,7 @@ end
 --"At the end of each of your turns, destroy this creature."
 --e.g. "Gnarvash, Merchant of Blood" (DM-06 57/110)
 function Auxiliary.EnableTurnEndSelfDestroy(c,desc_id,con_func)
-	local desc_id=desc_id or 0
+	desc_id=desc_id or 0
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
@@ -2884,7 +2888,7 @@ end
 --"When this creature battles, destroy it after the battle."
 --e.g. "Vile Mulder, Wing of the Void" (DM-06 69/110)
 function Auxiliary.EnableBattleEndSelfDestroy(c,desc_id)
-	local desc_id=desc_id or 0
+	desc_id=desc_id or 0
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
@@ -2959,7 +2963,7 @@ end
 --"Shield Saver (When one of your shields would be broken, you may destroy this creature instead.)"
 --e.g. "Balzark "Fire Blast" Dragon" (DM-30 15/55)
 function Auxiliary.EnableShieldSaver(c,desc_id)
-	local desc_id=desc_id or 0
+	desc_id=desc_id or 0
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(DM_DESC_SHIELD_SAVER)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -2994,7 +2998,7 @@ end
 --"At the end of your turn, [you may] return this creature to your hand."
 --e.g. "Ganzo, Flame Fisherman" (Game Original)
 function Auxiliary.EnableTurnEndSelfReturn(c,desc_id,con_func,optional)
-	local desc_id=desc_id or 0
+	desc_id=desc_id or 0
 	local typ=optional and EFFECT_TYPE_TRIGGER_O or EFFECT_TYPE_TRIGGER_F
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
@@ -3019,7 +3023,7 @@ function Auxiliary.SelfReturnOperation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SendtoHand(c,PLAYER_OWNER,REASON_EFFECT)
 	end
 end
---operation function for abilities that targeted cards
+--operation function for abilities that target cards
 --f: Duel.Destroy to destroy cards
 --f: Duel.SendtoDeck to put cards into the deck
 --f: Duel.DMSendtoGrave to discard cards (REASON_DISCARD+REASON_EFFECT)
@@ -3045,8 +3049,8 @@ function Auxiliary.BreakOperation(sp,tgp,min,max,rc,ignore_breaker)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local sel_player=(sp==PLAYER_SELF and tp) or (sp==PLAYER_OPPO and 1-tp)
 				local target_player=(tgp==PLAYER_SELF and tp) or (tgp==PLAYER_OPPO and 1-tp)
-				local max=max or min
-				local rc=rc or e:GetHandler()
+				max=max or min
+				rc=rc or e:GetHandler()
 				if Duel.GetShieldCount(target_player)==0 then return end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
 				Duel.BreakShield(e,sel_player,target_player,min,max,rc,REASON_EFFECT,ignore_breaker)
@@ -3060,7 +3064,7 @@ function Auxiliary.ConfirmOperation(p,f,s,o,min,max,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
-				local max=max or min
+				max=max or min
 				local c=e:GetHandler()
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
@@ -3107,7 +3111,7 @@ function Auxiliary.DestroyOperation(p,f,s,o,min,max,ram,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
-				local max=max or min
+				max=max or min
 				local c=e:GetHandler()
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
@@ -3137,7 +3141,7 @@ function Auxiliary.DiscardOperation(p,f,s,o,min,max,ram,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
-				local max=max or min
+				max=max or min
 				local c=e:GetHandler()
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
@@ -3208,8 +3212,8 @@ function Auxiliary.SendtoBZoneOperation(p,f,s,o,min,max,pos,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
-				local max=max or min
-				local pos=pos or POS_FACEUP_UNTAPPED
+				max=max or min
+				pos=pos or POS_FACEUP_UNTAPPED
 				local bzone_count=Duel.GetLocationCount(player,DM_LOCATION_BZONE)
 				if max>bzone_count then max=bzone_count end
 				local g=Duel.GetMatchingGroup(Auxiliary.SendtoBZoneFilter,tp,s,o,ex,e,tp,f,table.unpack(funs))
@@ -3247,7 +3251,7 @@ function Auxiliary.SendtoGraveOperation(p,f,s,o,min,max,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
-				local max=max or min
+				max=max or min
 				local c=e:GetHandler()
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				local g=Duel.GetMatchingGroup(aux.AND(Card.DMIsAbleToGrave,f),tp,s,o,ex,table.unpack(funs))
@@ -3272,7 +3276,7 @@ function Auxiliary.SendtoHandOperation(p,f,s,o,min,max,conf,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
-				local max=max or min
+				max=max or min
 				local desc=DM_HINTMSG_RTOHAND
 				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToHand,f),tp,s,o,ex,table.unpack(funs))
 				if g:GetCount()==0 then return end
@@ -3331,7 +3335,7 @@ function Auxiliary.SendtoMZoneOperation(p,f,s,o,min,max,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
-				local max=max or min
+				max=max or min
 				local c=e:GetHandler()
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToMZone,f),tp,s,o,ex,table.unpack(funs))
@@ -3372,7 +3376,7 @@ function Auxiliary.SendtoSZoneOperation(p,f,s,o,min,max,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
-				local max=max or min
+				max=max or min
 				local szone_count=Duel.GetLocationCount(player,DM_LOCATION_SZONE)
 				if max>szone_count then max=szone_count end
 				local c=e:GetHandler()
@@ -3476,6 +3480,7 @@ function Auxiliary.TapOperation(p,f,s,o,min,max,ram,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
+				max=max or min
 				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToTap,f),tp,s,o,ex,table.unpack(funs))
 				if g:GetCount()==0 then return end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
@@ -3556,6 +3561,18 @@ function Auxiliary.ReasonPlayerCondition(p)
 			end
 end
 Auxiliary.rpcon=Auxiliary.ReasonPlayerCondition
+--condition to check if a player has a particular card in a zone
+--e.g. "Iocant, the Oracle" (DM-01 Iocant, the Oracle 8/110)
+function Auxiliary.ExistingCardCondition(f,s,o,count)
+	return	function(e,tp,eg,ep,ev,re,r,rp)
+				f=f or aux.TRUE
+				s=s or DM_LOCATION_BZONE
+				o=o or 0
+				count=count or 1
+				return Duel.IsExistingMatchingCard(f,e:GetHandlerPlayer(),s,o,count,nil)
+			end
+end
+Auxiliary.exccon=Auxiliary.ExistingCardCondition
 --condition of "While this creature is attacking"
 --e.g. "Bolshack Dragon" (DM-01 69/110)
 function Auxiliary.SelfAttackerCondition(e,tp,eg,ep,ev,re,r,rp)
@@ -3630,11 +3647,11 @@ function Auxiliary.MZoneExclusiveCondition(f,...)
 	local ext_params={...}
 	return	function(e)
 				local tp=e:GetHandlerPlayer()
-				local filter_func=function(c,f,...)
+				local filt_func=function(c,f,...)
 					return not f(c,...)
 				end
 				return Duel.IsExistingMatchingCard(Auxiliary.ManaZoneFilter(),tp,DM_LOCATION_MZONE,0,1,nil,f,table.unpack(ext_params))
-					and not Duel.IsExistingMatchingCard(Auxiliary.ManaZoneFilter(filter_func),tp,DM_LOCATION_MZONE,0,1,nil,f,table.unpack(ext_params))
+					and not Duel.IsExistingMatchingCard(Auxiliary.ManaZoneFilter(filt_func),tp,DM_LOCATION_MZONE,0,1,nil,f,table.unpack(ext_params))
 			end
 end
 Auxiliary.mexcon=Auxiliary.MZoneExclusiveCondition
@@ -3728,8 +3745,8 @@ function Auxiliary.TargetCardFunction(p,f,s,o,min,max,desc,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
-				local max=max or min
-				local desc=desc or DM_HINTMSG_TARGET
+				max=max or min
+				desc=desc or DM_HINTMSG_TARGET
 				local c=e:GetHandler()
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				local extype=type(ex)
@@ -3749,11 +3766,8 @@ function Auxiliary.TargetCardFunction(p,f,s,o,min,max,desc,ex,...)
 					return true
 				end
 				if chk==0 then
-					if e:IsHasType(EFFECT_TYPE_TRIGGER_F) or e:IsHasType(EFFECT_TYPE_QUICK_F) or c:IsSpell() then
-						return true
-					else
-						return Duel.IsExistingTarget(f,tp,s,o,1,ex,table.unpack(funs))
-					end
+					if e:IsHasType(EFFECT_TYPE_TRIGGER_F) or e:IsHasType(EFFECT_TYPE_QUICK_F) or c:IsSpell() then return true end
+					return Duel.IsExistingTarget(f,tp,s,o,1,ex,table.unpack(funs))
 				end
 				Duel.Hint(HINT_SELECTMSG,player,desc)
 				Duel.SelectTarget(player,f,tp,s,o,min,max,ex,table.unpack(funs))
@@ -3780,13 +3794,13 @@ Auxiliary.hinttg=Auxiliary.HintTarget
 --filter for a face up creature in the battle zone
 --reserved
 --[[
-function Auxiliary.FaceUpFilter(f,...)
+function Auxiliary.FaceupFilter(f,...)
 	local ext_params={...}
 	return	function(target)
 				return target:IsFaceup() and f(target,table.unpack(ext_params))
 			end
 end
-Auxiliary.fufilt=Auxiliary.FaceUpFilter
+Auxiliary.fufilt=Auxiliary.FaceupFilter
 ]]
 --filter for a card in the mana zone
 function Auxiliary.ManaZoneFilter(f)

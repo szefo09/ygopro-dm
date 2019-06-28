@@ -6,15 +6,12 @@ function scard.initial_effect(c)
 	--blocker
 	dm.EnableBlocker(c)
 	--power up
-	dm.EnableUpdatePower(c,2000,scard.powcon)
-	dm.AddEffectDescription(c,0,scard.powcon)
+	dm.EnableUpdatePower(c,2000,dm.ExistingCardCondition(scard.cfilter))
+	dm.AddEffectDescription(c,0,dm.ExistingCardCondition(scard.cfilter))
 	--cannot attack player
 	dm.EnableCannotAttackPlayer(c)
 end
 scard.duel_masters_card=true
 function scard.cfilter(c)
 	return c:IsFaceup() and c:DMIsRace(DM_RACE_ANGEL_COMMAND)
-end
-function scard.powcon(e)
-	return Duel.IsExistingMatchingCard(scard.cfilter,e:GetHandlerPlayer(),DM_LOCATION_BZONE,0,1,nil)
 end
