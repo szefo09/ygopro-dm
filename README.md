@@ -79,7 +79,7 @@ If you do not build your deck according to the following rules, you will lose th
 3. `PHASE_STANDBY` = Charge Step = You may put a card from your hand into your mana zone.
 4. `PHASE_MAIN1` = Main Step = You may use cards, such as summoning creatures, casting spells, generating and crossing cross gear or fortifying castles by paying the appropriate costs.
 5. `PHASE_BATTLE` = Attack Step = You may attack with creatures or use [Tap Abilities](https://duelmasters.fandom.com/wiki/Tap_Ability).
-6. `PHASE_END` = End Step = Any abilities that trigger "the end of your turn" resolve now.
+6. `PHASE_END` = End Step = Any abilities that trigger at "the end of the turn" resolve now.
 </details>
 <details>
 <summary>OT</summary>

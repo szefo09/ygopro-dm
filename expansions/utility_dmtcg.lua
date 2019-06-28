@@ -2442,7 +2442,7 @@ function Auxiliary.TurboRushCondition(e,tp,eg,ep,ev,re,r,rp)
 end
 --"Silent skill (After your other creatures untap, if this creature is tapped, you may keep it tapped instead and use its Silentskill ability.)"
 --e.g. "Kejila, the Hidden Horror" (DM-10 5/110)
-function Auxiliary.EnableSilentEffect(c,desc_id,targ_func,op_func,prop)
+function Auxiliary.EnableSilentSkill(c,desc_id,targ_func,op_func,prop)
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),desc_id))
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
