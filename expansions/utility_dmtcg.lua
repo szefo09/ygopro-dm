@@ -463,18 +463,15 @@ end
 --Note: Remove max_count if YGOPro can forbid players to look at their face-down cards
 local group_random_select=Group.RandomSelect
 function Group.RandomSelect(g,player,count,max_count)
+	max_count=max_count or count
 	--check for "Whenever you would choose one of your opponent's shields, your opponent chooses instead."
 	if g:IsExists(Auxiliary.ShieldZoneFilter(Card.IsControler),1,nil,1-player)
 		and Duel.IsPlayerAffectedByEffect(1-player,DM_EFFECT_CHANGE_SHIELD_CHOOSE_PLAYER) then
 		player=1-player
 	end
 	local ct=g:GetCount()
-	max_count=max_count or count
 	if ct>0 then
-		if max_count>count then
-			if count==0 and not Duel.SelectYesNo(player,DM_QHINTMSG_CHOOSE) then
-				return group_random_select(g,player,count,max_count)
-			end
+		if max_count>count and Duel.SelectYesNo(player,DM_QHINTMSG_CHOOSE) then
 			if ct>max_count then ct=max_count end
 			local t={}
 			for i=1,ct do t[i]=i end
@@ -564,8 +561,6 @@ function Duel.SpecialSummon(targets,sumtype,sumplayer,target_player,nocheck,noli
 			end
 		else
 			Duel.Hint(HINT_MESSAGE,sumplayer,DM_DESC_NOBZONES)
-			Duel.DMSendtoGrave(tc,REASON_RULE) --put into the graveyard if all zones are occupied
-			ct=ct+1 --count the summon that did not happen because YGOPro's limited zones prevented it
 		end
 	end
 	Duel.SpecialSummonComplete()
@@ -907,8 +902,6 @@ function Duel.SendtoSZone(targets)
 					end
 				else
 					Duel.Hint(HINT_MESSAGE,tc2:GetOwner(),DM_DESC_NOSZONES)
-					Duel.DMSendtoGrave(tc2,REASON_RULE) --put into the graveyard if all zones are occupied
-					ct=ct+1	--count the card that did not add because YGOPro's limited zones prevented it
 				end
 			--end
 		end
@@ -918,8 +911,6 @@ function Duel.SendtoSZone(targets)
 			end
 		else
 			Duel.Hint(HINT_MESSAGE,tc1:GetOwner(),DM_DESC_NOSZONES)
-			Duel.DMSendtoGrave(tc1,REASON_RULE) --put into the graveyard if all zones are occupied
-			ct=ct+1 --count the card that did not add because YGOPro's limited zones prevented it
 		end
 	end
 	return ct
