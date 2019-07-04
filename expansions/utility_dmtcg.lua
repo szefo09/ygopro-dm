@@ -543,6 +543,15 @@ function Duel.SendtoDeck(targets,player,seq,reason)
 	return ct
 end
 --put a creature into the battle zone
+local duel_special_summon_step=Duel.SpecialSummonStep
+function Duel.SpecialSummonStep(c,sumtype,sumplayer,target_player,nocheck,nolimit,pos)
+	if Duel.GetLocationCount(target_player,DM_LOCATION_BZONE)==0 then
+		Duel.Hint(HINT_MESSAGE,sumplayer,DM_DESC_NOBZONES)
+		return false
+	end
+	return duel_special_summon_step(c,sumtype,sumplayer,target_player,nocheck,nolimit,pos)
+end
+Duel.SendtoBZoneStep=Duel.SpecialSummonStep
 local duel_special_summon=Duel.SpecialSummon
 function Duel.SpecialSummon(targets,sumtype,sumplayer,target_player,nocheck,nolimit,pos,zone)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
@@ -567,7 +576,6 @@ function Duel.SpecialSummon(targets,sumtype,sumplayer,target_player,nocheck,noli
 	return ct
 end
 Duel.SendtoBZone=Duel.SpecialSummon
-Duel.SendtoBZoneStep=Duel.SpecialSummonStep
 Duel.SendtoBZoneComplete=Duel.SpecialSummonComplete
 --change the position of a card
 --Note: Added reason parameter (not fully implemented)
@@ -888,7 +896,6 @@ end
 --add a card to a player's shields face down
 --Note: Currently disabled check if an evolution source can leave the battle zone
 function Duel.SendtoSZone(targets)
-	--player: the player whose shields to add a card to (generally its owner)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
 	local ct=0
 	for tc1 in aux.Next(targets) do
