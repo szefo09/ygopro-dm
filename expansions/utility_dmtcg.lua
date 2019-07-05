@@ -3386,7 +3386,7 @@ function Auxiliary.SendtoSZoneOperation(p,f,s,o,min,max,ex,...)
 				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and s==LOCATION_HAND then exg:AddCard(c) end
 				if type(ex)=="Card" then exg:AddCard(ex)
 				elseif type(ex)=="Group" then exg:Merge(ex) end
-				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToSZone,f),player,s,o,exg,table.unpack(funs))
+				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToSZone,f),tp,s,o,exg,table.unpack(funs))
 				if g:GetCount()==0 then return end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
 				if min and max then
