@@ -464,7 +464,8 @@ function scard.desop2(e,tp,eg,ep,ev,re,r,rp)
 		--raise event for "Whenever one of your creatures loses a battle"
 		--Duel.RaiseEvent(lc,EVENT_CUSTOM+DM_EVENT_LOSE_BATTLE,e,0,0,0,0) --reserved
 	end
-	Duel.Destroy(g,REASON_BATTLE+REASON_RULE) --EVENT_DESTROYED will not trigger if REASON_BATTLE is included
+	Duel.Destroy(g,REASON_BATTLE+REASON_RULE)
+	--raise events because EVENT_DESTROYED will not trigger if REASON_BATTLE is included
 	local og=Duel.GetOperatedGroup()
 	for oc in aux.Next(og) do
 		--raise event for "When this creature is destroyed"

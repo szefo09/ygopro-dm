@@ -543,6 +543,15 @@ function Duel.SendtoDeck(targets,player,seq,reason)
 	return ct
 end
 --put a creature into the battle zone
+local duel_special_summon_step=Duel.SpecialSummonStep
+function Duel.SpecialSummonStep(c,sumtype,sumplayer,target_player,nocheck,nolimit,pos)
+	if Duel.GetLocationCount(target_player,DM_LOCATION_BZONE)==0 then
+		Duel.Hint(HINT_MESSAGE,sumplayer,DM_DESC_NOBZONES)
+		return false
+	end
+	return duel_special_summon_step(c,sumtype,sumplayer,target_player,nocheck,nolimit,pos)
+end
+Duel.SendtoBZoneStep=Duel.SpecialSummonStep
 local duel_special_summon=Duel.SpecialSummon
 function Duel.SpecialSummon(targets,sumtype,sumplayer,target_player,nocheck,nolimit,pos,zone)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
@@ -567,7 +576,6 @@ function Duel.SpecialSummon(targets,sumtype,sumplayer,target_player,nocheck,noli
 	return ct
 end
 Duel.SendtoBZone=Duel.SpecialSummon
-Duel.SendtoBZoneStep=Duel.SpecialSummonStep
 Duel.SendtoBZoneComplete=Duel.SpecialSummonComplete
 --change the position of a card
 --Note: Added reason parameter (not fully implemented)
@@ -888,7 +896,6 @@ end
 --add a card to a player's shields face down
 --Note: Currently disabled check if an evolution source can leave the battle zone
 function Duel.SendtoSZone(targets)
-	--player: the player whose shields to add a card to (generally its owner)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
 	local ct=0
 	for tc1 in aux.Next(targets) do
@@ -955,9 +962,8 @@ end
 function Duel.RandomDiscardHand(player,count,reason,ex)
 	reason=reason or REASON_EFFECT
 	local g=Duel.GetFieldGroup(player,LOCATION_HAND,0)
-	local extype=type(ex)
-	if extype=="Card" then g:RemoveCard(ex)
-	elseif extype=="Group" then g:Sub(ex) end
+	if type(ex)=="Card" then g:RemoveCard(ex)
+	elseif type(ex)=="Group" then g:Sub(ex) end
 	if g:GetCount()==0 then return 0 end
 	local sg=g:RandomSelect(player,count)
 	return Duel.Remove(sg,POS_FACEUP,reason+REASON_DISCARD)
@@ -3056,11 +3062,9 @@ function Auxiliary.ConfirmOperation(p,f,s,o,min,max,ex,...)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
 				max=max or min
-				local c=e:GetHandler()
-				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
 				if g:GetCount()==0 then return end
-				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
+				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
 				if min and max then
 					Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_CONFIRM)
 					local sg=g:Select(player,min,max,ex,table.unpack(funs))
@@ -3103,11 +3107,9 @@ function Auxiliary.DestroyOperation(p,f,s,o,min,max,ram,ex,...)
 	return	function(e,tp,eg,ep,ev,re,r,rp)
 				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
 				max=max or min
-				local c=e:GetHandler()
-				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
 				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
 				if g:GetCount()==0 then return end
-				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
+				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,e:GetHandler():GetOriginalCode()) end
 				local sg=nil
 				if min and max then
 					if ram then
@@ -3134,8 +3136,11 @@ function Auxiliary.DiscardOperation(p,f,s,o,min,max,ram,ex,...)
 				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
 				max=max or min
 				local c=e:GetHandler()
-				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
-				local g=Duel.GetMatchingGroup(f,tp,s,o,ex,table.unpack(funs))
+				local exg=Group.CreateGroup()
+				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and s==LOCATION_HAND then exg:AddCard(c) end
+				if type(ex)=="Card" then exg:AddCard(ex)
+				elseif type(ex)=="Group" then exg:Merge(ex) end
+				local g=Duel.GetMatchingGroup(f,tp,s,o,exg,table.unpack(funs))
 				if g:GetCount()==0 then return end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
 				local sg=nil
@@ -3144,7 +3149,7 @@ function Auxiliary.DiscardOperation(p,f,s,o,min,max,ram,ex,...)
 						sg=g:RandomSelect(player,min)
 					else
 						Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_DISCARD)
-						sg=g:Select(player,min,max,ex,table.unpack(funs))
+						sg=g:Select(player,min,max,exg,table.unpack(funs))
 					end
 					Duel.DMSendtoGrave(sg,REASON_EFFECT+REASON_DISCARD)
 				else
@@ -3244,13 +3249,16 @@ function Auxiliary.SendtoGraveOperation(p,f,s,o,min,max,ex,...)
 				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
 				max=max or min
 				local c=e:GetHandler()
-				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
-				local g=Duel.GetMatchingGroup(aux.AND(Card.DMIsAbleToGrave,f),tp,s,o,ex,table.unpack(funs))
+				local exg=Group.CreateGroup()
+				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and s==LOCATION_HAND then exg:AddCard(c) end
+				if type(ex)=="Card" then exg:AddCard(ex)
+				elseif type(ex)=="Group" then exg:Merge(ex) end
+				local g=Duel.GetMatchingGroup(aux.AND(Card.DMIsAbleToGrave,f),tp,s,o,exg,table.unpack(funs))
 				if g:GetCount()==0 then return end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
 				if min and max then
 					Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOGRAVE)
-					local sg=g:Select(player,min,max,ex,table.unpack(funs))
+					local sg=g:Select(player,min,max,exg,table.unpack(funs))
 					local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BZONE+DM_LOCATION_SZONE)
 					Duel.HintSelection(hg)
 					Duel.DMSendtoGrave(sg,REASON_EFFECT)
@@ -3328,13 +3336,16 @@ function Auxiliary.SendtoMZoneOperation(p,f,s,o,min,max,ex,...)
 				local player=(p==PLAYER_SELF and tp) or (p==PLAYER_OPPO and 1-tp)
 				max=max or min
 				local c=e:GetHandler()
-				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
-				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToMZone,f),tp,s,o,ex,table.unpack(funs))
+				local exg=Group.CreateGroup()
+				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and s==LOCATION_HAND then exg:AddCard(c) end
+				if type(ex)=="Card" then exg:AddCard(ex)
+				elseif type(ex)=="Group" then exg:Merge(ex) end
+				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToMZone,f),tp,s,o,exg,table.unpack(funs))
 				if g:GetCount()==0 then return end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
 				if min and max then
 					Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOMZONE)
-					local sg=g:Select(player,min,max,ex,table.unpack(funs))
+					local sg=g:Select(player,min,max,exg,table.unpack(funs))
 					local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BZONE+DM_LOCATION_SZONE)
 					Duel.HintSelection(hg)
 					Duel.SendtoMZone(sg,POS_FACEUP_UNTAPPED,REASON_EFFECT)
@@ -3371,13 +3382,16 @@ function Auxiliary.SendtoSZoneOperation(p,f,s,o,min,max,ex,...)
 				local szone_count=Duel.GetLocationCount(player,DM_LOCATION_SZONE)
 				if max>szone_count then max=szone_count end
 				local c=e:GetHandler()
-				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
-				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToSZone,f),player,s,o,ex,table.unpack(funs))
+				local exg=Group.CreateGroup()
+				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and s==LOCATION_HAND then exg:AddCard(c) end
+				if type(ex)=="Card" then exg:AddCard(ex)
+				elseif type(ex)=="Group" then exg:Merge(ex) end
+				local g=Duel.GetMatchingGroup(aux.AND(Card.IsAbleToSZone,f),tp,s,o,exg,table.unpack(funs))
 				if g:GetCount()==0 then return end
 				if e:IsHasType(EFFECT_TYPE_CONTINUOUS) then Duel.Hint(HINT_CARD,0,c:GetOriginalCode()) end
 				if min and max then
 					Duel.Hint(HINT_SELECTMSG,player,DM_HINTMSG_TOSZONE)
-					local sg=g:Select(player,min,max,ex,table.unpack(funs))
+					local sg=g:Select(player,min,max,exg,table.unpack(funs))
 					local hg=sg:Filter(Card.IsLocation,nil,DM_LOCATION_BZONE)
 					Duel.HintSelection(hg)
 					Duel.SendtoSZone(sg)
@@ -3726,8 +3740,9 @@ function Auxiliary.CheckCardFunction(f,s,o,ex,...)
 	local funs={...}
 	return	function(e,tp,eg,ep,ev,re,r,rp,chk)
 				local c=e:GetHandler()
-				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
-				if chk==0 then return Duel.IsExistingMatchingCard(f,tp,s,o,1,ex,table.unpack(funs)) end
+				local exg=Group.CreateGroup()
+				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and s==LOCATION_HAND then exg:AddCard(c) end
+				if chk==0 then return Duel.IsExistingMatchingCard(f,tp,s,o,1,exg,table.unpack(funs)) end
 			end
 end
 Auxiliary.chktg=Auxiliary.CheckCardFunction
@@ -3739,12 +3754,11 @@ function Auxiliary.TargetCardFunction(p,f,s,o,min,max,desc,ex,...)
 				max=max or min
 				desc=desc or DM_HINTMSG_TARGET
 				local c=e:GetHandler()
-				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and (s==LOCATION_HAND or o==LOCATION_HAND) then ex=c end
-				local extype=type(ex)
 				local exg=Group.CreateGroup()
-				if extype=="Card" then exg:AddCard(ex)
-				elseif extype=="Group" then exg:Merge(ex)
-				elseif extype=="function" then
+				if c:IsSpell() and c:IsLocation(LOCATION_HAND) and s==LOCATION_HAND then exg:AddCard(c) end
+				if type(ex)=="Card" then exg:AddCard(ex)
+				elseif type(ex)=="Group" then exg:Merge(ex)
+				elseif type(ex)=="function" then
 					exg=ex(e,tp,eg,ep,ev,re,r,rp)
 				end
 				if chkc then
@@ -3758,10 +3772,10 @@ function Auxiliary.TargetCardFunction(p,f,s,o,min,max,desc,ex,...)
 				end
 				if chk==0 then
 					if e:IsHasType(EFFECT_TYPE_TRIGGER_F) or e:IsHasType(EFFECT_TYPE_QUICK_F) or c:IsSpell() then return true end
-					return Duel.IsExistingTarget(f,tp,s,o,1,ex,table.unpack(funs))
+					return Duel.IsExistingTarget(f,tp,s,o,1,exg,table.unpack(funs))
 				end
 				Duel.Hint(HINT_SELECTMSG,player,desc)
-				Duel.SelectTarget(player,f,tp,s,o,min,max,ex,table.unpack(funs))
+				Duel.SelectTarget(player,f,tp,s,o,min,max,exg,table.unpack(funs))
 			end
 end
 Auxiliary.targtg=Auxiliary.TargetCardFunction
