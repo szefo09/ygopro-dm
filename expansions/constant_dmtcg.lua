@@ -460,8 +460,8 @@ RESETS_REDIRECT						=0x47e0000	--RESETS_STANDARD+RESET_OVERLAY-RESET_TOFIELD-RE
 DM_EFFECT_TYPE_CAST_SPELL			=EFFECT_TYPE_IGNITION			--Cast a spell
 --Flag
 DM_EFFECT_FLAG_SUMMON_PARAM			=EFFECT_FLAG_SPSUM_PARAM		--Included in a creature's summon procedure
-DM_EFFECT_FLAG_CHAIN_LIMIT			=0x8000000						--Included in an effect that cannot be chained to
-DM_EFFECT_FLAG_CHARGE				=0x20000000						--Included in an effect where a player puts the cast spell into the mana zone
+DM_EFFECT_FLAG_CHAIN_LIMIT			=0x20000000						--Included in an effect that cannot be chained to
+DM_EFFECT_FLAG_CHARGE				=0x40000000						--Included in an effect where a player puts the cast spell into the mana zone
 --Code
 DM_EFFECT_TO_BZONE_CONDITION		=EFFECT_SPSUMMON_CONDITION		--Can only be put into the battle zone if a condition is met
 DM_EFFECT_SUMMON_PROC				=EFFECT_SPSUMMON_PROC			--Summon creature procedure
