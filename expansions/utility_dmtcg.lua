@@ -169,6 +169,16 @@ end
 function Card.IsAbleToSZone(c)
 	return true--not c:IsHasEffect(DM_EFFECT_CANNOT_TO_SZONE) --reserved
 end
+--check if a card can be put into the mana zone
+function Card.IsAbleToMZone(c)
+	--if c:IsHasEffect(DM_EFFECT_CANNOT_TO_MZONE) then return false end --reserved
+	return c:IsAbleToGrave()
+end
+--check if a card can be put into the graveyard
+function Card.DMIsAbleToGrave(c)
+	--if c:IsHasEffect(DM_EFFECT_CANNOT_TO_GRAVE) then return false end --reserved
+	return c:IsAbleToRemove()
+end
 --check if a spell can be cast for no cost
 function Card.IsCanCastFree(c)
 	return c:GetPlayCost()<=0
@@ -200,11 +210,11 @@ function Card.IsCanAttackUntapped(c)
 end
 --check if a creature can trigger its "blocker" ability
 function Card.IsCanBlock(c)
-	return true--and not c:IsHasEffect(DM_EFFECT_CANNOT_BLOCK) --reserved
+	return true--not c:IsHasEffect(DM_EFFECT_CANNOT_BLOCK) --reserved
 end
 --check if a creature can break a shield
 function Card.IsCanBreakShield(c)
-	return true--and not c:IsHasEffect(DM_EFFECT_CANNOT_BREAK_SHIELD) --reserved
+	return true--not c:IsHasEffect(DM_EFFECT_CANNOT_BREAK_SHIELD) --reserved
 end
 --get the number of shields a creature broke during the current turn
 function Card.GetBrokenShieldCount(c)
@@ -403,10 +413,6 @@ Card.IsPower=Card.IsAttack
 Card.IsPowerBelow=Card.IsAttackBelow
 --check if a creature's power is greater than or equal to a given value
 Card.IsPowerAbove=Card.IsAttackAbove
---check if a card can be put into the mana zone
-Card.IsAbleToMZone=Card.IsAbleToGrave
---check if a card can be put into the graveyard
-Card.DMIsAbleToGrave=Card.IsAbleToRemove
 --get the cards under a card
 Card.GetSourceGroup=Card.GetOverlayGroup
 --get the number of cards under a card
@@ -821,20 +827,24 @@ function Duel.SendtoMZone(targets,pos,reason)
 	local g1=targets:Filter(Card.IsMulticolored,nil)
 	targets:Sub(g1)
 	local ct=0
-	for tc in aux.Next(targets) do
-		local g2=tc:IsCanSourceLeave() and tc:GetSourceGroup() or Group.CreateGroup()
-		if pos==POS_FACEUP_UNTAPPED then
-			ct=ct+Duel.SendtoGrave(g2,reason)
-			ct=ct+Duel.SendtoGrave(tc,reason)
-		elseif pos==POS_FACEUP_TAPPED then
-			ct=ct+Duel.Remove(g2,POS_FACEDOWN,reason)
-			ct=ct+Duel.Remove(tc,POS_FACEDOWN,reason)
+	for tc1 in aux.Next(targets) do
+		if tc1:IsAbleToMZone() then
+			local g2=tc1:IsCanSourceLeave() and tc1:GetSourceGroup() or Group.CreateGroup()
+			if pos==POS_FACEUP_UNTAPPED then
+				ct=ct+Duel.SendtoGrave(g2,reason)
+				ct=ct+Duel.SendtoGrave(tc1,reason)
+			elseif pos==POS_FACEUP_TAPPED then
+				ct=ct+Duel.Remove(g2,POS_FACEDOWN,reason)
+				ct=ct+Duel.Remove(tc1,POS_FACEDOWN,reason)
+			end
 		end
 	end
 	--put multicolored cards into the mana zone tapped
-	for tc in aux.Next(g1) do
-		local g2=tc:IsCanSourceLeave() and tc:GetSourceGroup() or Group.CreateGroup()
-		ct=ct+Duel.Remove(g2,POS_FACEDOWN,REASON_RULE)
+	for tc2 in aux.Next(g1) do
+		if tc2:IsAbleToMZone() then
+			local g2=tc2:IsCanSourceLeave() and tc2:GetSourceGroup() or Group.CreateGroup()
+			ct=ct+Duel.Remove(g2,POS_FACEDOWN,REASON_RULE)
+		end
 	end
 	ct=ct+Duel.Remove(g1,POS_FACEDOWN,REASON_RULE)
 	return ct
@@ -868,14 +878,16 @@ function Duel.DMSendtoGrave(targets,reason)
 	for tc in aux.Next(targets) do
 		local g=tc:GetSourceGroup()
 		if tc:IsCanSourceLeave() then targets:Merge(g) end
-		if tc:IsLocation(LOCATION_REMOVED) and tc:IsFacedown() then
-			--workaround to banish a banished card
-			--Note: Remove this if YGOPro can flip a face-down banished card face-up
-			if Duel.SendtoHand(tc,PLAYER_OWNER,REASON_RULE+REASON_TEMPORARY)>0 then
-				Duel.ConfirmCards(1-tc:GetControler(),tc)
+		if tc:DMIsAbleToGrave() then
+			if tc:IsLocation(LOCATION_REMOVED) and tc:IsFacedown() then
+				--workaround to banish a banished card
+				--Note: Remove this if YGOPro can flip a face-down banished card face-up
+				if Duel.SendtoHand(tc,PLAYER_OWNER,REASON_RULE+REASON_TEMPORARY)>0 then
+					Duel.ConfirmCards(1-tc:GetControler(),tc)
+				end
 			end
+			ct=ct+Duel.Remove(tc,POS_FACEUP,reason)
 		end
-		ct=ct+Duel.Remove(tc,POS_FACEUP,reason)
 	end
 	return ct
 end
@@ -899,25 +911,29 @@ function Duel.SendtoSZone(targets)
 	if type(targets)=="Card" then targets=Group.FromCards(targets) end
 	local ct=0
 	for tc1 in aux.Next(targets) do
-		--add evolution source to shields first to prevent YGOPro from sending it to yugioh's graveyard
-		local g=tc1:GetSourceGroup()
-		for tc2 in aux.Next(g) do
-			--if tc1:IsCanSourceLeave() then
-				if Duel.GetLocationCount(tc2:GetOwner(),DM_LOCATION_SZONE)>0 then
-					if Duel.MoveToField(tc2,tc2:GetOwner(),tc2:GetOwner(),DM_LOCATION_SZONE,POS_FACEDOWN,true) then
-						ct=ct+1
-					end
-				else
-					Duel.Hint(HINT_MESSAGE,tc2:GetOwner(),DM_DESC_NOSZONES)
+		if tc1:IsAbleToSZone() then
+			--add evolution source to shields first to prevent YGOPro from sending it to yugioh's graveyard
+			local g=tc1:GetSourceGroup()
+			for tc2 in aux.Next(g) do
+				if tc2:IsAbleToSZone() then
+					--if tc1:IsCanSourceLeave() then
+						if Duel.GetLocationCount(tc2:GetOwner(),DM_LOCATION_SZONE)>0 then
+							if Duel.MoveToField(tc2,tc2:GetOwner(),tc2:GetOwner(),DM_LOCATION_SZONE,POS_FACEDOWN,true) then
+								ct=ct+1
+							end
+						else
+							Duel.Hint(HINT_MESSAGE,tc2:GetOwner(),DM_DESC_NOSZONES)
+						end
+					--end
 				end
-			--end
-		end
-		if Duel.GetLocationCount(tc1:GetOwner(),DM_LOCATION_SZONE)>0 then
-			if Duel.MoveToField(tc1,tc1:GetOwner(),tc1:GetOwner(),DM_LOCATION_SZONE,POS_FACEDOWN,true) then
-				ct=ct+1
 			end
-		else
-			Duel.Hint(HINT_MESSAGE,tc1:GetOwner(),DM_DESC_NOSZONES)
+			if Duel.GetLocationCount(tc1:GetOwner(),DM_LOCATION_SZONE)>0 then
+				if Duel.MoveToField(tc1,tc1:GetOwner(),tc1:GetOwner(),DM_LOCATION_SZONE,POS_FACEDOWN,true) then
+					ct=ct+1
+				end
+			else
+				Duel.Hint(HINT_MESSAGE,tc1:GetOwner(),DM_DESC_NOSZONES)
+			end
 		end
 	end
 	return ct
